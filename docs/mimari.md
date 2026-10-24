@@ -31,6 +31,8 @@ flowchart LR
 `dubla <video>` (and `api.dubla`) runs the whole recommended flow in one job, adding what the single stages do not:
 speaker separation and per-speaker voices, duration fitting (natural blocks, atempo), background mix, checkpoints and
 resume, the job store. Single stages are the plain building blocks.
+The full flow stage by stage, with the files between stages and the branches by setting:
+[engineering/pipeline-flow.md](engineering/pipeline-flow.md).
 
 ## Design principles
 
@@ -200,6 +202,8 @@ flowchart LR
 `dubla <video>` (ve `api.dubla`) önerilen akışın tamamını tek işte çalıştırır ve tek aşamaların yapmadıklarını ekler:
 konuşmacı ayrımı ve konuşmacı başına ses, süreye sığdırma (doğal bloklar, atempo), arka plan karışımı, checkpoint ve
 devam, iş deposu. Tek aşamalar düz yapı taşlarıdır.
+Tam akış aşama aşama, aşamalar arasındaki dosyalar ve ayara göre dallanmalarla:
+[muhendislik/hat_akisi.md](muhendislik/hat_akisi.md).
 
 ### Tasarım ilkeleri
 

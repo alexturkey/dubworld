@@ -46,6 +46,7 @@ agents (Claude Code, Codex, Cursor, ...) are in [beceriler/README.md](beceriler/
 - English: [engineering/README.md](engineering/README.md)
 - Türkçe: [muhendislik/README.md](muhendislik/README.md)
 - Pinned values / Sabit değerler: [engineering/pinned-values.md](engineering/pinned-values.md) · [muhendislik/sabit_degerler.md](muhendislik/sabit_degerler.md)
+- End-to-end pipeline flow / Uçtan uca hat akışı: [engineering/pipeline-flow.md](engineering/pipeline-flow.md) · [muhendislik/hat_akisi.md](muhendislik/hat_akisi.md)
 
 ## Decisions (ADR) / Kararlar
 

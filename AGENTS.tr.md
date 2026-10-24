@@ -165,6 +165,7 @@ Yeniden ölçme (`docs/olcumler.md`), bir sabit sürümü yükseltme, sürüm ç
 
 - `docs/muhendislik/README.md`: aşama başına geçmiş (sorun → kök neden → denenen → çözüm → ölçüm → açık), İngilizcesi
   `docs/engineering/README.md`.
+- `docs/muhendislik/hat_akisi.md`: kaynaktan teslim edilen videoya bütün akış (aşama → girdi dosyası → çıktı dosyası → ne değişir, ayara göre dallanmalar, segmentlerin neden kelime zamanlarından yeniden kurulduğu); EN `docs/engineering/pipeline-flow.md`.
 - `docs/muhendislik/dusuk_vram.md`: 4 GB GPU / yalnız CPU ayarları ve bellek yetmezliği sorun giderme.
 - `docs/muhendislik/kararlar.md` (İngilizce `docs/adr/README.md`): mimari kararlar. Bir aşamanın davranışını değiştirmek,
   onun ara kayıt sözleşme sürümünü artırmak demektir (ADR 0012); sessiz yedek asla eklenmez (ADR 0009).

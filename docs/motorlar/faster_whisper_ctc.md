@@ -55,6 +55,7 @@ or not installed).
   step ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); the checkpoint fingerprint includes the CTC
   boundary policy.
 - Details: [timing-sources.md](../engineering/timing-sources.md) §2
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -113,3 +114,4 @@ CTC hizalama kutusundan. CrisperWhisper Turbo çalışamadığında (NVIDIA GPU 
   durdurur ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); kontrol noktası (checkpoint) parmak izi CTC
   sınır politikasını içerir.
 - Ayrıntılar: [timing-sources.md](../engineering/timing-sources.md) §2
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

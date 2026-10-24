@@ -8,6 +8,8 @@ nerede durduğunu, ne yaptığını, neden bu değer olduğunu ve değişirse ne
 gerekçe bu klasörün diğer sayfalarında ve [../adr/](../adr/README.md) içindedir; bu sayfa bir alt düzeyde, değer değer
 çalışır.
 
+Her değerin bir işin içinde aşama aşama ve dosya dosya nerede etki ettiği: [hat_akisi.md](hat_akisi.md).
+
 **"Kayıt yok"**, gerekçenin projenin ölçüm notlarında arandığı ve bulunamadığı anlamına gelir. Değerin serbestçe
 değiştirilebileceği anlamına gelmez: "bilinmeyen risk" say, önce ve sonra ölç.
 

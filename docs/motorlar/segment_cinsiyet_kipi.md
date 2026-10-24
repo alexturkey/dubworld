@@ -34,6 +34,7 @@ routing report in the job folder (gender, confidence and decision source per sen
 - **How it fits:** the gender worker processes all sentences at once in a single subprocess and exits; the result goes
   to the Supertonic voice selection, and timing and translation do not change.
 - Details: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2–§3 · [cinsiyet_siniflandirici](cinsiyet_siniflandirici.md)
+- Place in the end-to-end flow: [pipeline-flow.md, stage table](../engineering/pipeline-flow.md#3-stage-table-segment-sync-the-default)
 
 ## Türkçe
 
@@ -70,3 +71,4 @@ yönlendirme raporu (cümle başına cinsiyet, güven, karar kaynağı).
 - **Diğer parçalarla ahengi:** cinsiyet işçisi tek alt süreçte bütün cümleleri bir kerede işler ve çıkar; sonuç
   Supertonic ses seçimine gider, zamanlama ve çeviri değişmez.
 - Ayrıntı: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2–§3 · [cinsiyet_siniflandirici](cinsiyet_siniflandirici.md)
+- Uçtan uca akıştaki yeri: [hat_akisi.md, aşama tablosu](../muhendislik/hat_akisi.md#3-aşama-tablosu-segment-eşleme-varsayılan)

@@ -36,6 +36,7 @@
 - **How it fits:** English only (a non-English detection switches to the multilingual path); 1.0 s leading pad; CTC
   windows are prepared from the real pieces so natural gaps are not inside one window.
 - Details: [transcription.md](../engineering/transcription.md) §1, §4 · [word_alignment.md](../engineering/word_alignment.md) §3
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -73,3 +74,4 @@
 - **Diğer parçalarla ahengi:** yalnız İngilizce (İngilizce dışı bir tespit çok dilli yola geçirir); baştaki 1.0 sn pay;
   CTC pencereleri gerçek parçalardan hazırlanır, böylece doğal boşluklar tek bir pencerenin içinde kalmaz.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §1, §4 · [word_alignment.md](../engineering/word_alignment.md) §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

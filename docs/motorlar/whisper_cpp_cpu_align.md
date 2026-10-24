@@ -35,6 +35,7 @@
   tested on CUDA; its native timestamps placed the first word up to 4.3 s early, which confirmed the text + CTC design.
 - **How it fits:** 1.0 s leading pad; the CTC step may use the GPU under the lock; same transcript contract.
 - Details: [transcription.md](../engineering/transcription.md) §1, §5 · [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -71,3 +72,4 @@
   denendi; yerel zaman damgaları ilk kelimeyi 4.3 sn'ye kadar erken koydu, bu da metin + CTC tasarımını doğruladı.
 - **Diğer parçalarla ahengi:** baştaki 1.0 sn pay; CTC adımı kilit altında GPU kullanabilir; aynı transkript sözleşmesi.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §1, §5 · [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

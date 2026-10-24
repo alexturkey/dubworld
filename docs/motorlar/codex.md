@@ -43,6 +43,7 @@
   each segment ID gets one natural candidate ([ADR 0007](../adr/0007-natural-blocks-translation-contract.md)); transient
   errors defer and retry on Codex, never on another backend ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
 - Details: [translation.md](../engineering/translation.md) §1, §3
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -89,3 +90,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   her segment kimliği bir doğal aday alır ([ADR 0007](../adr/0007-natural-blocks-translation-contract.md)); geçici
   hatalar ertelenir ve Codex'te yeniden denenir, asla başka bir arka uçta değil ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
 - Ayrıntılar: [translation.md](../engineering/translation.md) §1, §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

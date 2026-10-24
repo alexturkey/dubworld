@@ -5,6 +5,7 @@ English: [../engineering/speakers_and_segments.md](../engineering/speakers_and_s
 Kelime zamanlarının nasıl dublaj segmentlerine (dublajın birim aldığı konuşma parçaları) dönüştüğü, konuşmacıların
 nasıl bulunduğu ve her konuşmacı için sesin nasıl seçildiği.
 Karar kaydı: [ADR 0006](kararlar.md#0006).
+Segmentlemenin bütün işteki yeri ve kelimelerin neden yeniden gruplandığı: [hat_akisi.md](hat_akisi.md#8-transkript-neden-kelime-zamanlarına-bölünüp-yeniden-gruplanır).
 
 ## 1. Nihai dublaj segmentleri (`bolum_30_hizalama_ve_segment/nihai_dublaj_segmentleri.py`)
 

@@ -39,6 +39,7 @@
   faster than streaming in the recorded test.
 - **How it fits:** CPU only, English only; same transcript contract; Parakeet is the recommended CPU alternative.
 - Details: [transcription.md](../engineering/transcription.md) §6
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -79,3 +80,4 @@
 - **Diğer parçalarla ahengi:** yalnız işlemci, yalnız İngilizce; aynı transkript sözleşmesi; önerilen işlemci
   seçeneği Parakeet'tir.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §6
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

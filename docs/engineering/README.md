@@ -10,6 +10,7 @@ without a stored run), **no record** (unknown; do not assume).
 
 | Page | Covers |
 |---|---|
+| [pipeline-flow.md](pipeline-flow.md) | **The whole job, from a link or file to the delivered video**: stages, the files between them, branches by setting, why the transcript is regrouped from word times |
 | [low_vram.md](low_vram.md) | **Start here on a 4 GB card or CPU-only machine**: settings, symptoms, fixes |
 | [gpu_memory_and_isolation.md](gpu_memory_and_isolation.md) | VRAM budget per model, OOM diagnosis, one process per model, environments, model cache, resource lock, measurement method |
 | [source_audio_and_separation.md](source_audio_and_separation.md) | Audio extraction, inverted-phase fix, Demucs (batching, two-stem RAM work, OOM fallback), automatic background detection |

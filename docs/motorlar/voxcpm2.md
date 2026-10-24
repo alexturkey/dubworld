@@ -41,6 +41,7 @@
   `ses.akis` has no effect; the video retiming absorbs the difference. A per-speaker voice map skips gender prediction.
   Near the 4 GB limit, VRAM can spill into shared memory and slow generation without an error.
 - Details: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §3
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -83,3 +84,4 @@
   `ses.akis` etkisizdir; farkı video yeniden zamanlaması karşılar. Konuşmacı başına ses haritası cinsiyet tahminini atlar.
   4 GB sınırına yakın VRAM paylaşılan belleğe taşabilir ve üretimi hata vermeden yavaşlatabilir.
 - Ayrıntı: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

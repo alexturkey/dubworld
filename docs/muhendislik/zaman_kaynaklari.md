@@ -22,6 +22,8 @@ testlerinin tek kaynağı): `src/dublaj_hatti/bolum_20_transkripsiyon/zaman_kayn
 - Kelime zamanı hiçbir yerde segment sınırından türetilmez. Yön her zaman kelimeden segmente doğrudur (§6).
 - Hiçbir kaynak sessizce başka bir kaynağa düşmez. Eksik ya da tutarsız zaman işi mesajla durdurur
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
+- Bu kelime zamanlarının sonra başına gelenler (nihai segmentler, çeviri, TTS yuvaları, altyazı), dosya dosya:
+  [hat_akisi.md](hat_akisi.md#4-bir-aşamanın-çıktısı-ile-sonrakinin-girdisi-arasında-ne-değişir).
 
 ## 2. Motor başına (kaynak tarafı)
 

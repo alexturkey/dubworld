@@ -8,6 +8,8 @@ where the value lives, what it does, why it has this value and what breaks if it
 reasoning is in the other pages of this folder and in [../adr/](../adr/README.md); this page works one level lower, value
 by value.
 
+Where each value acts inside a job, stage by stage and file by file: [pipeline-flow.md](pipeline-flow.md).
+
 **"No record"** means the reason was searched for in the project's measurement notes and was not found. It does not mean
 the value is free to change: treat it as "unknown risk" and measure before and after.
 

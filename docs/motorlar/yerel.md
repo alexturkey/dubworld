@@ -37,6 +37,7 @@
   rules), so `ses.akis` values other than `natural_blocks_1` have no effect and full-text mode is blocked. Output is
   the same `translation.json`. Quality against the LLM backends: no record.
 - Details: [translation.md](../engineering/translation.md) §4, §5
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -75,3 +76,4 @@
   kuralları yok), bu yüzden `natural_blocks_1` dışındaki `ses.akis` değerlerinin etkisi yoktur ve tam metin kipi
   engellenir. Çıktı aynı `translation.json` dosyasıdır. LLM arka uçlarına göre kalite: kayıt yok.
 - Ayrıntı: [translation.md](../engineering/translation.md) §4, §5
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

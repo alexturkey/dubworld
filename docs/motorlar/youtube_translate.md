@@ -40,6 +40,7 @@ report).
   the duration.
 - Details: [transcription.md](../engineering/transcription.md) §8
 - Timing sources and pre-check: [timing-sources.md](../engineering/timing-sources.md) §3 / [zaman_kaynaklari.md](../muhendislik/zaman_kaynaklari.md) §3
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -79,3 +80,4 @@ kalite raporu).
   çıktı diğer motorlarla aynı transkript sözleşmesidir ve aynı segmentleyiciye gider. Zaman aşımı süreye göre büyür.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §8
 - Zaman kaynakları ve ön denetim: [timing-sources.md](../engineering/timing-sources.md) §3 / [zaman_kaynaklari.md](../muhendislik/zaman_kaynaklari.md) §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

@@ -57,6 +57,7 @@ fails with an explicit error.
   If a segment cannot be generated, the job stops; it is not silently skipped ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
   This repository has no speed or VRAM measurement for XTTS.
 - Details: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §8
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -111,3 +112,4 @@ gerçek kişi sesi yoktur; ünlü ya da gerçek kişiyi izinsiz taklit yasaktır
   karışım). Bir segment üretilemezse iş durur; sessizce atlanmaz ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
   Bu repoda XTTS için hız ve VRAM ölçümü yoktur.
 - Ayrıntı: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §8
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

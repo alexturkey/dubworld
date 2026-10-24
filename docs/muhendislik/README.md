@@ -13,6 +13,7 @@ kural ya da bulgu), **kayıt yok** (bilinmiyor; varsayma).
 
 | Sayfa | Kapsadığı |
 |---|---|
+| [hat_akisi.md](hat_akisi.md) | **Bağlantıdan ya da dosyadan teslim edilen videoya bütün iş**: aşamalar, aralarındaki dosyalar, ayara göre dallanmalar, transkriptin neden kelime zamanlarından yeniden gruplandığı |
 | [dusuk_vram.md](dusuk_vram.md) | **4 GB kartta ya da yalnız CPU olan makinede buradan başla**: ayarlar, belirtiler, çözümler |
 | [gpu_bellek_ve_yalitim.md](gpu_bellek_ve_yalitim.md) | Model başına VRAM bütçesi, OOM (bellek yetmedi hatası) teşhisi, model başına tek süreç, ortamlar, model önbelleği, kaynak kilidi, ölçüm yöntemi |
 | [kaynak_ses_ve_ayristirma.md](kaynak_ses_ve_ayristirma.md) | Ses çıkarma, ters faz düzeltmesi, Demucs (toplu işleme, iki parçalı (stem) RAM çalışması, OOM yedeği), otomatik arka plan algılama |

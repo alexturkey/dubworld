@@ -33,6 +33,7 @@
 - **How it fits:** the link check (`kaynak_girdisi`) decides the tool before anything else runs; the downloaded file
   enters the pipeline like a local file; local files never need yt-dlp. Its version floor follows security fixes.
 - Details: [mimari.md](../mimari.md) (Sources and links) · [ADR 0017](../adr/0017-defaults-and-licence-gate.md)
+- Place in the end-to-end flow: [pipeline-flow.md, step 0 (entry)](../engineering/pipeline-flow.md#2-step-0-entry-job-and-job-folder)
 
 ## Türkçe
 
@@ -68,3 +69,4 @@
   indirilen dosya hatta yerel dosya gibi girer; yerel dosyalar yt-dlp'ye hiç ihtiyaç duymaz. Alt sürüm sınırı güvenlik
   düzeltmelerini izler.
 - Ayrıntı: [mimari.md](../mimari.md) (Sources and links bölümü) · [ADR 0017](../adr/0017-defaults-and-licence-gate.md)
+- Uçtan uca akıştaki yeri: [hat_akisi.md, adım 0 (giriş)](../muhendislik/hat_akisi.md#2-adım-0-giriş-iş-ve-iş-klasörü)

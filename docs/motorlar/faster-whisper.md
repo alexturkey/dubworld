@@ -45,6 +45,7 @@
   which the single segmenter turns into dub segments ([ADR 0006](../adr/0006-two-stage-dub-segmentation.md)). Recognition
   and alignment never share the GPU ([ADR 0001](../adr/0001-one-gpu-job-and-process-per-model.md)).
 - Details: [transcription.md](../engineering/transcription.md) §2, §9 · [word_alignment.md](../engineering/word_alignment.md)
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -93,3 +94,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   segmentleyici bunu dublaj segmentlerine çevirir ([ADR 0006](../adr/0006-two-stage-dub-segmentation.md)). Tanıma ve
   hizalama GPU'yu asla paylaşmaz ([ADR 0001](../adr/0001-one-gpu-job-and-process-per-model.md)).
 - Ayrıntılar: [transcription.md](../engineering/transcription.md) §2, §9 · [word_alignment.md](../engineering/word_alignment.md)
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

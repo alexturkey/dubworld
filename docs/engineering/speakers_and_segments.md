@@ -3,6 +3,7 @@
 How word timings become dub segments, how speakers are found and how a voice is chosen per speaker. Türkçe:
 [../muhendislik/konusmaci_ve_segmentler.md](../muhendislik/konusmaci_ve_segmentler.md).
 Decision record: [ADR 0006](../adr/0006-two-stage-dub-segmentation.md).
+Where segmentation sits in the whole job and why words are regrouped: [pipeline-flow.md](pipeline-flow.md#8-why-the-transcript-is-cut-into-word-times-and-grouped-again).
 
 ## 1. Final dub segments (`bolum_30_hizalama_ve_segment/nihai_dublaj_segmentleri.py`)
 

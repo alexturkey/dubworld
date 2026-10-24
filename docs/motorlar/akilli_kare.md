@@ -32,6 +32,7 @@ no bars, the video stays as it is.
 - **How it fits:** prepares the picture video before subtitle placement and the final encode; the setting is part of
   the stage checkpoint fingerprint ([ADR 0012](../adr/0012-stage-checkpoints-and-resume.md)). If OpenCV is not
   installed, the pipeline uses the source video unchanged.
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -65,3 +66,4 @@ dublajlı videoyu o kutuya kırpar (libx264, crf 18). Ses ve altyazı değişmez
 - **Diğer parçalarla ahengi:** altyazı yerleşimi ve son kodlamadan önce görüntü videosunu hazırlar; ayar aşamanın ara
   kayıt parmak izindedir ([ADR 0012](../adr/0012-stage-checkpoints-and-resume.md)). OpenCV kurulu değilse hat kaynak videoyu
   değiştirmeden kullanır.
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

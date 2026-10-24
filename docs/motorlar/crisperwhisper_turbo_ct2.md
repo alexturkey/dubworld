@@ -41,6 +41,7 @@
 - **How it fits:** ≈ 1.4 GB VRAM; preferred by `transkripsiyon.motor = auto` when installed; no CPU path; output is the
   same `transcript.json` contract.
 - Details: [ADR 0004](../adr/0004-crisperwhisper-turbo-ct2-int8.md) · [crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md) §2, §6
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -86,3 +87,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 - **Nasıl oturur:** ≈ 1.4 GB VRAM; kuruluysa `transkripsiyon.motor = auto` bunu tercih eder; CPU yolu yok; çıktı aynı
   `transcript.json` sözleşmesidir.
 - Ayrıntılar: [ADR 0004](../adr/0004-crisperwhisper-turbo-ct2-int8.md) · [crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md) §2, §6
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

@@ -49,6 +49,7 @@ CIFTLER: list[tuple[str, str]] = [
     ("docs/engineering/gpu_memory_and_isolation.md", "docs/muhendislik/gpu_bellek_ve_yalitim.md"),
     ("docs/engineering/low_vram.md", "docs/muhendislik/dusuk_vram.md"),
     ("docs/engineering/pinned-values.md", "docs/muhendislik/sabit_degerler.md"),
+    ("docs/engineering/pipeline-flow.md", "docs/muhendislik/hat_akisi.md"),
     ("docs/engineering/source_audio_and_separation.md", "docs/muhendislik/kaynak_ses_ve_ayristirma.md"),
     ("docs/engineering/speakers_and_segments.md", "docs/muhendislik/konusmaci_ve_segmentler.md"),
     ("docs/engineering/timing-sources.md", "docs/muhendislik/zaman_kaynaklari.md"),

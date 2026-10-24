@@ -39,6 +39,7 @@
 - **How it fits:** same input and output as Codex; retries stay on this backend with fixed waits per error type;
   authentication errors are not retried.
 - Details: [translation.md](../engineering/translation.md) §2
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -80,3 +81,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 - **Nasıl oturur:** Codex ile aynı girdi ve çıktı; yeniden denemeler hata türüne göre sabit beklemelerle bu arka uçta
   kalır; kimlik doğrulama hataları yeniden denenmez.
 - Ayrıntılar: [translation.md](../engineering/translation.md) §2
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

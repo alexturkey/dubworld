@@ -37,6 +37,7 @@
   [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)); 1.0 s leading pad; no local GPU use; same transcript
   contract. Data leaves the machine only when this engine is selected.
 - Details: [transcription.md](../engineering/transcription.md) §7, §9
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -75,3 +76,4 @@
   [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)); baştaki 1.0 sn pay; yerel GPU kullanımı yok; aynı
   transkript sözleşmesi. Veri makineden yalnız bu motor seçildiğinde çıkar.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §7, §9
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

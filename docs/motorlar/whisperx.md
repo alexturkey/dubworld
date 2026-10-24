@@ -43,6 +43,7 @@
   a real CUDA OOM in float32 retries once in int8 in a fresh process
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); output feeds the segmenter like every other engine.
 - Details: [transcription.md](../engineering/transcription.md) §3 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §4
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -87,3 +88,4 @@
   float32'deki gerçek bir CUDA OOM yeni bir süreçte bir kez int8 ile yeniden dener
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); çıktı her motor gibi segmentleyiciyi besler.
 - Ayrıntı: [transcription.md](../engineering/transcription.md) §3 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §4
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

@@ -37,6 +37,7 @@
   sentence in segment mode); an explicit `ses.konusmaci_sesleri` map overrides it. Process exit releases RAM and VRAM
   ([ADR 0001](../adr/0001-one-gpu-job-and-process-per-model.md)).
 - Details: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §3
+- Place in the end-to-end flow: [pipeline-flow.md, stage table](../engineering/pipeline-flow.md#3-stage-table-segment-sync-the-default)
 
 ## Türkçe
 
@@ -77,3 +78,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   cümle) için bir Supertonic sesi seçer; açıkça verilen bir `ses.konusmaci_sesleri` eşlemesi tahmini ezer. Sürecin
   kapanması RAM ve VRAM'i serbest bırakır ([ADR 0001](../adr/0001-one-gpu-job-and-process-per-model.md)).
 - Ayrıntılar: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, aşama tablosu](../muhendislik/hat_akisi.md#3-aşama-tablosu-segment-eşleme-varsayılan)

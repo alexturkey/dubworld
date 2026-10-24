@@ -32,6 +32,7 @@ Command: `gallery-dl --destination <iş>/galeri_indirme --filter "extension in (
   gallery-dl worked with its own session configuration file. Because it is GPL-2.0 it is not imported and runs in a
   separate process ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)). Session data is not kept in the repository.
 - **How it fits:** `kaynak_girdisi` decides the link type; the downloaded file enters the pipeline like a local file.
+- Place in the end-to-end flow: [pipeline-flow.md, step 0 (entry)](../engineering/pipeline-flow.md#2-step-0-entry-job-and-job-folder)
 
 ## Türkçe
 
@@ -66,3 +67,4 @@ Komut: `gallery-dl --destination <iş>/galeri_indirme --filter "extension in (vi
   gallery-dl kendi oturum ayar dosyasıyla çalıştı. GPL-2.0 olduğu için içe aktarılmaz, ayrı süreçte çalışır
   ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)). Oturum bilgisi repoda tutulmaz.
 - **Diğer parçalarla ahengi:** bağlantı türünü `kaynak_girdisi` belirler; indirilen dosya yerel dosya gibi hatta girer.
+- Uçtan uca akıştaki yeri: [hat_akisi.md, adım 0 (giriş)](../muhendislik/hat_akisi.md#2-adım-0-giriş-iş-ve-iş-klasörü)

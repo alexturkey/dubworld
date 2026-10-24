@@ -48,6 +48,7 @@ Example: `dubla video.mp4 --ayar ses.rvc_model=<model.pth> --ayar ses.rvc_riza_o
 - **How it fits:** the RVC settings are part of the TTS checkpoint fingerprint; when they change, only the TTS stage
   runs again. The consent declaration is mandatory; a failed conversion is an error
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)). There is no recorded A/B for the fixed parameters.
+- Place in the end-to-end flow: [pipeline-flow.md, stage table](../engineering/pipeline-flow.md#3-stage-table-segment-sync-the-default)
 
 ## Türkçe
 
@@ -98,3 +99,4 @@ sahibinin açık yazılı izniyle eğitilmiş modeli kullanın; ünlü ya da ger
 - **Diğer parçalarla ahengi:** RVC ayarları TTS ara kaydının parmak izindedir; değişince yalnız TTS aşaması yeniden
   çalışır. Rıza beyanı zorunludur; başarısız dönüştürme hatadır ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
   Sabit parametreler için kayıtlı A/B yoktur.
+- Uçtan uca akıştaki yeri: [hat_akisi.md, aşama tablosu](../muhendislik/hat_akisi.md#3-aşama-tablosu-segment-eşleme-varsayılan)

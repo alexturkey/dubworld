@@ -31,6 +31,7 @@
 - **Why it exists and why it is not first:** it gives a translation path to users without a Codex or Claude Code login. API providers are not first in `auto` because they need keys, billing and provider-specific hardening ([ADR 0008](../adr/0008-translation-backend-order.md)). It shares the Gemini hardening (ID enum, no output cap, meaning-safety contract, capacity-only 503 retry). A quality comparison against the CLI backends: no record.
 - **How it fits:** input is the segmented transcript, output is `translation.json` with one candidate per segment ID ([ADR 0007](../adr/0007-natural-blocks-translation-contract.md)); transient errors retry on the same backend, never on another one ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)). No local GPU or RAM budget.
 - Details: [translation.md](../engineering/translation.md) §4, §6
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -65,3 +66,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 - **Neden var, neden ilk sırada değil:** Codex ya da Claude Code oturumu olmayan kullanıcılara bir çeviri yolu verir. API sağlayıcıları `auto` içinde ilk sırada değildir, çünkü anahtar, faturalandırma ve sağlayıcıya özgü sağlamlaştırma gerektirir ([ADR 0008](../adr/0008-translation-backend-order.md)). Gemini sağlamlaştırmasını paylaşır (kimlik listesi, çıktı sınırı yok, anlam güvenliği sözleşmesi, yalnız kapasite kaynaklı 503 için yeniden deneme). CLI arka uçlarıyla kalite karşılaştırması: kayıt yok.
 - **Nasıl oturur:** girdi segmentlere ayrılmış transkript, çıktı her segment kimliği için bir aday taşıyan `translation.json` ([ADR 0007](../adr/0007-natural-blocks-translation-contract.md)); geçici hatalar aynı arka uçta yeniden denenir, asla başka bir arka uçta değil ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)). Yerel GPU ya da RAM bütçesi yok.
 - Ayrıntılar: [translation.md](../engineering/translation.md) §4, §6
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

@@ -44,6 +44,7 @@
   0.90–1.25 and the video absorbs the rest. Voice per speaker comes from speaker separation and gender, or from an
   explicit map.
 - Details: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §1–§4 · [speakers_and_segments.md](../engineering/speakers_and_segments.md) §3
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -89,3 +90,4 @@
   0.90–1.25 içinde kalır ve kalanı video karşılar. Konuşmacı başına ses, konuşmacı ayrımı ve cinsiyetten ya da açık
   bir haritadan gelir.
 - Ayrıntı: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §1–§4 · [speakers_and_segments.md](../engineering/speakers_and_segments.md) §3
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

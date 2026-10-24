@@ -38,6 +38,7 @@
   retimed with the video and mixed under the dub without ducking; a Demucs failure stops the job before transcription
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
 - Details: [source_audio_and_separation.md](../engineering/source_audio_and_separation.md) §2–§5 · [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §6
+- Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
 ## Türkçe
 
@@ -79,3 +80,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   birlikte yeniden zamanlanır ve dublajın altına, konuşmada kısma (ducking) uygulanmadan karıştırılır; Demucs hatası işi
   transkripsiyondan önce durdurur ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
 - Ayrıntılar: [source_audio_and_separation.md](../engineering/source_audio_and_separation.md) §2–§5 · [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §6
+- Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

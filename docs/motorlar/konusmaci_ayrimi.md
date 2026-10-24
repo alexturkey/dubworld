@@ -38,6 +38,7 @@
   ([ADR 0006](../adr/0006-two-stage-dub-segmentation.md)); the result drives the voice per speaker. It does not run when a
   cloud engine already returned word-level speakers.
 - Details: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2
+- Place in the end-to-end flow: [pipeline-flow.md, stage table](../engineering/pipeline-flow.md#3-stage-table-segment-sync-the-default)
 
 ## Türkçe
 
@@ -79,3 +80,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   ([ADR 0006](../adr/0006-two-stage-dub-segmentation.md)); sonuç konuşmacı başına sesi belirler. Bir bulut motoru kelime
   düzeyinde konuşmacıları zaten döndürdüyse çalışmaz.
 - Ayrıntılar: [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2
+- Uçtan uca akıştaki yeri: [hat_akisi.md, aşama tablosu](../muhendislik/hat_akisi.md#3-aşama-tablosu-segment-eşleme-varsayılan)

@@ -37,6 +37,7 @@
   [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)); one retry on capacity or 5xx only
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); same transcript contract.
 - Details: [transcription.md](../engineering/transcription.md) §7 · [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -77,3 +78,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
   [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)); yalnız kapasite ya da 5xx durumunda bir yeniden deneme
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)); aynı transkript sözleşmesi.
 - Ayrıntılar: [transcription.md](../engineering/transcription.md) §7 · [speakers_and_segments.md](../engineering/speakers_and_segments.md) §2
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)

@@ -158,6 +158,7 @@ How to re-measure (`docs/olcumler.md`), how to bump a pin, how to cut a release.
 
 - `docs/engineering/README.md`: per-stage history (problem → root cause → tried → fix → measurement → open), Türkçe
   `docs/muhendislik/README.md`.
+- `docs/engineering/pipeline-flow.md`: the whole flow from source to delivered video (stage → input file → output file → what changes, branches by setting, why segments are rebuilt from word times); TR `docs/muhendislik/hat_akisi.md`.
 - `docs/engineering/low_vram.md`: 4 GB GPU / CPU-only settings and OOM troubleshooting.
 - `docs/adr/README.md`: architecture decisions. Changing a stage's behaviour means bumping its checkpoint contract
   version (ADR 0012) and never adding a silent fallback (ADR 0009).

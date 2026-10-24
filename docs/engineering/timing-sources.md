@@ -20,6 +20,8 @@ this page and its tests): `src/dublaj_hatti/bolum_20_transkripsiyon/zaman_kaynak
 - Times are never derived from segment boundaries. The direction is always words → segments (§6).
 - No source falls back to another one silently. A missing or inconsistent timing stops the job with a message
   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
+- What happens to these word times next (final segments, translation, TTS slots, subtitles), file by file:
+  [pipeline-flow.md](pipeline-flow.md#4-what-changes-between-one-stages-output-and-the-next-stages-input).
 
 ## 2. Per engine (source side)
 

@@ -38,6 +38,7 @@
 - **How it fits:** tightest VRAM margin of all engines (3.5–3.6 GB); no leading pad; separate environment because its
   pins differ from the main environment; same transcript contract.
 - Details: [crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md) §1, §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §5
+- Place in the end-to-end flow: [pipeline-flow.md, segmentation per engine](../engineering/pipeline-flow.md#7-segmentation-per-transcription-engine)
 
 ## Türkçe
 
@@ -79,3 +80,4 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 - **Nasıl oturur:** bütün motorlar içinde en dar VRAM payı (3.5–3.6 GB); başa dolgu (leading pad) yok; sabitlenmiş
   paket sürümleri ana ortamdan farklı olduğu için ayrı ortam; aynı transkript sözleşmesi.
 - Ayrıntılar: [crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md) §1, §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §5
+- Uçtan uca akıştaki yeri: [hat_akisi.md, motora göre segmentleme](../muhendislik/hat_akisi.md#7-transkripsiyon-motoruna-göre-segmentleme)
