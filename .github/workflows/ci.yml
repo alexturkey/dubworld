@@ -32,6 +32,8 @@ jobs:
         run: ruff check --exit-zero --output-format=github src tests
       - name: Legal and privacy gate (blocking; no third-party installs, standard library only)
         run: python scripts/yasal_denetim.py
+      - name: Tracked files import only tracked modules (blocking; also run locally after git add, before commit)
+        run: python scripts/izli_import_denetimi.py
 
   audit:
     # Known-vulnerability report for the hash-locked install sets (report only: some pins are held back on purpose,

@@ -205,7 +205,7 @@ PyPI, never copied into this repository.
 | numba | 0.68.0 | BSD-2-Clause | core/extra:tts-xtts |  |
 | numpy | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | core/extra:akilli-kare/extra:demucs/extra:tts-xtts |  |
 | omegaconf | 2.3.1 | BSD-3-Clause | core/extra:demucs |  |
-| onnx | 1.19.1 | Apache-2.0 | core |  |
+| onnx | 1.21.0 | Apache-2.0 | core |  |
 | onnxruntime | 1.31.0 | MIT | core |  |
 | opencv-python-headless | 5.0.0.93 | Apache-2.0 | extra:akilli-kare |  |
 | opentelemetry-api | 1.45.1 | Apache-2.0 | core |  |
@@ -222,7 +222,7 @@ PyPI, never copied into this repository.
 | optuna | 5.0.0 | MIT | core |  |
 | packaging | 26.3 | Apache-2.0 OR BSD-2-Clause | core/extra:tts-xtts |  |
 | pandas | 3.1.0 | BSD-3-Clause | core |  |
-| pillow | 12.3.0 | MIT-CMU | core/extra:tts-xtts |  |
+| pillow | 13.0.0 | MIT-CMU | core/extra:tts-xtts |  |
 | platformdirs | 4.13.5 | MIT | extra:tts-xtts |  |
 | pooch | 1.9.0 | BSD-3-Clause | extra:tts-xtts |  |
 | primepy | 1.3 | MIT | core |  |

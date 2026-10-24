@@ -18,7 +18,7 @@ name = "dubworld"
 dynamic = ["version"]
 description = "Local, end-to-end video dubbing pipeline: transcript, word timing, translation, TTS, timing fit, subtitles and video."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"  # locks (requirements/*.txt) are resolved for CPython 3.11 only
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Contributors" }]

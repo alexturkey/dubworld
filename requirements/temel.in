@@ -6,7 +6,7 @@ whisperx==3.8.6
 transformers==4.57.6
 sentencepiece==0.2.2
 onnxruntime==1.31.0
-onnx==1.19.1
+onnx==1.21.0
 soundfile==0.14.0
 numpy==2.4.6
 scipy==1.17.1
@@ -14,7 +14,7 @@ requests==2.34.2
 psutil==7.2.2
 python-dotenv==1.2.4
 PyYAML==6.0.3
-pillow==12.3.0
+pillow==13.0.0
 huggingface-hub==0.36.2
 # konuşmacı ayrımı (3D-Speaker CAM++; VAD faster-whisper içindeki Silero) + cinsiyet sınıflandırıcı
 # funasr/kaldiio bilerek YOK: kaldiio lisansı (NTT, yalnız iç değerlendirme) yeniden dağıtımı yasaklar (THIRD_PARTY §7)
