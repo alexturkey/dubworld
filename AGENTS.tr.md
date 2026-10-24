@@ -126,6 +126,14 @@ hangisi olduğunu söyler), 1 = iş başarısız (`.venv\Scripts\dubla.exe sorun
    (`.claude/skills/telegram-buyuk-dosya/SKILL.md`: kullanıcı yalnız my.telegram.org'dan `api_id` / `api_hash`'i
    `.env`'ye yazar; `scripts\kur.ps1 -Adim telegram-sunucu`'yu siz çalıştırır, `dubla kontrol`'e bakarsınız).
 
+5. İsteğe bağlı, yalnız kullanıcı yalnız Türkçe okuyan ikinci bir ses isterse: EMA Lightning (tek sentetik ses,
+   Apache-2.0, `docs/motorlar/ema_lightning.md`). İki profilde de `scripts\kur.ps1 -Adim tts-ema` çalıştırın; adım
+   paketi hash'li kilitten kurar, sabit ağırlığı indirir ve işlemci ONNX dosyalarını yerelde dışa aktarır
+   (`TTS_EMA_OK`). Cihazı zaten denetlediğiniz donanıma göre seçin, sormayın: en az 1 GB boş belleği olan NVIDIA GPU →
+   `ses.ema_cihaz = auto` kalsın (GPU'yu kullanır, GPU meşgulse işlemciye düşer); NVIDIA GPU yok ya da CPU profili →
+   `ses.ema_cihaz = cpu` (ONNX). `dubla kontrol`, `tts ema_lightning` satırını ve `auto`'nun şu an neyi seçeceğini
+   gösterir. Yalnız Türkçe okur; başka hedef diller için Supertonic kalsın.
+
 ## 5. Sorun giderme haritası
 
 | Belirti | Düzeltme nerede |

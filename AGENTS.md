@@ -123,6 +123,14 @@ command exits with 0 and prints a `dubbed_video:` line whose file exists. Exit c
    server (`.claude/skills/telegram-buyuk-dosya/SKILL.md`: the user only fetches `api_id` / `api_hash` from
    my.telegram.org into `.env`; you run `scripts\kur.ps1 -Adim telegram-sunucu` and check `dubla kontrol`).
 
+5. Optional, only if the user wants a Turkish-only alternative voice: EMA Lightning (one synthetic voice,
+   Apache-2.0, `docs/motorlar/ema_lightning.md`). Run `scripts\kur.ps1 -Adim tts-ema` on either profile; the step
+   installs the package from the hashed lock, downloads the pinned weights and exports the CPU ONNX files locally
+   (`TTS_EMA_OK`). Pick the device from the hardware you already checked, do not ask: NVIDIA GPU with at least 1 GB
+   free memory → keep `ses.ema_cihaz = auto` (it uses the GPU and falls back to the CPU when the GPU is busy); no
+   NVIDIA GPU or CPU profile → `ses.ema_cihaz = cpu` (ONNX). `dubla kontrol` shows `tts ema_lightning` and what `auto`
+   would pick right now. It reads Turkish only; for other target languages keep Supertonic.
+
 ## 5. Troubleshooting map
 
 | Symptom | Where the fix is |

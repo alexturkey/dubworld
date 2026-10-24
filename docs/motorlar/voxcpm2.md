@@ -23,7 +23,7 @@
 **Common errors**
 
 - `genel.cihaz = cpu` → settings error by design.
-- `full_text` mode → not supported (Supertonic only).
+- `full_text` mode → not supported (Supertonic or EMA Lightning only).
 - Slows down without an error → VRAM spilled into shared memory; close other GPU programs.
 
 **Related:** [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) · [sesler.md](../sesler.md) · [diller.md](../diller.md) · [THIRD_PARTY.md](../../THIRD_PARTY.md)
@@ -66,7 +66,7 @@
 **Sık hatalar**
 
 - `genel.cihaz = cpu` → tasarım gereği ayar hatası.
-- `full_text` kipi → desteklenmez (yalnız Supertonic).
+- `full_text` kipi → desteklenmez (yalnız Supertonic ya da EMA Lightning).
 - Hata vermeden yavaşlar → VRAM paylaşılan belleğe taştı; diğer GPU programlarını kapatın.
 
 **İlgili:** [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) · [sesler.md](../sesler.md) · [diller.md](../diller.md) · [THIRD_PARTY.md](../../THIRD_PARTY.md)

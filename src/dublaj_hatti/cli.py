@@ -187,7 +187,21 @@ def kontrol_raporu(ayar: dict[str, Any] | None = None) -> dict[str, Any]:
         "deneysel": {m.ad: m.deneysel for m in kayit.MOTORLAR if m.deneysel},
         "ctc_modelleri": kontrol_ozeti((ayar or {}).get("genel.onbellek_klasoru") or None),
         "telegram_sunucu": _telegram_sunucu_ozeti(),
+        "ema_lightning": _ema_ozeti(),
     }
+
+
+def _ema_ozeti() -> dict[str, Any]:
+    """EMA Lightning: paket, ağırlık, işlemci ONNX yolu ve şu an auto'nun seçeceği yol (torch yüklemez)."""
+    try:
+        from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import cihaz_sec, ema_durumu
+
+        durum = ema_durumu()
+        if durum["kurulu"]:
+            durum["auto_yolu"], durum["auto_gerekce"] = cihaz_sec("auto")
+        return durum
+    except Exception as hata:  # denetim hiçbir zaman `kontrol` komutunu düşürmez
+        return {"kurulu": False, "hata": str(hata)}
 
 
 def _telegram_sunucu_ozeti() -> dict[str, Any]:
@@ -218,6 +232,13 @@ def _kontrol_yaz(rapor: dict[str, Any]) -> None:
         from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.yerel_sunucu import kontrol_metni
 
         print(f"  telegram yerel sunucu: {kontrol_metni(telegram)}")
+    ema = rapor.get("ema_lightning") or {}
+    if ema.get("kurulu"):
+        print(f"  tts ema_lightning: GPU (torch) + işlemci {'ONNX' if ema.get('onnx_cpu') else 'torch (ONNX yok)'}; "
+              f"auto şimdi: {ema.get('auto_yolu')} ({ema.get('auto_gerekce')})")
+    elif ema.get("paket") or ema.get("agirlik"):
+        print(f"  tts ema_lightning: eksik kurulum (paket={ema.get('paket')}, ağırlık={ema.get('agirlik')}): "
+              "scripts/kur.ps1 -Adim tts-ema")
     ctc = rapor.get("ctc_modelleri", {})
     print("  hizalama (CTC): " + ", ".join(f"{dil}={'var' if var else 'yok'}" for dil, var in ctc.items()))
     eksik = [dil for dil, var in ctc.items() if not var]

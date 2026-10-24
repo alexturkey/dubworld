@@ -68,6 +68,12 @@ def _voxcpm2() -> bool:
     return bool(voxcpm2_durumu()["kurulu"])
 
 
+def _ema() -> bool:
+    from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import ema_durumu
+
+    return bool(ema_durumu()["kurulu"])
+
+
 def _xtts() -> bool:
     from dublaj_hatti.bolum_50_seslendirme.xtts_tts import xtts_durumu
 
@@ -152,6 +158,8 @@ SUPERTONIC_DILLERI = frozenset({
 })
 # VoxCPM2: ses tasarımı (kardeş) reposunda uçtan uca denenmiş diller; başka dil okunur ama denenmedi (uyarı)
 VOXCPM2_DENENEN_DILLER = frozenset({"tr", "en", "fr", "de", "es", "ru", "zh", "ja"})
+# EMA Lightning: yalnız Türkçe (model kartı "Limitations"; ema_lightning_tts/ayarlar.py EMA_DILLERI ile aynı)
+EMA_DILLERI = frozenset({"tr"})
 # XTTS v2: model kartı (huggingface.co/coqui/XTTS-v2) dilleri; bolum_50_seslendirme/xtts_tts/api.py XTTS_DILLERI
 XTTS_DILLERI = frozenset({"en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl", "cs", "ar", "zh", "ja", "hu",
                           "ko", "hi"})
@@ -253,6 +261,9 @@ _HAM_MOTORLAR: tuple[Motor, ...] = (
           _modul("onnxruntime"), "Önerilen akışın sesi; işlemcide de hızlı."),
     Motor("tts", "voxcpm2", "VoxCPM2 (Türkçe ses tasarımı)", "Apache-2.0 (kod ve ağırlık)", "evet",
           "https://github.com/OpenBMB/VoxCPM", "voxcpm2", "gpu", _voxcpm2, "NVIDIA GPU gerekir."),
+    Motor("tts", "ema_lightning", "EMA Lightning (Türkçe, tek ses; GPU ya da işlemci ONNX)",
+          "Apache-2.0 (kod ve ağırlık)", "evet", "https://huggingface.co/canberkkkkkk/ema-lightning", "tts-ema",
+          "gpu+cpu", _ema, "Yalnız Türkçe; ses sentetik (gerçek kişi değil, model kartı). ses.ema_cihaz: auto | cuda | cpu."),
     Motor("tts", "xtts", "XTTS v2 (Coqui, referans sesle)",
           "kod: coqui-tts MPL-2.0; ağırlık: Coqui Public Model License (ticari olmayan); çıktı: CPML'e tabi",
           "hayır", "https://huggingface.co/coqui/XTTS-v2", "tts-xtts (pip install .[tts-xtts]) + CPML onayı",
@@ -344,6 +355,10 @@ _DONANIM_DIL: dict[str, dict] = {
                     bellek="GPU 2,6-3,0 GB VRAM (Q8_0 GGUF + 4 GB yaması; ölçüldü), 1 sn ses ~2 sn; işlemcide 48,5 sn "
                            "ses 535 sn (ölçüldü) → bu repoda işlemci kapalı",
                     dil_notu="denenen: tr, en, fr, de, es, ru, zh, ja; diğerleri denenmedi (uyarı)"),
+    "ema_lightning": dict(vram_mb=200, cpu="iyi", kanit="ölçüldü", diller=EMA_DILLERI,
+                          bellek="GPU cihazda 191 MB (PyTorch 94 MB; ölçüldü), 9 sn ses 0,93 sn; "
+                                 "işlemci ONNX 12 sn açılış, ~11x gerçek zaman (ölçüldü)",
+                          dil_notu="yalnız Türkçe"),
     "xtts": dict(vram_mb=2000, cpu="yavaş", kanit="belgeye göre", diller=XTTS_DILLERI,
                  bellek="model yükü ~2 GB VRAM (kaynak belge; tepe ölçülmedi); işlemcide çok yavaş (tahmin)"),
     "demucs": dict(vram_mb=2750, cpu="yavaş", kanit="ölçüldü",
@@ -386,7 +401,7 @@ def adlar(tur: str, auto: bool = True) -> list[str]:
 
 def tts_hedef_dilleri() -> list[str]:
     """Arayüzün hedef dil listesi: TTS motorlarının okuyabildiği dillerin birleşimi (VoxCPM2 için denenenler)."""
-    return sorted(SUPERTONIC_DILLERI | VOXCPM2_DENENEN_DILLER | XTTS_DILLERI)
+    return sorted(SUPERTONIC_DILLERI | VOXCPM2_DENENEN_DILLER | XTTS_DILLERI | EMA_DILLERI)
 
 
 def tts_dil_suzgeci() -> dict[str, dict[str, list[str]]]:
@@ -398,6 +413,7 @@ def tts_dil_suzgeci() -> dict[str, dict[str, list[str]]]:
     return {
         "supertonic": {"izinli": sorted(SUPERTONIC_DILLERI), "denenmemis": []},
         "voxcpm2": {"izinli": tum, "denenmemis": sorted(set(tum) - VOXCPM2_DENENEN_DILLER)},
+        "ema_lightning": {"izinli": sorted(EMA_DILLERI), "denenmemis": []},
         "xtts": {"izinli": sorted(XTTS_DILLERI), "denenmemis": []},
     }
 

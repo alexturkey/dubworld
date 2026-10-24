@@ -89,6 +89,7 @@ cli_yolu = ""
 
 [ses]
 # TTS motoru: "supertonic" (varsayılan; işlemcide çalışır) | "voxcpm2" (NVIDIA GPU, ayrı kurulum) |
+# "ema_lightning" (yalnız Türkçe; GPU ya da işlemci ONNX; kurulum: scripts/kur.ps1 -Adim tts-ema) |
 # "xtts" (XTTS v2, isteğe bağlı: pip install .[tts-xtts]; ağırlık ticari olmayan CPML; referans ses zorunlu)
 motor = "supertonic"
 # Supertonic sesi: F1..F5 (kadın), M1..M5 (erkek)
@@ -105,6 +106,14 @@ hiz = 1.2
 atempo = true
 # VoxCPM2 sesi: "hazir/<ad>" (hazır sesler), "<ad>/<çeşit>" (kendi tasarladığınız) ya da ses klasörü yolu
 voxcpm2_ses = "hazir/haber_spikeri"
+# EMA Lightning tek sesli bir modeldir (ses adı "ema"; tasarımla üretilmiş sentetik ses, gerçek kişi değil):
+# ses seçimi yoktur. Aynı sesin tonlama çeşidi için ema_tohum değiştirilir.
+# EMA cihazı: "auto" (GPU varsa ve en az 1 GB boşsa GPU, değilse işlemci ONNX) | "cuda" | "cpu"
+ema_cihaz = "auto"
+# EMA okuma hızı (0.5..2.0; 1.0 = modelin doğal hızı). Çeviri süre çarpanı "hiz"dan ayrıdır.
+ema_hiz = 1.0
+# EMA tohumu: aynı metin + aynı tohum = aynı ses (tekrar üretilebilirlik); 0..2147483647
+ema_tohum = 0
 # Konuşmacı ayrımı + cinsiyete göre ses (Önerilen akış): konuşmacılar ayrılır (3D-Speaker), her konuşmacının
 # sesinden kadın/erkek tahmin edilir (wav2vec2 XLSR-53 sınıflandırıcı, LibriSpeech) ve Supertonic havuzundan ses atanır
 # (kadın F1..F5, erkek M1..M5). Kapalıysa tüm video tek sesle (supertonic_ses) okunur.

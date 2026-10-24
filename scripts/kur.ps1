@@ -23,6 +23,9 @@
     speechmatics  bulut STT istemcisi (kendi anahtarınız: .env)
     crisper   CrisperWhisper 2.0 Turbo (13. motor; TİCARİ OLMAYAN lisans; WSL2 + NVIDIA; -TicariOlmayanKabul gerekir)
     voxcpm2   VoxCPM2 TTS (NVIDIA GPU; kardeş repo sabit commit, kendi kurulum betiğiyle)
+    tts-ema   EMA Lightning TTS (yalnız Türkçe, Apache-2.0): paket (hash'li kilit) + ağırlık (~34 MB, sabit commit +
+              sha256) + işlemci yolu için ONNX dışa aktarımı (bu makinede, torch ile eşitlik denetimli). GPU ya da
+              işlemci: ses.ema_cihaz = auto (GPU yoksa/meşgulse işlemci ONNX) | cuda | cpu
     akilli-kare  OpenCV (video.akilli_kare: kenar bandı kırpma)
     galeri    gallery-dl (galeri bağlantısı; yalnız ayrı süreç olarak çağrılır, GPL-2.0-only)
     telegram  python-telegram-bot (uzaktan kumanda botu; belirteç yalnız .env'de)
@@ -309,6 +312,23 @@ if (Adim "voxcpm2") {
   powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $vox "scripts\kur.ps1") -Kok (Join-Path $Varlik "tts_motorlari\voxcpm2\kok")
   if ($LASTEXITCODE -ne 0) { throw "VoxCPM2 kurulumu başarısız" }
   Bilgi "VOXCPM2_OK"
+}
+
+if (Adim "tts-ema") {
+  # EMA Lightning: paket ana sanal ortama (torch zaten taban kilidinde; işlemci profilinde ayrı kilit), ağırlık
+  # resmî model deposundan sabit commit + sha256 (scripts\modeller.json adım tts-ema). ONNX dosyaları yayımlanmadığı
+  # için aynı ağırlıktan bu makinede üretilir ve torch ile karşılaştırılır (docs\motorlar\ema_lightning.md).
+  Bilgi "== isteğe bağlı: tts-ema (EMA Lightning, yalnız Türkçe)"
+  if (-not (Test-Path $Py)) { throw "Önce taban kurulum: -Adim paketler" }
+  $profilEma = (Get-Content (Join-Path $Venv "dublaj_profil.txt") -ErrorAction SilentlyContinue)
+  if ($profilEma -eq "cpu.txt") { Paketle "ek_tts_ema_cpu.txt" } else { Paketle "ek_tts_ema.txt" }
+  & $Py -B (Join-Path $Repo "scripts\modelleri_indir.py") --adim tts-ema
+  if ($LASTEXITCODE -ne 0) { throw "EMA ağırlığı indirilemedi (inen dosyalar korunur; yeniden çalıştırın)" }
+  & $Py -B -m dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts aktar
+  if ($LASTEXITCODE -eq 2) {
+    Bilgi "  UYARI: ONNX eşitlik denetimi geçmedi; EMA işlemcide torch ile çalışır (daha yavaş). GPU yolu etkilenmez."
+  } elseif ($LASTEXITCODE -ne 0) { throw "EMA ONNX dışa aktarımı başarısız" }
+  Bilgi "TTS_EMA_OK (kullanım: --ayar ses.motor=ema_lightning [--ayar ses.ema_cihaz=cpu])"
 }
 
 if (Adim "kontrol") {

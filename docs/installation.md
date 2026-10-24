@@ -51,6 +51,7 @@ Disk space per profile:
 | **Total, CPU profile** | **≈ 13.2 GB** (≈ 9.3 GB after deleting the uv cache); download ≈ 9.5 GB | tested (clean root) |
 | `crisper` add-on | ≈ 7 GB (torch cu126 ≈ 3 GB, model 1.6 GB + converted 1.6 GB) | per docs (sister STT repository) |
 | `voxcpm2` add-on | ≈ 3.7 GB download (model 2.95 GB + CUDA runtime DLLs + engine) | per docs (sister TTS repository) |
+| `tts-ema` add-on | ≈ 0.12 GB (weights 34 MB, locally exported ONNX 79 MB, packages ≈ 4 MB; PyTorch is already in `.venv`) | measured |
 | `tts-xtts` add-on | separate environment with its own PyTorch (≈ 3–8 GB) + weights downloaded on first use | estimate |
 | `parakeet` add-on | ≈ 0.7 GB model | per docs (`kur.ps1`) |
 
@@ -109,6 +110,7 @@ marker line on success.
 | 7 | `tts-xtts` | no | separate environment for XTTS v2 (section 5), requires `-TicariOlmayanKabul` | 3 | `XTTS_OK` |
 | 8 | `crisper` | no | CrisperWhisper 2.0 Turbo through the sister STT repository + WSL environment, requires `-TicariOlmayanKabul` | 3, git, WSL2 | `CRISPER_MOTOR_OK`, `CRISPER_OK` |
 | 9 | `voxcpm2` | no | clones the sister TTS repository at a pinned commit and runs its own installer | git, NVIDIA (uses the repository's Python 3.11.14) | `VOXCPM2_OK` |
+| 9b | `tts-ema` | no | EMA Lightning (Turkish TTS, GPU or CPU): `requirements/ek_tts_ema.txt` (`ek_tts_ema_cpu.txt` on the CPU profile) into `.venv`, `modelleri_indir.py --adim tts-ema` (pinned commit, sha256), then a local ONNX export checked against PyTorch | 3 | `TTS_EMA_OK` |
 | 10 | `kontrol` | yes | real 64×64 CUDA matmul (GPU profile must report a CUDA build), then `dubla kontrol` | 3 | `KONTROL_OK` |
 
 The script always ends with `KURULUM_OK`. Optional steps can be added later in any combination, for example
@@ -185,6 +187,7 @@ environment can be removed alone without touching `.venv`.
 | `tts-xtts` | coqui-tts + PyTorch in a separate environment; writes `DUBLAJ_XTTS_PYTHON` to `.env` and records the license acceptance | `runtime_assets/tts_motorlari/xtts/venv` | XTTS v2 weights: Coqui Public Model License, **non-commercial**; weights download from Coqui on first use | `-TicariOlmayanKabul` |
 | `crisper` | CrisperWhisper 2.0 Turbo (engine 13) via the sister STT repository at a pinned commit; CTranslate2 conversion; WSL runtime environment | `runtime_assets/transkripsiyon_motorlari/` | weights **non-commercial** (model card) | `-TicariOlmayanKabul` |
 | `voxcpm2` | sister TTS repository at a pinned commit and its installer (model, CUDA 12.8 runtime DLLs, prebuilt engine, Python packages) | `runtime_assets/tts_motorlari/voxcpm2/` | per THIRD_PARTY.md | – |
+| `tts-ema` | EMA Lightning 1.1.0 + normalizer-tr, pinned weights, locally exported ONNX (`ses.motor = ema_lightning`) | `.venv`, `runtime_assets/tts_motorlari/ema_lightning/` | Apache-2.0 (code and weights); one synthetic voice, keep the AI label | – |
 
 Prerequisites of the steps that use other repositories:
 

@@ -134,8 +134,9 @@ DEMUCS_SUBDIR = "demucs"
 # Neden: motorlar siki kesilmis videoda ilk kelimeyi kirpiyordu; cikarilan kayma bu degere esit olmali. bkz. docs/engineering/pinned-values.md#transcription
 ASR_LEADING_PAD_SECONDS = 1.0
 ASR_LEADING_PAD_FILENAME = "asr_leading_pad.wav"
-SEGMENT_TTS_ENGINES = {"supertonic", "voxcpm2", "xtts"}
-ALTYAZI_MOTOR_ETIKETI = {"supertonic": "Supertonic", "voxcpm2": "VoxCPM2", "xtts": "XTTS"}
+SEGMENT_TTS_ENGINES = {"supertonic", "voxcpm2", "xtts", "ema_lightning"}
+ALTYAZI_MOTOR_ETIKETI = {"supertonic": "Supertonic", "voxcpm2": "VoxCPM2", "xtts": "XTTS",
+                         "ema_lightning": "EMA Lightning"}
 # faster-whisper metni + ortak CTC kutusu kelime zamani; transkripsiyon.motor=auto'nun izin verici yedegi (ADR 0017).
 # Elle secilen "faster-whisper" Whisper'in kendi zamanlarini korur. docs/engineering/timing-sources.md
 FASTER_WHISPER_CTC_ENGINE = "faster_whisper_ctc"
@@ -649,6 +650,7 @@ def prepare_one_pass_subtitle_assets(
 
 
 SUPERTONIC_NATIVE_SAMPLE_RATE = 44100
+EMA_NATIVE_SAMPLE_RATE = 48000  # ema_lightning_tts/ayarlar.py EMA_ORNEKLEME
 
 def _nihai_kaynak_segmentlerini_olustur(all_words: List[Dict]) -> Tuple[List["Segment"], Dict]:
     segments, alignment, report = nihai_dublaj_segmentlerini_olustur(all_words)
@@ -682,6 +684,10 @@ class DubConfig:
     tts_voice_id: str = "F1"
     voxcpm2_ses: str = "hazir/haber_spikeri"
     voxcpm2_konusmaci_sesleri: Dict[str, str] = field(default_factory=dict)
+    ema_ses: str = "ema"  # EMA Lightning tek sesli; ayar ileride ses eklenirse hazır
+    ema_cihaz: str = "auto"  # auto | cuda | cpu (auto: GPU meşgulse işlemci ONNX)
+    ema_hiz: float = 1.0  # EMA okuma hızı (paketin speed değeri)
+    ema_tohum: int = 0  # sabit tohum: aynı metin aynı ses (tekrar üretilebilirlik)
     translator_engine: str = "yerel"
     llm_backend: str = ""
     transcription_engine: str = "faster-whisper"
@@ -770,15 +776,34 @@ def _create_segment_translator(cfg: DubConfig, request_metadata: Dict[str, Any],
     )
 
 
+def _ema_checkpoint_girdisi(cfg: DubConfig) -> Dict[str, Any]:
+    """EMA ayarları değişince seslendirme aşaması yeniden koşar; başka motorda boş (eski checkpoint'ler geçerli kalır)."""
+    if cfg.tts_engine != "ema_lightning":
+        return {}
+    return {"ema_ses": cfg.ema_ses, "ema_hiz": float(cfg.ema_hiz), "ema_tohum": int(cfg.ema_tohum),
+            "ema_cihaz": cfg.ema_cihaz}
+
+
+def _tts_ses_etiketi(cfg: DubConfig) -> str:
+    if cfg.tts_engine == "voxcpm2":
+        return getattr(cfg, "voxcpm2_ses", "") or "F1"
+    if cfg.tts_engine == "ema_lightning":
+        return f"{cfg.ema_ses} (hiz {cfg.ema_hiz:g}, tohum {cfg.ema_tohum})"
+    return cfg.tts_voice_id or "F1"
+
+
 def _apply_engine_sample_rate(cfg: DubConfig, logger: Optional[logging.Logger] = None) -> None:
-    if cfg.tts_engine != "supertonic":
+    # Motorun kendi örnekleme hızı: ara yeniden örnekleme olmaz; tam metin kipinde sentez hızı = karışım hızı olmalı.
+    native = {"supertonic": SUPERTONIC_NATIVE_SAMPLE_RATE, "ema_lightning": EMA_NATIVE_SAMPLE_RATE}.get(cfg.tts_engine)
+    if native is None:
         return
-    if cfg.sample_rate == SUPERTONIC_NATIVE_SAMPLE_RATE:
+    if cfg.sample_rate == native:
         return
     previous_sample_rate = cfg.sample_rate
-    cfg.sample_rate = SUPERTONIC_NATIVE_SAMPLE_RATE
+    cfg.sample_rate = native
     if logger:
-        logger.info("Supertonic sample rate ayarlandi: onceki=%s yeni=%s", previous_sample_rate, cfg.sample_rate)
+        logger.info("TTS sample rate ayarlandi (%s): onceki=%s yeni=%s", cfg.tts_engine, previous_sample_rate,
+                    cfg.sample_rate)
 
 
 def _request_bridge_backend(cfg: DubConfig, request_metadata: Optional[Dict[str, Any]] = None) -> str:
@@ -4333,6 +4358,7 @@ def _run_full_text_dub_after_transcription(
         "supertonic_synthesis_contract": SUPERTONIC_SYNTHESIS_CONTRACT,
         "voice_id": cfg.tts_voice_id or "F1",
         "target_lang": cfg.target_lang,
+        **_ema_checkpoint_girdisi(cfg),
         "duration_fit_mode": duration_fit_mode,
         "speech_duration": speech_window.duration,
     }
@@ -4342,12 +4368,17 @@ def _run_full_text_dub_after_transcription(
         synthesis, final_audio, known_alignment_windows = _read_full_text_tts_checkpoint(full_text_tts_manifest)
     else:
         checkpoint_store.begin_stage("full_text_tek_ses_tts", 9, 1, tts_inputs)
-        synthesis = synthesize_full_text_supertonic(
-            text=translated_text,
-            voice_id=cfg.tts_voice_id or "F1",
-            language=cfg.target_lang,
-            work_dir=run_dir,
-        )
+        if cfg.tts_engine == "ema_lightning":
+            from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import synthesize_full_text_ema
+
+            synthesis = synthesize_full_text_ema(translated_text, cfg, run_dir)
+        else:
+            synthesis = synthesize_full_text_supertonic(
+                text=translated_text,
+                voice_id=cfg.tts_voice_id or "F1",
+                language=cfg.target_lang,
+                work_dir=run_dir,
+            )
         final_audio = synthesis.audio
         if duration_fit_mode == "audio_to_video":
             final_audio = fit_audio_to_speech_window(
@@ -4591,7 +4622,7 @@ def _run_full_text_dub_after_transcription(
         "supertonic_synthesis_contract": SUPERTONIC_SYNTHESIS_CONTRACT,
         "supertonic_final_audio_profile": video_result.get("final_audio_profile", {}),
         "tts_engine": cfg.tts_engine,
-        "tts_voice": (getattr(cfg, "voxcpm2_ses", "") if cfg.tts_engine == "voxcpm2" else cfg.tts_voice_id) or "F1",
+        "tts_voice": _tts_ses_etiketi(cfg),
         "transcription_engine": cfg.transcription_engine,
         "model_name": cfg.model_name,
         "compute_type": cfg.compute_type,
@@ -5176,6 +5207,7 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
             "tts_engine": cfg.tts_engine,
             "tts_voice_id": cfg.tts_voice_id,
             "voxcpm2_ses": getattr(cfg, "voxcpm2_ses", ""),
+            **_ema_checkpoint_girdisi(cfg),
         }
         if checkpoint_store.can_restore("ses_yonlendirme", 10, 2, voice_routing_inputs):
             voice_payload = checkpoint_store.stage_payload("ses_yonlendirme")

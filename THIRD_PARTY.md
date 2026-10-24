@@ -24,6 +24,7 @@ terms of service decide (we did not review them; read them before use).
 |---|---|---|---|---|---|---|
 | **Supertonic 3** TTS (Supertone) — default voice | MIT (`supertone-inc/supertonic`; our runner is our own code) | **BigScience Open RAIL-M** | Bound by the license's Attachment A use restrictions (no unlawful use, no impersonation without consent, no deceptive content, **must disclose that content is machine-generated**, etc.) | Conditional | HF `Supertone/supertonic-3` @ `3cadd1ee6394adea1bd021217a0e650ede09a323` (license file downloaded next to the model) | Follow Attachment A; pass the same restrictions on if you redistribute the model or a derivative; keep the AI-generated label on outputs |
 | **VoxCPM2** TTS (OpenBMB / ModelBest) — optional | Apache-2.0 (`OpenBMB/VoxCPM`) | Apache-2.0 (HF tag `license:apache-2.0`, `openbmb/VoxCPM2` @ `32279effe8…`) | Model card: impersonation, fraud and disinformation are forbidden; AI-generated content should be labeled | Yes | Installed through the sibling repo `voxcpm2-turkce-ses-tasarimi` (pinned commit + SHA-256) | Keep the label; voices only from text descriptions or with the speaker's consent |
+| **EMA Lightning** TTS (Turkish, one synthetic voice) — optional, `kur.ps1 -Adim tts-ema` | Apache-2.0 (PyPI `ema-lightning` 1.1.0, https://github.com/canberk7/ema-lightning) | Apache-2.0, commercial use included (model card) | Model card: the voice is synthetic (designed in VoxCPM2 from a text description, trained on ~1,000 h of VoxCPM2-generated speech, Apache-2.0), not a real person; tell listeners the audio is AI-generated; no impersonation or scams | Yes | HF `canberkkkkkk/ema-lightning` @ `e7c96f2fc0ba843cd0f86e02786655bb56f50df8`, `ema.pt` / `decoder.pt` SHA-256 pinned (scripts/modeller.json); CPU ONNX files are exported locally from these weights (not downloaded) | Keep the AI-generated label on outputs; keep the Apache-2.0 notice if you redistribute the weights or the exported ONNX files |
 | **faster-whisper** large-v3-turbo (CTranslate2 conversion) — default STT | MIT (`SYSTRAN/faster-whisper`) | MIT (HF tag; OpenAI Whisper weights MIT) | No restriction from the license | Yes | HF `dropbox-dash/faster-whisper-large-v3-turbo` @ `0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf` | Keep the MIT notice if you redistribute |
 | **WhisperX** (alignment / optional diarization glue) | BSD-2-Clause (`m-bain/whisperX`, PyPI 3.8.6) | uses the models below | No restriction from the license | Yes | PyPI `whisperx==3.8.6` | Keep the BSD notice if you redistribute |
 | **wav2vec2 XLS-R 300m Turkish** (Mehmet Poyraz) — Turkish word timing | — | **CC BY 4.0** | No restriction | Yes | HF `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish` @ `708639f50559d7970f462e13ec64d3f059ca89f6` | **Attribution** (see `NOTICE`) when you redistribute the model or publish results that build on it |
@@ -151,6 +152,7 @@ PyPI, never copied into this repository.
 | docopt | 0.6.2 | MIT | extra:tts-xtts |  |
 | dora-search | 0.1.13 | MIT | extra:demucs |  |
 | einops | 0.8.2 | MIT | core/extra:demucs/extra:tts-xtts |  |
+| ema-lightning | 1.1.0 | Apache-2.0 | extra:tts-ema | EMA Lightning TTS code (§1) |
 | fastcluster | 1.3.0 | BSD-2-Clause OR GPL-2.0-or-later | core | dual-licensed; used under BSD-2-Clause |
 | faster-whisper | 1.2.1 | MIT | core |  |
 | filelock | 4.2.4 | MIT | core/extra:demucs/extra:tts-xtts |  |
@@ -198,6 +200,7 @@ PyPI, never copied into this repository.
 | narwhals | 2.27.1 | MIT | core/extra:tts-xtts |  |
 | networkx | 3.6.1 | BSD-3-Clause | core/extra:demucs |  |
 | nltk | 3.10.4 | Apache-2.0 | core |  |
+| normalizer-tr | 0.5.0 | Apache-2.0 | extra:tts-ema | Turkish text normaliser used by EMA Lightning; native wheel, bundled Rust crates under MIT / Apache-2.0 (licences shipped in the wheel) |
 | num2words | 0.5.14 | LGPL (PyPI classifier; exact version not verified) | extra:tts-xtts | library, used unmodified (LGPL) |
 | numba | 0.68.0 | BSD-2-Clause | core/extra:tts-xtts |  |
 | numpy | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | core/extra:akilli-kare/extra:demucs/extra:tts-xtts |  |

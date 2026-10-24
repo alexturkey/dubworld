@@ -103,12 +103,14 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 
 | Choice | With | Result | Reason / what to do |
 |---|---|---|---|
-| `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | error | full-text mode reads with a single Supertonic voice |
+| `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | error | full-text mode reads with one Supertonic voice or with EMA Lightning |
 | `genel.dublaj_kipi=full_text` | `ceviri.arka_uc` local or API | error | full-text translation is Codex / Claude Code only |
 | `ses.motor=supertonic` | `genel.hedef_dil` outside Supertonic (e.g. `zh`) | error | Supertonic reads 31 languages; choose `voxcpm2` |
 | `ses.motor=voxcpm2` | `genel.hedef_dil` outside the 8 tested languages | warning | the model may read it but it was not tested |
 | `ses.motor=voxcpm2` | `genel.cihaz=cpu` | error | VoxCPM2 needs an NVIDIA GPU |
 | `ses.motor=supertonic` | a `ses.konusmaci_sesleri` value outside F1..M5 | error | Supertonic voice names are F1..F5, M1..M5 |
+| `ses.motor=ema_lightning` | `genel.hedef_dil` other than `tr` | error | EMA Lightning reads Turkish only; choose `supertonic` or `voxcpm2` |
+| `ses.motor=ema_lightning` + `ses.ema_cihaz=cuda` | `genel.cihaz=cpu` | error | contradictory devices; use `ses.ema_cihaz=auto` or `cpu` |
 | `ceviri.arka_uc=yerel` | `genel.hedef_dil` ≠ `tr` | error | Opus-MT is English → Turkish only |
 | `ceviri.arka_uc=yerel` | `transkripsiyon.kaynak_dil` ≠ `en`/`auto` | error | same |
 | `ceviri.arka_uc=auto` | no Codex/Claude CLI + target ≠ `tr` | error (at start) | the automatic choice fell back to local |
@@ -249,12 +251,14 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 
 | Seçim | Şunla | Sonuç | Neden / ne yapmalı |
 |---|---|---|---|
-| `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | hata | tam metin kipi tek Supertonic sesiyle okur |
+| `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | hata | tam metin kipi tek Supertonic sesiyle ya da EMA Lightning ile okur |
 | `genel.dublaj_kipi=full_text` | `ceviri.arka_uc` yerel ya da API | hata | tam metin çevirisi yalnız Codex / Claude Code |
 | `ses.motor=supertonic` | `genel.hedef_dil` Supertonic dışı (ör. `zh`) | hata | Supertonic 31 dil okur; `voxcpm2` seçin |
 | `ses.motor=voxcpm2` | `genel.hedef_dil` denenen 8 dil dışı | uyarı | model okuyabilir ama denenmedi |
 | `ses.motor=voxcpm2` | `genel.cihaz=cpu` | hata | VoxCPM2 NVIDIA GPU ister |
 | `ses.motor=supertonic` | `ses.konusmaci_sesleri` değeri F1..M5 dışı | hata | Supertonic ses adları F1..F5, M1..M5 |
+| `ses.motor=ema_lightning` | `genel.hedef_dil` `tr` dışı | hata | EMA Lightning yalnız Türkçe okur; `supertonic` ya da `voxcpm2` seçin |
+| `ses.motor=ema_lightning` + `ses.ema_cihaz=cuda` | `genel.cihaz=cpu` | hata | çelişen cihazlar; `ses.ema_cihaz=auto` ya da `cpu` kullanın |
 | `ceviri.arka_uc=yerel` | `genel.hedef_dil` ≠ `tr` | hata | Opus-MT yalnız İngilizce → Türkçe |
 | `ceviri.arka_uc=yerel` | `transkripsiyon.kaynak_dil` ≠ `en`/`auto` | hata | aynı |
 | `ceviri.arka_uc=auto` | Codex/Claude CLI yok + hedef ≠ `tr` | hata (başlarken) | otomatik seçim yerel'e düştü |

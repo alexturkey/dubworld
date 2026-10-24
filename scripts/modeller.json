@@ -670,6 +670,46 @@
    "boyut": 44357,
    "lisans": "Apache-2.0",
    "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "tts-ema",
+   "ad": "EMA Lightning 1.1",
+   "url": "https://huggingface.co/canberkkkkkk/ema-lightning/resolve/e7c96f2fc0ba843cd0f86e02786655bb56f50df8/README.md",
+   "hedef": "runtime_assets/tts_motorlari/ema_lightning/agirlik/README.md",
+   "sha256": "4ebc1f6e762eb070760c08b960940776a53cc0aec2aac32021bf203eaa2f61fa",
+   "boyut": 18025,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/canberkkkkkk/ema-lightning/tree/e7c96f2fc0ba843cd0f86e02786655bb56f50df8"
+  },
+  {
+   "adim": "tts-ema",
+   "ad": "EMA Lightning 1.1",
+   "url": "https://huggingface.co/canberkkkkkk/ema-lightning/resolve/e7c96f2fc0ba843cd0f86e02786655bb56f50df8/config.json",
+   "hedef": "runtime_assets/tts_motorlari/ema_lightning/agirlik/config.json",
+   "sha256": "27546c470dd4e86d9ab8172fd1c85c45a4bffdf52d9ccb3f511c4b0c3ae38241",
+   "boyut": 342,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/canberkkkkkk/ema-lightning/tree/e7c96f2fc0ba843cd0f86e02786655bb56f50df8"
+  },
+  {
+   "adim": "tts-ema",
+   "ad": "EMA Lightning 1.1",
+   "url": "https://huggingface.co/canberkkkkkk/ema-lightning/resolve/e7c96f2fc0ba843cd0f86e02786655bb56f50df8/ema.pt",
+   "hedef": "runtime_assets/tts_motorlari/ema_lightning/agirlik/ema.pt",
+   "sha256": "95aec03dafbe0e1d69bca774ab597c779464729a14bc99bfcb52480090c7dfe6",
+   "boyut": 22285878,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/canberkkkkkk/ema-lightning/tree/e7c96f2fc0ba843cd0f86e02786655bb56f50df8"
+  },
+  {
+   "adim": "tts-ema",
+   "ad": "EMA Lightning 1.1",
+   "url": "https://huggingface.co/canberkkkkkk/ema-lightning/resolve/e7c96f2fc0ba843cd0f86e02786655bb56f50df8/decoder.pt",
+   "hedef": "runtime_assets/tts_motorlari/ema_lightning/agirlik/decoder.pt",
+   "sha256": "9595819b173f411340f63d11332695121a97f8bf1f6d8b6fef0b21cf99c7ad67",
+   "boyut": 12103269,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/canberkkkkkk/ema-lightning/tree/e7c96f2fc0ba843cd0f86e02786655bb56f50df8"
   }
  ]
 }

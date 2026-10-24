@@ -54,6 +54,7 @@ from dublaj_hatti.bicimler import (
 )
 from dublaj_hatti.kaynak_girdisi import KaynakHatasi, baglanti_turu, kaynak_dogrula
 from dublaj_hatti.lisans_onayi import LisansOnayiGerekli, kapi_adlar, secili_motorlar
+from dublaj_hatti import kayit
 from dublaj_hatti.yapilandirma import AyarHatasi, ayarlari_yukle
 
 __all__ = [
@@ -364,8 +365,9 @@ def seslendir(girdi: str | Path, hedef_klasor: str | Path, motor: str = "superto
     * ``girdi`` is a transcript/translation JSON -> segments are spoken at their times: ``speech.wav`` (timed track)
       + ``speech.json`` (schema speech@1, one WAV per segment). Returns speech.json.
 
-    ``motor``: supertonic (CPU or GPU, default) or voxcpm2 (NVIDIA GPU, separate install).
-    ``ses``: Supertonic F1-F5 / M1-M5, VoxCPM2 voice folder such as hazir/haber_spikeri.
+    ``motor``: supertonic (CPU or GPU, default), voxcpm2 (NVIDIA GPU, separate install) or ema_lightning
+    (Turkish only; GPU or CPU ONNX, ``ses.ema_cihaz`` = auto | cuda | cpu; speed ``ses.ema_hiz``).
+    ``ses``: Supertonic F1-F5 / M1-M5, VoxCPM2 voice folder such as hazir/haber_spikeri, EMA ``ema``.
     """
     hedef = Path(hedef_klasor)
     hedef.mkdir(parents=True, exist_ok=True)
@@ -373,11 +375,16 @@ def seslendir(girdi: str | Path, hedef_klasor: str | Path, motor: str = "superto
     json_girdi = yol is not None and yol.suffix.lower() == ".json" and yol.is_file()
     ses_anahtari = "ses.voxcpm2_ses" if motor == "voxcpm2" else "ses.supertonic_ses"
     ek = dict(ayarlar or {})
-    if ses:
+    if ses and motor == "ema_lightning":
+        if ses not in ("ema",):
+            raise AyarHatasi(f"EMA Lightning has one voice: ema (got --ses {ses})")
+    elif ses:
         ek[ses_anahtari] = ses
     # is_turu=transkript: no translation backend is resolved for a speech-only call
     ayar = _ayar(ek, genel__is_turu="transkript", genel__hedef_dil=dil, ses__motor=motor,
                  ses__konusmaci_cinsiyetine_gore_ses=False)
+    if ayar["ses.motor"] == "ema_lightning" and ayar["genel.hedef_dil"] not in kayit.EMA_DILLERI:
+        raise AyarHatasi(f"EMA Lightning reads Turkish only (tr); got --dil {ayar['genel.hedef_dil']}")
     _lisans([ayar["ses.motor"]], lisans_onay)  # Supertonic (OpenRAIL-M): same gate as `dubla <video>`
     _hazirla(ayar)
     if not json_girdi:
@@ -422,7 +429,8 @@ def seslendir(girdi: str | Path, hedef_klasor: str | Path, motor: str = "superto
         kayitlar.append({"id": seg.index, "start": seg.start, "end": seg.end, "text": seg.text,
                          "audio": parca.as_posix(), "duration": round(len(dalga) / cfg.sample_rate, 3)})
     sf.write(hedef / "speech.wav", sonuc.audio, cfg.sample_rate)
-    manifest = {"schema": SEMA_SESLENDIRME, "engine": motor, "voice": ayar[ses_anahtari], "language": dil,
+    manifest = {"schema": SEMA_SESLENDIRME, "engine": motor,
+                "voice": "ema" if motor == "ema_lightning" else ayar[ses_anahtari], "language": dil,
                 "sample_rate": int(cfg.sample_rate), "audio": "speech.wav", "segments": kayitlar}
     return json_yaz(hedef / "speech.json", dogrula(manifest))
 
@@ -454,7 +462,17 @@ def _metni_seslendir(metin: str, hedef: Path, ayar: dict[str, Any]) -> Path:
                 dalgalar += [dalga, np.zeros(int(oran * PARCA_ARASI_SN), dtype="float32")]
             sf.write(hedef / "speech.wav", np.concatenate(dalgalar[:-1]), oran)
         return hedef / "speech.wav"
-    raise AyarHatasi(f"metinden ses bu motoru desteklemiyor: {ayar['ses.motor']} (supertonic, voxcpm2)")
+    if ayar["ses.motor"] == "ema_lightning":
+        import soundfile as sf
+
+        from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts.api import birlestir, metni_oku
+        from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts.ayarlar import EMA_ORNEKLEME
+
+        with _calisma_klasoru(hedef, "seslendir") as is_klasoru:
+            parcalar, sessizlik = metni_oku(metin, ayar, Path(is_klasoru))
+            sf.write(hedef / "speech.wav", birlestir(parcalar, sessizlik), EMA_ORNEKLEME)
+        return hedef / "speech.wav"
+    raise AyarHatasi(f"metinden ses bu motoru desteklemiyor: {ayar['ses.motor']} (supertonic, voxcpm2, ema_lightning)")
 
 
 def altyazi(transkript: str | Path, hedef: str | Path, bicim: str | None = None, kip: str = "segment") -> Path:

@@ -7,6 +7,7 @@
     dubla hizala ses.wav metin.txt|transcript.json [-o aligned.json] --dil en
     dubla cevir transcript.json [-o translation.json] [--hedef-dil tr] [--arka-uc yerel]
     dubla seslendir "metin" | metin.txt | translation.json [-o klasor] [--motor supertonic] [--ses F1]
+                    [--motor ema_lightning --cihaz auto|cuda|cpu --hiz 1.0]   # EMA: Turkish only
     dubla altyazi transcript.json [-o sub.srt] [--bicim srt|vtt|ass] [--kip segment|kelime|karaoke]
     dubla birlestir video.mp4 -o out.mp4 [--ses speech.wav] [--altyazi sub.srt] [--yak] [--arka-plan bg.wav]
 
@@ -66,8 +67,11 @@ def alt_komutlari_ekle(alt: Any, ortak: Callable[[argparse.ArgumentParser], None
     p.add_argument("--kaynak-dil")
     p = yeni("seslendir", "text to speech: text / .txt -> WAV; transcript or translation JSON -> timed track")
     p.add_argument("girdi", help="text in quotes, a .txt file or a transcript/translation JSON")
-    p.add_argument("--motor", default="supertonic", choices=("supertonic", "voxcpm2"))
-    p.add_argument("--ses", help="voice: Supertonic F1-F5/M1-M5, VoxCPM2 voice folder")
+    p.add_argument("--motor", default="supertonic", choices=("supertonic", "voxcpm2", "ema_lightning"))
+    p.add_argument("--ses", help="voice: Supertonic F1-F5/M1-M5, VoxCPM2 voice folder, EMA ema")
+    p.add_argument("--cihaz", choices=("auto", "cuda", "cpu"),
+                   help="EMA Lightning device (ses.ema_cihaz): auto falls back to CPU when the GPU is missing or busy")
+    p.add_argument("--hiz", type=float, help="EMA Lightning speaking speed (ses.ema_hiz, 0.5-2.0)")
     p.add_argument("--dil", default="tr")
     p = yeni("altyazi", "subtitle file from a transcript (no model, no GPU)")
     p.add_argument("transkript")
@@ -124,7 +128,9 @@ def _calistir(args: argparse.Namespace) -> Any:
         return api.cevir(args.transkript, cikti, hedef_dil=args.hedef_dil, arka_uc=args.arka_uc,
                          kaynak_dil=args.kaynak_dil, lisans_onay=onay)
     if k == "seslendir":
-        return api.seslendir(args.girdi, cikti, motor=args.motor, ses=args.ses, dil=args.dil, lisans_onay=onay)
+        ek = {k: v for k, v in (("ses.ema_cihaz", args.cihaz), ("ses.ema_hiz", args.hiz)) if v is not None}
+        return api.seslendir(args.girdi, cikti, motor=args.motor, ses=args.ses, dil=args.dil, ayarlar=ek or None,
+                             lisans_onay=onay)
     if k == "altyazi":
         return api.altyazi(args.transkript, cikti, bicim=args.bicim, kip=args.kip)
     if k == "birlestir":

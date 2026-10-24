@@ -50,6 +50,8 @@ an engine cannot read is rejected when settings load (`ayar hatası ... dilini o
   constant of the official model; `na` is the engine's "unknown" fallback and is not offered). Per docs.
 - **VoxCPM2** — "tested" = read end to end in the sister voice-design repository (docs/cok_dilli.md there): tr, en, fr,
   de, es, ru, zh, ja (measured). Other languages are allowed with a warning; listen to the result.
+- **EMA Lightning** — Turkish only (`tr`, model card "Limitations"; `EMA_DILLERI` in `kayit.py`). Any other target
+  language is a settings error. Per docs; Turkish measured end to end in this repository.
 - **XTTS v2** — 17 languages from the model card (huggingface.co/coqui/XTTS-v2), `XTTS_DILLERI` in
   `bolum_50_seslendirme/xtts_tts/api.py`. Per docs.
 - **Translation.** Local Opus-MT translates **English → Turkish only** (`yerel_ceviri`, model
@@ -161,6 +163,8 @@ Toplam 32 hedef dil. Kaynaklar:
   (resmî modelin kod sabiti; `na` motorun "bilinmeyen" yedeğidir ve sunulmaz). Belgeye göre.
 - **VoxCPM2** — "denendi" = kardeş ses tasarımı reposunda baştan sona okutuldu (oradaki docs/cok_dilli.md): tr, en,
   fr, de, es, ru, zh, ja (ölçüldü). Diğer diller uyarıyla seçilebilir; sonucu dinleyin.
+- **EMA Lightning** — yalnız Türkçe (`tr`, model kartı "Limitations"; `kayit.py` içinde `EMA_DILLERI`). Başka hedef
+  dil ayar hatasıdır. Belgeye göre; Türkçe bu repoda uçtan uca ölçüldü.
 - **XTTS v2** — model kartındaki 17 dil (huggingface.co/coqui/XTTS-v2), `bolum_50_seslendirme/xtts_tts/api.py`
   içinde `XTTS_DILLERI`. Belgeye göre.
 - **Çeviri.** Yerel Opus-MT **yalnız İngilizce → Türkçe** çevirir (`yerel_ceviri`, model

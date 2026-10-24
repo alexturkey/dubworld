@@ -43,7 +43,7 @@ stopped with `ayar hatası` (setting error) / `uyarı` (warning).
    | Faster / slower speech | `ses.hiz` (0.5–2.0, same for every voice) |
    | Better fit to the original timing | `ses.akis=repair_3_light` (LLM backends only; more calls) |
    | Mixed-language speech | `transkripsiyon.motor=crisperwhisper_turbo_ct2`, `transkripsiyon.crisper_dil_tespiti=continuous_stream` |
-   | Whole text as one block | `genel.dublaj_kipi=full_text` (Codex / Claude Code + Supertonic only) |
+   | Whole text as one block | `genel.dublaj_kipi=full_text` (Codex / Claude Code + Supertonic or EMA Lightning) |
    | Crop black bars | `video.akilli_kare=true` (`kur.ps1 -Adim akilli-kare`) |
 3. Apply once on the command line, or save a recipe:
    ```powershell

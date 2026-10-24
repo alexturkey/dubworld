@@ -51,6 +51,7 @@ Profillere göre disk alanı:
 | **Toplam, işlemci profili** | **≈ 13,2 GB** (uv önbelleği silinince ≈ 9,3 GB); indirme ≈ 9,5 GB | denendi (temiz kök) |
 | `crisper` eki | ≈ 7 GB (torch cu126 ≈ 3 GB, model 1,6 GB + dönüştürülmüş 1,6 GB) | belgeye göre (kardeş STT reposu) |
 | `voxcpm2` eki | ≈ 3,7 GB indirme (model 2,95 GB + CUDA çalışma DLL'leri + motor) | belgeye göre (kardeş TTS reposu) |
+| `tts-ema` eki | ≈ 0,12 GB (ağırlık 34 MB, yerelde dışa aktarılan ONNX 79 MB, paketler ≈ 4 MB; PyTorch zaten `.venv`'de) | ölçüldü |
 | `tts-xtts` eki | kendi PyTorch'u olan ayrı ortam (≈ 3–8 GB) + ilk kullanımda inen ağırlık | tahmin |
 | `parakeet` eki | ≈ 0,7 GB model | belgeye göre (`kur.ps1`) |
 
@@ -110,6 +111,7 @@ gibidir. Her adım başarıda bir işaret satırı yazar.
 | 7 | `tts-xtts` | hayır | XTTS v2 için ayrı ortam (bölüm 5); `-TicariOlmayanKabul` ister | 3 | `XTTS_OK` |
 | 8 | `crisper` | hayır | kardeş STT reposu üzerinden CrisperWhisper 2.0 Turbo + WSL ortamı; `-TicariOlmayanKabul` ister | 3, git, WSL2 | `CRISPER_MOTOR_OK`, `CRISPER_OK` |
 | 9 | `voxcpm2` | hayır | kardeş TTS reposunu sabit commit'le klonlar ve kendi kurulum betiğini çalıştırır | git, NVIDIA (reponun Python 3.11.14'ünü kullanır) | `VOXCPM2_OK` |
+| 9b | `tts-ema` | hayır | EMA Lightning (Türkçe TTS, GPU ya da işlemci): `requirements/ek_tts_ema.txt` (CPU profilinde `ek_tts_ema_cpu.txt`) `.venv`'e, `modelleri_indir.py --adim tts-ema` (sabit commit, sha256), ardından PyTorch ile karşılaştırılan yerel ONNX dışa aktarımı | 3 | `TTS_EMA_OK` |
 | 10 | `kontrol` | evet | gerçek 64×64 CUDA matris çarpımı (GPU profilinde CUDA'lı derleme şart), ardından `dubla kontrol` | 3 | `KONTROL_OK` |
 
 Betik her zaman `KURULUM_OK` ile biter. İsteğe bağlı adımlar sonradan istenen birleşimle eklenebilir, ör.
@@ -182,6 +184,7 @@ dokunmadan tek başına kaldırılabilir.
 | `tts-xtts` | ayrı ortamda coqui-tts + PyTorch; `.env`'e `DUBLAJ_XTTS_PYTHON` yazar ve lisans onayını kaydeder | `runtime_assets/tts_motorlari/xtts/venv` | XTTS v2 ağırlıkları: Coqui Public Model License, **ticari olmayan**; ağırlık ilk kullanımda Coqui'den iner | `-TicariOlmayanKabul` |
 | `crisper` | kardeş STT reposu üzerinden sabit commit'le CrisperWhisper 2.0 Turbo (13. motor); CTranslate2 dönüşümü; WSL çalışma ortamı | `runtime_assets/transkripsiyon_motorlari/` | ağırlık **ticari olmayan** (model kartı) | `-TicariOlmayanKabul` |
 | `voxcpm2` | sabit commit'le kardeş TTS reposu ve kurulum betiği (model, CUDA 12.8 çalışma DLL'leri, hazır motor, Python paketleri) | `runtime_assets/tts_motorlari/voxcpm2/` | THIRD_PARTY.md'ye göre | – |
+| `tts-ema` | EMA Lightning 1.1.0 + normalizer-tr, sabit ağırlık, yerelde dışa aktarılan ONNX (`ses.motor = ema_lightning`) | `.venv`, `runtime_assets/tts_motorlari/ema_lightning/` | Apache-2.0 (kod ve ağırlık); tek sentetik ses, YZ etiketi kalır | – |
 
 Başka repo kullanan adımların ön koşulları:
 

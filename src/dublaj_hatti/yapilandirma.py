@@ -51,6 +51,8 @@ SUPERTONIC_AKISLARI = [
 SUPERTONIC_DILLERI = kayit.SUPERTONIC_DILLERI  # listede olmayan dil Supertonic'te okunamaz (hata)
 VOXCPM2_DENENEN_DILLER = kayit.VOXCPM2_DENENEN_DILLER  # dışındakiler model kartına göre okunur, denenmedi (uyarı)
 XTTS_DILLERI = kayit.XTTS_DILLERI  # listede olmayan dil XTTS v2'de okunamaz (hata)
+EMA_DILLERI = kayit.EMA_DILLERI  # EMA Lightning yalnız Türkçe okur (hata)
+TAM_METIN_TTS = {"supertonic", "ema_lightning"}  # genel.dublaj_kipi=full_text bu motorlarla çalışır
 HEDEF_DILLERI = kayit.tts_hedef_dilleri()
 TRANSKRIPT_BICIMLERI = ["srt", "plain", "timestamped", "paragraph"]
 WHISPERX_PROFILLERI = ["auto", "whisperx_float32_quality_v1", "whisperx_engine_default_v1"]
@@ -118,6 +120,9 @@ SEMA: dict[str, Any] = {
     "ses.hiz": float,
     "ses.atempo": bool,
     "ses.voxcpm2_ses": str,
+    "ses.ema_cihaz": ["auto", "cuda", "cpu"],
+    "ses.ema_hiz": float,
+    "ses.ema_tohum": int,
     "ses.konusmaci_cinsiyetine_gore_ses": bool,
     "ses.konusmaci_sesleri": dict,
     "ses.cinsiyet_kipi": ["konusmaci", "segment"],
@@ -143,7 +148,8 @@ SEMA: dict[str, Any] = {
     "ileri.pyannote_konusmaci_ayrimi": bool,
 }
 SINIRLAR = {"video.cq": (0, 51), "ses.hiz": (0.5, 2.0), "ileri.tts_isci": (1, 16), "ileri.tts_deneme": (1, 10),
-            "video.max_mb": (0, 100000), "ileri.ornekleme_hizi": (8000, 96000), "ses.rvc_perde": (-24, 24)}
+            "video.max_mb": (0, 100000), "ileri.ornekleme_hizi": (8000, 96000), "ses.rvc_perde": (-24, 24),
+            "ses.ema_hiz": (0.5, 2.0), "ses.ema_tohum": (0, 2**31 - 1)}
 
 
 def _duzlestir(veri: dict, onek: str = "") -> dict[str, Any]:
@@ -214,9 +220,9 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
 
     # --- dublaj kipi ---------------------------------------------------------------------------------------
     if kip == "full_text" and dublaj:
-        if tts != "supertonic":
-            hata("full_text kipi yalnız Supertonic ile seslendirir; ses.motor=supertonic seçin", "genel.dublaj_kipi",
-                 "ses.motor")
+        if tts not in TAM_METIN_TTS:
+            hata("full_text kipi yalnız Supertonic ya da EMA Lightning ile seslendirir; ses.motor=supertonic ya da "
+                 "ses.motor=ema_lightning seçin", "genel.dublaj_kipi", "ses.motor")
         if ceviri not in ("auto", "codex", "claude_code"):
             hata("full_text kipi yalnız Codex ya da Claude Code çeviri arka ucuyla çalışır", "genel.dublaj_kipi",
                  "ceviri.arka_uc")
@@ -230,6 +236,12 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
     if dublaj and tts == "xtts" and dil not in XTTS_DILLERI:
         hata(f"XTTS v2 '{dil}' dilini okuyamaz; desteklenen: {', '.join(sorted(XTTS_DILLERI))}",
              "genel.hedef_dil", "ses.motor")
+    if dublaj and tts == "ema_lightning" and dil not in EMA_DILLERI:
+        hata(f"EMA Lightning '{dil}' dilini okuyamaz (yalnız {', '.join(sorted(EMA_DILLERI))}); ses.motor=supertonic "
+             "ya da voxcpm2 seçin", "genel.hedef_dil", "ses.motor")
+    if tts == "ema_lightning" and ayar.get("ses.ema_cihaz") == "cuda" and cihaz == "cpu":
+        hata("ses.ema_cihaz=cuda ile genel.cihaz=cpu çelişir; ses.ema_cihaz=auto ya da cpu seçin", "ses.ema_cihaz",
+             "genel.cihaz")
     if dublaj and tts in TTS_YALNIZ_GPU and cihaz == "cpu":
         hata("VoxCPM2 NVIDIA GPU gerektirir; işlemcide ses.motor=supertonic kullanın", "ses.motor", "genel.cihaz")
     sesler = ayar.get("ses.konusmaci_sesleri") or {}
@@ -238,6 +250,8 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
         if yanlis:
             hata(f"Supertonic konuşmacı sesleri F1..F5 / M1..M5 olmalı; hatalı: {', '.join(yanlis)}",
                  "ses.konusmaci_sesleri", "ses.motor")
+    elif tts == "ema_lightning" and sesler:
+        uyari("EMA Lightning tek sesli; ses.konusmaci_sesleri yok sayılır", "ses.konusmaci_sesleri", "ses.motor")
     elif tts == "xtts" and sesler:
         uyari("XTTS tek referans sesle okur; ses.konusmaci_sesleri yok sayılır", "ses.konusmaci_sesleri", "ses.motor")
     # --- cinsiyete göre ses kipi ---------------------------------------------------------------------------
@@ -394,6 +408,7 @@ def form_ek_bilgisi() -> dict[str, dict[str, Any]]:
     ek["ses.konusmaci_sesleri"] = {"ses_secenekleri": {
         "supertonic": list(kayit.SUPERTONIC_SESLER),
         "voxcpm2": [f"hazir/{ad}" for ad in kayit.VOXCPM2_HAZIR_SESLER],
+        "ema_lightning": [],
         "xtts": [],
     }, "bicim": "SPEAKER_00:M2, SPEAKER_01:F1"}
     ek["genel.cihaz"] = {"donanim": {"gpu": gpu_var, "vram_mb": vram}}
@@ -588,6 +603,15 @@ def _kurulum_denetle(ayar: dict[str, Any], kaynak: str | None, gerekce: Callable
     if dublaj and ayar.get("video.akilli_kare") and importlib.util.find_spec("cv2") is None:
         gerekce("video.akilli_kare açık ama OpenCV kurulu değil (pip install .[akilli-kare]); video kırpılmadan "
                 "kaynak görüntüyle sürer")
+    if dublaj and ayar["ses.motor"] == "ema_lightning":
+        from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import ema_durumu
+
+        durum = ema_durumu()
+        if not durum["kurulu"]:
+            raise AyarHatasi("ses.motor=ema_lightning kurulu değil: scripts/kur.ps1 -Adim tts-ema "
+                             f"(paket {durum['paket']}, ağırlık {durum['agirlik']})")
+        if not durum["onnx_cpu"]:
+            gerekce("EMA işlemci yolu ONNX'siz (dışa aktarım yok ya da eşitlik denetimi geçmedi): işlemcide torch")
     if dublaj and ayar["ses.motor"] == "xtts":
         from dublaj_hatti.bolum_50_seslendirme.xtts_tts.api import KURULUM_IPUCU, xtts_python
         from dublaj_hatti.bolum_50_seslendirme.xtts_tts.lisans import (
@@ -696,6 +720,9 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
         tts_voice_id=ayar["ses.supertonic_ses"],
         voxcpm2_ses=ayar["ses.voxcpm2_ses"],
         voxcpm2_konusmaci_sesleri=dict(ayar["ses.konusmaci_sesleri"]) if ayar["ses.motor"] == "voxcpm2" else {},
+        ema_cihaz=ayar["ses.ema_cihaz"],
+        ema_hiz=ayar["ses.ema_hiz"],
+        ema_tohum=ayar["ses.ema_tohum"],
         translator_engine=ceviri["translator_engine"],
         llm_backend=ceviri["llm_backend"],
         transcription_engine=stt,

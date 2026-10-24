@@ -23,5 +23,6 @@ Background and measurements: [../engineering/README.md](../engineering/README.md
 | [0016](0016-rvc-as-post-tts-conversion.md) | RVC voice conversion is a post-TTS layer on the timed mix |
 | [0017](0017-defaults-and-licence-gate.md) | Defaults follow the proven flow within redistributable licences; the rest is opt-in |
 | [0018](0018-local-bot-api-server-for-large-files.md) | Large Telegram deliveries go through a local Bot API server, as playable video |
+| [0019](0019-ema-lightning-tts.md) | EMA Lightning as an optional Turkish TTS engine: GPU path and a locally exported CPU ONNX path |
 
 New ADR: copy the format, take the next number, link it here and from the relevant `docs/engineering/` page.

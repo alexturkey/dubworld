@@ -13,6 +13,7 @@ ENGINE_DEBUG_DIRS = {
     "supertonic": "supertonic_timing_debug",
     "xtts": "xtts_timing_debug",
     "voxcpm2": "voxcpm2_timing_debug",
+    "ema_lightning": "ema_lightning_timing_debug",
 }
 
 

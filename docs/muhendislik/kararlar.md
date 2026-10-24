@@ -562,3 +562,45 @@ Dosyayı 50 MB parçalara bölmek (alıcı birleştirir, önizleme yok); 50 MB a
 bulut depolama bağlantısı (her dosya için dış hesap ve üçüncü taraf); Telegram Premium (ücretli, botlara açık değil);
 bulut uç noktasında yeniden deneme ya da uzun zaman aşımı (50 MB sınırını kaldırmaz); IPv4/IPv6 seçimini uygulama
 kodunda sıralı uzun beklemelerle yapmak (her ağ değişiminde yavaşlatır, IPv6 rotası olmayan kapsayıcı ağını düzeltmez).
+
+<a id="0019"></a>
+## 0019 — EMA Lightning: GPU yolu ve yerelde dışa aktarılan işlemci ONNX yoluyla isteğe bağlı Türkçe TTS
+
+İngilizce: [../adr/0019-ema-lightning-tts.md](../adr/0019-ema-lightning-tts.md)
+
+Durum: kabul edildi
+
+### Bağlam
+Ana hedef dil Türkçedir. Supertonic Türkçeyi işlemcide okur ama sesleri çok dil için ayarlıdır; VoxCPM2 tasarlanmış
+Türkçe sesler verir ama NVIDIA GPU ve yaklaşık 3 GB VRAM ister. Küçük, yalnız Türkçe okuyan EMA Lightning (8,6 M
+parametre, kod ve ağırlık Apache-2.0) sayı, tarih ve birimleri kendisi okur, GPU'da da işlemcide de hızlıdır.
+Eklemeden önce üç koşul resmî kaynaktan denetlendi: kod lisansı (PyPI paket bilgisi ve depo: Apache-2.0), ağırlık
+lisansı (model kartı: Apache-2.0, ticari kullanım dahil) ve ses (model kartı: VoxCPM2'de metin tarifinden tasarlanmış
+tek sentetik ses; VoxCPM2 ile üretilmiş yaklaşık 1000 saat sentetik konuşmayla eğitildi, Apache-2.0; gerçek kişi kaydı
+yok). Yayıncı yalnız PyTorch ağırlığı yayımlar; ONNX dosyaları yalnız üçüncü kişi dönüşümü olarak vardır.
+
+### Karar
+`ses.motor = ema_lightning` isteğe bağlı eklenir (`scripts/kur.ps1 -Adim tts-ema`): paket hash'li kilitle ana ortama
+(PyTorch zaten orada; işlemci profili için ayrı kilit var), ağırlık resmî model deposundan sabit commit ve SHA-256 ile;
+özet her `torch.load`'dan önce yeniden denetlenir. İşlemci yolu ONNX Runtime'dır; dosyalar indirilen üçüncü kişi
+dönüşümü değil, **aynı denetimli ağırlıktan kullanıcının makinesinde dışa aktarılır** ve farklı uzunlukta bir cümlede
+PyTorch ile karşılaştırılır; en büyük fark 1e-3'ü aşarsa işlemci yolu PyTorch'u kullanır. Cihaz seçimi
+`ses.ema_cihaz = auto | cuda | cpu`: `auto` GPU'da en az 1 GB boş bellek varsa GPU'yu alır; GPU yoksa, meşgulse ya
+da GPU koşusu CUDA veya bellek hatasıyla düşerse (bir tekrar) işlemciye geçer; açık `cuda` hiç düşmez. İş başına bir
+alt süreç, model bir kez yüklenir, çıkışta GPU belleği boşalır. `cudnn.benchmark` kapalıdır (4 GB Pascal sınıfı kartta
+kendi kendini ayarlama 30 sn'lik metni yaklaşık 1 sn yerine 202 sn'de okuttu). Yalnız Türkçe: başka hedef dil ayar
+hatasıdır. İki dublaj kipi de desteklenir; `full_text` cümle cümle okur, hizalama pencereleri gerçek sesten gelir.
+
+### Sonuçlar
+Türkçe dublaj tamamen işlemcide, 12 sn açılıştan sonra gerçek zamanın yaklaşık 11 katı hızla ya da GPU'da çalışabilir.
+Kurulum ONNX'i bir kez üretir (başvuru işlemcisinde yaklaşık 11 sn); farklı PyTorch sürümü bayt olarak farklı ama
+sayısal olarak eşit dosya üretebilir, bu yüzden dosyalar özetle değil çıktıyla doğrulanır. Tek kısa cümlede işlemcide
+PyTorch ONNX'ten önce biter (açılışı kısa); dublajlar ONNX'in kazanacağı kadar uzundur. Tek ses vardır; çeşit ses
+seçiminden değil tohumdan (`ses.ema_tohum`) gelir.
+
+### Değerlendirilen alternatifler
+Üçüncü kişinin ONNX dönüşümünü indirmek (kurulumu kısa ama yayıncıdan değil, ağırlığı resmî özetle eşlenemez);
+yalnız işlemcide PyTorch (dışa aktarım yok ama yeni metinde 2,4×, eski kayıtlarda yeni girdi uzunluğunun ilk
+geçişinde 0,7×'e kadar; ONNX ile yaklaşık 11×); `lightning()` (torch.compile + CUDA grafikleri; yayıncının en hızlı
+yolu, 4 GB Pascal sınıfı kartta hiç ölçülmedi ve cuDNN ayarlamasını açar; ölçülene kadar dışarıda); modeli işler
+arasında sıcak tutmak (çağrı başına saniye kazandırır ama diğer aşamaların ihtiyaç duyduğu GPU belleğini tutar).

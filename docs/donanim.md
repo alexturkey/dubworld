@@ -44,6 +44,7 @@ Every value carries its evidence level:
 | translate | `codex`, `claude_code`, `gemini_2_5_flash`, `gemini_3_1_flash_lite_tier_1`, `gemma_4_26b`, `groq_llama_4_scout`, `cerebras_llama_3_1_8b`, `mistral_nemo` | cloud | — | cloud | per docs | text is sent to the service | translation.md |
 | tts | `supertonic` | cpu | — | good | measured | ONNX on CPU, 4 lanes × 2 threads, ~2.3× real time, ~1.8 GB RAM; the CUDA provider was slower and is not used | tts_timing_and_mix.md |
 | tts | `voxcpm2` | gpu | ~3000 | no | measured | Q8_0 GGUF + 4 GB patch, 2.6–3.0 GB; ~2 s compute per 1 s audio; CPU took 535 s for 48.5 s so CPU is disabled here | sister VoxCPM2 repo docs/4gb.md |
+| tts | `ema_lightning` | gpu+cpu | ~200 | good | measured | Turkish only; GPU ~10× on three sentences after a 5 s start-up, 191 MB on the device; CPU ONNX (exported locally) ~11× after a 12 s start-up; `auto` falls back to the CPU when the GPU is missing or has < 1 GB free | docs/motorlar/ema_lightning.md |
 | tts | `xtts` | gpu+cpu | ~2000 | slow | per docs | model load ~2 GB (source doc), peak not measured; CPU "very slow" is an estimate | tts_timing_and_mix.md, docs/motorlar/xtts.md |
 | extra | `demucs` | gpu+cpu | 2749 | slow | measured | 75 min audio: process tree 7.15 GB RAM; batch 4 with one retry at batch 1 | source_audio_and_separation.md |
 | extra | `konusmaci_ayrimi` (3D-Speaker CAM++) | gpu+cpu | < 1000 | works | per docs | ran on CPU in the end-to-end CPU smoke test | low_vram.md, speakers_and_segments.md |
@@ -111,6 +112,7 @@ işlemcisinde alındı. Her değer dayanağını taşır:
 | translate | `codex`, `claude_code`, `gemini_2_5_flash`, `gemini_3_1_flash_lite_tier_1`, `gemma_4_26b`, `groq_llama_4_scout`, `cerebras_llama_3_1_8b`, `mistral_nemo` | bulut | — | bulut | belgeye göre | metin servise gönderilir | translation.md |
 | tts | `supertonic` | cpu | — | iyi | ölçüldü | İşlemcide ONNX, 4 şerit × 2 iş parçacığı, gerçek zamanın ~2.3 katı, ~1.8 GB RAM; CUDA sağlayıcısı daha yavaştı ve kullanılmaz | tts_timing_and_mix.md |
 | tts | `voxcpm2` | gpu | ~3000 | hayır | ölçüldü | Q8_0 GGUF + 4 GB yaması, 2.6–3.0 GB; 1 s ses için ~2 s hesap; işlemcide 48.5 s için 535 s sürdü, bu yüzden burada işlemci kapalı | kardeş VoxCPM2 reposu docs/4gb.md |
+| tts | `ema_lightning` | gpu+cpu | ~200 | iyi | ölçüldü | Yalnız Türkçe; GPU üç cümlede 5 s açılıştan sonra ~10×, cihazda 191 MB; işlemcide ONNX (yerelde dışa aktarılır) 12 s açılıştan sonra ~11×; `auto` GPU yoksa ya da 1 GB'tan az boşsa işlemciye geçer | docs/motorlar/ema_lightning.md |
 | tts | `xtts` | gpu+cpu | ~2000 | yavaş | belgeye göre | model yükleme ~2 GB (kaynak belge), tepe ölçülmedi; işlemcide "çok yavaş" bir tahmindir | tts_timing_and_mix.md, docs/motorlar/xtts.md |
 | extra | `demucs` | gpu+cpu | 2749 | yavaş | ölçüldü | 75 dk ses: süreç ağacı 7.15 GB RAM; batch 4, bir kez batch 1 ile yeniden deneme | source_audio_and_separation.md |
 | extra | `konusmaci_ayrimi` (3D-Speaker CAM++) | gpu+cpu | < 1000 | çalışır | belgeye göre | uçtan uca işlemci duman testinde işlemcide çalıştı | low_vram.md, speakers_and_segments.md |

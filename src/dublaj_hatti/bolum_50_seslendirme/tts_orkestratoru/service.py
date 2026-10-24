@@ -1135,6 +1135,10 @@ def build_dubbed_audio(
         from dublaj_hatti.bolum_50_seslendirme.voxcpm2_tts import build_voxcpm2_dubbed_audio
 
         supertonic_result = build_voxcpm2_dubbed_audio(segments, cfg, run_dir)
+    elif cfg.tts_engine == "ema_lightning":
+        from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import build_ema_dubbed_audio
+
+        supertonic_result = build_ema_dubbed_audio(segments, cfg, run_dir)
     elif cfg.tts_engine == "xtts":
         from dublaj_hatti.bolum_50_seslendirme.xtts_tts import build_xtts_dubbed_audio
 

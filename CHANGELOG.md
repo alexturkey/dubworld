@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Optional Turkish TTS engine EMA Lightning (`ses.motor = ema_lightning`, `kur.ps1 -Adim tts-ema`; Apache-2.0 code
+  and weights, one synthetic voice): GPU path and a CPU path through ONNX files exported locally from the pinned
+  weights; `ses.ema_cihaz = auto | cuda | cpu` with CPU fallback when the GPU is missing or busy; segment and
+  `full_text` modes; shown by `dubla kontrol` (ADR 0019).
+
 ## [0.1.0] - YYYY-MM-DD (release date is written on release day)
 
 First public release of DubWorld (draft until release day).
