@@ -3,8 +3,9 @@
 [Türkçe](#türkçe) · registry row: `src/dublaj_hatti/kayit.py` (`dubla kontrol` shows whether it is installed)
 
 **What it does:** A thin interface for driving the dubbing pipeline on your own computer from your phone: send a video
-or type a link and the job starts; progress is updated in a single message, and when it finishes the video (if under
-50 MB) arrives. The `/ayarlar` menu is generated from the settings layer's schema (the same options and the same
+or type a link and the job starts; progress is updated in a single message, and when it finishes the video arrives
+as a playable video (up to 50 MB; up to 2000 MB with the optional local Bot API server:
+[telegram_buyuk_dosya.md](../tarifler/telegram_buyuk_dosya.md)). The `/ayarlar` menu is generated from the settings layer's schema (the same options and the same
 validation as CLI/GUI/web).
 
 | | |
@@ -20,7 +21,8 @@ Step-by-step setup: [docs/tarifler/telegram_botu.md](../tarifler/telegram_botu.m
 **Security and privacy:** The token and the allowed user ids live only in `.env`; if the allow list is empty the bot
 does not start. Unauthorised people get no answer and their id is not written to the log. An incoming video is saved
 under a random name (the original name is not written to disk); selections are kept only in memory. Bot API limits:
-a bot cannot download files over 20 MB or send files over 50 MB.
+a bot cannot download files over 20 MB or send files over 50 MB through the cloud endpoint; the local Bot API
+server ([ADR 0018](../adr/0018-local-bot-api-server-for-large-files.md)) raises both to 2000 MB.
 
 **Job backend:** The bot uses the `IsArkaUcu` interface (start, status, list, cancel). If the job-management core
 provides `dublaj_hatti.is_yonetimi.telegram_arka_ucu()`, that is used (queue, history, resume); otherwise the same
@@ -39,7 +41,7 @@ single-job runner as desktop/web.
   bots with the same token conflict on Telegram, a single instance runs; if the allow list is empty the bot does not
   start.
 - **How it fits:** CLI, GUI, web and bot use the same settings schema and validation; the bot only starts the job,
-  shows progress and sends the result. Bot API limits (20 MB download, 50 MB send) determine the delivery size.
+  shows progress and sends the result. Bot API limits (cloud: 20 MB download, 50 MB send; local server: 2000 MB) determine the delivery size.
 - Details: [docs/tarifler/telegram_botu.md](../tarifler/telegram_botu.md)
 
 ## Türkçe
@@ -47,7 +49,8 @@ single-job runner as desktop/web.
 **Telegram botu (`telegram_botu`)**
 
 **Ne yapar:** Kendi bilgisayarınızdaki dublaj hattını telefondan sürmek için ince bir arayüz: video gönderin ya da
-bağlantı yazın, iş başlar; ilerleme tek mesajda güncellenir, bitince video (50 MB altıysa) gelir. `/ayarlar`
+bağlantı yazın, iş başlar; ilerleme tek mesajda güncellenir, bitince video oynatılabilir video olarak gelir (50 MB'a
+kadar; isteğe bağlı yerel Bot API sunucusuyla 2000 MB'a kadar: [telegram_buyuk_dosya.md](../tarifler/telegram_buyuk_dosya.md)). `/ayarlar`
 menüsü ayar katmanının şemasından üretilir (CLI/GUI/web ile aynı seçenekler, aynı doğrulama).
 
 | | |
@@ -62,8 +65,8 @@ Adım adım kurulum: [docs/tarifler/telegram_botu.md](../tarifler/telegram_botu.
 
 **Güvenlik ve gizlilik:** Belirteç ve izinli kullanıcı kimlikleri yalnız `.env`'de; izinli liste boşsa bot
 başlamaz. İzinsiz kişiye cevap verilmez, kimliği günlüğe yazılmaz. Gelen video rastgele adla kaydedilir (özgün ad
-diske yazılmaz); seçimler yalnız bellekte. Bot API sınırları: bot 20 MB üstü dosya indiremez, 50 MB üstü
-gönderemez.
+diske yazılmaz); seçimler yalnız bellekte. Bot API sınırları: bulut uç noktasında bot 20 MB üstü dosya indiremez, 50 MB
+üstü gönderemez; yerel Bot API sunucusu ([ADR 0018](../muhendislik/kararlar.md#0018)) ikisini de 2000 MB'a çıkarır.
 
 **İş arka ucu:** Bot `IsArkaUcu` arayüzünü kullanır (başlat, durum, liste, iptal). İş yönetimi çekirdeği
 `dublaj_hatti.is_yonetimi.telegram_arka_ucu()` verirse o (kuyruk, geçmiş, devam); yoksa masaüstü/web ile aynı
@@ -81,5 +84,5 @@ tek-iş yürütücüsü.
 - **Neden böyle:** hattı uzaktan sürmenin sunucu açmadan en dar yoludur. Aynı belirteçle iki bot Telegram'da çakıştığı
   için tek örnek çalışır; izinli liste boşsa bot başlamaz.
 - **Diğer parçalarla ahengi:** CLI, GUI, web ve bot aynı ayar şemasını ve doğrulamasını kullanır; bot yalnız işi başlatır,
-  ilerlemeyi gösterir ve sonucu gönderir. Bot API sınırları (20 MB indirme, 50 MB gönderme) teslim boyutunu belirler.
+  ilerlemeyi gösterir ve sonucu gönderir. Bot API sınırları (bulut: 20 MB indirme, 50 MB gönderme; yerel sunucu: 2000 MB) teslim boyutunu belirler.
 - Ayrıntı: [docs/tarifler/telegram_botu.md](../tarifler/telegram_botu.md)

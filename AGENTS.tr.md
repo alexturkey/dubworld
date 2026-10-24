@@ -121,6 +121,10 @@ hangisi olduğunu söyler), 1 = iş başarısız (`.venv\Scripts\dubla.exe sorun
 3. Çeviri: varsayılan `ceviri.arka_uc = auto`, Codex CLI ya da Claude Code CLI kurulu ve girişli ise onu kullanır
    (metin o hizmete gider, PRIVACY.md); değilse yalnız İngilizceden Türkçeye çeviren yerleşik çevrimdışı çevirmeni.
    Bunu tek cümleyle söyleyin; ayarı sessizce değiştirmeyin.
+4. İsteğe bağlı, yalnız kullanıcı biten videoları telefonunda isterse: Telegram botu
+   (`.claude/skills/telegram-botu-kurulumu/SKILL.md`), ardından yerel Bot API sunucusuyla 2000 MB'a kadar teslim
+   (`.claude/skills/telegram-buyuk-dosya/SKILL.md`: kullanıcı yalnız my.telegram.org'dan `api_id` / `api_hash`'i
+   `.env`'ye yazar; `scripts\kur.ps1 -Adim telegram-sunucu`'yu siz çalıştırır, `dubla kontrol`'e bakarsınız).
 
 ## 5. Sorun giderme haritası
 
@@ -181,6 +185,7 @@ dosyalarını çalışma kılavuzu olarak okur. Motor sayfalarıyla fihrist: `do
 | Çeviri arka ucu (Codex, Claude Code, Opus-MT, API anahtarları) | `.claude/skills/ceviri-arka-uclari/SKILL.md` | `docs/muhendislik/ceviri.md`, `.env.example` |
 | Devam, sorunlu işler, GPU kuyruğu | `.claude/skills/devam-ve-sorunlu-isler/SKILL.md` | `docs/tarifler/devam_ve_sorunlu_isler.md` |
 | Telegram botu kurulumu | `.claude/skills/telegram-botu-kurulumu/SKILL.md` | `docs/tarifler/telegram_botu.md` |
+| Telegram ile büyük dosya (2000 MB, yerel Bot API sunucusu) | `.claude/skills/telegram-buyuk-dosya/SKILL.md` | `docs/tarifler/telegram_buyuk_dosya.md` |
 | Tek aşama, Python API, kendi aracınız | `.claude/skills/tek-asama-kullanimi-ve-api/SKILL.md` | `docs/mimari.md`, `examples/README.md` |
 | Hatalar, bellek yetmezliği, ffmpeg, kilit, kurulum | `.claude/skills/sorun-giderme/SKILL.md` | `docs/muhendislik/README.md`, `docs/muhendislik/kararlar.md` |
 | Katkı, motor ekleme, testler, yasal denetim | `.claude/skills/katki-ve-motor-ekleme/SKILL.md` | `CONTRIBUTING.md`, `src/dublaj_hatti/kayit.py`, `THIRD_PARTY.md` |

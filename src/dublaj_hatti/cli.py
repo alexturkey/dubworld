@@ -192,7 +192,10 @@ def kontrol_raporu(ayar: dict[str, Any] | None = None) -> dict[str, Any]:
 
 def _telegram_sunucu_ozeti() -> dict[str, Any]:
     """Yerel Telegram Bot API sunucusu (isteğe bağlı; 2000 MB teslim). Docker'a dokunmaz, en çok ~5 sn."""
-    from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import yerel_sunucu
+    try:
+        from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import yerel_sunucu
+    except ImportError:
+        return {"durum": "kurulu_degil"}
 
     yerel_sunucu.env_yukle()
     return yerel_sunucu.kontrol_ozeti()
@@ -208,10 +211,13 @@ def _kontrol_yaz(rapor: dict[str, Any]) -> None:
         print(f"  {grup}: {satir}")
     for ad, neden in rapor.get("deneysel", {}).items():
         print(f"  deneysel / experimental: {ad} ({neden})")
-    if rapor.get("telegram_sunucu"):
+    telegram = rapor.get("telegram_sunucu")
+    if telegram and telegram.get("durum") == "kurulu_degil":
+        print("  telegram yerel sunucu: telegram eki kurulu değil / Telegram add-on not installed")
+    elif telegram:
         from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.yerel_sunucu import kontrol_metni
 
-        print(f"  telegram yerel sunucu: {kontrol_metni(rapor['telegram_sunucu'])}")
+        print(f"  telegram yerel sunucu: {kontrol_metni(telegram)}")
     ctc = rapor.get("ctc_modelleri", {})
     print("  hizalama (CTC): " + ", ".join(f"{dil}={'var' if var else 'yok'}" for dil, var in ctc.items()))
     eksik = [dil for dil, var in ctc.items() if not var]

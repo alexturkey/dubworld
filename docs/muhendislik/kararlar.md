@@ -517,3 +517,48 @@ yoktur (1,0 sn segment boşluğu, LLM model adları); bunlar ayarlanabilir olara
 ### Değerlendirilen alternatifler
 Yalnız lisansa göre seçim (ölçümsüz motorlar varsayılan olurdu); lisansa bakmadan en kanıtlanmış akış (ticari olmayan
 model sessizce varsayılan olurdu); ağırlıkları repoda taşımak.
+
+<a id="0018"></a>
+## 0018 — Büyük Telegram teslimi yerel Bot API sunucusundan, oynatılabilir video olarak gider
+
+İngilizce: [../adr/0018-local-bot-api-server-for-large-files.md](../adr/0018-local-bot-api-server-for-large-files.md)
+
+Durum: kabul edildi
+
+### Bağlam
+Bulut Bot API bir botun en çok 50 MB göndermesine, 20 MB indirmesine izin verir; birkaç dakikalık dublajlı video
+çoğu zaman daha büyüktür. Sınırın üstünde yükleme reddedilir ve istemci çoğu zaman yalnız gecikmeli bir ağ hatası
+görür; bu yüzden zaman aşımını büyütmek ya da yeniden denemek işe yaramaz. Belge olarak giden video yalnız dosya
+simgesi gösterir, oynatmak için önce indirilmesi gerekir.
+
+### Karar
+İsteğe bağlı yerel Bot API sunucusu (Telegram'ın açık kaynak `tdlib/telegram-bot-api`'si, Boost lisansı, `--local`)
+iki sınırı da 2000 MB'a çıkarır; `TELEGRAM_YEREL_SUNUCU` ayarlıysa bot, `dubla-telegram gonder` ve hazırlık denetimi
+onu kullanır. Kurulum tek komuttur (`dubla-telegram sunucu kur`, `kur.ps1 -Adim telegram-sunucu`): Docker varsa
+Docker (Docker Desktop gizli başlar; hazır imaj sabit özetle ya da `--kaynaktan` resmî kaynak sabit commit'te),
+yoksa aynı commit'in derlemesi (doğrudan ya da Windows'ta WSL içinde); kullanıcıdan yalnız my.telegram.org'dan
+`api_id` / `api_hash` ve bot belirteci istenir. Hazır imaj `aiogram/telegram-bot-api`, resmî BSL-1.0 kaynağın
+topluluk derlemesidir ve özetle (`imaj@sha256:...`) sabitlenir; acemi kullanıcı için tek adımdır ve bu ağ
+sözleşmesiyle uygulamada çalıştırılmıştır; resmî kaynaktan derleme `--kaynaktan` ile yapılır. Tedarik zinciri riski:
+imajı üçüncü taraf derler, içeriği kaynağa karşı doğrulanmaz; özet sabitlemesi yalnız her seferinde aynı baytların
+çekilmesini garanti eder, yeni özet ancak incelemeden sonra alınır. "Resmî olmayan uç yok" kuralı resmî olmayan API
+uçları içindir (ör. resmî olmayan çeviri uçları); bu, resmî açık kaynak sunucunun derlenmiş paketidir. Ağ sözleşmesi: IPv6 açık kendi köprü ağında tek adlı kapsayıcı, port
+yalnız `127.0.0.1`, `unless-stopped`; uyuşmayan kapsayıcı bir kez yeniden kurulur, uyan kapsayıcıya dokunulmaz;
+hazırlık 60 sn içinde gerçek `getMe`'dir, açık port ya da çalışan süreç değil. Teslim kuralları (`teslim.py`): boyut
+yüklemeden önce denetlenir; video `sendVideo` + `supports_streaming`, ffprobe'dan boyut ve süre, ffmpeg küçük resmi ve
+faststart MP4 (akış kopyası, yeniden kodlama yok) ile gider, belge yalnız açık istekle; zaman aşımı boyuttan
+hesaplanır; en çok 3 deneme (15/30/60 sn); dosyanın tamamı gittikten sonraki zaman aşımı ya da kopma yeniden
+denenmez (çift teslim olmasın); teslim yalnız Telegram mesaj döndürünce sayılır, cevaptaki `video`/`document`
+alanı kaydedilir. Kimlik değerleri yalnız `.env`'de; kapsayıcıya değişken adıyla, WSL'ye `WSLENV` ile geçer.
+
+### Sonuçlar
+2000 MB'a kadar sonuç telefona oynatılabilir video olarak gelir; sunucuyu kurmayan için hiçbir şey değişmez. Yerel
+sunucu indirdiği dosyaları silinene kadar saklar (bot kendi kopyasını hemen siler, `temizle` artıkları siler);
+yükleme sırasında sunucuda dosya boyu kadar geçici yer gerekir. Sunucu veri klasöründe bot belirteci adlı alt klasör
+vardır, gizli sayılır. Docker'sız kurulum 10-30 dk C++ derler; Windows'ta WSL gerekir.
+
+### Değerlendirilen alternatifler
+Dosyayı 50 MB parçalara bölmek (alıcı birleştirir, önizleme yok); 50 MB altına sıkıştırmak (görünür kalite kaybı);
+bulut depolama bağlantısı (her dosya için dış hesap ve üçüncü taraf); Telegram Premium (ücretli, botlara açık değil);
+bulut uç noktasında yeniden deneme ya da uzun zaman aşımı (50 MB sınırını kaldırmaz); IPv4/IPv6 seçimini uygulama
+kodunda sıralı uzun beklemelerle yapmak (her ağ değişiminde yavaşlatır, IPv6 rotası olmayan kapsayıcı ağını düzeltmez).

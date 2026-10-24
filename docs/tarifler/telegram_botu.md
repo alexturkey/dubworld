@@ -42,12 +42,14 @@ dubla-telegram
 It opens no window; stop it with Ctrl+C. Only one instance runs at a time. Send `/start` to your bot.
 
 ## 6. Usage
-- Send a video (at most 20 MB, Bot API limit) or write an `https://` link (a link needs the extras `youtube` or
+- Send a video (at most 20 MB on the cloud Bot API, 2000 MB with the local server) or write an `https://` link (a link needs the extras `youtube` or
   `galeri`) → the job starts and its progress is updated in the same message.
 - `/ayarlar`: voice, translation, subtitle and other choices (this session only, in memory); `Varsayılana dön`
   (Back to defaults) resets them.
 - `/isler`, `/durum [no]`, `/iptal [no]`, `/kontrol` (which engines are installed).
-- When finished, a video under 50 MB comes to the chat; if larger, the output folder is reported.
+- When finished, the video comes to the chat as a playable video (up to 50 MB; up to 2000 MB with the local Bot API
+  server: [telegram_buyuk_dosya.md](telegram_buyuk_dosya.md)); if it cannot be sent, the reason and the output folder
+  are reported.
 
 ## 7. Job management: failed jobs, resume, re-run
 The bot uses **the same job store** as the command line (`dubla isler/sorunlu/devam`), the desktop and the web
@@ -135,11 +137,12 @@ dubla-telegram
 Pencere açmaz; durdurmak için Ctrl+C. Aynı anda tek örnek çalışır. Botunuza `/start` yazın.
 
 ### 6. Kullanım
-- Video gönderin (en çok 20 MB, Bot API sınırı) ya da `https://` bağlantısı yazın (bağlantı için extras `youtube`
+- Video gönderin (bulut Bot API en çok 20 MB, yerel sunucu 2000 MB) ya da `https://` bağlantısı yazın (bağlantı için extras `youtube`
   ya da `galeri` gerekir) → iş başlar, ilerleme aynı mesajda güncellenir.
 - `/ayarlar`: ses, çeviri, altyazı vb. seçimler (yalnız bu oturum, bellekte); `Varsayılana dön` ile sıfırlanır.
 - `/isler`, `/durum [no]`, `/iptal [no]`, `/kontrol` (hangi motorlar kurulu).
-- Bitince 50 MB altındaki video sohbete gelir; büyükse çıktı klasörü bildirilir.
+- Bitince video sohbete oynatılabilir video olarak gelir (50 MB'a kadar; yerel Bot API sunucusuyla 2000 MB'a kadar:
+  [telegram_buyuk_dosya.md](telegram_buyuk_dosya.md)); gönderilemezse nedeni ve çıktı klasörü bildirilir.
 
 ### 7. İş yönetimi: sorunlu işler, kaldığı yerden devam, yeniden çalıştırma
 Bot, komut satırı (`dubla isler/sorunlu/devam`), masaüstü ve web arayüzüyle **aynı iş deposunu** kullanır:

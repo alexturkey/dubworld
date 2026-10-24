@@ -45,8 +45,8 @@ default; it runs on the user's computer and talks only to the ids listed in `.en
    ```
    The user sends `/start` to the bot.
 6. **Use:** send a video (up to 20 MB, Bot API limit) or an `https://` link (needs the `youtube` or `galeri` extra);
-   `/ayarlar` (session-only choices), `/isler`, `/durum [no]`, `/iptal [no]`, `/kontrol`. Results under 50 MB come
-   back to the chat; larger ones stay in the output folder.
+   `/ayarlar` (session-only choices), `/isler`, `/durum [no]`, `/iptal [no]`, `/kontrol`. Results up to 50 MB come
+   back to the chat; up to 2000 MB with the local Bot API server ([telegram-buyuk-dosya](../telegram-buyuk-dosya/SKILL.md)).
 
 ## Common errors
 

@@ -26,6 +26,9 @@
     akilli-kare  OpenCV (video.akilli_kare: kenar bandı kırpma)
     galeri    gallery-dl (galeri bağlantısı; yalnız ayrı süreç olarak çağrılır, GPL-2.0-only)
     telegram  python-telegram-bot (uzaktan kumanda botu; belirteç yalnız .env'de)
+    telegram-sunucu  yerel Telegram Bot API sunucusu (2000 MB'a kadar teslim; bulut sınırı 50 MB). Docker varsa
+              Docker (Docker Desktop gizli başlar), yoksa resmî kaynaktan derleme (WSL); .env'de TELEGRAM_API_ID,
+              TELEGRAM_API_HASH gerekir (docs/tarifler/telegram_buyuk_dosya.md). telegram adımını da kurar.
     tts-xtts  XTTS v2 (coqui-tts) AYRI sanal ortamda, hash'li kilitle (requirements\xtts_venv_gpu|cpu.txt;
               runtime_assets\tts_motorlari\xtts\venv); ağırlık TİCARİ
               OLMAYAN CPML lisanslıdır: -TicariOlmayanKabul gerekir, ağırlık ilk kullanımda Coqui'den iner
@@ -37,6 +40,7 @@
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Cpu
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim demucs,youtube
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim akilli-kare,telegram
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim telegram-sunucu
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim tts-xtts -TicariOlmayanKabul
 #>
 [CmdletBinding()]
@@ -218,12 +222,22 @@ function Ek-Kur([string]$Ad) {
   if ($LASTEXITCODE -ne 0) { throw "isteğe bağlı paket kurulamadı: $Ad" }
 }
 
+if ((Adim "telegram-sunucu") -and -not (Adim "telegram")) { $Adimlar = @($Adimlar) + "telegram" }
 foreach ($ek in @("akilli-kare", "galeri", "telegram")) {
   if (Adim $ek) {
     Bilgi "== isteğe bağlı: $ek"
     Ek-Kur $ek
     Bilgi "$($ek.ToUpper().Replace('-', '_'))_OK"
   }
+}
+
+if (Adim "telegram-sunucu") {
+  # Yerel Bot API sunucusu: tek komut; Docker/WSL seçimi, gizli başlatma, gerçek getMe ve .env adresi Python'da
+  # (src\dublaj_hatti\bolum_80_arayuz_ve_teslim\telegram_botu\yerel_sunucu.py). Tekrar çalıştırmak güvenlidir.
+  Bilgi "== isteğe bağlı: telegram-sunucu (yerel Bot API sunucusu, 2000 MB)"
+  & (Join-Path $Venv "Scripts\dubla-telegram.exe") sunucu kur
+  if ($LASTEXITCODE -ne 0) { throw "Telegram yerel sunucusu kurulamadı (yukarıdaki satır; docs\tarifler\telegram_buyuk_dosya.md §6)" }
+  Bilgi "TELEGRAM_SUNUCU_OK"
 }
 
 if (Adim "tts-xtts") {

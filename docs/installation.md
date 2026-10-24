@@ -105,6 +105,7 @@ marker line on success.
 | 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | no | hash-locked add-ons into `.venv` (`requirements/ek_<name>.txt`; on the CPU profile `ek_<name>_cpu.txt` when present); `demucs` also downloads the `htdemucs` weight (≈ 84 MB, sha256), `parakeet` its model | 3 | `<NAME>_OK` |
 | 5b | `hizalama-diller` | no | CTC word-timing models for Japanese and Chinese sources (`modelleri_indir.py --adim hizalama-diller`, ≈ 2.5 GB, Apache-2.0) | 3 | `HIZALAMA-DILLER_OK` |
 | 6 | `akilli-kare`, `galeri`, `telegram` | no | add-ons into `.venv` from `requirements/ek_<name>.txt` (hash-locked) | 3 | `<NAME>_OK` |
+| 6b | `telegram-sunucu` | no | local Telegram Bot API server for delivery up to 2000 MB (`dubla-telegram sunucu kur`: Docker if installed, otherwise a build of the official source, inside WSL on Windows); needs `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` in `.env` ([recipe](tarifler/telegram_buyuk_dosya.md)); also runs `telegram` | 6, Docker or WSL | `TELEGRAM_SUNUCU_OK` |
 | 7 | `tts-xtts` | no | separate environment for XTTS v2 (section 5), requires `-TicariOlmayanKabul` | 3 | `XTTS_OK` |
 | 8 | `crisper` | no | CrisperWhisper 2.0 Turbo through the sister STT repository + WSL environment, requires `-TicariOlmayanKabul` | 3, git, WSL2 | `CRISPER_MOTOR_OK`, `CRISPER_OK` |
 | 9 | `voxcpm2` | no | clones the sister TTS repository at a pinned commit and runs its own installer | git, NVIDIA (uses the repository's Python 3.11.14) | `VOXCPM2_OK` |
@@ -180,6 +181,7 @@ environment can be removed alone without touching `.venv`.
 | `akilli-kare` | OpenCV headless (`video.akilli_kare`) | `.venv` | Apache-2.0 | – |
 | `galeri` | gallery-dl (called only as a separate process) | `.venv` | GPL-2.0-only; never imported | – |
 | `telegram` | python-telegram-bot (remote control bot, token only in `.env`) | `.venv` | LGPL-3.0-only, used unmodified as a library | – |
+| `telegram-sunucu` | local Telegram Bot API server (`tdlib/telegram-bot-api`, pinned commit; ready-made image pinned by digest) | Docker container `dubworld-telegram-bot-api` or `runtime_assets/araclar/telegram-bot-api` (WSL: `/opt/dubworld-telegram-bot-api`) | BSL-1.0; your own `api_id` / `api_hash` in `.env` | – |
 | `tts-xtts` | coqui-tts + PyTorch in a separate environment; writes `DUBLAJ_XTTS_PYTHON` to `.env` and records the license acceptance | `runtime_assets/tts_motorlari/xtts/venv` | XTTS v2 weights: Coqui Public Model License, **non-commercial**; weights download from Coqui on first use | `-TicariOlmayanKabul` |
 | `crisper` | CrisperWhisper 2.0 Turbo (engine 13) via the sister STT repository at a pinned commit; CTranslate2 conversion; WSL runtime environment | `runtime_assets/transkripsiyon_motorlari/` | weights **non-commercial** (model card) | `-TicariOlmayanKabul` |
 | `voxcpm2` | sister TTS repository at a pinned commit and its installer (model, CUDA 12.8 runtime DLLs, prebuilt engine, Python packages) | `runtime_assets/tts_motorlari/voxcpm2/` | per THIRD_PARTY.md | – |

@@ -3,8 +3,10 @@
 Komutlar: /start, /yardim, /ayarlar (menü), /isler, /sorunlu, /biten, /durum [no], /iptal [no], /kontrol.
 İş yönetimi (sorunlu iş devamı, aşamadan yeniden, arşiv) komut satırı, masaüstü ve web ile aynı iş deposundadır.
 Video gönderin (ya da https bağlantısı yazın) → iş başlar; ilerleme aynı mesajda güncellenir, bitince video
-(50 MB altıysa) ya da çıktı klasörü bildirilir. Seçimler yalnız bellekte tutulur (diske kişisel veri yazılmaz).
+(sınırın altındaysa) ya da çıktı klasörü bildirilir. Seçimler yalnız bellekte tutulur (diske kişisel veri yazılmaz).
 Ağ: yalnız Telegram Bot API'ye giden uzun yoklama (long polling); açık port yok.
+Sınırlar: bulut Bot API 20 MB indirme / 50 MB gönderme; `TELEGRAM_YEREL_SUNUCU` ayarlıysa (yerel Bot API sunucusu,
+`dubla-telegram sunucu kur`) ikisi de 2000 MB. Alt komutlar: `dubla-telegram sunucu ...`, `dubla-telegram gonder ...`.
 """
 
 from __future__ import annotations
@@ -12,11 +14,13 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import sys
 import uuid
 from pathlib import Path
 from typing import Any
 
-from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import is_menuleri, menuler
+from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import is_menuleri, menuler, teslim
+from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import yerel_sunucu as ys
 from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.arka_uc import IsArkaUcu, arka_uc_sec
 from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.guvenlik import (
     TelegramAyarHatasi,
@@ -27,12 +31,12 @@ from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.guvenlik import (
 
 logger = logging.getLogger("dublaj_hatti.telegram")
 KURULUM_IPUCU = "Telegram botu için python-telegram-bot kurulu değil: pip install .[telegram]"
-INDIRME_SINIRI = 20 * 1024 * 1024  # Bot API'nin bot için dosya indirme sınırı
-GONDERME_SINIRI = 50 * 1024 * 1024  # Bot API'nin bot için dosya gönderme sınırı
+INDIRME_SINIRI = ys.BULUT_INDIRME_SINIRI  # bulut Bot API; yerel sunucuda ys.indirme_siniri(adres)
+GONDERME_SINIRI = ys.BULUT_GONDERME_SINIRI  # bulut Bot API; yerel sunucuda ys.gonderme_siniri(adres)
 VIDEO_UZANTILARI = {".mp4", ".mkv", ".mov", ".webm", ".avi"}
 YOKLAMA_SN = 10
 YARDIM = (
-    "Video gönderin (en çok 20 MB) ya da https bağlantısı yazın: dublaj başlar.\n"
+    "Video gönderin (bulut Bot API en çok 20 MB, yerel sunucu 2000 MB) ya da https bağlantısı yazın.\n"
     "/ayarlar  seçimleri değiştir (yalnız bu oturum için)\n"
     "/isler  son işler · /durum [no] · /iptal [no]\n"
     "/sorunlu  hata alan / kesilen işler: kaldığı yerden devam, aşamadan yeniden\n"
@@ -68,8 +72,10 @@ def cikti_videolari(ozet: dict[str, Any]) -> list[Path]:
 
 class DublajBotu:
     def __init__(self, izinliler: frozenset[int], arka_uc: IsArkaUcu | None = None,
-                 girdi_klasoru: Path | None = None) -> None:
+                 girdi_klasoru: Path | None = None, yerel_adres: str | None = None) -> None:
         from dublaj_hatti.is_yurutucu import ayar_formu
+
+        self.yerel_adres = ys.yerel_adres() if yerel_adres is None else yerel_adres
 
         self.izinliler = izinliler
         self.arka_uc = arka_uc or arka_uc_sec()
@@ -256,13 +262,26 @@ class DublajBotu:
         if uzanti not in VIDEO_UZANTILARI:
             await mesaj.reply_text("Yalnız video dosyası (mp4, mkv, mov, webm, avi).")
             return
-        if (getattr(dosya, "file_size", 0) or 0) > INDIRME_SINIRI:
-            await mesaj.reply_text("Telegram botlar 20 MB üstünü indiremez: dosyayı bilgisayarda arayüzle açın.")
+        if (getattr(dosya, "file_size", 0) or 0) > ys.indirme_siniri(self.yerel_adres):
+            await mesaj.reply_text(
+                "Dosya 2000 MB üstü: Telegram kabul etmez." if self.yerel_adres else
+                "Bulut Bot API 20 MB üstünü indiremez: bilgisayarda arayüzle açın ya da yerel sunucuyu kurun "
+                "(dubla-telegram sunucu kur; 2000 MB).")
             return
         self.girdi_klasoru.mkdir(parents=True, exist_ok=True)
         hedef = self.girdi_klasoru / f"{uuid.uuid4().hex}{uzanti}"  # özgün ad diske yazılmaz
-        tg_dosya = await context.bot.get_file(dosya.file_id)
-        await tg_dosya.download_to_drive(custom_path=str(hedef))
+        try:
+            tg_dosya = await context.bot.get_file(dosya.file_id, read_timeout=1800, connect_timeout=30,
+                                                  pool_timeout=60)
+            kapsayici_yolu = kapsayici_dosya_yolu(tg_dosya.file_path, context.bot.token) if self.yerel_adres else None
+            if kapsayici_yolu:
+                await asyncio.to_thread(kapsayicidan_al, kapsayici_yolu, hedef)
+            else:
+                await tg_dosya.download_to_drive(custom_path=str(hedef), read_timeout=1800, write_timeout=1800,
+                                                 connect_timeout=30, pool_timeout=60)
+        except Exception as hata:  # indirme hatası işi başlatmaz; kullanıcıya söylenir
+            await mesaj.reply_text(f"Video indirilemedi: {gizle(str(hata))[:300]}")
+            return
         await self._baslat(update, context, str(hedef))
 
     async def baglanti(self, update: Any, context: Any) -> None:
@@ -301,18 +320,22 @@ class DublajBotu:
         if ozet.get("durum") != "bitti":
             return
         videolar = cikti_videolari(ozet)
-        for video in videolar[:1]:
-            if video.stat().st_size <= GONDERME_SINIRI:
-                with video.open("rb") as akim:
-                    await context.bot.send_video(sohbet, video=akim, caption=f"İş {is_id}: {video.name} (AI-dubbed)")
-                return
-        yer = videolar[0].parent if videolar else "çıktı klasörü"
-        await context.bot.send_message(sohbet, f"İş {is_id} bitti; dosya 50 MB üstü, bilgisayarda: {yer}")
+        if not videolar:
+            await context.bot.send_message(sohbet, f"İş {is_id} bitti; çıktı klasörüne bakın.")
+            return
+        video = videolar[0]
+        sonuc = await teslim.dosya_gonder(context.bot, sohbet, video, baslik=f"İş {is_id}: {video.name} (AI-dubbed)",
+                                          adres=self.yerel_adres)
+        if sonuc:
+            return
+        logger.warning("teslim olmadı: iş %s, durum %s", is_id, sonuc.durum)
+        await context.bot.send_message(sohbet, f"İş {is_id} bitti ama dosya gönderilmedi ({sonuc.durum}): "
+                                               f"{sonuc.neden[:600]}\nDosya bilgisayarda: {video.parent}")
 
     # --- kurulum -----------------------------------------------------------------------------------
     def uygulama(self, belirtec: str):
         telegram, ext = _telegram()
-        app = ext.Application.builder().token(belirtec).build()
+        app = uygulama_kurucu(ext.Application.builder().token(belirtec), self.yerel_adres).build()
         app.add_handler(ext.CommandHandler(["start", "yardim", "help"], self.start))
         app.add_handler(ext.CommandHandler("ayarlar", self.ayarlar))
         app.add_handler(ext.CommandHandler("isler", self.isler))
@@ -325,6 +348,44 @@ class DublajBotu:
         app.add_handler(ext.MessageHandler(ext.filters.VIDEO | ext.filters.Document.VIDEO, self.video))
         app.add_handler(ext.MessageHandler(ext.filters.TEXT & ~ext.filters.COMMAND, self.baglanti))
         return app
+
+
+def uygulama_kurucu(kurucu: Any, adres: str) -> Any:
+    """Yerel sunucu varsa bütün istekler (dosya indirme dahil) ona gider; süreler büyük dosyaya göre geniş."""
+    kurucu = kurucu.read_timeout(300).write_timeout(600).connect_timeout(30).pool_timeout(60)
+    if adres:
+        kurucu = kurucu.base_url(f"{adres}/bot").base_file_url(f"{adres}/file/bot").local_mode(True)
+    return kurucu
+
+
+def kapsayici_dosya_yolu(file_path: str | None, belirtec: str) -> str | None:
+    """Yerel kipte getFile mutlak yol döndürür; sunucu Docker kapsayıcısındaysa bu yol kapsayıcının içindedir (bu
+    bilgisayarda yoktur). Yalnız bu botun kendi klasöründeki yol kabul edilir (yol kaçışı olmaz)."""
+    from urllib.parse import unquote, urlparse
+
+    if not file_path:
+        return None
+    yol = unquote(urlparse(str(file_path)).path)
+    isaret = f"/file/bot{belirtec}"
+    if isaret in yol:
+        yol = yol.split(isaret, 1)[1]
+    yol = "/" + yol.lstrip("/")
+    kok = ys.KAPSAYICI_IS_KLASORU.rstrip("/") + "/"
+    if not yol.startswith(kok) or Path(yol).exists():
+        return None
+    parcalar = yol[len(kok):].split("/")
+    if not parcalar or parcalar[0] != belirtec or ".." in parcalar:
+        return None
+    return kok + "/".join(parcalar)
+
+
+def kapsayicidan_al(kapsayici_yolu: str, hedef: Path) -> None:
+    """Sunucunun indirdiği dosyayı kapsayıcıdan kopyalar, sonra kapsayıcıdaki kopyayı siler (disk büyümesin)."""
+    ad = os.environ.get(ys.KAPSAYICI_DEGISKENI) or ys.KAPSAYICI
+    sonuc = ys._docker("cp", f"{ad}:{kapsayici_yolu}", str(hedef), sure=1800)
+    if sonuc.returncode != 0:
+        raise RuntimeError(f"kapsayıcıdan kopyalanamadı: {gizle(sonuc.stderr.strip())[:200]}")
+    ys._docker("exec", ad, "rm", "-f", kapsayici_yolu, sure=60)
 
 
 def _tek_ornek_kilidi(klasor: Path) -> Path:
@@ -347,6 +408,11 @@ def _tek_ornek_kilidi(klasor: Path) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "sunucu":
+        return ys.main(argv[1:])
+    if argv and argv[0] == "gonder":
+        return teslim.main(argv[1:])
     try:
         from dotenv import load_dotenv
 
@@ -358,7 +424,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         _telegram()
         belirtec, izinliler = baslatma_denetimi()
-        bot = DublajBotu(izinliler)
+        adres = ys.yerel_adres()
+        if adres and not ys.hazir_bekle(adres, belirtec, sure=10):
+            raise TelegramAyarHatasi(f"yerel sunucu {adres} getMe cevabı vermiyor: dubla-telegram sunucu baslat "
+                                     f"(ya da .env'de {ys.ADRES_DEGISKENI}= boş bırakıp bulut uç noktasına dönün)")
+        if not adres:
+            logger.info("Bulut Bot API: 50 MB üstü sonuçlar gönderilemez (2 GB: dubla-telegram sunucu kur).")
+        bot = DublajBotu(izinliler, yerel_adres=adres)
         kilit = _tek_ornek_kilidi(bot.girdi_klasoru)
     except TelegramAyarHatasi as hata:
         print(f"Telegram botu başlatılamadı: {hata}")

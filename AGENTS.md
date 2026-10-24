@@ -118,6 +118,10 @@ command exits with 0 and prints a `dubbed_video:` line whose file exists. Exit c
 3. Translation: the default `ceviri.arka_uc = auto` uses the Codex CLI or the Claude Code CLI when one of them is
    installed and logged in (the text then goes to that service, PRIVACY.md); otherwise the built-in offline
    translator, which only does English to Turkish. Say this in one sentence; do not change the setting silently.
+4. Optional, only if the user wants finished videos on their phone: the Telegram bot
+   (`.claude/skills/telegram-botu-kurulumu/SKILL.md`), then large-file delivery up to 2000 MB with the local Bot API
+   server (`.claude/skills/telegram-buyuk-dosya/SKILL.md`: the user only fetches `api_id` / `api_hash` from
+   my.telegram.org into `.env`; you run `scripts\kur.ps1 -Adim telegram-sunucu` and check `dubla kontrol`).
 
 ## 5. Troubleshooting map
 
@@ -174,6 +178,7 @@ files as runbooks. Index with engine pages: `docs/beceriler/README.md`.
 | Translation backend (Codex, Claude Code, Opus-MT, API keys) | `.claude/skills/ceviri-arka-uclari/SKILL.md` | `docs/engineering/translation.md`, `.env.example` |
 | Resume, failed jobs, GPU queue | `.claude/skills/devam-ve-sorunlu-isler/SKILL.md` | `docs/tarifler/devam_ve_sorunlu_isler.md` |
 | Telegram bot setup | `.claude/skills/telegram-botu-kurulumu/SKILL.md` | `docs/tarifler/telegram_botu.md` |
+| Telegram large files (2000 MB, local Bot API server) | `.claude/skills/telegram-buyuk-dosya/SKILL.md` | `docs/tarifler/telegram_buyuk_dosya.md` |
 | Single stage, Python API, own tool | `.claude/skills/tek-asama-kullanimi-ve-api/SKILL.md` | `docs/mimari.md`, `examples/README.md` |
 | Errors, OOM, ffmpeg, lock, install | `.claude/skills/sorun-giderme/SKILL.md` | `docs/engineering/README.md`, `docs/adr/README.md` |
 | Contribute, add an engine, tests, legal audit | `.claude/skills/katki-ve-motor-ekleme/SKILL.md` | `CONTRIBUTING.md`, `src/dublaj_hatti/kayit.py`, `THIRD_PARTY.md` |

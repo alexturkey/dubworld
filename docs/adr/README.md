@@ -22,5 +22,6 @@ Background and measurements: [../engineering/README.md](../engineering/README.md
 | [0015](0015-tts-engine-set-and-default.md) | Supertonic default TTS; VoxCPM2 and XTTS v2 optional, each in its own process |
 | [0016](0016-rvc-as-post-tts-conversion.md) | RVC voice conversion is a post-TTS layer on the timed mix |
 | [0017](0017-defaults-and-licence-gate.md) | Defaults follow the proven flow within redistributable licences; the rest is opt-in |
+| [0018](0018-local-bot-api-server-for-large-files.md) | Large Telegram deliveries go through a local Bot API server, as playable video |
 
 New ADR: copy the format, take the next number, link it here and from the relevant `docs/engineering/` page.
