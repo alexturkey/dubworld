@@ -320,9 +320,11 @@ def test_kapak_komutu_ve_sonuc_dogrulama(tmp_path):
     pil = pytest.importorskip("PIL.Image")
     from dublaj_hatti.bolum_70_gorsel_uretim.kapak_gorseli import codex_kapak as k
 
-    komut = k.komut_olustur(["codex"], tmp_path, tmp_path, tmp_path / "s.json", tmp_path / "m.json")
+    komut = k.komut_olustur(["codex"], tmp_path / "is", tmp_path / "s.json", tmp_path / "m.json")
     assert komut[:2] == ["codex", "exec"] and "shell_tool" in komut and komut[-1] == "-"
     assert komut[komut.index("--sandbox") + 1] == "workspace-write"
+    # yazma izni yalnız iş klasörüne (çıktı klasörü Codex'e verilmez)
+    assert komut[komut.index("--add-dir") + 1] == komut[komut.index("--cd") + 1] == str(tmp_path / "is")
     calisma = tmp_path / "calisma"
     calisma.mkdir()
     pil.new("RGB", (900, 1600), "navy").save(calisma / "a.png")

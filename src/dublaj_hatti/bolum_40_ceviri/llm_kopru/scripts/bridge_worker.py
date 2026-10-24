@@ -208,11 +208,16 @@ def api_url_dogrula(url: str) -> str:
 
 
 class _YalnizHttpsYonlendirme(urllib.request.HTTPRedirectHandler):
-    """Yönlendirme yalnız https'e; http/file'a düşüş reddedilir (anahtar başlığı açık metne gitmesin)."""
+    """Yönlendirme yalnız https'e ve yalnız izinli sağlayıcı alan adına.
+
+    urllib yönlendirmede Authorization / x-goog-api-key gibi başlıkları yeni adrese olduğu gibi taşır; bu yüzden
+    hedef de api_url_dogrula'dan geçmeli (anahtar izin listesi dışındaki bir sunucuya ya da açık metne gitmesin).
+    """
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if urllib.parse.urlsplit(newurl).scheme != "https":
             raise urllib.error.HTTPError(newurl, code, "https olmayan yönlendirme reddedildi", headers, fp)
+        api_url_dogrula(newurl)
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 

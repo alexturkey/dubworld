@@ -26,7 +26,18 @@ from dublaj_hatti.yapilandirma import SEMA, ayarlari_yukle, esleme_metni, form_e
 
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
 BOSTA_YOKLAMA_SN = 2.0  # kuyruk boşken bekleme; yeni iş eklenince olayla hemen uyanır (boşta ~%0 işlemci)
-__all__ = ["ASAMA_ADLARI", "IsDurumu", "IsYurutucu", "ayar_degisiklikleri", "ayar_formu", "cikti_klasoru_ac"]
+__all__ = ["ARAYUZ_DISI_AYARLAR", "ASAMA_ADLARI", "IsDurumu", "IsYurutucu", "arayuz_ayari_denetle", "ayar_degisiklikleri",
+           "ayar_formu", "cikti_klasoru_ac"]
+# Arayüzden (masaüstü, web, Telegram) değiştirilemeyen ayarlar: yürütülecek yerel programın yolu. Web belirteci ya da
+# bot erişimi olan biri bunları değiştirebilseydi istediği programı çalıştırırdı (SECURITY.md: web belirteci = yerel
+# komut yürütme yetkisi). Değer yalnız ayar dosyasından (ayarlar/kullanici.toml) ya da ortam değişkeninden gelir.
+ARAYUZ_DISI_AYARLAR = frozenset({"ceviri.codex.cli_yolu", "ceviri.claude.cli_yolu"})
+
+
+def arayuz_ayari_denetle(anahtar: str) -> None:
+    if anahtar in ARAYUZ_DISI_AYARLAR:
+        raise ValueError(f"{anahtar} arayüzden değiştirilemez (yerel program yolu); ayarlar/kullanici.toml ya da "
+                         "ortam değişkeni kullanın / not settable from the interface")
 
 
 def ayar_degisiklikleri(yeni: dict[str, Any]) -> list[str]:
@@ -36,6 +47,7 @@ def ayar_degisiklikleri(yeni: dict[str, Any]) -> list[str]:
     for anahtar, deger in yeni.items():
         if anahtar not in SEMA:
             raise ValueError(f"bilinmeyen ayar: {anahtar}")
+        arayuz_ayari_denetle(anahtar)
         if SEMA[anahtar] is dict:  # konuşmacı → ses eşlemesi: sözlük ya da "SPEAKER_00:M2, ..." metni
             if isinstance(deger, str):
                 from dublaj_hatti.yapilandirma import _metin_degeri_coz
@@ -132,6 +144,8 @@ class IsYurutucu:
     def devam(self, job_id: int, asama: str | None = None, yeni_is: bool = False,
               ayar_ifadeleri: list[str] | None = None) -> int:
         """Sorunlu ya da biten işi sürdürür: aşama/ayar verilirse ya da iş bittiyse yeni işe kopyalar, yoksa yerinde."""
+        for ifade in ayar_ifadeleri or []:
+            arayuz_ayari_denetle(str(ifade).split("=", 1)[0].strip())
         kayit = self.depo.getir(job_id)
         if not kayit:
             raise IsHatasi(f"iş bulunamadı: #{job_id}")
@@ -296,6 +310,8 @@ def ayar_formu() -> list[dict[str, Any]]:
     ek = form_ek_bilgisi()  # donanım etiketleri, hedef dil süzgeci, konuşmacı başına ses seçenekleri (yapilandirma)
     form = []
     for anahtar, kural in SEMA.items():
+        if anahtar in ARAYUZ_DISI_AYARLAR:
+            continue
         deger = gecerli.get(anahtar)
         if kural is dict:  # "esleme": metin kutusu "SPEAKER_00:M2, SPEAKER_01:F1"
             tur, secenekler, deger = "esleme", [], esleme_metni(deger or {})

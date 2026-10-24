@@ -9,6 +9,7 @@ import numpy as np
 import soundfile as sf
 
 from .policy import SUPERTONIC_ATEMPO_MAX_FACTOR, SUPERTONIC_ATEMPO_MIN_FACTOR
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 
 def _validate_audio(wav_array: np.ndarray, sample_rate: int) -> None:
@@ -54,7 +55,7 @@ def process_supertonic_atempo_audio(
         output_path = temporary_path / "output.wav"
         sf.write(str(input_path), wav_array, sample_rate, subtype="FLOAT")
         command = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-y",
             "-hide_banner",
             "-loglevel",

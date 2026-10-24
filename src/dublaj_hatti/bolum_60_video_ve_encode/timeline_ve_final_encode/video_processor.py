@@ -37,6 +37,7 @@ import soundfile as sf
 
 from dublaj_hatti.bolum_60_video_ve_encode.kodlayici import nvenc_kullanilabilir
 from dublaj_hatti.bolum_60_video_ve_encode.timeline_ve_final_encode.audio_files import audio_sample_count
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu, ffprobe_yolu
 
 logger = logging.getLogger("dublaj_hatti")
 timeline_boundary_epsilon_seconds = 1e-6
@@ -93,7 +94,7 @@ def _parse_fraction(value: str) -> float:
 
 def get_video_stream_info(video_path: str, count_frames: bool = True) -> VideoStreamInfo:
     cmd = [
-        "ffprobe",
+        ffprobe_yolu(),
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries", "stream=duration,nb_frames,nb_read_frames,avg_frame_rate,r_frame_rate:format=duration",
@@ -172,7 +173,7 @@ def validate_video_decode_probes(
     })
     for probe_start in probe_starts:
         subprocess.run([
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-xerror",
@@ -471,7 +472,7 @@ def apply_timeline_to_audio(
         f.write(filter_complex)
 
     cmd = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel", "error",
         "-y",
@@ -951,7 +952,7 @@ def process_video_with_segments(
             measured_audio_path = os.path.join(work_dir, "audio_new_timeline_max_mb.m4a")
             audio_filter_complex = f"[0:a]{final_audio_filter},asplit=2[pcm][aac]"
             cmd_audio_profile = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -972,7 +973,7 @@ def process_video_with_segments(
             run_profiled_step("final_audio_profile_and_max_mb_audio_encode", cmd_audio_profile, check=True)
         else:
             cmd_audio_profile = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1000,7 +1001,7 @@ def process_video_with_segments(
         if not measured_audio_path:
             measured_audio_path = os.path.join(work_dir, "audio_new_timeline_max_mb.m4a")
             cmd_measured_audio = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1044,7 +1045,7 @@ def process_video_with_segments(
     if not needs_video_processing and not subtitle_filter and not is_size_limited_output(options):
         logger.info("Video hiz ayari gerekmiyor, sadece ses birlestiriliyor")
         cmd = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",
@@ -1060,7 +1061,7 @@ def process_video_with_segments(
     elif not needs_video_processing:
         logger.info("Video hiz ayari gerekmiyor, final video politikasi uygulanacak")
         cmd = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",
@@ -1083,7 +1084,7 @@ def process_video_with_segments(
             validate_profiled("copy_video_subtitle_validate", output_video, total_new_duration)
         except subprocess.CalledProcessError:
             fallback_cmd = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1148,7 +1149,7 @@ def process_video_with_segments(
                 f.write(filter_complex)
 
             cmd = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1203,7 +1204,7 @@ def process_video_with_segments(
                 logger.info("Batch %d CPU libx264 yedek yontem ile tekrar uretiliyor", batch_idx + 1)
                 fallback_video = os.path.join(work_dir, f"temp_batch_{batch_idx}_libx264.mp4")
                 fallback_cmd = [
-                    "ffmpeg",
+                    ffmpeg_yolu(),
                     "-hide_banner",
                     "-loglevel", "error",
                     "-y",
@@ -1287,7 +1288,7 @@ def process_video_with_segments(
 
             final_temp_video = os.path.join(work_dir, "final_concat.mp4")
             cmd_concat = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1303,7 +1304,7 @@ def process_video_with_segments(
             final_temp_video = batch_videos[0]
 
         cmd_final = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",
@@ -1322,7 +1323,7 @@ def process_video_with_segments(
         except subprocess.CalledProcessError:
             logger.info("Final video stream copy mux basarisiz, CPU libx264 yedek yontem deneniyor")
             cmd_final_encode_fallback = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1357,7 +1358,7 @@ def process_video_with_segments(
             if not final_retry_ok:
                 logger.info("Final video birlestirme CPU libx264 yedek yontem ile tekrar uretiliyor")
                 cmd_final_fallback = [
-                    "ffmpeg",
+                    ffmpeg_yolu(),
                     "-hide_banner",
                     "-loglevel", "error",
                     "-y",
@@ -1377,7 +1378,7 @@ def process_video_with_segments(
                 active_final_command = cmd_final_fallback
 
         size_retry_command = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",

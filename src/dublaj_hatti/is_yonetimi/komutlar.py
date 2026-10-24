@@ -50,7 +50,10 @@ def alt_komutlari_ekle(alt: Any, ortak: Callable[[argparse.ArgumentParser], None
                        help="seçili ticari olmayan / şartlı motorun lisans uyarısını okudum, kabul ediyorum")
     ortak(devam)
 
-    calistir = alt.add_parser("is-calistir", help=argparse.SUPPRESS)
+    # İç komut (iş yürütücüsünün alt süreci). Python 3.11 argparse'ı help=SUPPRESS verilen alt komutu yardımda
+    # "==SUPPRESS==" diye listeler; bu yüzden help verilmez ve yardım listesinden (choices eylemleri) çıkarılır.
+    calistir = alt.add_parser("is-calistir")
+    alt._choices_actions = [eylem for eylem in alt._choices_actions if eylem.dest != "is-calistir"]
     calistir.add_argument("is_", metavar="IS", type=int)
     ortak(calistir)
 

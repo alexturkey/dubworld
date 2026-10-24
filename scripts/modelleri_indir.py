@@ -29,6 +29,10 @@ IZINLI_ALAN_ADLARI = ("huggingface.co", "download.pytorch.org", "raw.githubuserc
                       "www.modelscope.cn", "objects.githubusercontent.com", "dl.fbaipublicfiles.com")
 
 
+class BoyutAsildi(Exception):
+    """İnen bayt sayısı manifestteki boyutu geçti (yeniden denenmez)."""
+
+
 def sha256_dosya(yol: Path) -> str:
     ozet = hashlib.sha256()
     with open(yol, "rb") as dosya:
@@ -39,8 +43,14 @@ def sha256_dosya(yol: Path) -> str:
 
 def _guvenli_hedef(kok: Path, goreli: str) -> Path:
     hedef = (kok / goreli).resolve()
-    if not str(hedef).startswith(str((kok / "runtime_assets").resolve())):
-        raise SystemExit(f"manifest hedefi runtime_assets dışında: {goreli}")
+    taban = (kok / "runtime_assets").resolve()
+    # Path.relative_to: önek karşılaştırması "runtime_assets_kotu/..." gibi kardeş klasörü kaçırmaz.
+    try:
+        hedef.relative_to(taban)
+    except ValueError:
+        raise SystemExit(f"manifest hedefi runtime_assets dışında: {goreli}") from None
+    if hedef == taban:
+        raise SystemExit(f"manifest hedefi bir dosya olmalı: {goreli}")
     return hedef
 
 
@@ -52,12 +62,32 @@ def https_dogrula(url: str) -> str:
     return url
 
 
+# Yönlendirme hedefleri: izinli alan adları + bu alan adlarının resmî CDN alt alanları (2026-10 ölçümü:
+# huggingface.co -> us.aws.cdn.hf.co / cas-bridge.xethub.hf.co, github.com -> release-assets.githubusercontent.com).
+IZINLI_YONLENDIRME_SONEKLERI = (".huggingface.co", ".hf.co", ".githubusercontent.com")
+
+
+def yonlendirme_dogrula(url: str) -> str:
+    """Yönlendirme hedefi: yalnız https, kullanıcı:parola@ yok, izinli alan adı ya da izinli CDN soneki."""
+    parca = urllib.parse.urlsplit(url)
+    host = (parca.hostname or "").lower()
+    if (
+        parca.scheme != "https"
+        or parca.username
+        or parca.password
+        or not (host in IZINLI_ALAN_ADLARI or host.endswith(IZINLI_YONLENDIRME_SONEKLERI))
+    ):
+        raise SystemExit(f"izinli olmayan yönlendirme: {parca.scheme}://{host}")
+    return url
+
+
 class _YalnizHttpsYonlendirme(urllib.request.HTTPRedirectHandler):
-    """CDN yönlendirmesi (ör. HF -> depolama) izinli, ama yalnız https'e; http/file'a düşüş reddedilir."""
+    """CDN yönlendirmesi (ör. HF -> depolama) izinli, ama yalnız https'e ve izinli alan adlarına."""
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if urllib.parse.urlsplit(newurl).scheme != "https":
             raise urllib.error.HTTPError(newurl, code, "https olmayan yönlendirme reddedildi", headers, fp)
+        yonlendirme_dogrula(newurl)
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
@@ -78,12 +108,18 @@ def indir(kayit: dict, kok: Path) -> str:
             with _ACICI.open(istek, timeout=60) as yanit, open(gecici, "wb") as cikti:
                 inen, son = 0, time.time()
                 for parca in iter(lambda: yanit.read(1 << 20), b""):
-                    cikti.write(parca)
                     inen += len(parca)
+                    if inen > kayit["boyut"]:
+                        # Manifestteki boyut üst sınırdır: sunucu fazlasını gönderirse diski doldurmadan dur.
+                        raise BoyutAsildi(f"manifest boyutu aşıldı ({inen} > {kayit['boyut']} bayt): {url}")
+                    cikti.write(parca)
                     if time.time() - son > 5:
                         print(f"    {inen / 1e6:.0f}/{kayit['boyut'] / 1e6:.0f} MB", flush=True)
                         son = time.time()
             break
+        except BoyutAsildi as hata:
+            gecici.unlink(missing_ok=True)
+            raise SystemExit(str(hata)) from None
         except OSError as hata:
             if deneme == 3:
                 raise SystemExit(f"indirilemedi ({hata}): {url}") from hata

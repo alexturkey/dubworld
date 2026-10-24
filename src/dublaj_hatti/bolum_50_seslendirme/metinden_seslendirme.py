@@ -15,6 +15,7 @@ import numpy as np
 import soundfile as sf
 
 from dublaj_hatti.bolum_00_omurga.full_metin_dublaji import synthesize_full_text_supertonic
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 
 QUOTE_CHARACTERS = '"\'“”‘’«»‹›„‟‚‛`'
@@ -121,7 +122,7 @@ def encode_metadata_clean_mp3(source_wav_path: str | Path, output_mp3_path: str 
     render_supertonic_constant_gain(source_path, listening_path)
     subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",

@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 from functools import lru_cache
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 logger = logging.getLogger(__name__)
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
@@ -26,9 +27,9 @@ def nvenc_kullanilabilir() -> bool:
     if secim == "auto" and os.environ.get("CUDA_VISIBLE_DEVICES") == "":
         logger.info("Video kodlayıcı: libx264 (işlemci kipi)")
         return False
-    komut = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=s=256x256:d=0.1",
-             "-c:v", "h264_nvenc", "-f", "null", "-"]
     try:
+        komut = [ffmpeg_yolu(), "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "color=s=256x256:d=0.1",
+                 "-c:v", "h264_nvenc", "-f", "null", "-"]
         sonuc = subprocess.run(komut, capture_output=True, text=True, timeout=30, creationflags=NO_WINDOW)
     except (OSError, subprocess.TimeoutExpired) as hata:
         logger.info("Video kodlayıcı: libx264 (NVENC denemesi çalışmadı: %s)", hata)

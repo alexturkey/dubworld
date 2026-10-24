@@ -7,7 +7,8 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "cikti"
-OUTPUT_ENV_NAMES = ("DUBLAJ_OUTPUT_DIR", "OUTPUT_DIR")
+# Yalnız uygulamaya özgü ad: genel "OUTPUT_DIR" başka araçların ortamından sızıp çıktıyı beklenmedik yere yazdırabilirdi.
+OUTPUT_ENV_NAMES = ("DUBLAJ_OUTPUT_DIR",)
 
 
 def _load_project_env() -> None:

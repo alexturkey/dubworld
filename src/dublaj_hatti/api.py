@@ -52,6 +52,7 @@ from dublaj_hatti.bicimler import (
     transkript_oku,
     transkript_olustur,
 )
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import arac_bul
 from dublaj_hatti.kaynak_girdisi import KaynakHatasi, baglanti_turu, kaynak_dogrula
 from dublaj_hatti.lisans_onayi import LisansOnayiGerekli, kapi_adlar, secili_motorlar
 from dublaj_hatti import kayit
@@ -167,7 +168,7 @@ def _calisma_klasoru(ust: Path, ad: str) -> Iterator[Path]:
 
 
 def _ffmpeg() -> str:
-    yol = shutil.which("ffmpeg")
+    yol = arac_bul("ffmpeg")
     if not yol:
         raise AsamaHatasi("ffmpeg bulunamadı: scripts/kur.ps1 -Adim modeller (FFmpeg bu adımla iner) ya da ffmpeg'i PATH'e ekleyin")
     return yol
@@ -543,7 +544,7 @@ def birlestir(video: str | Path, hedef: str | Path, ses: str | Path | None = Non
 
 
 def _medya_suresi(yol: Path) -> float | None:
-    ffprobe = shutil.which("ffprobe")
+    ffprobe = arac_bul("ffprobe")
     if not ffprobe:
         return None
     sonuc = subprocess.run([ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1",

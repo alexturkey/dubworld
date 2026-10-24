@@ -164,8 +164,6 @@ yapay_zeka_etiketi = true
 tam_metin_sure_uyumu = "audio_to_video"
 
 [ileri]
-# Paralel TTS işçisi
-tts_isci = 4
 # TTS yeniden deneme
 tts_deneme = 3
 tts_deneme_bekleme_sn = 2.0

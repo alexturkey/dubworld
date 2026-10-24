@@ -48,6 +48,9 @@ byte-identical, because the measured Turkish quality depends on those exact text
 - Turkish output is unchanged. A golden file (`tests/veri/ceviri_istem_tr_altin.json`) stores SHA-256 hashes of 110
   rendered Turkish artifacts taken before the change: every backend and mode prompt, codex schemas, Claude system and
   stdin texts, Python retry texts and orchestrator jobs. All 110 match.
+- The data/instruction paragraph (`VERI_TALIMAT_AYRIMI`, `istem_guvenligi.py`) is added to the fixed system part by the
+  bridge and Claude backends, not to the templates, so the templates and the 110 golden hashes do not change.
+  `tests/test_istem_veri_ayrimi.py` checks that it comes before the job JSON for every template, backend and mode.
 - Template rendering is tested for all 85 language codes: no placeholder or marker remains, every `ek=` key exists in
   `_genel.md`, and a French prompt body contains no Turkish language name.
 - Output-language check, measured on 192 correct texts (144 Turkish dubbing lines from the prompts, appendix examples

@@ -9,6 +9,7 @@ from typing import Optional
 import torch
 
 from dublaj_hatti.bolum_00_omurga.runtime.asset_paths import torch_home
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 # Neden: toplu 4, 74 dk seste -%20 sure, tepe ~1.69 GB; OOM'da bir kez toplu 1 (ADR 0002). bkz. docs/engineering/pinned-values.md#source-audio-and-separation
 CUDA_BATCH_SIZE = 4
@@ -286,7 +287,7 @@ def clean_audio_with_demucs(
     asr_ready_path = os.path.join(run_dir, "asr_ready.wav")
     try:
         cmd = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel",
             "error",

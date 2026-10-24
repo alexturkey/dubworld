@@ -18,8 +18,12 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import soundfile as sf
 import torch
-if torch.cuda.is_available():
-    torch.backends.cudnn.benchmark = True
+# cuDNN otomatik algoritma seçimi kapalı (kural: docs/engineering/low_vram.md 4; işçilerle aynı). Açıkken her yeni
+# girdi boyunda algoritma süre ölçümüyle seçilir: aynı girdiye koşudan koşuya farklı evrişim algoritması (sonuç
+# bit düzeyinde değişebilir) ve 4 GB Pascal kartta ölçülmüş 200 kata varan yavaşlama. Evrişimli modeller (STT,
+# hizalama, cinsiyet, Demucs, TTS) ayrı süreçte koşar; bu süreçteki GPU modeli Opus-MT evrişimsizdir, yani
+# bugünkü çıktı değişmez. Ayar, ileride süreç içine alınacak modeli korur.
+torch.backends.cudnn.benchmark = False
 torch.set_num_threads(4)
 from dublaj_hatti.bolum_50_seslendirme.tts_orkestratoru.service import (
     TTSBuildResult,
@@ -57,6 +61,7 @@ from dublaj_hatti.bolum_10_kaynak_edinme.adim_50_asr_sesi_hazirlama.arka_plan_se
 )
 from dublaj_hatti.bolum_10_kaynak_edinme.adim_50_asr_sesi_hazirlama.demucs_cleaner import clean_audio_with_demucs
 from dublaj_hatti.bolum_00_omurga.runtime.asset_paths import build_model_cache_env, huggingface_home
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu, ffprobe_yolu
 from dublaj_hatti.bolum_00_omurga.runtime.internet_gateway import run_with_internet_gateway
 from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.flow_modes import (
     get_supertonic_flow_category,
@@ -671,7 +676,6 @@ class DubConfig:
     compute_type: str = "auto"
     device: str = "auto"
     target_lang: str = "tr"
-    max_tts_workers: int = 4
     tts_retry_attempts: int = 3
     tts_retry_delay: float = 2.0
     use_demucs: bool = False
@@ -907,7 +911,7 @@ def _create_asr_leading_pad_audio(audio_path: str, run_dir: str, pad_seconds: fl
     input_duration = _audio_duration_seconds(audio_path)
     delay_ms = int(round(pad_seconds * 1000.0))
     cmd = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel",
         "error",
@@ -1758,7 +1762,7 @@ def _apply_preserved_background_audio(
         mix_filter += ",alimiter=limit=0.95:level=false"
     subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",
@@ -1784,7 +1788,7 @@ def _apply_preserved_background_audio(
         measured_mixed_audio = os.path.join(run_dir, "audio_new_timeline_with_background_max_mb.m4a")
         subprocess.run(
             [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -1808,7 +1812,7 @@ def _apply_preserved_background_audio(
         final_audio_input = measured_mixed_audio
         final_audio_args = ["-c:a", "copy"]
     remux_command = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel", "error",
         "-y",
@@ -1832,7 +1836,7 @@ def _apply_preserved_background_audio(
             )
             max_output_options.video_bitrate_override_kbps = corrected_bitrate
             retry_command = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel", "error",
                 "-y",
@@ -4189,7 +4193,7 @@ def save_wave(path: str, audio: np.ndarray, sample_rate: int) -> None:
 def mux_video_and_audio(input_video: str, dubbed_wav: str, output_video: str) -> None:
     logger.info("Video ile ses birleştiriliyor: %s", output_video)
     cmd = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel",
         "error",
@@ -5687,7 +5691,7 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
         try:
             import subprocess
             result = subprocess.run(
-                ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", output_video],
+                [ffprobe_yolu(), "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", output_video],
                 capture_output=True, text=True, timeout=10, **GIZLI_SUREC
             )
             if result.returncode == 0 and result.stdout.strip():

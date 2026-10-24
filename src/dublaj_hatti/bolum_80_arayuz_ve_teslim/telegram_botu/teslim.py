@@ -40,6 +40,7 @@ from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.guvenlik import (
     gizle,
     izinli_kullanicilar,
 )
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import arac_bul
 
 VIDEO_UZANTILARI = {".mp4", ".mkv", ".mov", ".webm", ".avi"}
 AZAMI_DENEME = 3
@@ -131,7 +132,7 @@ def onizleme_hazirla(yol: Path, gecici: Path) -> tuple[Path, Path | None, dict[s
     """(gönderilecek dosya, küçük resim ya da None, sendVideo ek alanları). ffmpeg/ffprobe yoksa dosya olduğu gibi
     gider (Telegram yine video olarak alır, önizleme alanları eksik kalır). Yeniden kodlama YOK: kalite değişmez."""
     bilgi = video_bilgisi(yol)
-    ffmpeg = shutil.which("ffmpeg")
+    ffmpeg = arac_bul("ffmpeg")
     gonderilecek = yol
     if ffmpeg and (yol.suffix.lower() not in (".mp4", ".mov") or moov_basta_mi(yol) is False):
         kopya = gecici / f"{yol.stem}.mp4"
@@ -220,7 +221,7 @@ def yeniden_deneme_karari(boyut: int, deneme: dict[str, Any], sira: int) -> tupl
 
 def video_bilgisi(yol: Path) -> dict[str, Any]:
     """ffprobe varsa genişlik/yükseklik/süre (oynatıcı önizlemesi için); yoksa boş."""
-    ffprobe = shutil.which("ffprobe")
+    ffprobe = arac_bul("ffprobe")
     if not ffprobe:
         return {}
     try:

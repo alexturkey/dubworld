@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 from pathlib import Path
 
 import soundfile as sf
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import arac_bul
 
 
 def prepare_speaker_input_audio(audio_path: str, work_dir: Path) -> Path:
@@ -15,7 +15,7 @@ def prepare_speaker_input_audio(audio_path: str, work_dir: Path) -> Path:
         raise FileNotFoundError(f"Speaker audio not found: {audio_path}")
     work_dir.mkdir(parents=True, exist_ok=True)
     output_path = work_dir / "speaker_input_16k_mono.wav"
-    ffmpeg = shutil.which("ffmpeg")
+    ffmpeg = arac_bul("ffmpeg")
     if not ffmpeg:
         raise RuntimeError("ffmpeg not found in PATH")
     command = [

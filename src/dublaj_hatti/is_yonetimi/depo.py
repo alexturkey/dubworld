@@ -33,7 +33,7 @@ from dublaj_hatti.bolum_00_omurga.core.pipeline_checkpoint import (
     checkpoint_stage_registry,
     clone_checkpoint_for_resume,
 )
-from dublaj_hatti.bolum_00_omurga.runtime.surec_durumu import process_is_alive
+from dublaj_hatti.bolum_00_omurga.runtime.surec_durumu import process_matches, process_start_time
 from dublaj_hatti.is_yonetimi.asamalar import asama_adi, asama_coz
 from dublaj_hatti.is_yonetimi.bagimlilik import devam_bagimliligi
 from dublaj_hatti.is_yonetimi.secim_denetimi import denetim_yaz
@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     checkpoint_plan_json TEXT NOT NULL DEFAULT '',
     result_json TEXT NOT NULL DEFAULT '',
     pid INTEGER NOT NULL DEFAULT 0,
+    pid_start TEXT NOT NULL DEFAULT '',
     archived INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS jobs_status ON jobs(status);
@@ -125,6 +126,17 @@ def degisiklikleri_coz(eski: dict[str, Any], ifadeler: Sequence[str]) -> dict[st
     return {k: v for k, v in yeni.items() if eski.get(k) != v}
 
 
+def _pid_ve_damga(pid: int | None) -> tuple[int, str]:
+    gercek = int(pid or os.getpid())
+    return gercek, process_start_time(gercek)
+
+
+def _sureci_canli(kayit: Any) -> bool:
+    """Kaydı sahiplenen süreç hâlâ o süreç mi (PID yeniden kullanımı: D3)."""
+    pid = int(kayit["pid"] or 0)
+    return pid > 0 and process_matches(pid, str(kayit["pid_start"] or ""))
+
+
 class IsDeposu:
     def __init__(self, db_yolu: str | Path, cikti_koku: str | Path) -> None:
         self.db_yolu = Path(db_yolu)
@@ -132,6 +144,9 @@ class IsDeposu:
         self.db_yolu.parent.mkdir(parents=True, exist_ok=True)
         with self._baglan() as db:
             db.executescript(_SEMA)
+            sutunlar = {s["name"] for s in db.execute("PRAGMA table_info(jobs)")}
+            if "pid_start" not in sutunlar:  # eski veritabanı (D3 öncesi): damgasız kayıtlar canlılıkla denetlenir
+                db.execute("ALTER TABLE jobs ADD COLUMN pid_start TEXT NOT NULL DEFAULT ''")
 
     # ---- temel -------------------------------------------------------------------------------------------
     @contextmanager
@@ -213,10 +228,10 @@ class IsDeposu:
         with self._baglan(yazma=True) as db:
             imlec = db.execute(
                 f"""UPDATE jobs SET status='processing', started_at=CURRENT_TIMESTAMP, error_message=NULL,
-                           completed_at=NULL, pid=?
+                           completed_at=NULL, pid=?, pid_start=?
                     WHERE job_id=? AND status IN ({yer}) AND (retry_after_at IS NULL OR
                           datetime(retry_after_at) <= datetime('now')) {ek}""",  # noqa: S608 - yalnız '?' yer tutucuları birleştirilir
-                (int(pid or os.getpid()), int(job_id), *beklenen, *((int(job_id),) if tek_yuva else ())),
+                (*_pid_ve_damga(pid), int(job_id), *beklenen, *((int(job_id),) if tek_yuva else ())),
             )
             return imlec.rowcount == 1
 
@@ -326,7 +341,7 @@ class IsDeposu:
                 (arayuz, arayuz),
             ).fetchall():
                 is_kaydi = dict(satir)
-                if int(is_kaydi["pid"] or 0) > 0 and process_is_alive(int(is_kaydi["pid"])):
+                if _sureci_canli(is_kaydi):
                     continue
                 if is_kaydi["status"] == "preparing":
                     db.execute("""UPDATE jobs SET status='queued', pipeline_status='resume_queued', started_at=NULL,
@@ -350,10 +365,10 @@ class IsDeposu:
         iptal = []
         with self._baglan(yazma=True) as db:
             for satir in db.execute(
-                "SELECT job_id, pid FROM jobs WHERE status='processing' AND started_at < datetime('now', ?)",
+                "SELECT job_id, pid, pid_start FROM jobs WHERE status='processing' AND started_at < datetime('now', ?)",
                 (f"-{int(azami_dakika)} minutes",),
             ).fetchall():
-                if int(satir["pid"] or 0) > 0 and process_is_alive(int(satir["pid"])):
+                if _sureci_canli(satir):
                     continue
                 db.execute("""UPDATE jobs SET status='cancelled', completed_at=CURRENT_TIMESTAMP, pid=0,
                                      error_message='Bayat iş iptal edildi (süreç yok)' WHERE job_id=?""",
@@ -512,11 +527,11 @@ class IsDeposu:
               if tek_yuva else "")
         with self._baglan(yazma=True) as db:
             imlec = db.execute(
-                f"""UPDATE jobs SET status='preparing', pipeline_status='resume_preparing', pid=?,
+                f"""UPDATE jobs SET status='preparing', pipeline_status='resume_preparing', pid=?, pid_start=?,
                            started_at=CURRENT_TIMESTAMP, error_message=NULL
                     WHERE job_id=? AND status IN ('queued','deferred') AND source_job_id IS NOT NULL
                           AND run_dir = '' {ek}""",  # noqa: S608 - yalnız '?' yer tutucuları birleştirilir
-                (int(pid or os.getpid()), int(job_id), *((int(job_id),) if tek_yuva else ())),
+                (*_pid_ve_damga(pid), int(job_id), *((int(job_id),) if tek_yuva else ())),
             )
             return imlec.rowcount == 1
 

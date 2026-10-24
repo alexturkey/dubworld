@@ -19,6 +19,7 @@ from dublaj_hatti.bolum_10_kaynak_edinme.akilli_kare_yakalama.detector import (
     detect_content_box,
     lock_box_to_full_width,
 )
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu, ffprobe_yolu
 
 ALGORITHM_VERSION = "temporal_profiles_v6_static_panel_gate"
 DEFAULT_SAMPLE_COUNT = 24
@@ -274,7 +275,7 @@ def make_preview(samples, selected_box, output_path):
 
 def probe_media(media_path):
     command = [
-        "ffprobe",
+        ffprobe_yolu(),
         "-v",
         "error",
         "-show_entries",
@@ -331,7 +332,7 @@ def validate_output(input_path, output_path, crop_info):
 
 def create_crop_video(input_path, output_path, crop_info, video_preset="veryfast", crf=18):
     command = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-nostdin",
         "-hide_banner",
         "-loglevel",

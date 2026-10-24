@@ -7,7 +7,8 @@ Pinned models (`scripts/modeller.json`, step `hizalama`; `scripts/kur.ps1 -Adim 
 models (step `hizalama-diller`; `scripts/kur.ps1 -Adim hizalama-diller`): `ja`, `zh`. Every other language uses the
 WhisperX default model, which is not pinned; it can be fetched only on purpose with `DUBLAJ_CEVRIMICI=1` (the runtime
 is offline by default, `cli.ortami_hazirla`). The WhisperX defaults for fr, de, es, it are VoxPopuli models under
-CC BY-NC 4.0 (non-commercial); the message says so.
+CC BY-NC 4.0 (non-commercial): loading one needs the license acceptance `whisperx_ctc_<lang>` (`lisans_onayi`, the one
+license gate); `ctc_lisans_denetle` is called right before every WhisperX default-model load.
 """
 
 from __future__ import annotations
@@ -135,6 +136,16 @@ def ctc_modeli_gerekli(dil: str, cache_dir: str | Path | None = None, motor: str
         f"{CEVRIMICI_DEGISKENI}=1 ile çalıştırıp WhisperX'in varsayılan modelini indirin. Bilerek Whisper zamanı için: "
         f"transkripsiyon.motor=faster-whisper.{lisans}"
     )
+
+
+def ctc_lisans_denetle(dil: str, onay: bool = False) -> None:
+    """Raise `lisans_onayi.LisansOnayiGerekli` before a non-commercial WhisperX default CTC model (fr/de/es/it) is
+    loaded without acceptance. Accepted once (`--lisans-onay`, GUI/web dialog, or DUBLAJ_LISANS_ONAY=1) it passes."""
+    from dublaj_hatti.lisans_onayi import ctc_lisans_adi, kapi_adlar
+
+    ad = ctc_lisans_adi(dil)
+    if ad:
+        kapi_adlar([ad], onay)
 
 
 def kontrol_ozeti(cache_dir: str | Path | None = None) -> dict[str, bool]:

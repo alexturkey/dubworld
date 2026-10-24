@@ -81,6 +81,16 @@ def normalize_language_code(lang_code: str) -> str:
     return lang_code.split("-")[0].split("_")[0].lower()
 
 
+def _ctc_lisans_denetle(dil: str) -> None:
+    """Ticari olmayan WhisperX varsayılan CTC modeli (fr/de/es/it) lisans onayı olmadan yüklenmez (kapalı kalır)."""
+    kok = str(Path(__file__).resolve().parents[3])
+    if kok not in sys.path:
+        sys.path.insert(0, kok)
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import ctc_lisans_denetle
+
+    ctc_lisans_denetle(dil)
+
+
 def get_custom_align_model_name(lang_code: str) -> str:
     return ALIGN_MODEL_BY_LANGUAGE.get(normalize_language_code(lang_code), "")
 
@@ -457,6 +467,7 @@ def load_alignment_model(whisperx_module, detected_language, device, cache_dir, 
             model_dir=str(Path(cache_dir) / "hub")
         )
     else:
+        _ctc_lisans_denetle(detected_language)
         model_a, metadata = whisperx_module.load_align_model(
             language_code=detected_language,
             device=device
@@ -805,6 +816,7 @@ def transcribe_audio(
                 model_dir=str(Path(cache_dir) / "hub")
             )
         else:
+            _ctc_lisans_denetle(detected_language)
             model_a, metadata = whisperx.load_align_model(
                 language_code=detected_language,
                 device=device

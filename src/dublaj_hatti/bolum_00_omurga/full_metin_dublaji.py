@@ -8,6 +8,7 @@ from typing import Any, Iterable
 
 import numpy as np
 import soundfile as sf
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 
 @dataclass(frozen=True)
@@ -170,7 +171,7 @@ def fit_audio_to_speech_window(
     sf.write(input_path, source_audio, sample_rate, subtype="FLOAT")
     subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",

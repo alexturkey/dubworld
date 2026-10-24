@@ -9,6 +9,7 @@ import math
 import re
 from pathlib import Path
 from typing import Dict
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 
 SUPERTONIC_FINAL_AUDIO_PROFILE_FILTER = "supertonic_constant_gain_v1"
@@ -34,7 +35,7 @@ def constant_gain_from_measurements(integrated_lufs, true_peak_dbtp):
 def resolve_supertonic_final_audio_profile(source_path):
     result = subprocess.run(
         [
-            "ffmpeg", "-hide_banner", "-nostdin", "-i", str(source_path),
+            ffmpeg_yolu(), "-hide_banner", "-nostdin", "-i", str(source_path),
             "-af", "loudnorm=I=-18:TP=-1.3:LRA=7:print_format=json",
             "-f", "null", "-",
         ],
@@ -67,7 +68,7 @@ def resolve_supertonic_final_audio_profile(source_path):
 def render_supertonic_constant_gain(source_path, output_path):
     profile = resolve_supertonic_final_audio_profile(source_path)
     subprocess.run(
-        ["ffmpeg", "-hide_banner", "-nostdin", "-loglevel", "error", "-y",
+        [ffmpeg_yolu(), "-hide_banner", "-nostdin", "-loglevel", "error", "-y",
          "-i", str(source_path), "-af", profile["filter"], "-c:a", "pcm_s24le", str(output_path)],
         check=True, capture_output=True,
     )
@@ -90,7 +91,7 @@ def apply_supertonic_final_audio_profile(run_dir: str, output_video: str, sample
     profile = resolve_supertonic_final_audio_profile(raw_audio)
     subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",
@@ -106,7 +107,7 @@ def apply_supertonic_final_audio_profile(run_dir: str, output_video: str, sample
     shutil.copy2(profiled_audio, timeline_audio)
     subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",

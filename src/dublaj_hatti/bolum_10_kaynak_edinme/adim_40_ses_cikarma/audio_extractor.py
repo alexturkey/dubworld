@@ -5,6 +5,7 @@ import wave
 from typing import Optional
 
 import numpy as np
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu
 
 
 def _rms_db(sum_square: float, sample_count: int) -> float:
@@ -82,7 +83,7 @@ def _fix_inverted_stereo_phase(wav_path: str, logger: Optional[object] = None) -
 
     temp_path = f"{wav_path}.phasefix.tmp.wav"
     cmd = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel",
         "error",
@@ -133,7 +134,7 @@ def extract_audio(
         stereo_path = f"{wav_path}.stereo.tmp.wav"
         try:
             cmd = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel",
                 "error",
@@ -152,7 +153,7 @@ def extract_audio(
             subprocess.run(cmd, check=True)
             _fix_inverted_stereo_phase(stereo_path, logger=logger)
             cmd = [
-                "ffmpeg",
+                ffmpeg_yolu(),
                 "-hide_banner",
                 "-loglevel",
                 "error",
@@ -174,7 +175,7 @@ def extract_audio(
                 os.remove(stereo_path)
     else:
         cmd = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel",
             "error",

@@ -87,6 +87,7 @@ def align_candidate_batch(job: dict) -> dict:
                     model_dir=str(Path(cache_dir) / "hub"),
                 )
             else:
+                _ctc_lisans_denetle(language)
                 model_a, metadata = whisperx.load_align_model(language_code=language, device=device)
             apply_wildcard_token_index_patch(whisperx, torch)
             aligned = whisperx.align(
@@ -136,6 +137,16 @@ def align_candidate_batch(job: dict) -> dict:
             "words": [],
             "elapsed_seconds": round(perf_counter() - started, 3),
         }
+
+
+def _ctc_lisans_denetle(dil: str) -> None:
+    """Ticari olmayan WhisperX varsayılan CTC modeli (fr/de/es/it) lisans onayı olmadan yüklenmez (kapalı kalır)."""
+    kok = str(Path(__file__).resolve().parents[3])
+    if kok not in sys.path:
+        sys.path.insert(0, kok)
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import ctc_lisans_denetle
+
+    ctc_lisans_denetle(dil)
 
 
 def main() -> int:

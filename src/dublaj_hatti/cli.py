@@ -22,7 +22,6 @@ import argparse
 import json
 import logging
 import os
-import shutil
 import sys
 from collections.abc import Callable
 from typing import Any
@@ -30,6 +29,7 @@ from typing import Any
 from dublaj_hatti import __version__
 from dublaj_hatti.asama_komutlari import ASAMA_KOMUTLARI
 from dublaj_hatti.asama_komutlari import alt_komutlari_ekle as asama_komutlarini_ekle
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import arac_bul
 from dublaj_hatti.is_yonetimi.komutlar import IS_KOMUTLARI, alt_komutlari_ekle
 from dublaj_hatti.kaynak_girdisi import VIDEO_UZANTILARI  # noqa: F401  (eski içe aktaranlar için)
 from dublaj_hatti.yapilandirma import PROJE_KOKU, AyarHatasi, ayarlari_ic_ice, ayarlari_yukle
@@ -182,7 +182,7 @@ def kontrol_raporu(ayar: dict[str, Any] | None = None) -> dict[str, Any]:
         "surum": __version__,
         "python": sys.version.split()[0],
         "donanim": donanim_ozeti(),
-        "ffmpeg": shutil.which("ffmpeg") or "",
+        "ffmpeg": arac_bul("ffmpeg") or "",
         **{grup: kayit.durum(grup) for grup in ("stt", "ceviri", "tts", "ek")},
         "deneysel": {m.ad: m.deneysel for m in kayit.MOTORLAR if m.deneysel},
         "ctc_modelleri": kontrol_ozeti((ayar or {}).get("genel.onbellek_klasoru") or None),

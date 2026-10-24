@@ -58,14 +58,15 @@ def test_her_ceviri_secenegi_kopruye_baglanir():
 
 
 def test_arayuz_yalniz_degisenleri_gonderir():
-    from dublaj_hatti.is_yurutucu import ayar_degisiklikleri, ayar_formu
+    from dublaj_hatti.is_yurutucu import ARAYUZ_DISI_AYARLAR, ayar_degisiklikleri, ayar_formu
 
     assert ayar_degisiklikleri({"video.cq": ayarlari_yukle()["video.cq"]}) == []
     assert ayar_degisiklikleri({"video.cq": 30, "ses.atempo": False}) == ["video.cq=30", "ses.atempo=false"]
     with pytest.raises(ValueError):
         ayar_degisiklikleri({"genel.cikti_klasoru": "a\nb"})
     form = ayar_formu()
-    assert {alan["anahtar"] for alan in form} == set(SEMA)  # eşleme (konuşmacı başına ses) dahil
+    # eşleme (konuşmacı başına ses) dahil; yerel program yolları arayüzde yok (Düzeltme A, D2)
+    assert {alan["anahtar"] for alan in form} == set(SEMA) - ARAYUZ_DISI_AYARLAR
     esleme = next(alan for alan in form if alan["anahtar"] == "ses.konusmaci_sesleri")
     assert esleme["tur"] == "esleme" and esleme["deger"] == ""
     assert ayar_degisiklikleri({"ses.konusmaci_sesleri": ""}) == []  # boş eşleme = değişiklik yok

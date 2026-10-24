@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffmpeg_yolu, ffprobe_yolu
+from dublaj_hatti.bolum_50_seslendirme.altyazili_dublaj.yazi_tipi import yazi_tipi
 
 
 VALID_SUBTITLE_MODES = {"none", "segment", "word", "rollup"}
@@ -313,7 +315,7 @@ def attach_segment_gender_to_words(words: list[dict[str, Any]], debug_dir: Path,
 
 def probe_video_size(video_path: str) -> tuple[int, int]:
     cmd = [
-        "ffprobe",
+        ffprobe_yolu(),
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries", "stream=width,height",
@@ -487,7 +489,7 @@ def calculate_single_word_fit_font_size(words: list[dict[str, Any]], box_width: 
 
 @lru_cache(maxsize=64)
 def load_subtitle_font(font_size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype("arial.ttf", int(font_size))
+    return yazi_tipi(int(font_size))  # Arial, yoksa DejaVu Sans / Liberation Sans, en sonda Pillow gömülü
 
 
 def split_words_evenly(words: list[dict[str, Any]], max_lines: int) -> list[list[dict[str, Any]]]:
@@ -547,7 +549,7 @@ def build_line_text(
 def run_ffmpeg_subtitle_burn(input_video: str, ass_path: str, output_video: str) -> None:
     filter_value = f"subtitles='{escape_ffmpeg_filter_path(ass_path)}'"
     cmd = [
-        "ffmpeg",
+        ffmpeg_yolu(),
         "-hide_banner",
         "-loglevel", "error",
         "-y",
@@ -568,7 +570,7 @@ def run_ffmpeg_subtitle_burn(input_video: str, ass_path: str, output_video: str)
         subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError:
         fallback = [
-            "ffmpeg",
+            ffmpeg_yolu(),
             "-hide_banner",
             "-loglevel", "error",
             "-y",

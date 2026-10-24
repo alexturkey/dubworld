@@ -141,15 +141,26 @@ SEMA: dict[str, Any] = {
     "video.max_mb": int,
     "video.yapay_zeka_etiketi": bool,
     "video.tam_metin_sure_uyumu": ["audio_to_video", "video_to_audio"],
-    "ileri.tts_isci": int,
     "ileri.tts_deneme": int,
     "ileri.tts_deneme_bekleme_sn": float,
     "ileri.ornekleme_hizi": int,
     "ileri.pyannote_konusmaci_ayrimi": bool,
 }
-SINIRLAR = {"video.cq": (0, 51), "ses.hiz": (0.5, 2.0), "ileri.tts_isci": (1, 16), "ileri.tts_deneme": (1, 10),
+SINIRLAR = {"video.cq": (0, 51), "ses.hiz": (0.5, 2.0), "ileri.tts_deneme": (1, 10),
             "video.max_mb": (0, 100000), "ileri.ornekleme_hizi": (8000, 96000), "ses.rvc_perde": (-24, 24),
             "ses.ema_hiz": (0.5, 2.0), "ses.ema_tohum": (0, 2**31 - 1)}
+
+
+# Kaldırılan ayarlar: eski ayar dosyasında ya da --ayar'da görülürse uyarıyla yok sayılır (hata değil).
+# ileri.tts_isci: hiçbir aşama okumuyordu (TTS segmentleri sırayla üretilir; Düzeltme A, madde 14).
+KALDIRILAN_AYARLAR = frozenset({"ileri.tts_isci"})
+
+
+def _kaldirilanlari_ayikla(ayar: dict[str, Any], kaynak: str) -> dict[str, Any]:
+    for anahtar in sorted(KALDIRILAN_AYARLAR & set(ayar)):
+        logger.warning("%s: '%s' ayarı kaldırıldı (etkisi yoktu), yok sayılıyor", kaynak, anahtar)
+        del ayar[anahtar]
+    return ayar
 
 
 def _duzlestir(veri: dict, onek: str = "") -> dict[str, Any]:
@@ -447,7 +458,7 @@ def esleme_metni(esleme: dict[str, str]) -> str:
 
 def toml_oku(yol: Path) -> dict[str, Any]:
     with open(yol, "rb") as dosya:
-        return _duzlestir(tomllib.load(dosya))
+        return _kaldirilanlari_ayikla(_duzlestir(tomllib.load(dosya)), str(yol))
 
 
 def ayarlari_yukle(dosya: str | Path | None = None, ustune: list[str] | None = None) -> dict[str, Any]:
@@ -467,6 +478,9 @@ def ayarlari_yukle(dosya: str | Path | None = None, ustune: list[str] | None = N
         if "=" not in ifade:
             raise AyarHatasi(f"--ayar biçimi bolum.ad=deger olmalı: {ifade!r}")
         anahtar, ham = (parca.strip() for parca in ifade.split("=", 1))
+        if anahtar in KALDIRILAN_AYARLAR:
+            _kaldirilanlari_ayikla({anahtar: ham}, "--ayar")
+            continue
         ust, _, alt = anahtar.rpartition(".")
         if anahtar not in SEMA and SEMA.get(ust) is dict:  # --ayar ses.konusmaci_sesleri.SPEAKER_00=M2
             ayar[ust] = {**(ayar.get(ust) or {}), alt: ham}
@@ -708,7 +722,6 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
         compute_type=hesap_tipi,
         device=cihaz,
         target_lang=ayar["genel.hedef_dil"],
-        max_tts_workers=ayar["ileri.tts_isci"],
         tts_retry_attempts=ayar["ileri.tts_deneme"],
         tts_retry_delay=ayar["ileri.tts_deneme_bekleme_sn"],
         use_demucs=kip in ("clean", "preserve_background"),

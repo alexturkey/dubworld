@@ -19,6 +19,9 @@ Tasarım sınırları:
 - Web arayüzü (`dubla-web`) yalnız `127.0.0.1`'e bağlanır; Host başlığı `127.0.0.1`/`localhost` değilse istek
   reddedilir (DNS yeniden bağlama), her API isteği oturum belirteci ister (çerez + başlık), Origin aynı köken olmalı,
   JSON gövdesi ve yükleme boyutu sınırlıdır, dosya yolları çıktı klasörünün dışına çıkamaz.
+- Web belirteci = yerel komut yürütme yetkisi: belirteci ele geçiren bu bilgisayarda iş başlatabilir (indirme, model,
+  alt süreç). Belirteci paylaşmayın. Yerel program yolu ayarları (`ceviri.codex.cli_yolu`, `ceviri.claude.cli_yolu`)
+  web, masaüstü arayüzü ve Telegram'dan değiştirilemez; yalnız ayar dosyası ya da komut satırı `--ayar` ile.
 - Kurulum indirmeleri sabit adres + SHA-256 ile doğrulanır (`scripts/modeller.json`); model indirici yalnız https ve
   izinli alan adlarını kabul eder, https olmayan yönlendirmeyi reddeder. Python paketleri hash'li kilit dosyalarından
   `--require-hashes` ile kurulur. Çalışma anında model indirme kapalıdır (`HF_HUB_OFFLINE=1`).
@@ -56,6 +59,9 @@ Design limits:
 - The web interface (`dubla-web`) binds to `127.0.0.1` only; requests whose Host header is not `127.0.0.1`/`localhost`
   are rejected (DNS rebinding), every API request needs the session token (cookie + header), Origin must be same-origin,
   JSON bodies and uploads are size-limited, and file paths cannot leave the output folder.
+- Web token = local command execution: whoever obtains the token can start jobs on this computer (downloads, models,
+  child processes). Do not share it. The local program path settings (`ceviri.codex.cli_yolu`, `ceviri.claude.cli_yolu`)
+  cannot be changed from the web UI, the desktop UI or Telegram; only from a settings file or the command-line `--ayar`.
 - Install downloads use fixed addresses verified by SHA-256 (`scripts/modeller.json`); the model downloader accepts
   only https and allow-listed hosts and refuses non-https redirects. Python packages install from hashed lock files with
   `--require-hashes`. Model downloads are off at run time (`HF_HUB_OFFLINE=1`).

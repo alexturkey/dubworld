@@ -29,11 +29,11 @@ import time
 import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from dublaj_hatti.bolum_00_omurga.runtime.surec_durumu import process_is_alive
+from dublaj_hatti.bolum_00_omurga.runtime.surec_durumu import process_matches, process_start_time
 
 KILIT_KLASORU_ENV = "DUBLAJ_KILIT_KLASORU"
 KAYNAKLAR: dict[str, dict[str, Any]] = {
@@ -66,20 +66,27 @@ def _kaynak_tanimi(kaynak: str) -> dict[str, Any]:
 
 
 def _simdi() -> datetime:
-    return datetime.now().replace(microsecond=0)
+    """UTC (saat dilimi bilgili): yaz/kış saati geçişi ve saat dilimi değişimi süreyi kaydırmaz (D3)."""
+    return datetime.now(UTC).replace(microsecond=0)
+
+
+def _zaman_oku(deger: str) -> datetime:
+    """Kayıttaki zaman; saat dilimsiz eski kayıtlar yerel saat kabul edilip UTC'ye çevrilir."""
+    zaman = datetime.fromisoformat(deger)
+    return zaman.astimezone(UTC) if zaman.tzinfo is None else zaman
 
 
 def _kilit_gecerli_mi(kayit: dict[str, Any]) -> bool:
     son = str(kayit.get("son_gecerlilik") or "")
     if son:
         try:
-            if datetime.fromisoformat(son) < _simdi():
+            if _zaman_oku(son) < _simdi():
                 return False
         except ValueError:
             return False
     pid = int(kayit.get("pid") or 0)
     if pid > 0:
-        return process_is_alive(pid)
+        return process_matches(pid, str(kayit.get("pid_baslangic") or ""))
     return bool(son)
 
 
@@ -134,6 +141,7 @@ def kilit_al(kaynak: str, sahip: str, amac: str, pid: int | None = None, sure_da
     kayit = {
         "kaynak": kaynak, "sahip": sahip, "amac": amac,
         "pid": int(os.getpid() if pid is None else pid),
+        "pid_baslangic": process_start_time(int(os.getpid() if pid is None else pid)),
         "baslangic": baslangic.isoformat(),
         "son_gecerlilik": (baslangic + timedelta(minutes=sure_dakika)).isoformat() if sure_dakika else "",
         "kimlik": uuid.uuid4().hex,

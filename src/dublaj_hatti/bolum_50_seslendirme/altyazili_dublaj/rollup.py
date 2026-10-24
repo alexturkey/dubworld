@@ -4,7 +4,7 @@ import json
 import math
 from pathlib import Path
 
-from PIL import ImageFont
+from dublaj_hatti.bolum_50_seslendirme.altyazili_dublaj.yazi_tipi import yazi_tipi, yazi_tipi_ozeti
 
 
 PROFILE_PATH = Path(__file__).with_name('rollup_profile.json')
@@ -36,7 +36,7 @@ def load_profile():
 
 def rollup_contract_inputs():
     profile = load_profile()
-    return {'rollup_profile': profile, 'rollup_renderer_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), 'rollup_font_sha256': hashlib.sha256(Path(ImageFont.truetype('arial.ttf', 62).path).read_bytes()).hexdigest()}
+    return {'rollup_profile': profile, 'rollup_renderer_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), 'rollup_font_sha256': yazi_tipi_ozeti()}
 
 
 def group_words(words, width, font, pause_seconds=1.0):
@@ -89,7 +89,7 @@ def build_ass(words, width, height, duration, profile=None):
     container_width = round(width * width_ratio)
     while font_size >= profile['minimum_font_size']:
         measure_font_size = round(font_size * 55 / 62)
-        font = ImageFont.truetype('arial.ttf', measure_font_size)
+        font = yazi_tipi(measure_font_size)
         if all(font.getlength(str(w['word']).strip()) <= container_width - 2 * profile['horizontal_padding'] for w in words):
             break
         font_size -= 1

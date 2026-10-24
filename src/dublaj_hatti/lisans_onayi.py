@@ -12,6 +12,10 @@ TEK KAPI: her giriş yolu aynı `kapi_adlar()`dan geçer (tests/test_lisans_kapi
   * iş çalıştırıcı (is_yonetimi.calistirici; kuyruk, devam, arayüz alt süreci) → kapi, son savunma: onaysız iş
     çalışmaz, "lisans onayı yok" ile durur (soru sormaz)
 
+Motor olmayan lisans kalemleri de aynı kapıdan geçer: WhisperX'in fr/de/es/it varsayılan CTC hizalama modelleri
+(torchaudio VoxPopuli, CC BY-NC 4.0) `whisperx_ctc_<dil>` adıyla (`MODEL_LISANSLARI`). Dil ayarda sabitse iş başında
+sorulur; dil otomatikse modeli yükleyen işçi (`ctc_model_durumu.ctc_lisans_denetle`) onaysız yüklemez.
+
 Kendi onay akışı olan motorlar burada sorulmaz: XTTS v2 (`ses.xtts_lisans_onayi`, CPML onayı) ve RVC
 (`ses.rvc_riza_onayi`, sesin sahibinin rızası).
 """
@@ -29,6 +33,17 @@ from dublaj_hatti import kayit
 ONAY_DOSYASI_ORTAM = "DUBLAJ_LISANS_ONAY_DOSYASI"
 ONAY_ORTAM = "DUBLAJ_LISANS_ONAY"  # "1" / "evet" / "yes": etkileşimsiz ortamda açık kabul (CI, betik)
 KENDI_ONAYI_OLAN = frozenset({"xtts", "rvc"})
+# Motor kaydında olmayan, onay isteyen model lisansları: ad -> (lisans satırı, görünen ad).
+CTC_LISANS_ONEKI = "whisperx_ctc_"
+CTC_NC_LISANSI = "CC BY-NC 4.0 (torchaudio VoxPopuli wav2vec2; ticari olmayan / non-commercial)"
+CTC_NC_DILLERI = ("fr", "de", "es", "it")
+MODEL_LISANSLARI: dict[str, tuple[str, str]] = {
+    f"{CTC_LISANS_ONEKI}{dil}": (CTC_NC_LISANSI, f"WhisperX varsayılan CTC hizalama modeli ({dil})")
+    for dil in CTC_NC_DILLERI
+}
+# Kelime zamanını CTC kutusundan (ya da WhisperX hizalamasından) alan STT motorları; "auto" yedeği faster_whisper_ctc.
+CTC_KULLANAN_STT = frozenset({"auto", "faster_whisper_ctc", "whisperx", "crisperwhisper_turbo_ct2",
+                              "whisper_cpp_cpu_align", "youtube_translate"})
 _KABUL = {"1", "e", "evet", "y", "yes", "true", "kabul", "kabul ediyorum", "i accept"}
 
 
@@ -59,15 +74,40 @@ def _kayitlar() -> dict[str, Any]:
     return veri if isinstance(veri, dict) else {}
 
 
+def _lisans_satiri(ad: str) -> str:
+    if ad in MODEL_LISANSLARI:
+        return MODEL_LISANSLARI[ad][0]
+    return kayit.motor(ad).lisans
+
+
 def onayli(ad: str) -> bool:
     kayit_ = _kayitlar().get(ad)
-    return isinstance(kayit_, dict) and kayit_.get("lisans") == kayit.motor(ad).lisans
+    return isinstance(kayit_, dict) and kayit_.get("lisans") == _lisans_satiri(ad)
+
+
+def _model_uyarisi(ad: str) -> str:
+    lisans, gorunen = MODEL_LISANSLARI[ad]
+    return (
+        f"LİSANS UYARISI: {gorunen} = {lisans}. Bu dilde kelime zamanı (kaynak transkript ya da dublaj altyazısı) "
+        "bu modelle hizalanır; ticari işte kullanmayın. Ayrıntı: THIRD_PARTY.md, docs/diller.md.\n"
+        f"LICENSE NOTICE: {gorunen} = {lisans}. Word timing in this language (source transcript or dub subtitles) is "
+        "aligned with this model; do not use it for commercial work. Details: THIRD_PARTY.md, docs/diller.md."
+    )
+
+
+def ctc_lisans_adi(dil: str) -> str | None:
+    """Ticari olmayan varsayılan CTC modeli kullanan dil için lisans kalemi adı (`whisperx_ctc_fr`), yoksa None."""
+    kod = str(dil or "").strip().lower().split("-", 1)[0].split("_", 1)[0]
+    ad = f"{CTC_LISANS_ONEKI}{kod}"
+    return ad if ad in MODEL_LISANSLARI else None
 
 
 def onay_gereken(ad: str) -> str | None:
     """Motor onay istiyorsa iki dilli uyarı metni, istemiyorsa None (bilinmeyen ad da None)."""
     if ad in KENDI_ONAYI_OLAN:
         return None
+    if ad in MODEL_LISANSLARI:
+        return _model_uyarisi(ad)
     try:
         return kayit.lisans_uyarisi(ad)
     except KeyError:
@@ -85,8 +125,18 @@ def secili_motorlar(ayar: dict[str, Any], stt_motoru: str | None = None) -> list
             adlar.append(turbo.ad)
     elif stt:
         adlar.append(stt)
-    if ayar.get("genel.is_turu", "dublaj") == "dublaj" and ayar.get("ses.motor"):
+    dublaj = ayar.get("genel.is_turu", "dublaj") == "dublaj"
+    if dublaj and ayar.get("ses.motor"):
         adlar.append(str(ayar["ses.motor"]))
+    # Ticari olmayan CTC modeli: kaynak dil sabitse ve STT CTC kullanıyorsa; dublajda hedef dilin altyazı hizalaması.
+    if (stt_motoru or stt) in CTC_KULLANAN_STT:
+        ad = ctc_lisans_adi(str(ayar.get("transkripsiyon.kaynak_dil") or ""))
+        if ad:
+            adlar.append(ad)
+    if dublaj:
+        ad = ctc_lisans_adi(str(ayar.get("genel.hedef_dil") or ""))
+        if ad:
+            adlar.append(ad)
     return adlar
 
 
@@ -104,7 +154,7 @@ def onayla(adlar: list[str]) -> Path:
     veri = _kayitlar()
     simdi = datetime.now(UTC).isoformat(timespec="seconds")
     for ad in adlar:
-        veri[ad] = {"lisans": kayit.motor(ad).lisans, "tarih_utc": simdi}
+        veri[ad] = {"lisans": _lisans_satiri(ad), "tarih_utc": simdi}
     yol = onay_dosyasi()
     yol.parent.mkdir(parents=True, exist_ok=True)
     gecici = yol.with_suffix(".tmp")

@@ -420,7 +420,9 @@ yedek yok (ADR 0009).
 192 doğru metinde 0 yanlış alarm; başka hedefe karşı ≥ 4 kelimelik ya da CJK metinde yakalama %68,9 (661/960), yazı
 sistemi farkında %100; 4 kelimeden kısa metinde %25 (yanlış alarmı önlemek için bilinçli). Açık: gerçek LLM denemesi
 (fr, ja), istemlerdeki İngilizce kaynak varsayımı, bölge varyantı (`pt-BR`, `zh-TW`) ayrımı, tahmini hız değerlerinin
-ölçümü.
+ölçümü. Veri/talimat ayrımı paragrafı (`VERI_TALIMAT_AYRIMI`, `istem_guvenligi.py`) şablonlara değil, köprü ve Claude
+arka uçlarının sabit sistem kısmına eklenir; şablonlar ve 110 altın özet değişmez. `tests/test_istem_veri_ayrimi.py`
+her şablon × arka uç × kipte paragrafın iş JSON'undan önce geldiğini denetler.
 
 ### Değerlendirilen alternatifler
 Dil başına ayrı istem dosyası (elle kopyalanan düzeltmeler kayar); istemleri nötr İngilizceye çevirmek (Türkçe çıktıyı

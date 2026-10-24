@@ -32,6 +32,7 @@ from .config import (
     upload_timeout_grace_seconds,
 )
 from .cost import ExchangeRateError, calculate_cost, calculate_try_cost, fetch_usd_try_rate
+from dublaj_hatti.bolum_00_omurga.runtime.arac_yolu import ffprobe_yolu
 
 
 class ElevenLabsScribeError(RuntimeError):
@@ -58,7 +59,7 @@ def _file_sha256(path: Path) -> str:
 
 def _audio_duration_seconds(path: Path) -> float:
     result = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
+        [ffprobe_yolu(), "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
         capture_output=True,
         text=True,
         timeout=30,

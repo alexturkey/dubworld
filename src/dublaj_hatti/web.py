@@ -33,7 +33,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from dublaj_hatti import __version__
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, varsayilan_depo_yolu
-from dublaj_hatti.is_yurutucu import IsYurutucu, ayar_formu, cikti_klasoru_ac
+from dublaj_hatti.is_yurutucu import IsYurutucu, arayuz_ayari_denetle, ayar_formu, cikti_klasoru_ac
 from dublaj_hatti.yapilandirma import SEMA, AyarHatasi, ayarlari_yukle
 
 JSON_SINIRI = 64 * 1024
@@ -336,6 +336,7 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
             metin = ("true" if deger else "false") if isinstance(deger, bool) else str(deger)
             if anahtar not in SEMA or any(c in metin for c in "\r\n\x00"):
                 raise ValueError(f"geçersiz ayar: {anahtar}")
+            arayuz_ayari_denetle(anahtar)
             ifadeler.append(f"{anahtar}={metin}")
         hedef = self.uygulama.yurutucu.devam(no, asama=asama, yeni_is=bool(veri.get("yeni_is")),
                                              ayar_ifadeleri=ifadeler)
