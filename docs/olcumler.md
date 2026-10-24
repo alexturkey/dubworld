@@ -28,6 +28,9 @@ the first public release. Everything below was produced on this machine; nothing
 | 30 s English clip, `segment_sync`, `preserve_background` (Demucs), speaker gender voices, segment subtitles, Claude Code translation | GPU | 744 s, exit 0 (ran in parallel with the next row) |
 | 45 s English clip, `full_text`, `preserve_background`, one manual voice (M1), `single_pass_2`, segment subtitles, Claude Code translation | CPU | ≈ 1390 s, completed (ran in parallel with the previous row) |
 | Short LLM translation test, 3 segments to French / Japanese, Codex CLI | – | 16.9 s / 12.8 s, output language check passed |
+| 40 s Japanese clip (shouting, little speech), `segment_sync`, automatic source language, Claude Code translation | GPU | 426 s, exit 0 (language detected as Japanese; the Japanese CTC model was downloaded once with `DUBLAJ_CEVRIMICI=1`) |
+| 35 s Chinese clip, `segment_sync`, automatic source language, Claude Code translation | CPU | 383 s, exit 0 (Chinese CTC model downloaded once; Whisper returned only part of the speech, see the limits below) |
+| Short LLM translation test, 2 segments to French / Japanese, Claude Code CLI | – | 8 s / 8 s, output language check passed |
 
 ## Reading the numbers
 
@@ -36,6 +39,7 @@ the first public release. Everything below was produced on this machine; nothing
 - Dub times on this 4 GB Pascal card are several times the clip length; most of it is transcription, Demucs and
   model loading, not speech synthesis. Two jobs running at the same time share the CPU and slow each other down.
 - The uv download cache (`runtime_assets/onbellek/uv`) is only needed for reinstalling; it can be deleted.
+- Limits seen: on the Chinese clip with burned-in subtitles faster-whisper (large-v3-turbo) returned two segments for ≈ 35 s of continuous speech and skipped the first ≈ 10 s; on the Japanese clip it turned shouting into a long "ああ…" line. Languages other than English and Turkish need their CTC model downloaded once (`DUBLAJ_CEVRIMICI=1`); otherwise the job stops after transcription.
 
 ---
 
@@ -68,6 +72,9 @@ Aşağıdaki her şey bu makinede üretildi; makalelerden ya da başka README'le
 | 30 sn İngilizce parça, `segment_sync`, `preserve_background` (Demucs), konuşmacı cinsiyetine göre ses, segment altyazı, Claude Code çevirisi | GPU | 744 sn, çıkış 0 (sonraki satırla aynı anda koştu) |
 | 45 sn İngilizce parça, `full_text`, `preserve_background`, tek elle seçilmiş ses (M1), `single_pass_2`, segment altyazı, Claude Code çevirisi | İşlemci | ≈ 1390 sn, tamamlandı (önceki satırla aynı anda koştu) |
 | Kısa LLM çeviri denemesi, 3 segment Fransızca / Japonca, Codex CLI | – | 16,9 sn / 12,8 sn, çıktı dili denetimi geçti |
+| 40 sn Japonca parça (bağırma, az konuşma), `segment_sync`, otomatik kaynak dili, Claude Code çevirisi | GPU | 426 sn, çıkış 0 (dil Japonca tespit edildi; Japonca CTC modeli bir kez `DUBLAJ_CEVRIMICI=1` ile indi) |
+| 35 sn Çince parça, `segment_sync`, otomatik kaynak dili, Claude Code çevirisi | İşlemci | 383 sn, çıkış 0 (Çince CTC modeli bir kez indi; Whisper konuşmanın yalnız bir kısmını döndürdü, aşağıdaki sınırlara bakın) |
+| Kısa LLM çeviri denemesi, 2 segment Fransızca / Japonca, Claude Code CLI | – | 8 sn / 8 sn, çıktı dili denetimi geçti |
 
 ### Sayıları okumak
 
@@ -75,3 +82,4 @@ Aşağıdaki her şey bu makinede üretildi; makalelerden ya da başka README'le
 - Bu 4 GB Pascal kartta dublaj süresi parça süresinin birkaç katıdır; çoğu konuşma sentezi değil, yazıya dökme, Demucs ve
   model yüklemedir. Aynı anda koşan iki iş işlemciyi paylaşır ve birbirini yavaşlatır.
 - uv indirme önbelleği (`runtime_assets/onbellek/uv`) yalnız yeniden kurulum içindir; silinebilir.
+- Görülen sınırlar: yakılmış altyazılı Çince parçada faster-whisper (large-v3-turbo) ≈ 35 sn kesintisiz konuşma için iki segment döndürdü ve ilk ≈ 10 sn'yi atladı; Japonca parçada bağırmayı uzun bir "ああ…" satırına çevirdi. İngilizce ve Türkçe dışındaki dillerin CTC modeli bir kez indirilmelidir (`DUBLAJ_CEVRIMICI=1`); yoksa iş yazıya dökmeden sonra durur.

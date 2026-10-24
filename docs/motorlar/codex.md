@@ -26,6 +26,7 @@
 - `401 Unauthorized` although logged in → an invalid `OPENAI_API_KEY` in your environment.
 - `codex.ps1` blocked → use `codex.cmd`.
 - Ladder: `codex --version` → `codex login status` → `codex exec --skip-git-repo-check "Reply only with OK."`.
+- Usage quota used up → `codex exec` may wait without answering instead of failing. The bridge gives each translation job a fixed budget of 900 s (worker `--timeout 900`, orchestrator 960 s; not a setting); retries stay inside it, and on timeout the whole Codex process tree is closed and the job stops with `codex_timeout`. Check `codex login status` / your plan, or switch to `ceviri.arka_uc = claude_code` / `yerel`.
 
 **Related:** [translation.md](../engineering/translation.md) · [ADR 0008](../adr/0008-translation-backend-order.md) · [THIRD_PARTY.md §2 online services](../../THIRD_PARTY.md)
 
@@ -71,6 +72,7 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 - Oturum açık olduğu hâlde `401 Unauthorized` → ortamınızda geçersiz bir `OPENAI_API_KEY` var.
 - `codex.ps1` engellendi → `codex.cmd` kullanın.
 - Sıralı kontrol: `codex --version` → `codex login status` → `codex exec --skip-git-repo-check "Reply only with OK."`.
+- Kullanım kotası bitti → `codex exec` hata vermek yerine cevapsız bekleyebilir. Köprü her çeviri işine 900 sn sabit bütçe verir (işçi `--timeout 900`, orkestratör 960 sn; ayar değildir); yeniden denemeler de bu bütçe içinde kalır, zaman aşımında Codex süreç ağacının tamamı kapatılır ve iş `codex_timeout` ile durur. `codex login status` / planınızı denetleyin ya da `ceviri.arka_uc = claude_code` / `yerel` seçin.
 
 **İlgili:** [translation.md](../engineering/translation.md) · [ADR 0008](../adr/0008-translation-backend-order.md) · [THIRD_PARTY.md §2 çevrimiçi hizmetler](../../THIRD_PARTY.md)
 
