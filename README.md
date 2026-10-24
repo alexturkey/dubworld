@@ -66,7 +66,7 @@ Reference machine: 4 GB Pascal GPU, Windows 10; method and all rows in [docs/olc
 ## Limits
 
 - Without CrisperWhisper (optional engine 13), faster-whisper may skip speech or invent text in Chinese and Japanese (seen: the first ≈ 10 s of a Chinese clip skipped; shouting turned into a long "ああ…" line).
-- CI tests the CPU only; the GPU path was run by hand on one 4 GB Pascal card. Newer cards (RTX 50), Linux and macOS were not tried.
+- CI tests the CPU only; the GPU path was run by hand on one 4 GB Pascal card. Newer cards (RTX 50), Linux and macOS were not tried; the installed GPU libraries carry kernels for Pascal to RTX 50 and Maxwell uses the CPU profile ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - The offline translator does English to Turkish only; other pairs need the Codex / Claude Code CLI or an API backend.
 - Word timing for source languages other than English and Turkish: Japanese and Chinese with `scripts/kur.ps1 -Adim hizalama-diller`, others after one run with `DUBLAJ_CEVRIMICI=1`.
 - Not tried end to end: XTTS-v2 real install, RVC, the Telegram bot against the real service, CrisperWhisper engines; Moonshine is experimental.
@@ -112,6 +112,7 @@ Each sibling keeps its own license, install and issues; pinned commits make the 
   your local law apply.
 - **Non-commercial engines.** CrisperWhisper 2.0 and XTTS-v2 are non-commercial only (off by default). Check the
   **Commercial?** column of [THIRD_PARTY.md](THIRD_PARTY.md) before any paid or client work.
+  The word-timing models for fr / de / es / it source audio (CC BY-NC 4.0) are non-commercial too and ask for consent on first use.
 
 ## License and credits
 

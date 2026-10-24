@@ -64,7 +64,7 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 ## 制限
 
 - CrisperWhisper（任意のエンジン 13）がない場合、faster-whisper は中国語と日本語で発話を飛ばしたり内容を作り出したりすることがあります（確認例：中国語クリップの最初の約 10 秒が抜けた、叫び声が長い "ああ…" の行になった）。
-- CI は CPU のみをテストします。GPU 経路は 4 GB Pascal カード 1 枚で手動実行しました。新しいカード（RTX 50）、Linux、macOS は未検証です。
+- CI は CPU のみをテストします。GPU 経路は 4 GB Pascal カード 1 枚で手動実行しました。新しいカード（RTX 50）、Linux、macOS は未検証です。インストールされる GPU ライブラリは Pascal から RTX 50 までのカーネルを含み、Maxwell は CPU プロファイルを使います（[GPU runtime matrix](docs/installation.md#1-system-requirements)）。
 - オフライン翻訳は英語→トルコ語のみです。他の言語の組み合わせには Codex / Claude Code CLI または API バックエンドが必要です。
 - 英語とトルコ語以外の元言語の単語タイミング：日本語と中国語は `scripts/kur.ps1 -Adim hizalama-diller`、その他は `DUBLAJ_CEVRIMICI=1` で一度実行した後。
 - エンドツーエンド未検証：XTTS-v2 の実インストール、RVC、実サービスに接続した Telegram ボット、CrisperWhisper エンジン。Moonshine は実験的です。
@@ -108,6 +108,7 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
   サイトの規約と地域の法律が適用されます。
 - **非商用エンジン。** CrisperWhisper 2.0 と XTTS-v2 は非商用利用のみです（既定ではオフ）。有償または顧客向けの作業の前に
   [THIRD_PARTY.md](THIRD_PARTY.md) の **Commercial?** 列を確認してください。
+  fr / de / es / it の元音声用の単語タイミングモデル（CC BY-NC 4.0）も非商用で、初回使用時に同意を求めます。
 
 ## ライセンスとクレジット
 
@@ -119,4 +120,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->
+<!-- i18n-source: README.md sha256:f2fa696c207c -->

@@ -2,7 +2,7 @@
 # commit'te derlenir. Kullanım: dubla-telegram sunucu kur --kaynaktan (hazır imaj yerine).
 # Çalışma: --local (2000 MB), iş klasörü /var/lib/telegram-bot-api, geçici klasör /tmp/telegram-bot-api.
 # Kimlik değerleri imaja girmez; çalışırken ortam değişkeni olarak verilir (TELEGRAM_API_ID, TELEGRAM_API_HASH).
-FROM debian:bookworm-slim AS derleme
+FROM debian:bookworm-slim@sha256:7ff6ba31527b9e336162fa061746c366c4b2032f4d2cff2078bea43f78efe3f8 AS derleme
 ARG COMMIT
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates make git zlib1g-dev libssl-dev \
     gperf cmake g++ && rm -rf /var/lib/apt/lists/*
@@ -12,7 +12,7 @@ RUN git clone --recursive https://github.com/tdlib/telegram-bot-api.git /kaynak 
     && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local .. \
     && cmake --build . --target install -j "$(nproc)"
 
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:7ff6ba31527b9e336162fa061746c366c4b2032f4d2cff2078bea43f78efe3f8
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates zlib1g libssl3 \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --home /var/lib/telegram-bot-api telegram-bot-api \

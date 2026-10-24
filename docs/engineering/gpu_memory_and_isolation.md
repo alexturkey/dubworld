@@ -149,8 +149,8 @@ Model file size is not VRAM need: one speech-enhancement model with 213 MB of we
 
 ## 9. Open items
 
-1. The main pipeline module still sets `cudnn.benchmark = True` and `torch.set_num_threads(4)`, contradicting
-   rule 4. Workers are unaffected because they are separate processes; anything run in-process inherits it.
+1. Resolved: the main pipeline module now sets `cudnn.benchmark = False` like the workers (rule 4;
+   `dubber.py:21-26`). It still sets `torch.set_num_threads(4)`; its only in-process GPU model (Opus-MT) is not convolutional.
 2. `PYTORCH_CUDA_ALLOC_CONF` (`expandable_segments`), hardware-accelerated GPU scheduling and the
    memory-fraction guard were never tried in code.
 3. The trigger of the intermittent WhisperX OOM is unknown.

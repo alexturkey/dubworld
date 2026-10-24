@@ -67,7 +67,7 @@ Máquina de referencia: GPU Pascal de 4 GB, Windows 10; método y todas las fila
 ## Límites
 
 - Sin CrisperWhisper (motor opcional 13), faster-whisper puede saltarse habla o inventar texto en chino y japonés (visto: se saltaron los primeros ≈ 10 s de un clip en chino; unos gritos se convirtieron en una larga línea "ああ…").
-- La CI solo prueba la CPU; la ruta GPU se ejecutó a mano en una tarjeta Pascal de 4 GB. No se probaron tarjetas nuevas (RTX 50), Linux ni macOS.
+- La CI solo prueba la CPU; la ruta GPU se ejecutó a mano en una tarjeta Pascal de 4 GB. No se probaron tarjetas nuevas (RTX 50), Linux ni macOS; las bibliotecas GPU instaladas incluyen kernels de Pascal a RTX 50 y Maxwell usa el perfil CPU ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - El traductor sin conexión solo traduce de inglés a turco; otros pares necesitan Codex / Claude Code CLI o un backend por API.
 - Tiempo por palabra para idiomas de origen distintos de inglés y turco: japonés y chino con `scripts/kur.ps1 -Adim hizalama-diller`, el resto tras una ejecución con `DUBLAJ_CEVRIMICI=1`.
 - Sin probar de extremo a extremo: instalación real de XTTS-v2, RVC, el bot de Telegram contra el servicio real, motores CrisperWhisper; Moonshine es experimental.
@@ -113,6 +113,7 @@ Cada repositorio hermano mantiene su propia licencia, instalación e incidencias
   que puedes descargar; se aplican las condiciones del sitio y tu legislación local.
 - **Motores no comerciales.** CrisperWhisper 2.0 y XTTS-v2 son solo para uso no comercial (desactivados por defecto).
   Revisa la columna **Commercial?** de [THIRD_PARTY.md](THIRD_PARTY.md) antes de cualquier trabajo de pago o para clientes.
+  Los modelos de tiempo por palabra para audio de origen en fr / de / es / it (CC BY-NC 4.0) también son no comerciales y piden consentimiento en el primer uso.
 
 ## Licencia y créditos
 
@@ -124,4 +125,4 @@ Privacidad (qué se queda en local, qué recibe un servicio en la nube): PRIVACY
 > This translation may lag; English is authoritative. Esta traducción puede ir con retraso; la versión inglesa es la que
 > vale. Fuente: README.md (marca de sincronización abajo). Traducción automática (Claude); se agradecen PR de corrección.
 
-<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->
+<!-- i18n-source: README.md sha256:f2fa696c207c -->

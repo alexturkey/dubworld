@@ -154,8 +154,8 @@ Model dosya boyutu VRAM ihtiyacı değildir: 213 MB ağırlığı olan bir konu�
 
 ## 9. Açık maddeler
 
-1. Ana hat modülü hâlâ `cudnn.benchmark = True` ve `torch.set_num_threads(4)` ayarlıyor; bu 4. kurala aykırı.
-   İşçiler ayrı süreç oldukları için etkilenmez; süreç içinde çalıştırılan her şey bunu devralır.
+1. Kapandı: ana hat modülü artık işçiler gibi `cudnn.benchmark = False` ayarlıyor (4. kural; `dubber.py:21-26`).
+   `torch.set_num_threads(4)` duruyor; süreç içindeki tek GPU modeli (Opus-MT) evrişimli değildir.
 2. `PYTORCH_CUDA_ALLOC_CONF` (`expandable_segments`), donanım hızlandırmalı GPU zamanlaması ve bellek oranı koruması
    kodda hiç denenmedi.
 3. Aralıklı WhisperX OOM'unun tetikleyicisi bilinmiyor.

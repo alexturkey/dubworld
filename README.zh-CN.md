@@ -62,7 +62,7 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 ## 局限
 
 - 未安装 CrisperWhisper（可选引擎 13）时，faster-whisper 在中文和日语上可能漏掉语音或编造内容（实际观察：一段中文片段的前 ≈ 10 秒被跳过；喊叫变成了一长串 "ああ…"）。
-- CI 只测试 CPU；GPU 路径在一张 4 GB Pascal 显卡上手动运行。较新的显卡（RTX 50）、Linux 和 macOS 未测试。
+- CI 只测试 CPU；GPU 路径在一张 4 GB Pascal 显卡上手动运行。较新的显卡（RTX 50）、Linux 和 macOS 未测试；安装的 GPU 库包含从 Pascal 到 RTX 50 的内核，Maxwell 使用 CPU 配置（[GPU runtime matrix](docs/installation.md#1-system-requirements)）。
 - 离线翻译器只支持英语到土耳其语；其他语言对需要 Codex / Claude Code CLI 或 API 后端。
 - 英语和土耳其语以外源语言的词级时间：日语和中文用 `scripts/kur.ps1 -Adim hizalama-diller`，其他语言需用 `DUBLAJ_CEVRIMICI=1` 运行一次。
 - 未做端到端测试：XTTS-v2 实际安装、RVC、连接真实服务的 Telegram 机器人、CrisperWhisper 引擎；Moonshine 为实验性。
@@ -104,6 +104,7 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 - **下载。** 可选的 `youtube`（yt-dlp）和 `galeri`（gallery-dl）扩展仅用于你拥有或有权下载的内容；网站条款和你所在地的法律适用。
 - **非商业引擎。** CrisperWhisper 2.0 和 XTTS-v2 仅限非商业使用（默认关闭）。在任何付费或客户工作之前，请查看
   [THIRD_PARTY.md](THIRD_PARTY.md) 的 **Commercial?** 一栏。
+  fr / de / es / it 源音频的词级时间模型（CC BY-NC 4.0）同样仅限非商业使用，首次使用时会请求同意。
 
 ## 许可证与致谢
 
@@ -115,4 +116,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->
+<!-- i18n-source: README.md sha256:f2fa696c207c -->

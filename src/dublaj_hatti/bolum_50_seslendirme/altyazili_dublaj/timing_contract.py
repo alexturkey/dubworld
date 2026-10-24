@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Any
 
 SUBTITLE_TIMING_CONTRACT_SCHEMA_VERSION = 1
-# Segment TTS motorlarının hepsi (dubber.SEGMENT_TTS_ENGINES) aynı sözleşmeyi yazar ve okur; "edge" kaynak uyumu için kalır.
-SUPPORTED_ENGINES = {"edge", "supertonic", "xtts", "voxcpm2", "ema_lightning"}
+# Segment TTS motorlarının hepsi (dubber.SEGMENT_TTS_ENGINES) aynı sözleşmeyi yazar ve okur.
+SUPPORTED_ENGINES = {"supertonic", "xtts", "voxcpm2", "ema_lightning"}
 
 
 def write_subtitle_timing_contract(

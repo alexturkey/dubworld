@@ -120,3 +120,11 @@ def test_yonlendirme_yalniz_https():
         isleyici.redirect_request(istek, None, 302, "Found", {}, "http://huggingface.co/x")
     yeni = isleyici.redirect_request(istek, None, 302, "Found", {}, "https://cdn-lfs.huggingface.co/x")
     assert yeni.full_url.startswith("https://")
+
+
+def test_telegram_dockerfile_taban_imaji_ozetle_sabit():
+    # Etiket başka imaja taşınabilir; her FROM satırı @sha256 özetiyle sabit olmalı (docs/engineering/pinned-values.md).
+    satirlar = [s for s in (KOK / "scripts" / "telegram_bot_api.Dockerfile").read_text(encoding="utf-8").splitlines()
+                if s.startswith("FROM ")]
+    assert len(satirlar) == 2
+    assert all(re.match(r"FROM \S+@sha256:[0-9a-f]{64}(\s|$)", s) for s in satirlar), satirlar

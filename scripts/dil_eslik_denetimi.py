@@ -62,9 +62,17 @@ CIFTLER: list[tuple[str, str]] = [
 ADR_KLASORU = "docs/adr"
 ADR_TR = "docs/muhendislik/kararlar.md"
 TEK_DOSYA_KALIPLARI = (
-    "PRIVACY.md", "SECURITY.md", "CONTRIBUTING.md", "ETHICS.md",
-    "docs/motorlar/*.md", "docs/tarifler/*.md",
-    "docs/diller.md", "docs/donanim.md", "docs/sesler.md", "docs/mimari.md", "docs/olcumler.md",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "ETHICS.md",
+    "docs/motorlar/*.md",
+    "docs/tarifler/*.md",
+    "docs/diller.md",
+    "docs/donanim.md",
+    "docs/sesler.md",
+    "docs/mimari.md",
+    "docs/olcumler.md",
     "docs/beceriler/README.md",
 )
 SATIR_ICI = ("docs/README.md",)
@@ -137,8 +145,14 @@ class Denetci:
         self.kati = kati
         self.hatalar: list[str] = []
         self.uyarilar: list[str] = []
-        self.sayac = {"çift/pairs": 0, "adr": 0, "tek dosya/in-file": 0, "satır içi/inline": 0, "readme çeviri": 0,
-                      "muaf/exempt": 0}
+        self.sayac = {
+            "çift/pairs": 0,
+            "adr": 0,
+            "tek dosya/in-file": 0,
+            "satır içi/inline": 0,
+            "readme çeviri": 0,
+            "muaf/exempt": 0,
+        }
         self._git = (kok / ".git").exists()
 
     # --- yardımcılar
@@ -149,9 +163,14 @@ class Denetci:
         if not self._git:
             return None
         try:
-            cikti = subprocess.run(["git", "log", "-1", "--format=%ct", "--", goreli], cwd=self.kok,
-                                   capture_output=True, text=True, timeout=20,
-                                   creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+            cikti = subprocess.run(
+                ["git", "log", "-1", "--format=%ct", "--", goreli],
+                cwd=self.kok,
+                capture_output=True,
+                text=True,
+                timeout=20,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            )
             return int(cikti.stdout.strip()) if cikti.stdout.strip() else None
         except (OSError, ValueError, subprocess.SubprocessError):
             return None
@@ -173,8 +192,10 @@ class Denetci:
             return
         y_en, y_tr = yapi_cikar(satirlar(p_en)), yapi_cikar(satirlar(p_tr))
         if y_en != y_tr:
-            self.hatalar.append(f"{en} ↔ {tr}: yapı farklı / structure differs{self._yeni_taraf(en, tr)}\n"
-                                f"      EN {y_en.ozet()}\n      TR {y_tr.ozet()}")
+            self.hatalar.append(
+                f"{en} ↔ {tr}: yapı farklı / structure differs{self._yeni_taraf(en, tr)}\n"
+                f"      EN {y_en.ozet()}\n      TR {y_tr.ozet()}"
+            )
 
     def adrler(self) -> None:
         klasor = self.kok / ADR_KLASORU
@@ -201,8 +222,10 @@ class Denetci:
             no = dosya.name[:4]
             numaralar.add(no)
             if not re.fullmatch(r"\d{4}-[a-z0-9-]+\.md", dosya.name) or TR_ADI & set(dosya.stem.split("-")):
-                self.hatalar.append(f"{self._goreli(dosya)}: ADR dosya adı İngilizce ve küçük harf-tire olmalı / "
-                                    "ADR file name must be English kebab-case")
+                self.hatalar.append(
+                    f"{self._goreli(dosya)}: ADR dosya adı İngilizce ve küçük harf-tire olmalı / "
+                    "ADR file name must be English kebab-case"
+                )
             if no not in bolumler:
                 self.hatalar.append(f"{self._goreli(dosya)}: {ADR_TR} içinde '## {no}' bölümü yok / section missing")
                 continue
@@ -210,10 +233,15 @@ class Denetci:
             y_en = yapi_cikar(satirlar(dosya))
             y_tr = yapi_cikar(bolumler[no])
             if (y_en.baslik_toplami, y_en.tablo_satiri, y_en.kod_blogu) != (
-                    y_tr.baslik_toplami, y_tr.tablo_satiri, y_tr.kod_blogu):
-                self.hatalar.append(f"{self._goreli(dosya)} ↔ {ADR_TR}#{no}: yapı farklı / structure differs"
-                                    f"{self._yeni_taraf(self._goreli(dosya), ADR_TR)}\n"
-                                    f"      EN {y_en.ozet(False)}\n      TR {y_tr.ozet(False)}")
+                y_tr.baslik_toplami,
+                y_tr.tablo_satiri,
+                y_tr.kod_blogu,
+            ):
+                self.hatalar.append(
+                    f"{self._goreli(dosya)} ↔ {ADR_TR}#{no}: yapı farklı / structure differs"
+                    f"{self._yeni_taraf(self._goreli(dosya), ADR_TR)}\n"
+                    f"      EN {y_en.ozet(False)}\n      TR {y_tr.ozet(False)}"
+                )
         for no in sorted(set(bolumler) - numaralar):
             self.hatalar.append(f"{ADR_TR}#{no}: İngilizce ADR dosyası yok / English ADR missing")
 
@@ -227,21 +255,27 @@ class Denetci:
             return
         if len(bolucu) == 1:
             # Biçim A: İngilizce gövde, sonra "## Türkçe". İlk satırdaki H1 iki dilin ortak başlığıdır.
-            en_par, tr_par = metin[1:bolucu[0]], metin[bolucu[0] + 1:]
+            en_par, tr_par = metin[1 : bolucu[0]], metin[bolucu[0] + 1 :]
         elif len(bolucu) == 2:
             # Biçim B: "## EN ... ## TR" ya da tersi.
-            a, b = metin[bolucu[0] + 1:bolucu[1]], metin[bolucu[1] + 1:]
+            a, b = metin[bolucu[0] + 1 : bolucu[1]], metin[bolucu[1] + 1 :]
             ilk_tr = bool(TR_ISARETI.search(metin[bolucu[0]]))
             en_par, tr_par = (b, a) if ilk_tr else (a, b)
         else:
-            self.hatalar.append(f"{ad}: {len(bolucu)} dil başlığı var, 1 ya da 2 beklenir / expected 1 or 2 "
-                                "language headings")
+            self.hatalar.append(
+                f"{ad}: {len(bolucu)} dil başlığı var, 1 ya da 2 beklenir / expected 1 or 2 language headings"
+            )
             return
         y_en, y_tr = yapi_cikar(en_par), yapi_cikar(tr_par)
         if (y_en.baslik_toplami, y_en.tablo_satiri, y_en.kod_blogu) != (
-                y_tr.baslik_toplami, y_tr.tablo_satiri, y_tr.kod_blogu):
-            self.hatalar.append(f"{ad}: EN ve TR yarıları farklı / halves differ\n"
-                                f"      EN {y_en.ozet(False)}\n      TR {y_tr.ozet(False)}")
+            y_tr.baslik_toplami,
+            y_tr.tablo_satiri,
+            y_tr.kod_blogu,
+        ):
+            self.hatalar.append(
+                f"{ad}: EN ve TR yarıları farklı / halves differ\n"
+                f"      EN {y_en.ozet(False)}\n      TR {y_tr.ozet(False)}"
+            )
 
     def satir_ici(self, dosya: Path) -> None:
         self.sayac["satır içi/inline"] += 1
@@ -250,8 +284,9 @@ class Denetci:
             if satir.lstrip().startswith("```"):
                 kod = not kod
             if not kod and re.match(r"#{1,6}\s", satir) and " / " not in satir:
-                self.hatalar.append(f"{self._goreli(dosya)}:{no}: başlık iki dilli değil / heading not bilingual: "
-                                    f"{satir.strip()}")
+                self.hatalar.append(
+                    f"{self._goreli(dosya)}:{no}: başlık iki dilli değil / heading not bilingual: {satir.strip()}"
+                )
 
     def readme_cevirileri(self) -> None:
         kaynak = self.kok / "README.md"
@@ -272,14 +307,21 @@ class Denetci:
             if not m:
                 self.hatalar.append(f"{ad}: i18n-source işareti yok / marker missing")
             elif m.group(1) != ozet:
-                hedef.append(f"{ad}: README.md değişti, çeviri eşitlenmedi / README.md changed since this translation"
-                             f" (işaret/marker {m.group(1)}, şimdi/now {ozet})")
+                hedef.append(
+                    f"{ad}: README.md değişti, çeviri eşitlenmedi / README.md changed since this translation"
+                    f" (işaret/marker {m.group(1)}, şimdi/now {ozet})"
+                )
             y = yapi_cikar(metin.splitlines())
             if (y.basliklar.get(2, 0), y.tablo_satiri, y.kod_blogu) != (
-                    y_en.basliklar.get(2, 0), y_en.tablo_satiri, y_en.kod_blogu):
-                hedef.append(f"{ad}: bölüm yapısı README.md'den farklı / section structure differs\n"
-                             f"      EN H2 {y_en.basliklar.get(2, 0)} · tablo {y_en.tablo_satiri} · kod {y_en.kod_blogu}"
-                             f"\n      {dil} H2 {y.basliklar.get(2, 0)} · tablo {y.tablo_satiri} · kod {y.kod_blogu}")
+                y_en.basliklar.get(2, 0),
+                y_en.tablo_satiri,
+                y_en.kod_blogu,
+            ):
+                hedef.append(
+                    f"{ad}: bölüm yapısı README.md'den farklı / section structure differs\n"
+                    f"      EN H2 {y_en.basliklar.get(2, 0)} · tablo {y_en.tablo_satiri} · kod {y_en.kod_blogu}"
+                    f"\n      {dil} H2 {y.basliklar.get(2, 0)} · tablo {y.tablo_satiri} · kod {y.kod_blogu}"
+                )
             for diger in ["README.md", "README.tr.md", *(f"README.{d}.md" for d in README_DILLERI)]:
                 if diger != ad and f"({diger})" not in metin:
                     self.hatalar.append(f"{ad}: dil çubuğunda {diger} bağlantısı yok / language bar link missing")
@@ -313,8 +355,10 @@ class Denetci:
         for yol in sorted(hepsi):
             ad = self._goreli(yol)
             if ad not in bilinen:
-                self.hatalar.append(f"{ad}: sınıflandırılmamış belge (scripts/dil_eslik_denetimi.py listelerine "
-                                    "ekleyin) / unclassified document")
+                self.hatalar.append(
+                    f"{ad}: sınıflandırılmamış belge (scripts/dil_eslik_denetimi.py listelerine "
+                    "ekleyin) / unclassified document"
+                )
         return 1 if self.hatalar else 0
 
 

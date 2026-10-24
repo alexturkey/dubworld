@@ -68,7 +68,7 @@ Referenzrechner: Pascal-GPU mit 4 GB, Windows 10; Methode und alle Zeilen in [do
 ## Grenzen
 
 - Ohne CrisperWhisper (optionale Engine 13) kann faster-whisper auf Chinesisch und Japanisch Sprache überspringen oder Text erfinden (beobachtet: die ersten ≈ 10 s eines chinesischen Clips fehlten; Geschrei wurde zu einer langen Zeile "ああ…").
-- Die CI testet nur die CPU; der GPU-Pfad wurde von Hand auf einer Pascal-Karte mit 4 GB ausgeführt. Neuere Karten (RTX 50), Linux und macOS wurden nicht getestet.
+- Die CI testet nur die CPU; der GPU-Pfad wurde von Hand auf einer Pascal-Karte mit 4 GB ausgeführt. Neuere Karten (RTX 50), Linux und macOS wurden nicht getestet; die installierten GPU-Bibliotheken enthalten Kernel von Pascal bis RTX 50, Maxwell nutzt das CPU-Profil ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - Der Offline-Übersetzer kann nur Englisch→Türkisch; andere Sprachpaare brauchen die Codex / Claude Code CLI oder ein API-Backend.
 - Wort-Zeitstempel für andere Quellsprachen als Englisch und Türkisch: Japanisch und Chinesisch mit `scripts/kur.ps1 -Adim hizalama-diller`, andere nach einem Lauf mit `DUBLAJ_CEVRIMICI=1`.
 - Nicht durchgängig getestet: echte Installation von XTTS-v2, RVC, der Telegram-Bot mit dem echten Dienst, CrisperWhisper-Engines; Moonshine ist experimentell.
@@ -116,6 +116,7 @@ Jedes Schwester-Repository hat eigene Lizenz, Installation und Issues; feste Com
   dir gehören oder die du herunterladen darfst; es gelten die Bedingungen der Website und dein lokales Recht.
 - **Nicht-kommerzielle Engines.** CrisperWhisper 2.0 und XTTS-v2 sind nur für nicht-kommerzielle Nutzung (standardmäßig
   aus). Prüfe vor bezahlter Arbeit oder Kundenaufträgen die Spalte **Commercial?** in [THIRD_PARTY.md](THIRD_PARTY.md).
+  Die Wort-Zeitmodelle für fr / de / es / it als Ausgangssprache (CC BY-NC 4.0) sind ebenfalls nicht kommerziell und fragen bei der ersten Nutzung nach Zustimmung.
 
 ## Lizenz und Danksagung
 
@@ -127,4 +128,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->
+<!-- i18n-source: README.md sha256:f2fa696c207c -->

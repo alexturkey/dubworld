@@ -66,7 +66,7 @@ Başvuru makinesi: 4 GB Pascal GPU, Windows 10; yöntem ve bütün satırlar [do
 ## Sınırlar
 
 - CrisperWhisper (isteğe bağlı 13. motor) yokken faster-whisper Çince ve Japoncada konuşmayı atlayabilir ya da uydurabilir (görülen: bir Çince parçanın ilk ≈ 10 sn'si atlandı; bağırma uzun bir "ああ…" satırına dönüştü).
-- CI yalnız işlemciyi sınar; GPU yolu tek bir 4 GB Pascal kartta elle koşuldu. Yeni kartlar (RTX 50), Linux ve macOS denenmedi.
+- CI yalnız işlemciyi sınar; GPU yolu tek bir 4 GB Pascal kartta elle koşuldu. Yeni kartlar (RTX 50), Linux ve macOS denenmedi; kurulan GPU kitaplıkları Pascal'dan RTX 50'ye kadar çekirdek taşır, Maxwell işlemci profilini kullanır ([GPU çalışma matrisi](docs/kurulum.md#1-sistem-gereksinimleri)).
 - Çevrimdışı çevirmen yalnız İngilizceden Türkçeye çevirir; diğer dil çiftleri Codex / Claude Code CLI ya da bir API arka ucu ister.
 - İngilizce ve Türkçe dışındaki kaynak dillerde kelime zamanı: Japonca ve Çince `scripts/kur.ps1 -Adim hizalama-diller` ile, diğerleri bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırınca.
 - Uçtan uca denenmedi: XTTS-v2 gerçek kurulumu, RVC, gerçek hizmete bağlı Telegram botu, CrisperWhisper motorları; Moonshine deneyseldir.
@@ -112,6 +112,7 @@ Her kardeş repo kendi lisansını, kurulumunu ve sorun kaydını taşır; sabit
   içindir; sitenin şartları ve yerel yasanız geçerlidir.
 - **Ticari olmayan motorlar.** CrisperWhisper 2.0 ve XTTS-v2 yalnız ticari olmayan kullanım içindir (varsayılan kapalı).
   Ücretli ya da müşteri işinden önce [THIRD_PARTY.md](THIRD_PARTY.md) **Commercial?** sütununa bakın.
+  fr / de / es / it kaynak ses için kelime zamanı modelleri (CC BY-NC 4.0) de ticari değildir ve ilk kullanımda onay ister.
 
 ## Lisans ve emek
 

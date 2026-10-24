@@ -43,7 +43,7 @@ can be restored.
 **Resume with changed settings:** the first stage each setting affects is known (e.g. `altyazi.mod` → subtitle
 preparation, `genel.hedef_dil` → translation, `transkripsiyon.model` → transcription). Everything before the earliest
 stage affected by the changed settings is kept; that stage and the following ones run again. Settings that do not
-change the result (`genel.cihaz`, cache, log, number of TTS workers) roll back no stage. `genel.is_turu` cannot be
+change the result (`genel.cihaz`, cache, log, TTS retries) roll back no stage. `genel.is_turu` cannot be
 changed on resume (start a new job). The input of every stage is also recorded: a stage whose input changed runs
 again, whatever the table says.
 
@@ -180,7 +180,7 @@ komut satırı, masaüstü ve web aynı anda okuyup yazabilir.
 **Ayar değiştirerek devam:** her ayarın ilk etkilediği aşama bilinir (ör. `altyazi.mod` → altyazı hazırlama,
 `genel.hedef_dil` → çeviri, `transkripsiyon.model` → transkripsiyon). Değişen ayarların en erken etkilediği
 aşamadan öncesi korunur, o aşama ve sonrası yeniden çalışır. Sonucu değiştirmeyen ayarlar (`genel.cihaz`,
-önbellek, günlük, TTS işçi sayısı) hiçbir aşamayı geri almaz. `genel.is_turu` devamda değiştirilemez (yeni iş açın).
+önbellek, günlük, TTS yeniden denemeleri) hiçbir aşamayı geri almaz. `genel.is_turu` devamda değiştirilemez (yeni iş açın).
 Ayrıca her aşamanın girdisi kaydedilmiştir: girdisi değişen aşama, tablo ne derse desin yeniden çalışır.
 
 ### Komut satırı

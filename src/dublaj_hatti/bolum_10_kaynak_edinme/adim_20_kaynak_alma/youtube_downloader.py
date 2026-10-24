@@ -53,7 +53,7 @@ def _load_yt_dlp():
     except ImportError as exc:
         raise YtDlpYokHatasi(
             "URL'den indirme icin istege bagli 'yt-dlp' paketi kurulu degil. "
-            "Kurulum: scripts\\kur.ps1 -Adim ytdlp (ya da yerel video dosyasi verin)."
+            "Kurulum: scripts\\kur.ps1 -Adim youtube (ya da yerel video dosyasi verin)."
         ) from exc
     return yt_dlp
 

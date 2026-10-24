@@ -55,10 +55,10 @@ flowchart TD
 | Accepted source | a local file with extension `.mp4 .mkv .mov .webm .avi .m4v`, or an `https` link; a video-site link needs yt-dlp (extras `youtube`), a gallery link needs gallery-dl (extras `galeri`); a missing tool is an install hint, not a stack trace | `kaynak_girdisi.py:42` |
 | Entry points | CLI, desktop and web interfaces add a job to the job store and run it through one runner; the Python API calls the pipeline directly without a job store | `is_yonetimi/calistirici.py:86`, `api.py:563` |
 | Gates before the pipeline | setting validation and combination rules ([kombinasyonlar](../tarifler/kombinasyonlar.md)), the licence gate, then a resource lock: `gpu` on CUDA, `cpu_agir` otherwise | `is_yonetimi/calistirici.py:92-126` |
-| json3 pre-flight | only with `transkripsiyon.motor = "youtube_translate"`: the automatic caption track is probed before anything is downloaded; skipped on resume | `dubber.py:4675`, `dubber.py:178` |
+| json3 pre-flight | only with `transkripsiyon.motor = "youtube_translate"`: the automatic caption track is probed before anything is downloaded; skipped on resume | `dubber.py:4679`, `dubber.py:183` |
 | Output root | `cikti/` in the project root; changed by `genel.cikti_klasoru` (`--cikti`) or the environment variable `DUBLAJ_OUTPUT_DIR`; the job store lives in `<root>/_is_deposu/` | `bolum_00_omurga/runtime/output_paths.py:9-45`, `is_yonetimi/depo.py:95` |
-| Job folder | created as `run_<YYYYmmdd_HHMMSS>`; after stage 2 it is renamed `<sanitised title, at most 50 characters>_<same timestamp>` | `dubber.py:2011`, `dubber.py:4728-4756` |
-| Resume | when the job folder already holds `pipeline_state.json`, the runner passes it as `resume_run_dir`; the folder must lie under the output root | `is_yonetimi/calistirici.py:129-131`, `dubber.py:4674-4687` |
+| Job folder | created as `run_<YYYYmmdd_HHMMSS>`; after stage 2 it is renamed `<sanitised title, at most 50 characters>_<same timestamp>` | `dubber.py:2015`, `dubber.py:4732-4760` |
+| Resume | when the job folder already holds `pipeline_state.json`, the runner passes it as `resume_run_dir`; the folder must lie under the output root | `is_yonetimi/calistirici.py:129-131`, `dubber.py:4678-4691` |
 
 ## 3. Stage table (segment sync, the default)
 
@@ -68,22 +68,22 @@ a contract version ([ADR 0012](../adr/0012-stage-checkpoints-and-resume.md)); "v
 | # | Stage id (v) | Input | Output in the job folder | What changes | Code |
 |---|---|---|---|---|---|
 | 2 | `video_indirme_veya_kopyalama` (1) | link or local path | `video_run.mp4` (fixed name; bytes copied, container unchanged) | link: yt-dlp picks ≤ 1080p, H.264 first, no playlist, 4 GiB cap, one retry on timeout/403; gallery: gallery-dl in a separate process; local: copy. Also collected: title and, for links only, the platform language | `bolum_10_kaynak_edinme/adim_20_kaynak_alma/source_video.py:12`, `youtube_downloader.py:61-98` |
-| 2a | (no checkpoint) file-name safety and video info | title | job folder name | NFKC, emoji removed, letters transliterated to ASCII, lower case, Windows-reserved names guarded, ≤ 50 characters; ffprobe information is logged only | `adim_10_dosya_adi_guvenligi/filename_sanitizer.py:111`, `dubber.py:4788` |
-| 3 | `kaynak_ses_cikarma` (1) | `video_run.mp4` | `source_audio.wav` (16 kHz mono) or `demucs_source.wav` (44.1 kHz stereo when Demucs runs on purpose) | container → PCM; inverted-phase stereo is repaired before a mono downmix | `dubber.py:1013-1025`, `adim_40_ses_cikarma/audio_extractor.py:60` |
-| 4 | `demucs_vokal_ayirma` (2) | the WAV from stage 3 | `demucs/htdemucs/demucs_source/vocals.wav`, `no_vocals.wav`, `clean_source.wav`, `asr_ready.wav`; with `auto_background` also `arka_plan_olcumu.json` | splits speech from background; which file feeds recognition depends on `ses_temizligi.kip` (section 5) | `dubber.py:4813-4867`, `dubber.py:1038-1111` |
-| 5 | `asr_sesi_hazirlama` (1) | recognition input | `asr_leading_pad.wav` or the same file | 1.0 s of silence in front for the engines listed in `ASR_LEADING_PAD_ENGINES`; the duration is checked (± 0.05 s) and every time is shifted back by 1.0 s after recognition | `dubber.py:135-151`, `dubber.py:897-1002` |
-| 6 | `transkripsiyon` (1) | stage 5 audio | `pipeline_transcription_result.json` (`segments`, `source_lang`, `alignment`) + engine evidence (`<engine>_HAM_segmentleri.txt`, CTC and profile reports) | audio → engine segments and timed words; times from the engine's time source ([timing-sources.md](timing-sources.md)); language order: platform metadata > `transkripsiyon.kaynak_dil` > automatic detection ([dil_tespiti.md](../tarifler/dil_tespiti.md)); the language the engine reports is used from here on | `dubber.py:4893-4974`, `dubber.py:3077` |
-| 7 | `forced_alignment_ve_nihai_segmentler` (1) | stage 6 result | `pipeline_final_segments_result.json` | engine segments are dropped; the flat word list is regrouped into dub segments (section 4) | `dubber.py:4976-5019`, `bolum_30_hizalama_ve_segment/nihai_dublaj_segmentleri.py:250` |
-| 7a | (no checkpoint) source-side texts | final segments | `nihai_kaynak_dublaj_segmentleri.txt`, `transcript_<src>.txt`, `full_paragraf_<src>.txt`, `transcript_word_level.txt`, source subtitle HTML preview | readable copies for inspection; a global word-overlap check runs here | `dubber.py:5095-5118` |
-| 8 | `konusmaci_yonlendirme` (2) | final segments + stage 4 recognition audio | `pipeline_speaker_routing_result.json`, `supertonic_tts/konusmaci_secimi/` (`speaker_timeline.json`, `speaker_segment_split_report.json`, `speaker_voice_map.json`, …) | only with `ses.motor = "supertonic"` and speakers on: 3D-Speaker, a segment is split at speaker changes inside it, segments are renumbered, each speaker gets a voice; otherwise skipped | `dubber.py:5051-5094`, `bolum_50_seslendirme/supertonic_tts/konusmaci_secimi/router.py:82-160` |
-| 9 | `ceviri` (2) | segments (source text) | `pipeline_translation_result.json` | text replaced by the target text per segment ID; times untouched; the source text kept as `original_source_text`; a count mismatch stops the job | `dubber.py:5132-5206` |
-| 10 | `ses_yonlendirme` (2) | translated segments | `pipeline_voice_routing_result.json`, `full_paragraf_<tgt>.txt`, `translated_segments_<tgt>.txt` | Supertonic: voice and fixed speed per segment; other engines: recorded only | `dubber.py:5207-5263` |
-| 11 | `tts_ve_segment_sesleri` (2) | voice-routed segments | `pipeline_tts_result/manifest.json`, `mixed_audio.wav`, `segment_audios/segment_<n>.wav`, then `dubbed_<tgt>.wav` | text → audio per segment; the real duration is measured; optional atempo; generated speech is aligned for subtitle times | `dubber.py:5265-5328`, `dubber.py:1284` |
-| 12 | `altyazi_hazirlama` (1) | TTS manifest + video | `pipeline_subtitle_result.json`, `subtitle_timing_contract.json`, `burnin_<mode>_<lang>.ass`, `audio_new_timeline.wav` | with `altyazi.mod` ≠ `none`: the new timeline is computed early so subtitles can be burned in the single encode; optional smart frame produces the visual video | `dubber.py:5329-5395`, `dubber.py:494` |
-| 13 | `video_timeline_ve_final_mux` (2) | video + segment audios + timing | `dubbed_<tgt>_base_mux.mp4`, `audio_new_timeline.wav`, `pipeline_video_mux_result.json`, `video_segments.json` | per segment `video_speed = original / TTS duration`; gaps kept at speed 1.0; segment start/end replaced by the new timeline; one encode (CQ or `max_mb`) with subtitles | `dubber.py:5397-5499`, `bolum_60_video_ve_encode/timeline_ve_final_encode/video_processor.py:190-337` |
-| 15 | `arka_plan_miksi` (2) | `no_vocals.wav` + timeline | `dubbed_<tgt>_background_stage.mp4`, `pipeline_background_result.json` | only when the background is kept: the background gets the same trims and speeds as the video, then `amix` under the dub; skipped otherwise | `dubber.py:5505-5567`, `dubber.py:1729` |
-| 16 | `final_altyazi_yakma` (1) | stage 12 result | `dubbed_<tgt>.mp4`, `pipeline_final_subtitle_result.json` | checks that subtitles went into the single encode; a second encode is forbidden and stops the job | `dubber.py:5568-5622` |
-| 17 | `final_dogrulama_ve_meta` (1) | final video | `meta.json`; the video gets AI-dubbed container metadata | summary of choices and durations; the job store marks the job `completed` with `run_dir` and `dubbed_video` | `dubber.py:5624-5726`, `bolum_60_video_ve_encode/timeline_ve_final_encode/yapay_zeka_etiketi.py:20`, `is_yonetimi/calistirici.py:150-153` |
+| 2a | (no checkpoint) file-name safety and video info | title | job folder name | NFKC, emoji removed, letters transliterated to ASCII, lower case, Windows-reserved names guarded, ≤ 50 characters; ffprobe information is logged only | `adim_10_dosya_adi_guvenligi/filename_sanitizer.py:111`, `dubber.py:4792` |
+| 3 | `kaynak_ses_cikarma` (1) | `video_run.mp4` | `source_audio.wav` (16 kHz mono) or `demucs_source.wav` (44.1 kHz stereo when Demucs runs on purpose) | container → PCM; inverted-phase stereo is repaired before a mono downmix | `dubber.py:1017-1029`, `adim_40_ses_cikarma/audio_extractor.py:60` |
+| 4 | `demucs_vokal_ayirma` (2) | the WAV from stage 3 | `demucs/htdemucs/demucs_source/vocals.wav`, `no_vocals.wav`, `clean_source.wav`, `asr_ready.wav`; with `auto_background` also `arka_plan_olcumu.json` | splits speech from background; which file feeds recognition depends on `ses_temizligi.kip` (section 5) | `dubber.py:4817-4871`, `dubber.py:1042-1115` |
+| 5 | `asr_sesi_hazirlama` (1) | recognition input | `asr_leading_pad.wav` or the same file | 1.0 s of silence in front for the engines listed in `ASR_LEADING_PAD_ENGINES`; the duration is checked (± 0.05 s) and every time is shifted back by 1.0 s after recognition | `dubber.py:140-156`, `dubber.py:901-1006` |
+| 6 | `transkripsiyon` (1) | stage 5 audio | `pipeline_transcription_result.json` (`segments`, `source_lang`, `alignment`) + engine evidence (`<engine>_HAM_segmentleri.txt`, CTC and profile reports) | audio → engine segments and timed words; times from the engine's time source ([timing-sources.md](timing-sources.md)); language order: platform metadata > `transkripsiyon.kaynak_dil` > automatic detection ([dil_tespiti.md](../tarifler/dil_tespiti.md)); the language the engine reports is used from here on | `dubber.py:4897-4978`, `dubber.py:3081` |
+| 7 | `forced_alignment_ve_nihai_segmentler` (1) | stage 6 result | `pipeline_final_segments_result.json` | engine segments are dropped; the flat word list is regrouped into dub segments (section 4) | `dubber.py:4980-5023`, `bolum_30_hizalama_ve_segment/nihai_dublaj_segmentleri.py:250` |
+| 7a | (no checkpoint) source-side texts | final segments | `nihai_kaynak_dublaj_segmentleri.txt`, `transcript_<src>.txt`, `full_paragraf_<src>.txt`, `transcript_word_level.txt`, source subtitle HTML preview | readable copies for inspection; a global word-overlap check runs here | `dubber.py:5099-5122` |
+| 8 | `konusmaci_yonlendirme` (2) | final segments + stage 4 recognition audio | `pipeline_speaker_routing_result.json`, `supertonic_tts/konusmaci_secimi/` (`speaker_timeline.json`, `speaker_segment_split_report.json`, `speaker_voice_map.json`, …) | only with `ses.motor = "supertonic"` and speakers on: 3D-Speaker, a segment is split at speaker changes inside it, segments are renumbered, each speaker gets a voice; otherwise skipped | `dubber.py:5055-5098`, `bolum_50_seslendirme/supertonic_tts/konusmaci_secimi/router.py:82-160` |
+| 9 | `ceviri` (2) | segments (source text) | `pipeline_translation_result.json` | text replaced by the target text per segment ID; times untouched; the source text kept as `original_source_text`; a count mismatch stops the job | `dubber.py:5136-5210` |
+| 10 | `ses_yonlendirme` (2) | translated segments | `pipeline_voice_routing_result.json`, `full_paragraf_<tgt>.txt`, `translated_segments_<tgt>.txt` | Supertonic: voice and fixed speed per segment; other engines: recorded only | `dubber.py:5211-5267` |
+| 11 | `tts_ve_segment_sesleri` (2) | voice-routed segments | `pipeline_tts_result/manifest.json`, `mixed_audio.wav`, `segment_audios/segment_<n>.wav`, then `dubbed_<tgt>.wav` | text → audio per segment; the real duration is measured; optional atempo; generated speech is aligned for subtitle times | `dubber.py:5269-5332`, `dubber.py:1288` |
+| 12 | `altyazi_hazirlama` (1) | TTS manifest + video | `pipeline_subtitle_result.json`, `subtitle_timing_contract.json`, `burnin_<mode>_<lang>.ass`, `audio_new_timeline.wav` | with `altyazi.mod` ≠ `none`: the new timeline is computed early so subtitles can be burned in the single encode; optional smart frame produces the visual video | `dubber.py:5333-5399`, `dubber.py:499` |
+| 13 | `video_timeline_ve_final_mux` (2) | video + segment audios + timing | `dubbed_<tgt>_base_mux.mp4`, `audio_new_timeline.wav`, `pipeline_video_mux_result.json`, `video_segments.json` | per segment `video_speed = original / TTS duration`; gaps kept at speed 1.0; segment start/end replaced by the new timeline; one encode (CQ or `max_mb`) with subtitles | `dubber.py:5401-5503`, `bolum_60_video_ve_encode/timeline_ve_final_encode/video_processor.py:190-337` |
+| 15 | `arka_plan_miksi` (2) | `no_vocals.wav` + timeline | `dubbed_<tgt>_background_stage.mp4`, `pipeline_background_result.json` | only when the background is kept: the background gets the same trims and speeds as the video, then `amix` under the dub; skipped otherwise | `dubber.py:5509-5571`, `dubber.py:1733` |
+| 16 | `final_altyazi_yakma` (1) | stage 12 result | `dubbed_<tgt>.mp4`, `pipeline_final_subtitle_result.json` | checks that subtitles went into the single encode; a second encode is forbidden and stops the job | `dubber.py:5572-5626` |
+| 17 | `final_dogrulama_ve_meta` (1) | final video | `meta.json`; the video gets AI-dubbed container metadata | summary of choices and durations; the job store marks the job `completed` with `run_dir` and `dubbed_video` | `dubber.py:5628-5730`, `bolum_60_video_ve_encode/timeline_ve_final_encode/yapay_zeka_etiketi.py:20`, `is_yonetimi/calistirici.py:150-153` |
 
 Delivered result: `<output root>/<title>_<timestamp>/dubbed_<tgt>.mp4` with `meta.json` beside it. Working copies
 (`*_working.mp4`, `*_base_mux.mp4`, `*_background_stage.mp4`) stay in the folder as checkpoint artefacts.
@@ -92,26 +92,26 @@ Delivered result: `<output root>/<title>_<timestamp>/dubbed_<tgt>.mp4` with `met
 
 | From → to | Rule | Code |
 |---|---|---|
-| engine result → flat word list | engine segment boundaries are dropped; words are concatenated in order; nothing is re-timed | `dubber.py:1275` |
+| engine result → flat word list | engine segment boundaries are dropped; words are concatenated in order; nothing is re-timed | `dubber.py:1279` |
 | word list → main segments | a new main segment starts when `next.start − prev.end > 1.0 s`; main segments are never merged | `nihai_dublaj_segmentleri.py:74` |
 | main segment → final segments | ≤ 150 words: kept; ≥ 151 words: split at `.` then `?` then `!` then `,`, greedy up to 150; hard cut at 150 as the last resort | `nihai_dublaj_segmentleri.py:166-196` |
 | words → segment text | text is rebuilt from the words: a space between words, none between two consecutive words of a space-less language (`ja`, `zh`, `yue`, `th`, `lo`, `my`); the engine's own segment text is not reused | `nihai_dublaj_segmentleri.py:208` |
 | words → segment times | start = first word start, end = last word end; speaker = the speaker only if every word has the same one, else empty | `nihai_dublaj_segmentleri.py:199-231` |
 | integrity | output words must equal input words (no loss, duplication or reordering) and every segment ≤ 150 words, else the job stops | `nihai_dublaj_segmentleri.py:234` |
 | segment → speaker parts (Supertonic, speakers on) | each word goes to the speaker with the largest time overlap; groups shorter than 0.40 s merge into a neighbour; parts never leave their main segment; renumbered | `supertonic_tts/konusmaci_secimi/router.py:27`, `router.py:160` |
-| source text → target text | one candidate per segment ID; segments sent in groups with neighbouring context; times copied from the source | `dubber.py:5170-5187` |
+| source text → target text | one candidate per segment ID; segments sent in groups with neighbouring context; times copied from the source | `dubber.py:5174-5191` |
 | target text → segment audio | the original slot (`end − start`) is the target; the measured processed duration is the only duration used | [tts_timing_and_mix.md](tts_timing_and_mix.md) §1 |
 | slot + audio → new timeline | `speed_factor = TTS / original`; video speed `1 / speed_factor`; gaps between segments become their own items at speed 1.0, so pauses survive | `video_processor.py:190-337` |
-| new timeline → segment times | after stage 13 segment start/end are the new-timeline values (`video_segments.json`); honest replays rebuild original boundaries from the stored originals | `dubber.py:5442-5473`, [video_subtitles_and_resume.md](video_subtitles_and_resume.md) §5 |
+| new timeline → segment times | after stage 13 segment start/end are the new-timeline values (`video_segments.json`); honest replays rebuild original boundaries from the stored originals | `dubber.py:5446-5477`, [video_subtitles_and_resume.md](video_subtitles_and_resume.md) §5 |
 
 ## 5. Branches: what a choice changes
 
 | Setting / choice | Value | What changes in the flow |
 |---|---|---|
 | job type | `dubla <video>` | stages 2–17 |
-| job type | `dubla transkript` | stages 2–6 only, no checkpoints; final segments are built inside transcription; output `transcript_<src>.srt` / `transcript_plain_<src>.txt` / timestamped / paragraph (`dubber.py:5750`) |
+| job type | `dubla transkript` | stages 2–6 only, no checkpoints; final segments are built inside transcription; output `transcript_<src>.srt` / `transcript_plain_<src>.txt` / timestamped / paragraph (`dubber.py:5754`) |
 | source | local file | stage 2 copies; no platform language |
-| source | video-site link | yt-dlp download; the platform `language` is passed to recognition as the source language (it outranks `transkripsiyon.kaynak_dil`, `dubber.py:3163-3173`) |
+| source | video-site link | yt-dlp download; the platform `language` is passed to recognition as the source language (it outranks `transkripsiyon.kaynak_dil`, `dubber.py:3167-3177`) |
 | source | gallery link | gallery-dl in its own process; no platform language |
 | `ses_temizligi.kip` | `original` (default) | stage 4 skipped; recognition on `source_audio.wav`; no background in the result |
 | `ses_temizligi.kip` | `clean` | Demucs; recognition on vocals (`asr_ready.wav`, WhisperX reads `clean_source.wav`); background dropped |
@@ -120,14 +120,14 @@ Delivered result: `<output root>/<title>_<timestamp>/dubbed_<tgt>.mp4` with `met
 | `transkripsiyon.motor` | any | time source, leading pad and alignment windows per engine: section 7 and [timing-sources.md](timing-sources.md) |
 | `genel.dublaj_kipi` | `full_text` | after stage 6 the short branch of section 6 runs (one window, one call, one voice) |
 | `ceviri.arka_uc` | `auto` | Codex CLI if installed, else Claude Code CLI, else local Opus-MT (`bolum_40_ceviri/arka_uc_secimi.py:66`) |
-| `ceviri.arka_uc` | `codex`, `claude_code`, API backends | one orchestrator for all: groups of segments with 2 neighbouring segments of context, up to 7 parallel groups; group size 35 for `natural_blocks_1`, 10 by default (`bolum_40_ceviri/bridge_motor_orkestratoru/engine.py:35-37`, `dubber.py:748`) |
+| `ceviri.arka_uc` | `codex`, `claude_code`, API backends | one orchestrator for all: groups of segments with 2 neighbouring segments of context, up to 7 parallel groups; group size 35 for `natural_blocks_1`, 10 by default (`bolum_40_ceviri/bridge_motor_orkestratoru/engine.py:35-37`, `dubber.py:752`) |
 | `ceviri.arka_uc` | `yerel` | Opus-MT in batches of 16, English → Turkish only, no candidates (`bolum_40_ceviri/yerel_ceviri/engine.py:22`) |
-| `ses.motor` | `supertonic` (default) | speaker routing possible (stage 8); with an LLM backend and target `tr` (or atempo on) TTS runs real candidate selection (`dubber.py:737`); loudness profile and constant background gain apply |
+| `ses.motor` | `supertonic` (default) | speaker routing possible (stage 8); with an LLM backend and target `tr` (or atempo on) TTS runs real candidate selection (`dubber.py:741`); loudness profile and constant background gain apply |
 | `ses.motor` | `voxcpm2` | NVIDIA GPU only; one subprocess per voice; voice per segment from `ses.konusmaci_sesleri` by the segment's speaker label, else `ses.voxcpm2_ses`; no 3D-Speaker stage, no candidate selection, no Supertonic loudness profile (`bolum_50_seslendirme/voxcpm2_tts/api.py:39-70`) |
 | `ses.motor` | `xtts` | optional, licence-gated; one reference voice (`ses.xtts_referans_ses`) |
-| `ses.motor` | `ema_lightning` | Turkish only (target `tr`, else a settings error); one runner subprocess per job reads every segment separately, then the same timing preparation and mix as Supertonic; one synthetic voice, so no 3D-Speaker stage and no candidate selection; `ses.ema_cihaz = auto` uses the GPU and retries once on the CPU (ONNX) if the GPU run fails, logged as a warning; speed, seed and device are part of the stage 11 input fingerprint (`bolum_50_seslendirme/ema_lightning_tts/api.py:141-166`, `api.py:223-252`, `tts_orkestratoru/service.py:1138-1141`, `dubber.py:779-784`) |
+| `ses.motor` | `ema_lightning` | Turkish only (target `tr`, else a settings error); one runner subprocess per job reads every segment separately, then the same timing preparation and mix as Supertonic; one synthetic voice, so no 3D-Speaker stage and no candidate selection; `ses.ema_cihaz = auto` uses the GPU and retries once on the CPU (ONNX) if the GPU run fails, logged as a warning; speed, seed and device are part of the stage 11 input fingerprint (`bolum_50_seslendirme/ema_lightning_tts/api.py:141-166`, `api.py:223-252`, `tts_orkestratoru/service.py:1138-1141`, `dubber.py:783-788`) |
 | `ses.akis` | `natural_blocks_1` (default) | 1 candidate, no repair rounds, groups of 35; other modes add candidates and repair rounds ([pinned-values.md](pinned-values.md#translation)) |
-| `ses.atempo` | `true` (default) | segment sync only: optional speed change of the chosen candidate in the band 0.90–1.25 (`yapilandirma.py:736`) |
+| `ses.atempo` | `true` (default) | segment sync only: optional speed change of the chosen candidate in the band 0.90–1.25 (`yapilandirma.py:749`) |
 | `ses.konusmaci_cinsiyetine_gore_ses` | `true` (default, Supertonic) | stage 8 runs 3D-Speaker + gender; with `ses.cinsiyet_kipi = "segment"` gender is guessed per segment without speaker separation; if the models are missing one voice is used and the reason is logged |
 | `ileri.pyannote_konusmaci_ayrimi` | `true` | only WhisperX, Speechmatics, ElevenLabs: speaker labels on words (used by VoxCPM2 voice choice) |
 | `altyazi.mod` | `segment` (default), `word`, `rollup`, `none` | stage 12 builds the ASS file and the timing contract; `none` skips it |
@@ -143,13 +143,13 @@ Stages 2–6 are shared; transcription runs in full-text mode, so engine segment
 
 | # | Stage id (v) | Output | What changes | Code |
 |---|---|---|---|---|
-| 7 | `full_text_konusma_penceresi` (1) | `full_text_source_<src>.txt` | one window from the first segment start to the last segment end; texts joined | `dubber.py:4271-4295`, `bolum_00_omurga/full_metin_dublaji.py:39` |
-| 8 | `full_text_ceviri` (3) | `full_text_translated_<tgt>.txt`, `full_text_transcript_<src>_to_<tgt>.txt` | one translation call for the whole text | `dubber.py:4301-4350` |
-| 9 | `full_text_tek_ses_tts` (1) | one Supertonic or EMA Lightning track (`ema_lightning_tts/api.py:208`) | one voice; `video.tam_metin_sure_uyumu`: `audio_to_video` atempos the audio into the window, `video_to_audio` retimes only the video | `dubber.py:4353-4415` |
-| 10 | `full_text_final_altyazi_alignment` (1) | `pipeline_full_text_subtitle_result.json` | subtitle windows from real chunk sample counts, aligned with CTC | `dubber.py:4433-4471` |
-| 11 | `full_text_video_sure_uyumu_ve_final_mux` (2) | `dubbed_<tgt>_full_text_base_mux.mp4`, `pipeline_full_text_video_result.json` | duration fit + encode | `dubber.py:4489-4531` |
-| 15 | `arka_plan_miksi` (2) | `dubbed_<tgt>_full_text_background.mp4` | as in segment sync | `dubber.py:4540-4591` |
-| 17 | `final_dogrulama_ve_meta` (1) | `meta.json`, `dubbed_<tgt>.mp4` | as in segment sync | `dubber.py:4604-4656` |
+| 7 | `full_text_konusma_penceresi` (1) | `full_text_source_<src>.txt` | one window from the first segment start to the last segment end; texts joined | `dubber.py:4275-4299`, `bolum_00_omurga/full_metin_dublaji.py:39` |
+| 8 | `full_text_ceviri` (3) | `full_text_translated_<tgt>.txt`, `full_text_transcript_<src>_to_<tgt>.txt` | one translation call for the whole text | `dubber.py:4305-4354` |
+| 9 | `full_text_tek_ses_tts` (1) | one Supertonic or EMA Lightning track (`ema_lightning_tts/api.py:208`) | one voice; `video.tam_metin_sure_uyumu`: `audio_to_video` atempos the audio into the window, `video_to_audio` retimes only the video | `dubber.py:4357-4419` |
+| 10 | `full_text_final_altyazi_alignment` (1) | `pipeline_full_text_subtitle_result.json` | subtitle windows from real chunk sample counts, aligned with CTC | `dubber.py:4437-4475` |
+| 11 | `full_text_video_sure_uyumu_ve_final_mux` (2) | `dubbed_<tgt>_full_text_base_mux.mp4`, `pipeline_full_text_video_result.json` | duration fit + encode | `dubber.py:4493-4535` |
+| 15 | `arka_plan_miksi` (2) | `dubbed_<tgt>_full_text_background.mp4` | as in segment sync | `dubber.py:4544-4595` |
+| 17 | `final_dogrulama_ve_meta` (1) | `meta.json`, `dubbed_<tgt>.mp4` | as in segment sync | `dubber.py:4608-4660` |
 
 ## 7. Segmentation per transcription engine
 
@@ -160,9 +160,9 @@ of stage 5.
 | Engine | What the engine returns | Pad | How words get times | Engine segments are used as |
 |---|---|---|---|---|
 | [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) | verbatim text with native times | no | shared CTC box | alignment windows (native times kept for diagnostics) |
-| [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) | faster-whisper segments (VAD on) | yes | shared CTC box | alignment windows (`dubber.py:3593`) |
+| [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) | faster-whisper segments (VAD on) | yes | shared CTC box | alignment windows (`dubber.py:3597`) |
 | [faster-whisper](../motorlar/faster-whisper.md) | segments with Whisper word timestamps | yes | Whisper cross-attention, no CTC | nothing after stage 6 |
-| [whisperx](../motorlar/whisperx.md) | ASR segments | yes | WhisperX `align()`; without diarization the alignment runs in stage 7 (`dubber.py:1438`) | alignment windows |
+| [whisperx](../motorlar/whisperx.md) | ASR segments | yes | WhisperX `align()`; without diarization the alignment runs in stage 7 (`dubber.py:1442`) | alignment windows |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | sub-word tokens with times | yes | shared CTC box | windows rebuilt from tokens: a gap ≥ 1.0 s starts a window, 80 ms pad |
 | [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | whisper.cpp segments | yes | shared CTC box | alignment windows |
 | [youtube_translate](../motorlar/youtube_translate.md) | caption words with start hints, no end | no | shared CTC box | windows at sentence ends, gaps > 2.5 s, > 18 s or 80 words |
@@ -194,7 +194,7 @@ fixed: words first, segments from words, never word times derived from segment t
 | TTS and duration fit | a slot whose length is real speech | the slot is first word start → last word end, so `video_speed = original / TTS` compares speech with speech; pauses are separate timeline items ([ADR 0010](../adr/0010-real-tts-duration-is-canonical.md)) |
 | speaker routing | word-level times | speaker changes are found per word and cut inside a segment (0.40 s minimum group) |
 | subtitles | word times for `word` / `rollup` modes and cue boundaries for `segment` mode | subtitle text equals TTS text (one validated text) and times come from aligned speech ([video_subtitles_and_resume.md](video_subtitles_and_resume.md) §4) |
-| resume | a deterministic boundary set | one segmenter whose rules are part of the stage 7 fingerprint (`dubber.py:4976-4983`) |
+| resume | a deterministic boundary set | one segmenter whose rules are part of the stage 7 fingerprint (`dubber.py:4980-4987`) |
 
 ### 8.3 Why these numbers
 
@@ -220,15 +220,15 @@ the mechanism: [video_subtitles_and_resume.md](video_subtitles_and_resume.md) §
 
 1. Checkpoint order 14 is unused in both stage lists; the reason: **no record**.
 2. A cloud engine's word-level speakers do not replace 3D-Speaker ([speakers_and_segments.md](speakers_and_segments.md)
-   §2, corrected to match the code). In the full flow the Supertonic speaker stage always runs 3D-Speaker: `dubber.py:1545` passes no
+   §2, corrected to match the code). In the full flow the Supertonic speaker stage always runs 3D-Speaker: `dubber.py:1549` passes no
    speaker timeline, and `build_speaker_timeline_from_segment_words` (`supertonic_tts/konusmaci_secimi/router.py:60`) has
    no caller. Provider or pyannote labels reach only the VoxCPM2 voice choice, through the segment's speaker field;
    a segment whose words carry two speakers gets an empty label and the default VoxCPM2 voice.
 3. The AI-dubbed label does not stop the job when ffmpeg fails: `meta.json` records `ai_label: false` with the reason
    (`yapay_zeka_etiketi.py:23-37`). Why this one step is soft while others fail closed
    ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)): **no record**.
-4. The final loudness profile and the constant background gain apply to Supertonic only (`dubber.py:5407`,
-   `dubber.py:5542`); a measured loudness policy for VoxCPM2 or XTTS: **no record**.
+4. The final loudness profile and the constant background gain apply to Supertonic only (`dubber.py:5411`,
+   `dubber.py:5546`); a measured loudness policy for VoxCPM2 or XTTS: **no record**.
 5. EMA Lightning's GPU-to-CPU retry is the only automatic device change inside the TTS stage; it is logged and the device
    is recorded, but why this one retry is allowed next to ADR 0009 is written only in
    [ADR 0019](../adr/0019-ema-lightning-tts.md), not measured against a fail-closed variant: **no record**.

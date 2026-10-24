@@ -9,7 +9,6 @@ from typing import Any
 DEBUG_DIR_NAME = "final_dub_alignment"
 WORD_TIMING_METHOD = "final_timeline_clean_dub_audio_forced_alignment"
 ENGINE_DEBUG_DIRS = {
-    "edge": "edge_tts_timing_debug",
     "supertonic": "supertonic_timing_debug",
     "xtts": "xtts_timing_debug",
     "voxcpm2": "voxcpm2_timing_debug",

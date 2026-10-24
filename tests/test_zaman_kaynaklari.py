@@ -343,6 +343,8 @@ def test_her_segment_tts_motoru_altyazi_sozlesmesinde():
     klasorler = _ast_sabiti(PAKET / "bolum_50_seslendirme" / "final_dub_alignment" / "writer.py", "ENGINE_DEBUG_DIRS")
     etiketler = _ast_sabiti(dubber, "ALTYAZI_MOTOR_ETIKETI")
     assert motorlar <= desteklenen and motorlar <= set(klasorler) and motorlar == set(etiketler)
+    # Sözleşme ve hata ayıklama klasörü yalnız hattın çalıştırdığı motorları tanır (kaldırılan motor anahtarı yok).
+    assert desteklenen == motorlar and set(klasorler) == motorlar
     assert "prepare_supertonic_subtitle_burnin_assets" not in dubber.read_text(encoding="utf-8")
 
 

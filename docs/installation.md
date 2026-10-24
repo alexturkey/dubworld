@@ -41,6 +41,22 @@ the desktop app. Plain-language guide for the user: [getting-started.md](getting
 | Disk | see the table below; SSD recommended | Cold model loads were ≈ 12 s slower per GB of weights on an HDD (engineering/low_vram.md). |
 | WSL2 + Ubuntu 24.04 | only for the optional `crisper` step | Section 7. |
 
+GPU runtime matrix (GPU profile; the versions are pinned with hashes in `requirements/gpu.txt`). Measured on 2026-10-25
+in a clean-root install and the development environment with `torch.backends.cudnn.version()`,
+`torch.cuda.get_arch_list()`, the DLL file versions and `cuobjdump --list-elf / --list-ptx`:
+
+| Component | Pinned version | CUDA / cuDNN it uses | GPU code inside the wheel |
+|---|---|---|---|
+| PyTorch + torchaudio | `2.8.0+cu128` | CUDA 12.8, cuDNN 9.10.2 (`cudnn64_9.dll` in `torch/lib`) | native kernels sm_61, 70, 75, 80, 86, 90, 100, 120 |
+| CTranslate2 (faster-whisper 1.2.1) | `4.8.3` | CUDA 12, its own `cudnn64_9.dll` 9.10.2.21 (the same build as PyTorch's) | native sm_53–86 + PTX for sm_86; newer cards (sm_89, 90, 100, 120) run through the driver's PTX JIT, slower on the first run |
+| onnxruntime (Supertonic, EMA Lightning ONNX) | `1.31.0` | CPU build, no CUDA | – |
+
+Consequences: Pascal (GTX 10xx) up to Blackwell (RTX 50, sm_120) have native PyTorch kernels; RTX 50 was not run by
+hand (no card), the table is read from the installed wheels. Maxwell and older (sm_5x) have no PyTorch kernels: use the
+CPU profile (`kur.ps1 -Cpu`). The clean-root GPU install ran faster-whisper (CTranslate2) and the full sample dub on a
+Pascal card with exit code 0. When you change one of these pins, check the whole row set again: CTranslate2 4.x needs
+CUDA 12 and cuDNN 9 (measured above; Windows GPU setups broke when CTranslate2 4.0 moved to them, CTranslate2 issue #1630).
+
 Disk space per profile:
 
 | Profile / add-on | Size | Evidence |

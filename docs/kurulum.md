@@ -40,6 +40,22 @@ hızlı, bu makine için önerilen, tam), seçimi ve lisans onayını `ayarlar/`
 | Disk | aşağıdaki tablo; SSD önerilir | HDD'de soğuk model yüklemesi ağırlığın GB'ı başına ≈ 12 sn daha yavaş ölçüldü (muhendislik/dusuk_vram.md). |
 | WSL2 + Ubuntu 24.04 | yalnız isteğe bağlı `crisper` adımı için | Bölüm 7. |
 
+GPU çalışma matrisi (GPU profili; sürümler `requirements/gpu.txt` içinde özetle kilitli). 2026-10-25'te temiz kök
+kurulumunda ve geliştirme ortamında `torch.backends.cudnn.version()`, `torch.cuda.get_arch_list()`, DLL dosya sürümleri ve
+`cuobjdump --list-elf / --list-ptx` ile ölçüldü:
+
+| Bileşen | Sabit sürüm | Kullandığı CUDA / cuDNN | Tekerlekteki GPU kodu |
+|---|---|---|---|
+| PyTorch + torchaudio | `2.8.0+cu128` | CUDA 12.8, cuDNN 9.10.2 (`torch/lib` içinde `cudnn64_9.dll`) | doğal çekirdek sm_61, 70, 75, 80, 86, 90, 100, 120 |
+| CTranslate2 (faster-whisper 1.2.1) | `4.8.3` | CUDA 12, kendi `cudnn64_9.dll` 9.10.2.21 dosyası (PyTorch'unkiyle aynı yapı) | doğal sm_53–86 + sm_86 için PTX; yeni kartlar (sm_89, 90, 100, 120) sürücünün PTX JIT derlemesiyle çalışır, ilk koşu daha yavaştır |
+| onnxruntime (Supertonic, EMA Lightning ONNX) | `1.31.0` | işlemci yapısı, CUDA yok | – |
+
+Sonuç: Pascal'dan (GTX 10xx) Blackwell'e (RTX 50, sm_120) kadar PyTorch'un doğal çekirdeği var; RTX 50 elle koşulmadı
+(kart yok), tablo kurulu tekerleklerden okundu. Maxwell ve öncesi (sm_5x) için PyTorch çekirdeği yok: işlemci profili
+kullanılır (`kur.ps1 -Cpu`). Temiz kök GPU kurulumu faster-whisper'ı (CTranslate2) ve örnek dublajın tamamını Pascal
+kartta çıkış kodu 0 ile koştu. Bu sabitlerden birini değiştirirken bütün satırları yeniden denetleyin: CTranslate2 4.x
+CUDA 12 ve cuDNN 9 ister (yukarıda ölçüldü; CTranslate2 4.0 bunlara geçince Windows GPU kurulumları bozuldu, CTranslate2 issue #1630).
+
 Profillere göre disk alanı:
 
 | Profil / ek | Boyut | Dayanak |
