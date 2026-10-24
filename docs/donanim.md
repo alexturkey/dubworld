@@ -24,6 +24,29 @@ Every value carries its evidence level:
    more than 95 % of the detected VRAM), `bulut` (network + your own key). The interface reads the GPU with
    `nvidia-smi` (no torch import); the final decision is made when the job starts.
 
+## Hardware tiers: what changes with the machine
+
+The values in the code were chosen and measured on a **4 GB Pascal card with a 4-core laptop CPU and 16 GB RAM**. They
+are a cautious default, not a rule for every machine: they are safe on a larger card, they only leave speed unused.
+The installing assistant measures the machine (AGENTS.md "Setup interview") and picks settings from this table; it
+never edits code constants. Every cell says **measured (source)** or **estimate, not measured**.
+
+| Machine | Process isolation | Batch | Compute type | Parallel jobs | NVENC | Recommended engines |
+|---|---|---|---|---|---|---|
+| No NVIDIA GPU (CPU profile) | same rule as on GPU: each heavy model in its own process (code; measured on the CPU smoke test, olcumler.md) | WhisperX CPU batch 4 (`CPU_TRANSCRIBE_BATCH_SIZE`, code constant); Demucs is slow on CPU, avoid it (measured, source_audio_and_separation.md) | `int8` (`hesap_tipi_coz`: CPU → int8 unless float32 is set; measured, olcumler.md CPU rows) | GPU lock not used; the CPU-heavy lock allows 2 (`kaynak_kilidi.py`); two jobs at once slowed each other, amount not isolated (measured, olcumler.md) | no: `libx264` (measured, video_subtitles_and_resume.md §1) | `faster_whisper_ctc` int8, `supertonic`, `ema_lightning` (ONNX), `yerel` or an LLM CLI, `ses_temizligi.kip = original` (measured, olcumler.md) |
+| NVIDIA 4 GB (reference) | required: one model per process, VRAM freed on exit (measured, gpu_memory_and_isolation.md) | WhisperX batch 1 (removed an out-of-memory, measured); Demucs batch 4 with one retry at batch 1 (measured, source_audio_and_separation.md) | `auto` → `int8` on this Pascal card: CTranslate2 4.8.3 reports `float32, int8, int8_float32` and no `float16` (measured); fp32 WhisperX turbo needs 3.45 GB (measured) | 1 GPU job (lock capacity 1); two jobs each ≈ 1.95× slower (measured, gpu_memory_and_isolation.md) | yes if the trial encode works; not during CUDA inference, ≈ 3.6× slower then (measured, video_subtitles_and_resume.md §1) | `faster_whisper_ctc` or `crisperwhisper_turbo_ct2` (1.4 GB), `supertonic`, `ema_lightning` (191 MB), `voxcpm2` alone (2.6–3.0 GB), `demucs` (2.75 GB) (measured, matrix below) |
+| NVIDIA 6–8 GB | keep it: changing it is a code change; it costs model reloads, not quality (estimate, not measured) | same constants; a larger WhisperX / Demucs batch may be faster (estimate, not measured; recipe: pinned-values.md) | Pascal 6–8 GB: `int8` as above (estimate, not measured); Volta and newer: `auto` → `float16` when CTranslate2 reports it (code `hesap_tipi_coz`; per docs, CTranslate2 quantization page); `hesap_tipi = float32` for WhisperX fits (3.45 GB measured) | still 1 (lock capacity is a code constant); two models may fit (estimate, not measured) | same rule; Turing and newer NVENC has B-frames, re-measure quality (per docs, video_subtitles_and_resume.md) | the 4 GB set plus `crisperwhisper2_medium` fp16 (3.6 GB measured) and `voxcpm2` with headroom (estimate, not measured) |
+| NVIDIA 12 GB and more | keep it (estimate, not measured) | same; tune only with the pinned-values recipe (estimate, not measured) | as 6–8 GB (per docs, code) | 1; a second GPU job needs a lock change plus a before/after measurement (estimate, not measured) | same rule (per docs) | any engine; choose by license and language, not by memory (estimate, not measured) |
+| Pascal (sm_6x) vs Volta / Turing and newer | same | same | Pascal: no fast fp16; fp16 autocast 14.5 % slower, `torch.compile` 3.1× slower, `cudnn.benchmark` 3.4× slower (measured, tts_timing_and_mix.md); CUDA 13 builds drop sm_61 (per docs, low_vram.md); newer cards: these Pascal results do not transfer (estimate, not measured) | same | Pascal NVENC lost to x264 on flat drawn video (measured, video_subtitles_and_resume.md §1) | as in the VRAM rows |
+| CPU cores | – | Supertonic 4 lanes × 2 threads (more threads changed the output bytes: measured, pinned-values.md) | – | `ileri.tts_isci` is copied into the job config but no stage reads it (code: `max_tts_workers`), so raising it changes nothing; more cores help only through code constants (estimate, not measured) | x264 `-threads` changes output bytes (measured, video_subtitles_and_resume.md §1) | Parakeet uses 8 threads, 96.9 s audio in 11.9 s (measured, transcription.md) |
+| RAM | – | – | – | 8 GB minimum (estimate, not measured); 16 GB tested (measured, installation.md) | – | Demucs on 75 min audio 7.2 GB; CrisperWhisper Turbo conversion 4.5 GB free; Supertonic 1.8 GB (measured, low_vram.md) |
+
+What a larger machine may change **by setting** (no code change): `transkripsiyon.hesap_tipi` (`float32` for WhisperX
+on 6 GB and more), `transkripsiyon.motor` (`crisperwhisper2_medium`), `ses.motor` (`voxcpm2`),
+`ses_temizligi.kip` (`preserve_background` with Demucs). What is a **code constant** (batch sizes, GPU lock capacity,
+process isolation, Supertonic lanes): change it only with the measurement recipe in
+[engineering/pinned-values.md](engineering/pinned-values.md) and a pull request.
+
 ## Matrix
 
 | Kind | Engine | Device | Peak VRAM MB | On CPU | Evidence | Notes | Source |
@@ -43,7 +66,7 @@ Every value carries its evidence level:
 | translate | `yerel` (Opus-MT) | gpu+cpu | ~1000 | works | estimate | VRAM/RAM not measured; the CPU end-to-end smoke test passed with it | low_vram.md |
 | translate | `codex`, `claude_code`, `gemini_2_5_flash`, `gemini_3_1_flash_lite_tier_1`, `gemma_4_26b`, `groq_llama_4_scout`, `cerebras_llama_3_1_8b`, `mistral_nemo` | cloud | — | cloud | per docs | text is sent to the service | translation.md |
 | tts | `supertonic` | cpu | — | good | measured | ONNX on CPU, 4 lanes × 2 threads, ~2.3× real time, ~1.8 GB RAM; the CUDA provider was slower and is not used | tts_timing_and_mix.md |
-| tts | `voxcpm2` | gpu | ~3000 | no | measured | Q8_0 GGUF + 4 GB patch, 2.6–3.0 GB; ~2 s compute per 1 s audio; CPU took 535 s for 48.5 s so CPU is disabled here | sister VoxCPM2 repo docs/4gb.md |
+| tts | `voxcpm2` | gpu | ~3000 | no | measured | Q8_0 GGUF + 4 GB patch, 2.6–3.0 GB; ~2 s compute per 1 s audio; CPU took 535 s for 48.5 s so CPU is disabled here | [sister VoxCPM2 repo docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) |
 | tts | `ema_lightning` | gpu+cpu | ~200 | good | measured | Turkish only; GPU ~10× on three sentences after a 5 s start-up, 191 MB on the device; CPU ONNX (exported locally) ~11× after a 12 s start-up; `auto` falls back to the CPU when the GPU is missing or has < 1 GB free | docs/motorlar/ema_lightning.md |
 | tts | `xtts` | gpu+cpu | ~2000 | slow | per docs | model load ~2 GB (source doc), peak not measured; CPU "very slow" is an estimate | tts_timing_and_mix.md, docs/motorlar/xtts.md |
 | extra | `demucs` | gpu+cpu | 2749 | slow | measured | 75 min audio: process tree 7.15 GB RAM; batch 4 with one retry at batch 1 | source_audio_and_separation.md |
@@ -92,6 +115,29 @@ işlemcisinde alındı. Her değer dayanağını taşır:
    (tespit edilen VRAM'in %95'inden fazlasını ister), `bulut` (ağ + kendi anahtarınız). Arayüz GPU'yu `nvidia-smi` ile
    okur (torch yüklenmez); kesin karar iş başlarken verilir.
 
+### Donanım kademeleri: makineye göre ne değişir
+
+Koddaki değerler **4 GB Pascal kart, 4 çekirdekli dizüstü işlemcisi ve 16 GB RAM** üzerinde seçildi ve ölçüldü. Bunlar
+temkinli bir varsayılandır, her makineye kural değildir: büyük kartta da güvenlidir, yalnız hızı kullanılmadan bırakır.
+Kurulumu yapan asistan makineyi ölçer (AGENTS.tr.md "Kurulum görüşmesi") ve ayarı bu tablodan seçer; kod sabitlerini
+asla değiştirmez. Her hücre **ölçüldü (kaynak)** ya da **tahmin, ölçülmedi** der.
+
+| Makine | Süreç yalıtımı | Batch | Hesap tipi | Paralel iş | NVENC | Önerilen motorlar |
+|---|---|---|---|---|---|---|
+| NVIDIA GPU yok (işlemci profili) | GPU'dakiyle aynı kural: her ağır model kendi sürecinde (kod; işlemci duman testinde ölçüldü, olcumler.md) | WhisperX işlemci batch 4 (`CPU_TRANSCRIBE_BATCH_SIZE`, kod sabiti); Demucs işlemcide yavaş, kaçının (ölçüldü, kaynak_ses_ve_ayristirma.md) | `int8` (`hesap_tipi_coz`: işlemcide float32 seçilmedikçe int8; ölçüldü, olcumler.md işlemci satırları) | GPU kilidi kullanılmaz; ağır işlemci kilidi 2 işe izin verir (`kaynak_kilidi.py`); aynı anda iki iş birbirini yavaşlattı, miktarı ayrıştırılmadı (ölçüldü, olcumler.md) | yok: `libx264` (ölçüldü, video_altyazi_ve_devam.md §1) | `faster_whisper_ctc` int8, `supertonic`, `ema_lightning` (ONNX), `yerel` ya da bir LLM CLI, `ses_temizligi.kip = original` (ölçüldü, olcumler.md) |
+| NVIDIA 4 GB (referans) | zorunlu: süreç başına bir model, çıkışta VRAM boşalır (ölçüldü, gpu_bellek_ve_yalitim.md) | WhisperX batch 1 (bellek taşmasını giderdi, ölçüldü); Demucs batch 4, bir kez batch 1 ile yeniden deneme (ölçüldü, kaynak_ses_ve_ayristirma.md) | bu Pascal kartta `auto` → `int8`: CTranslate2 4.8.3 `float32, int8, int8_float32` bildirir, `float16` yok (ölçüldü); fp32 WhisperX turbo 3,45 GB ister (ölçüldü) | 1 GPU işi (kilit kapasitesi 1); iki iş ayrı ayrı ≈ 1,95 kat yavaş (ölçüldü, gpu_bellek_ve_yalitim.md) | deneme kodlaması çalışırsa evet; CUDA çıkarımı sürerken değil, o zaman ≈ 3,6 kat yavaş (ölçüldü, video_altyazi_ve_devam.md §1) | `faster_whisper_ctc` ya da `crisperwhisper_turbo_ct2` (1,4 GB), `supertonic`, `ema_lightning` (191 MB), tek başına `voxcpm2` (2,6–3,0 GB), `demucs` (2,75 GB) (ölçüldü, aşağıdaki matris) |
+| NVIDIA 6–8 GB | koruyun: değiştirmek kod değişikliğidir; bedeli kalite değil, model yeniden yüklemesidir (tahmin, ölçülmedi) | aynı sabitler; daha büyük WhisperX / Demucs batch'i hızlı olabilir (tahmin, ölçülmedi; reçete: sabit_degerler.md) | Pascal 6–8 GB: yukarıdaki gibi `int8` (tahmin, ölçülmedi); Volta ve sonrası: CTranslate2 bildiriyorsa `auto` → `float16` (kod `hesap_tipi_coz`; belgeye göre, CTranslate2 nicemleme sayfası); WhisperX için `hesap_tipi = float32` sığar (3,45 GB ölçüldü) | yine 1 (kilit kapasitesi kod sabiti); iki model sığabilir (tahmin, ölçülmedi) | aynı kural; Turing ve sonrası NVENC B-karelidir, kaliteyi yeniden ölçün (belgeye göre, video_altyazi_ve_devam.md) | 4 GB takımı + `crisperwhisper2_medium` fp16 (3,6 GB ölçüldü) ve paylı `voxcpm2` (tahmin, ölçülmedi) |
+| NVIDIA 12 GB ve üstü | koruyun (tahmin, ölçülmedi) | aynı; yalnız sabit değer reçetesiyle ayarlayın (tahmin, ölçülmedi) | 6–8 GB gibi (belgeye göre, kod) | 1; ikinci GPU işi kilit değişikliği + önce/sonra ölçümü ister (tahmin, ölçülmedi) | aynı kural (belgeye göre) | her motor; seçim bellekle değil lisans ve dille yapılır (tahmin, ölçülmedi) |
+| Pascal (sm_6x) ve Volta / Turing ve sonrası | aynı | aynı | Pascal: hızlı fp16 yok; fp16 autocast %14,5 yavaş, `torch.compile` 3,1 kat yavaş, `cudnn.benchmark` 3,4 kat yavaş (ölçüldü, tts_zamanlama_ve_karisim.md); CUDA 13 derlemeleri sm_61'i bırakır (belgeye göre, dusuk_vram.md); yeni kartlar: bu Pascal sonuçları aktarılamaz (tahmin, ölçülmedi) | aynı | Pascal NVENC düz çizim videoda x264'e kaybetti (ölçüldü, video_altyazi_ve_devam.md §1) | VRAM satırlarındaki gibi |
+| İşlemci çekirdeği | – | Supertonic 4 şerit × 2 iş parçacığı (daha çok iş parçacığı çıktı baytlarını değiştirdi: ölçüldü, sabit_degerler.md) | – | `ileri.tts_isci` iş ayarına kopyalanır ama hiçbir aşama okumaz (kod: `max_tts_workers`), artırmak bir şey değiştirmez; fazla çekirdek ancak kod sabitleriyle fayda verir (tahmin, ölçülmedi) | x264 `-threads` çıktı baytlarını değiştirir (ölçüldü, video_altyazi_ve_devam.md §1) | Parakeet 8 iş parçacığı kullanır, 96,9 sn ses 11,9 sn (ölçüldü, transkripsiyon.md) |
+| RAM | – | – | – | en az 8 GB (tahmin, ölçülmedi); 16 GB denendi (ölçüldü, kurulum.md) | – | Demucs 75 dk seste 7,2 GB; CrisperWhisper Turbo dönüşümü 4,5 GB boş; Supertonic 1,8 GB (ölçüldü, dusuk_vram.md) |
+
+Büyük makinede **ayarla** değişebilenler (kod değişmez): `transkripsiyon.hesap_tipi` (6 GB ve üstünde WhisperX için
+`float32`), `transkripsiyon.motor` (`crisperwhisper2_medium`), `ses.motor` (`voxcpm2`), `ses_temizligi.kip` (Demucs ile
+`preserve_background`). **Kod sabiti** olanlar (batch boyutları, GPU kilidi kapasitesi, süreç yalıtımı, Supertonic
+şeritleri): yalnız [muhendislik/sabit_degerler.md](muhendislik/sabit_degerler.md)'deki ölçüm reçetesi ve bir çekme
+isteğiyle değişir.
+
 ### Matris
 
 | Tür | Motor | Cihaz | Tepe VRAM MB | İşlemcide | Kanıt | Notlar | Kaynak |
@@ -111,7 +157,7 @@ işlemcisinde alındı. Her değer dayanağını taşır:
 | translate | `yerel` (Opus-MT) | gpu+cpu | ~1000 | çalışır | tahmin | VRAM/RAM ölçülmedi; işlemcide uçtan uca duman testi bununla geçti | low_vram.md |
 | translate | `codex`, `claude_code`, `gemini_2_5_flash`, `gemini_3_1_flash_lite_tier_1`, `gemma_4_26b`, `groq_llama_4_scout`, `cerebras_llama_3_1_8b`, `mistral_nemo` | bulut | — | bulut | belgeye göre | metin servise gönderilir | translation.md |
 | tts | `supertonic` | cpu | — | iyi | ölçüldü | İşlemcide ONNX, 4 şerit × 2 iş parçacığı, gerçek zamanın ~2.3 katı, ~1.8 GB RAM; CUDA sağlayıcısı daha yavaştı ve kullanılmaz | tts_timing_and_mix.md |
-| tts | `voxcpm2` | gpu | ~3000 | hayır | ölçüldü | Q8_0 GGUF + 4 GB yaması, 2.6–3.0 GB; 1 s ses için ~2 s hesap; işlemcide 48.5 s için 535 s sürdü, bu yüzden burada işlemci kapalı | kardeş VoxCPM2 reposu docs/4gb.md |
+| tts | `voxcpm2` | gpu | ~3000 | hayır | ölçüldü | Q8_0 GGUF + 4 GB yaması, 2.6–3.0 GB; 1 s ses için ~2 s hesap; işlemcide 48.5 s için 535 s sürdü, bu yüzden burada işlemci kapalı | [kardeş VoxCPM2 reposu docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) |
 | tts | `ema_lightning` | gpu+cpu | ~200 | iyi | ölçüldü | Yalnız Türkçe; GPU üç cümlede 5 s açılıştan sonra ~10×, cihazda 191 MB; işlemcide ONNX (yerelde dışa aktarılır) 12 s açılıştan sonra ~11×; `auto` GPU yoksa ya da 1 GB'tan az boşsa işlemciye geçer | docs/motorlar/ema_lightning.md |
 | tts | `xtts` | gpu+cpu | ~2000 | yavaş | belgeye göre | model yükleme ~2 GB (kaynak belge), tepe ölçülmedi; işlemcide "çok yavaş" bir tahmindir | tts_timing_and_mix.md, docs/motorlar/xtts.md |
 | extra | `demucs` | gpu+cpu | 2749 | yavaş | ölçüldü | 75 dk ses: süreç ağacı 7.15 GB RAM; batch 4, bir kez batch 1 ile yeniden deneme | source_audio_and_separation.md |

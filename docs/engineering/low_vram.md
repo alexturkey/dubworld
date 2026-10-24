@@ -21,11 +21,11 @@ Türkçe: [../muhendislik/dusuk_vram.md](../muhendislik/dusuk_vram.md).
 | Stage | Setting | Peak |
 |---|---|---|
 | Separation (optional) | `ses_temizligi.kip = "auto_background"` or `"original"`; Demucs `htdemucs`, batch 4 with automatic one-time retry at batch 1 on OOM, overlap 0.25, shifts 0, no forced segment | ≈ 2.75 GB VRAM, ≈ 7.2 GB RAM for 75 min audio |
-| Transcription | `transkripsiyon.motor = "auto"`; `hesap_tipi = "auto"` (fp32 on GPU is allowed; int8 if you share the GPU) | WhisperX turbo fp32 3.45 GB / int8 1.15 GB; CrisperWhisper Turbo int8 ≈ 1.4 GB |
+| Transcription | `transkripsiyon.motor = "auto"`; `hesap_tipi = "auto"` (code `hesap_tipi_coz`: on the GPU `float16` if CTranslate2 reports it, else `int8`, else `float32`; on this Pascal card CTranslate2 4.8.3 reports no `float16`, so `auto` = `int8`, measured). `float32` fits only when set by hand and nothing else uses the GPU | WhisperX turbo fp32 3.45 GB / int8 1.15 GB; CrisperWhisper Turbo int8 ≈ 1.4 GB |
 | WhisperX | batch 1; VAD on the **CPU**; a real CUDA OOM retries once in int8 automatically | – |
 | Word alignment | runs in its own process after recognition | ≈ 1.6–2.4 GB depending on language |
 | Speakers + gender | separate subprocesses, one after another | < 1 GB each |
-| TTS | Supertonic runs on the **CPU** (4 lanes × 2 threads); VoxCPM2 needs the GPU alone | – |
+| TTS | Supertonic runs on the **CPU** (4 lanes × 2 threads); VoxCPM2 needs the GPU alone; its 4 GB build is described in the sister repository's [docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) | – |
 | Video | `video.cq = 26`; encoder chosen automatically (NVENC if it works, else x264) | – |
 
 Rules that make this work:

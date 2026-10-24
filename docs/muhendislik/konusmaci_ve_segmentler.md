@@ -61,7 +61,11 @@ Segmentlemenin bütün işteki yeri ve kelimelerin neden yeniden gruplandığı:
 3. **Geçerli: 3D-Speaker** (Silero VAD + CAM++ gömmeleri + kümeleme; üst kaynaktaki FSMN VAD lisans nedeniyle
    değiştirildi, [ADR 0013](../adr/0013-silero-vad.md)). pyannote yerine onu tercih etmenin nedeni
    **kaydedilmedi**. Bu yolda pyannote içe aktarılmaz; çakışan konuşma işleme kapalıdır.
-4. Kelime düzeyinde konuşmacı döndüren bir bulut motoruyla onun etiketleri kullanılır ve 3D-Speaker çalışmaz.
+4. Kelime düzeyinde konuşmacı döndüren bulut motorları (Speechmatics, ElevenLabs) bu hatta 3D-Speaker'ın yerine
+   **geçmez**: `dubber.py`, `konusmaci_seslerini_ata`'yı konuşmacı zaman çizelgesi vermeden çağırır; konuşmacı başına
+   ses açıkken 3D-Speaker her zaman çalışır (`_supertonic_speaker_timeline_source` yalnız `local_3d_speaker` ya da
+   `disabled` döndürür). Bu etiketlerden zaman çizelgesi kuracak yardımcının (`konusmaci_secimi/router.py` içindeki
+   `build_speaker_timeline_from_segment_words`) çağıranı yok.
 
 ### Geçerli 3D-Speaker ayarları
 

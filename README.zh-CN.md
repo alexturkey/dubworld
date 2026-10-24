@@ -2,7 +2,7 @@
 
 [English](README.md) · [Türkçe](README.tr.md) · 简体中文 · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> DubWorld 在你自己的电脑上把视频配音成另一种语言：带词级时间戳的语音转文字、翻译、贴合原始时间的合成语音、字幕和新视频。默认目标语言为土耳其语；其他语言取决于语音引擎（[docs/diller.md](docs/diller.md)）。
+> DubWorld 在你自己的电脑上把视频配音成另一种语言：带词级时间戳的语音转文字、翻译、与原视频同步的合成语音（语音最多加速 1.25 倍，其余由画面重新调整时长）、字幕和新视频。默认目标语言为土耳其语；其他语言取决于语音引擎（[docs/diller.md](docs/diller.md)）。
 
 ## 让 AI 助手替你安装
 
@@ -12,8 +12,8 @@
 请把 https://github.com/alexturkey/DubWorld 上的视频配音程序安装到这台电脑上。逐步按照该仓库中的 AGENTS.md 文件操作，自行检测我的硬件，不要问我技术问题。当 `dubla kontrol` 显示 READY 且示例配音成功后，为我打开程序窗口。
 ```
 
-助手会检查你的电脑，自行选择显卡（GPU）或仅处理器（CPU）的安装方式，并只问你一个问题：是否接受语音模型的使用条款。
-随后程序窗口会打开。入门步骤、通俗说明和常见问题（英文）：**[docs/getting-started.md](docs/getting-started.md)**。
+助手会测量你的电脑（显卡、处理器、内存、磁盘），并用通俗的话只问一次你想要哪种安装：快速、适合你电脑的推荐安装，或完整安装。
+它会说明每个部分（作用、占用的磁盘和时间、许可证），并询问你是否接受所选部分的使用条款，首先是默认语音的条款。随后它完成安装、制作一个示例配音并打开程序窗口。入门步骤、通俗说明和常见问题（英文）：**[docs/getting-started.md](docs/getting-started.md)**。
 
 **许可证概览：** 代码为 Apache-2.0。默认模型：Supertonic 3 声音采用 OpenRAIL-M（有使用限制，只需同意一次）；Opus-MT 和土耳其语词级时间模型采用 CC BY 4.0（需署名，见 NOTICE）；FFmpeg 构建为 GPL-3.0（独立程序）。仅限非商业且默认关闭：CrisperWhisper 2.0、XTTS-v2、fr / de / es / it 的 WhisperX 词级时间模型。本仓库不包含任何模型权重（[THIRD_PARTY.md](THIRD_PARTY.md)）。
 
@@ -22,15 +22,15 @@
 Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.cmd`**（或运行
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1`）；它会自行选择 GPU 或 CPU 配置
 （`-Cpu` 强制使用 CPU）。然后双击 `arayuz.cmd` 打开程序。
-所有内容都安装在仓库文件夹内（`.venv`、`runtime_assets/`）；每个下载都固定版本并经过 sha256 校验。磁盘：GPU 配置约
-22 GB，仅 CPU 约 13 GB。检查：`.venv\Scripts\dubla.exe kontrol`。
+所有内容都安装在仓库文件夹内（`.venv`、`runtime_assets/`）；每个下载都固定版本并经过 sha256 校验。开始安装所需的可用磁盘：GPU 配置
+22 GB，仅 CPU 14 GB；安装后实测占用约 14.6 GB（GPU，硬链接文件只计一次；文件管理器显示约 22 GB）。检查：`.venv\Scripts\dubla.exe kontrol`。
 
 系统要求、步骤顺序、Python 环境图、可选引擎、离线使用、更新、卸载和常见错误（英文）：
 **[docs/installation.md](docs/installation.md)**。Linux 和 macOS 尚未测试。
 
 ## 用法
 
-桌面应用：双击 `arayuz.cmd`（本地网页应用：`web.cmd`，仅 127.0.0.1）。命令行：
+桌面应用：双击 `arayuz.cmd`（本地网页应用：`web.cmd`，仅 127.0.0.1）。程序界面目前为土耳其语。命令行：
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -45,7 +45,7 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 2. **语音转文字：** faster-whisper large-v3-turbo（MIT）加 wav2vec2 CTC 词级时间（英语 MIT，土耳其语 CC BY 4.0）；可选 CrisperWhisper 2.0（非商业）及其他引擎。
 3. **说话人：** 3D-Speaker CAM++（Apache-2.0）和性别分类器（Apache-2.0）为每位说话人选择合成声音。
 4. **翻译：** 已安装并登录时使用 Codex CLI 或 Claude Code CLI，否则使用本地 Opus-MT 英译土（CC BY 4.0）；API 后端可选。
-5. **声音与时间：** 默认 Supertonic 3（OpenRAIL-M），可选 VoxCPM2（Apache-2.0）或 XTTS-v2（非商业）；每一行都贴合原始片段时长。
+5. **声音与时间：** 默认 Supertonic 3（OpenRAIL-M），可选 VoxCPM2（Apache-2.0）或 XTTS-v2（非商业）；每一行最多加速 1.25 倍以接近原始片段时长，其余由视频重新调整时长，因此配音可能比原片长。
 6. **视频：** FFmpeg 写入新音频、SRT / VTT / ASS 字幕和 `AI-dubbed` 标签。
 
 ## 测量结果
@@ -54,8 +54,8 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 
 | 项目 | CPU 配置 | GPU 配置 |
 |---|---|---|
-| 首次安装，默认步骤 | ≈ 38 分钟 | ≈ 13.5 分钟（软件包） |
-| 安装后磁盘占用 | ≈ 13 GB | ≈ 22 GB |
+| 首次安装，默认步骤，全程 | ≈ 38 分钟 | ≈ 44 分钟（软件包 13.7 分钟） |
+| 安装后磁盘占用 | ≈ 13.2 GB（文件夹合计） | ≈ 14.6 GB（硬链接只计一次） |
 | 9 秒示例配音，离线翻译 | 528 秒 | 376 秒 |
 | 30 秒英语片段，Demucs，Claude Code 翻译 | – | 744 秒 |
 
@@ -115,4 +115,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:64e0ac274650 -->
+<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->

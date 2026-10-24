@@ -9,7 +9,8 @@ yüklenmez (tek istisna aşağıda, "Başka bir dil seçmek" bölümünde).
 ## Neye ihtiyacınız var
 
 - **Windows 10 ya da 11** yüklü bir bilgisayar (64 bit). Mac ve Linux henüz denenmedi.
-- **Boş disk yeri:** bilgisayarda NVIDIA ekran kartı varsa yaklaşık 22 GB, yoksa yaklaşık 14 GB (bunun yaklaşık 8 / 4 GB'ı kurulumdan sonra silinebilen indirme önbelleğidir).
+- **Boş disk yeri:** bilgisayarda NVIDIA ekran kartı varsa yaklaşık 22 GB, yoksa yaklaşık 14 GB. NVIDIA kartlı ölçülen bir kurulum yaklaşık 14,6 GB kullanır; Windows Gezgini yaklaşık
+  22 GB gösterir, çünkü indirme önbelleği dosyalarının çoğunu programla paylaşır ve Gezgin onları iki kez sayar.
 - Yalnız kurulum sırasında **internet**.
 - **Ekran kartı** şart değildir. *Ekran kartı* (*GPU* da denir) bilgisayarın görüntüyü çizen parçasıdır; NVIDIA
   kartlar bu programın ağır işini de yapabilir ve onu çok hızlandırır. Kart yoksa bütün işi *işlemci* (*CPU*,
@@ -25,12 +26,16 @@ Code, Codex, Gemini CLI gibi. Asistanı açın ve şu tek cümleyi yapıştırı
 https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
-Asistan bilgisayarı denetler, ekran kartıyla mı işlemciyle mi kurulacağını kendisi seçer, gerekenleri indirir,
-küçük bir örnek videoyla dener ve program penceresini açar. Size **tek bir soru** sorar: programın konuştuğu sesin
-kullanım şartlarını kabul edip etmediğiniz. Kısaca şunu söyler: gerçek kişileri taklit etmeyin, kimseyi
-kandırmayın, izleyicinize sesin bilgisayar yapımı olduğunu söyleyin. Kabul ediyorsanız "evet" deyin.
+Asistan bilgisayarı ölçer ve ekran kartıyla mı işlemciyle mi kurulacağını kendisi seçer. Sonra size bir kez, sade
+sözcüklerle **nasıl bir kurulum istediğinizi** sorar: hızlı, bilgisayarınız için önerilen ya da tam; her parçanın
+ne yaptığını, ne kadar disk yeri ve zaman istediğini, lisansının neye izin verdiğini söyler. Programın konuştuğu
+sesin kullanım şartlarını kabul edip etmediğinizi de sorar. Kısaca şunu söyler: gerçek kişileri taklit etmeyin,
+kimseyi kandırmayın, izleyicinize sesin bilgisayar yapımı olduğunu söyleyin. Kabul ediyorsanız "evet" deyin.
+Sonra gerekenleri indirir, küçük bir örnek videoyla dener ve program penceresini açar. Program penceresi şimdilik
+Türkçedir.
 
-İndirme yaklaşık 13 GB'tır (NVIDIA kartı yoksa 9,5 GB); ölçülen ilk kurulum bağlantıya göre 15 dakika ile yaklaşık 40 dakika arasında sürdü.
+İndirme yaklaşık 13 GB'tır (NVIDIA kartı yoksa 9,5 GB); ölçülen ilk kurulumlar yaklaşık 38 dakika (NVIDIA kartı yokken) ve yaklaşık 44 dakika (kartla; çoğu model
+indirmesiydi) sürdü. Hızlı bağlantıda daha kısa sürer.
 
 ## Kendiniz kurmak
 

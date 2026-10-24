@@ -108,7 +108,6 @@ dubla-gui = "dublaj_hatti.gui:main"
 [project.urls]
 Homepage = "https://github.com/alexturkey/DubWorld"
 Issues = "https://github.com/alexturkey/DubWorld/issues"
-# TODO: hazırlayıcı doldurur (Homepage / Issues / Changelog once the public repo URL is decided)
 
 [tool.setuptools.dynamic]
 version = { attr = "dublaj_hatti.__version__" }

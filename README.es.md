@@ -2,7 +2,7 @@
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · Español · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> DubWorld dobla un vídeo a otro idioma en tu propio ordenador: transcripción con marcas de tiempo por palabra, traducción, voz sintética ajustada al tiempo original, subtítulos y un vídeo nuevo. Turco por defecto; otros idiomas según el motor de voz ([docs/diller.md](docs/diller.md)).
+> DubWorld dobla un vídeo a otro idioma en tu propio ordenador: transcripción con marcas de tiempo por palabra, traducción, voz sintética al ritmo del vídeo original (el habla se acelera como mucho 1,25×, el resto lo absorbe la imagen), subtítulos y un vídeo nuevo. Turco por defecto; otros idiomas según el motor de voz ([docs/diller.md](docs/diller.md)).
 
 ## Deja que tu asistente de IA lo instale
 
@@ -13,9 +13,11 @@ Gemini CLI o similar) y pega esta única frase:
 Instala en este ordenador el programa de doblaje de vídeo de https://github.com/alexturkey/DubWorld. Sigue paso a paso el archivo AGENTS.md de ese repositorio, detecta tú mismo mi hardware y no me hagas preguntas técnicas. Cuando `dubla kontrol` diga READY y el doblaje de ejemplo funcione, ábreme la ventana del programa.
 ```
 
-El asistente revisa tu ordenador, elige por sí mismo la instalación con tarjeta gráfica (GPU) o solo con procesador
-(CPU) y te hace una única pregunta: si aceptas las condiciones de uso de la voz. Después se abre la ventana del
-programa. Primeros pasos, explicaciones sencillas y problemas frecuentes (en inglés):
+El asistente mide tu ordenador (tarjeta gráfica, procesador, memoria, disco) y te pregunta una sola vez, con palabras
+sencillas, qué instalación quieres: rápida, recomendada para tu ordenador o completa. Explica cada parte (qué hace,
+cuánto disco y tiempo ocupa, su licencia) y te pregunta si aceptas las condiciones de uso de las partes que elijas,
+empezando por la voz por defecto. Después instala, hace un doblaje de muestra y abre la ventana del programa. Primeros
+pasos, explicaciones sencillas y problemas frecuentes (en inglés):
 **[docs/getting-started.md](docs/getting-started.md)**.
 
 **Resumen de licencias:** código Apache-2.0. Modelos por defecto: voz Supertonic 3 con OpenRAIL-M (restricciones de uso, se acepta una vez); Opus-MT y el modelo de tiempo por palabra para turco con CC BY 4.0 (atribución, NOTICE); compilación de FFmpeg GPL-3.0 (programa aparte). Solo no comercial y desactivados por defecto: CrisperWhisper 2.0, XTTS-v2, modelos de tiempo por palabra de WhisperX para fr / de / es / it. Este repositorio no contiene pesos de modelos ([THIRD_PARTY.md](THIRD_PARTY.md)).
@@ -26,14 +28,14 @@ Windows 10/11 x64; no necesitas Python, CUDA ni ffmpeg de antemano. Haz doble cl
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1`); elige por sí mismo el perfil GPU o CPU
 (`-Cpu` fuerza la CPU). Después haz doble clic en `arayuz.cmd` para abrir la aplicación.
 Todo se instala dentro de la carpeta del repositorio (`.venv`, `runtime_assets/`); cada descarga tiene versión fija y
-se verifica con sha256. Disco: ≈ 22 GB con el perfil GPU, ≈ 13 GB solo CPU. Comprobación: `.venv\Scripts\dubla.exe kontrol`.
+se verifica con sha256. Disco libre para empezar: 22 GB con el perfil GPU, 14 GB solo CPU; uso medido tras la instalación ≈ 14,6 GB (GPU, archivos con enlaces duros contados una vez; el explorador muestra ≈ 22 GB). Comprobación: `.venv\Scripts\dubla.exe kontrol`.
 
 Requisitos, orden de los pasos, mapa de entornos de Python, motores opcionales, uso sin conexión, actualización,
 desinstalación y errores frecuentes (en inglés): **[docs/installation.md](docs/installation.md)**. Linux y macOS aún no se han probado.
 
 ## Uso
 
-Aplicación de escritorio: doble clic en `arayuz.cmd` (aplicación web local: `web.cmd`, solo 127.0.0.1). Desde la línea de comandos:
+Aplicación de escritorio: doble clic en `arayuz.cmd` (aplicación web local: `web.cmd`, solo 127.0.0.1). Por ahora la interfaz de la aplicación está en turco. Desde la línea de comandos:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -48,7 +50,7 @@ Los resultados van a `cikti/<video>_<time>/`: `dubbed_tr.mp4` (con la etiqueta `
 2. **Voz a texto:** faster-whisper large-v3-turbo (MIT) más tiempos por palabra con wav2vec2 CTC (inglés MIT, turco CC BY 4.0); opcional CrisperWhisper 2.0 (no comercial) y otros motores.
 3. **Hablantes:** 3D-Speaker CAM++ (Apache-2.0) y un clasificador de género (Apache-2.0) eligen una voz sintética por hablante.
 4. **Traducción:** Codex CLI o Claude Code CLI si están instalados y con sesión iniciada; si no, Opus-MT local de inglés a turco (CC BY 4.0); backends por API opcionales.
-5. **Voz y tiempo:** Supertonic 3 (OpenRAIL-M) por defecto, VoxCPM2 (Apache-2.0) o XTTS-v2 (no comercial) opcionales; cada frase se ajusta a la duración del segmento original.
+5. **Voz y tiempo:** Supertonic 3 (OpenRAIL-M) por defecto, VoxCPM2 (Apache-2.0) o XTTS-v2 (no comercial) opcionales; cada frase se acelera como mucho 1,25× hacia la duración del segmento original y el vídeo se reajusta para el resto, así que el doblaje puede durar más que el original.
 6. **Vídeo:** FFmpeg escribe el audio nuevo, subtítulos SRT / VTT / ASS y la etiqueta `AI-dubbed`.
 
 ## Mediciones
@@ -57,8 +59,8 @@ Máquina de referencia: GPU Pascal de 4 GB, Windows 10; método y todas las fila
 
 | Qué | Perfil CPU | Perfil GPU |
 |---|---|---|
-| Primera instalación, pasos por defecto | ≈ 38 min | ≈ 13,5 min (paquetes) |
-| Disco tras la instalación | ≈ 13 GB | ≈ 22 GB |
+| Primera instalación, pasos por defecto, de principio a fin | ≈ 38 min | ≈ 44 min (paquetes 13,7 min) |
+| Disco tras la instalación | ≈ 13,2 GB (suma de carpetas) | ≈ 14,6 GB (enlaces duros contados una vez) |
 | Doblaje de la muestra de 9 s, traducción sin conexión | 528 s | 376 s |
 | Clip en inglés de 30 s, Demucs, traducción con Claude Code | – | 744 s |
 
@@ -122,4 +124,4 @@ Privacidad (qué se queda en local, qué recibe un servicio en la nube): PRIVACY
 > This translation may lag; English is authoritative. Esta traducción puede ir con retraso; la versión inglesa es la que
 > vale. Fuente: README.md (marca de sincronización abajo). Traducción automática (Claude); se agradecen PR de corrección.
 
-<!-- i18n-source: README.md sha256:64e0ac274650 -->
+<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->

@@ -2,7 +2,7 @@
 
 English · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> DubWorld dubs a video into another language on your own computer: speech to text with word timestamps, translation, synthetic voice fitted to the original timing, subtitles and a new video. Turkish by default; other languages per voice engine ([docs/diller.md](docs/diller.md)).
+> DubWorld dubs a video into another language on your own computer: speech to text with word timestamps, translation, synthetic voice kept in step with the original video (speech sped up at most 1.25×, the picture retimed for the rest), subtitles and a new video. Turkish by default; other languages per voice engine ([docs/diller.md](docs/diller.md)).
 
 ## Let your AI assistant install it
 
@@ -13,9 +13,11 @@ Gemini CLI or similar) and paste this one sentence:
 Install the video dubbing program from https://github.com/alexturkey/DubWorld on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
 ```
 
-The assistant checks your computer, picks the graphics card (GPU) or processor-only (CPU) setup by itself and asks
-you one question: whether you accept the voice's terms of use. Then the program window opens. First steps, plain
-words and common problems: **[docs/getting-started.md](docs/getting-started.md)**.
+The assistant measures your computer (graphics card, processor, memory, disk) and asks you once, in plain words, what
+kind of setup you want: quick, recommended for your computer, or full. It explains each part (what it does, its disk
+space, time and license) and asks whether you accept the terms of use of the parts you choose, starting with the
+default voice. Then it installs, makes a sample dub and opens the program window. First steps, plain words and common
+problems: **[docs/getting-started.md](docs/getting-started.md)**.
 
 **License box:** code Apache-2.0. Default models: Supertonic 3 voice under OpenRAIL-M (use restrictions, accepted once); Opus-MT and the Turkish word-timing model under CC BY 4.0 (attribution, NOTICE); FFmpeg build GPL-3.0 (separate program). Non-commercial only and off by default: CrisperWhisper 2.0, XTTS-v2, WhisperX word-timing models for fr / de / es / it. No model weights are in this repository ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
@@ -25,14 +27,14 @@ Windows 10/11 x64; no Python, CUDA or ffmpeg needed beforehand. Double-click **`
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1`); it picks the GPU or CPU profile by itself
 (`-Cpu` forces CPU). Then double-click `arayuz.cmd` to open the app.
 Everything goes inside the repository folder (`.venv`, `runtime_assets/`); every download is pinned and
-sha256-verified. Disk: ≈ 22 GB with the GPU profile, ≈ 13 GB CPU only. Check with `.venv\Scripts\dubla.exe kontrol`.
+sha256-verified. Free disk to start: 22 GB with the GPU profile, 14 GB CPU only; measured use after install ≈ 14.6 GB (GPU, hard-linked files counted once; a file explorer shows ≈ 22 GB). Check with `.venv\Scripts\dubla.exe kontrol`.
 
 Requirements, step order, the map of Python environments, optional engines, offline use, update, uninstall and
 common errors: **[docs/installation.md](docs/installation.md)**. Linux and macOS are not tested yet.
 
 ## Usage
 
-Desktop app: double-click `arayuz.cmd` (local web app: `web.cmd`, 127.0.0.1 only). From the command line:
+Desktop app: double-click `arayuz.cmd` (local web app: `web.cmd`, 127.0.0.1 only). The app's interface is in Turkish for now. From the command line:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -47,7 +49,7 @@ Results go to `cikti/<video>_<time>/`: `dubbed_tr.mp4` (tagged `AI-dubbed`), the
 2. **Speech to text:** faster-whisper large-v3-turbo (MIT) plus wav2vec2 CTC word timing (English MIT, Turkish CC BY 4.0); optional CrisperWhisper 2.0 (non-commercial) and other engines.
 3. **Speakers:** 3D-Speaker CAM++ (Apache-2.0) and a gender classifier (Apache-2.0) choose a synthetic voice per speaker.
 4. **Translation:** Codex CLI or Claude Code CLI when installed and logged in, otherwise local Opus-MT English to Turkish (CC BY 4.0); API backends optional.
-5. **Voice and timing:** Supertonic 3 (OpenRAIL-M) by default, VoxCPM2 (Apache-2.0) or XTTS-v2 (non-commercial) optional; each line is fitted to the original segment time.
+5. **Voice and timing:** Supertonic 3 (OpenRAIL-M) by default, VoxCPM2 (Apache-2.0) or XTTS-v2 (non-commercial) optional; each line is sped up at most 1.25× towards the original segment time and the video is retimed for the rest, so the dub can run longer than the source.
 6. **Video:** FFmpeg writes the new audio, SRT / VTT / ASS subtitles and the `AI-dubbed` tag.
 
 ## Measurements
@@ -56,8 +58,8 @@ Reference machine: 4 GB Pascal GPU, Windows 10; method and all rows in [docs/olc
 
 | What | CPU profile | GPU profile |
 |---|---|---|
-| First install, default steps | ≈ 38 min | ≈ 13.5 min (packages) |
-| Disk after install | ≈ 13 GB | ≈ 22 GB |
+| First install, default steps, end to end | ≈ 38 min | ≈ 44 min (packages 13.7 min) |
+| Disk after install | ≈ 13.2 GB (folder sum) | ≈ 14.6 GB (hard links counted once) |
 | 9 s sample dub, offline translation | 528 s | 376 s |
 | 30 s English clip, Demucs, Claude Code translation | – | 744 s |
 

@@ -1,10 +1,10 @@
 # Third-party components / Üçüncü taraf bileşenler
 
 This project's own code is licensed under **Apache-2.0** (`LICENSE`). It builds on the components below; each keeps
-its own license, and **your use of each component is governed by that component's license, not by ours**.
+its own license, and **your use of each component is governed by that component's license, not by this repository's license**.
 The binding text is this English file. Türkçe özet: `README.tr.md` "Sorumlu kullanım" ve `ETHICS.md`.
 
-**What is in this repository:** only our code, plus the vendored 3D-Speaker inference code (Apache-2.0, modified,
+**What is in this repository:** only this project's code, plus the vendored 3D-Speaker inference code (Apache-2.0, modified,
 see below) and a few CUDA kernel files derived from CTranslate2 (MIT). **No model weights, no audio, no binaries.**
 Models are downloaded by `scripts/kur.ps1` / `scripts/modelleri_indir.py` from their official source at a fixed
 commit with a SHA-256 check (`scripts/modeller.json`); Python packages come from PyPI at the hash-locked versions in
@@ -16,13 +16,13 @@ relying on a row, especially for commercial use.** This file is information, not
 
 Legend for **Commercial?**: **Yes** = the license allows it · **No** = non-commercial only · **Conditional** = allowed
 with use restrictions or obligations listed in the last column · **Provider terms** = a paid/online service; its
-terms of service decide (we did not review them; read them before use).
+terms of service decide (not reviewed for this repository; read them before use).
 
 ## 1. Models and engines
 
 | Component | Code license | Weights license | Output use | Commercial? | Source / pin | Your obligations |
 |---|---|---|---|---|---|---|
-| **Supertonic 3** TTS (Supertone) — default voice | MIT (`supertone-inc/supertonic`; our runner is our own code) | **BigScience Open RAIL-M** | Bound by the license's Attachment A use restrictions (no unlawful use, no impersonation without consent, no deceptive content, **must disclose that content is machine-generated**, etc.) | Conditional | HF `Supertone/supertonic-3` @ `3cadd1ee6394adea1bd021217a0e650ede09a323` (license file downloaded next to the model) | Follow Attachment A; pass the same restrictions on if you redistribute the model or a derivative; keep the AI-generated label on outputs |
+| **Supertonic 3** TTS (Supertone) — default voice | MIT (`supertone-inc/supertonic`; the runner is this project's code) | **BigScience Open RAIL-M** | Bound by the license's Attachment A use restrictions (no unlawful use, no impersonation without consent, no deceptive content, **must disclose that content is machine-generated**, etc.) | Conditional | HF `Supertone/supertonic-3` @ `3cadd1ee6394adea1bd021217a0e650ede09a323` (license file downloaded next to the model) | Follow Attachment A; pass the same restrictions on if you redistribute the model or a derivative; keep the AI-generated label on outputs |
 | **VoxCPM2** TTS (OpenBMB / ModelBest) — optional | Apache-2.0 (`OpenBMB/VoxCPM`) | Apache-2.0 (HF tag `license:apache-2.0`, `openbmb/VoxCPM2` @ `32279effe8…`) | Model card: impersonation, fraud and disinformation are forbidden; AI-generated content should be labeled | Yes | Installed through the sibling repo `voxcpm2-turkce-ses-tasarimi` (pinned commit + SHA-256) | Keep the label; voices only from text descriptions or with the speaker's consent |
 | **EMA Lightning** TTS (Turkish, one synthetic voice) — optional, `kur.ps1 -Adim tts-ema` | Apache-2.0 (PyPI `ema-lightning` 1.1.0, https://github.com/canberk7/ema-lightning) | Apache-2.0, commercial use included (model card) | Model card: the voice is synthetic (designed in VoxCPM2 from a text description, trained on ~1,000 h of VoxCPM2-generated speech, Apache-2.0), not a real person; tell listeners the audio is AI-generated; no impersonation or scams | Yes | HF `canberkkkkkk/ema-lightning` @ `e7c96f2fc0ba843cd0f86e02786655bb56f50df8`, `ema.pt` / `decoder.pt` SHA-256 pinned (scripts/modeller.json); CPU ONNX files are exported locally from these weights (not downloaded) | Keep the AI-generated label on outputs; keep the Apache-2.0 notice if you redistribute the weights or the exported ONNX files |
 | **faster-whisper** large-v3-turbo (CTranslate2 conversion) — default STT | MIT (`SYSTRAN/faster-whisper`) | MIT (HF tag; OpenAI Whisper weights MIT) | No restriction from the license | Yes | HF `dropbox-dash/faster-whisper-large-v3-turbo` @ `0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf` | Keep the MIT notice if you redistribute |
@@ -30,7 +30,7 @@ terms of service decide (we did not review them; read them before use).
 | **wav2vec2 XLS-R 300m Turkish** (Mehmet Poyraz) — Turkish word timing | — | **CC BY 4.0** | No restriction | Yes | HF `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish` @ `708639f50559d7970f462e13ec64d3f059ca89f6` | **Attribution** (see `NOTICE`) when you redistribute the model or publish results that build on it |
 | torchaudio `WAV2VEC2_ASR_BASE_960H` (fairseq, Meta) — English word timing | BSD-2-Clause (torchaudio) | MIT (fairseq) | No restriction | Yes | https://pytorch.org/audio/stable/pipelines.html | Keep notices if you redistribute |
 | **Silero VAD** v6.2.3 | MIT | MIT | No restriction | Yes | `snakers4/silero-vad` tag `v6.2.3` | Keep the MIT notice if you redistribute |
-| **CrisperWhisper 2.0 Turbo** (Nyra Health) — optional, off by default | MIT (`nyrahealth/CrisperWhisper`; our CT2 runner and kernels: Apache-2.0 / MIT) | **nyra health Non-Commercial Research License** | **Non-commercial only**; outputs may not be used to train commercial models | **No** | HF `nyralabs/CrisperWhisper2.0_turbo` @ `de0369c8a6…`, converted on your machine by the installer of our STT repo; installer step refuses to run without `-TicariOlmayanKabul` | Non-commercial use only; converted weights are a derivative under the same license — do not redistribute them under an open license |
+| **CrisperWhisper 2.0 Turbo** (Nyra Health) — optional, off by default | MIT (`nyrahealth/CrisperWhisper`; this project's CT2 runner and kernels: Apache-2.0 / MIT) | **nyra health Non-Commercial Research License** | **Non-commercial only**; outputs may not be used to train commercial models | **No** | HF `nyralabs/CrisperWhisper2.0_turbo` @ `de0369c8a6…`, converted on your machine by the installer of the sister STT repository; installer step refuses to run without `-TicariOlmayanKabul` | Non-commercial use only; converted weights are a derivative under the same license — do not redistribute them under an open license |
 | **CrisperWhisper 2.0 Medium** (Nyra Health) — optional, manual | MIT | **nyra health Non-Commercial Research License** | Non-commercial only | **No** | HF `nyralabs/CrisperWhisper2.0_medium` (manual install, `docs/motorlar/`) | Same as above |
 | **Moonshine Medium Streaming (English)** (Moonshine AI) — optional, manual | MIT | **MIT** (the upstream `LICENSE` lists the only non-MIT models: legacy non-streaming non-English Base/Tiny, under the non-commercial Moonshine Community License — **we do not use those**) | No restriction | Yes | https://github.com/moonshine-ai/moonshine (`LICENSE`, read 2026-10-24) | Do not swap in a model from the non-commercial list for commercial work |
 | **whisper.cpp** + `ggml-base.en` — optional, manual CPU path | MIT (`ggml-org/whisper.cpp`) | MIT (HF `ggerganov/whisper.cpp`) | No restriction | Yes | official prebuilt binary + HF model (manual) | Keep notices if you redistribute |
@@ -43,7 +43,7 @@ terms of service decide (we did not review them; read them before use).
 | **wav2vec2 XLSR-53 Japanese / Chinese (zh-CN)** (Jonatas Grosman) — optional word timing for ja / zh sources | — | Apache-2.0 | No restriction | Yes | HF `jonatasgrosman/wav2vec2-large-xlsr-53-japanese` @ `cf031e020336460d15a417eba710bbc5bb43be9a`, `...-chinese-zh-cn` @ `99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd` (`kur.ps1 -Adim hizalama-diller`) | Keep notices if you redistribute |
 | WhisperX default CTC models for other source languages (not pinned; downloaded only with `DUBLAJ_CEVRIMICI=1`) | — | per model; **fr, de, es, it = VoxPopuli, CC BY-NC 4.0** (torchaudio) | fr/de/es/it: non-commercial | fr/de/es/it: **No** | WhisperX `DEFAULT_ALIGN_MODELS_TORCH` / `_HF` | Check the model card before use |
 | **Coqui XTTS-v2** — optional extra `tts-xtts`, off by default | MPL-2.0 (`coqui-tts` 0.27.5, maintained fork `idiap/coqui-ai-TTS`) | **Coqui Public Model License (CPML)** — non-commercial (HF tag `license:other`); Coqui has shut down, so no commercial license can be obtained | Non-commercial only (CPML) | **No** | HF `coqui/XTTS-v2` (you download it and accept the CPML yourself; not fetched by our installer) | Non-commercial use only; reference voice must be your own or used with the speaker's explicit consent; no real-person reference clips are provided |
-| **RVC** voice conversion — optional, manual, off by default | MIT (`RVC-Project/Retrieval-based-Voice-Conversion-WebUI`) | **your own model**; RVC's base pretrained weights per that project's model page (**not verified** by us) | Depends on the model you supply | Conditional | https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI (manual, `DUBLAJ_RVC_KOK`) | Use only a model of your own voice or of a voice whose owner consented; the run is blocked unless `ses.rvc_riza_onayi = true` |
+| **RVC** voice conversion — optional, manual, off by default | MIT (`RVC-Project/Retrieval-based-Voice-Conversion-WebUI`) | **your own model**; RVC's base pretrained weights per that project's model page (**not verified** for this repository) | Depends on the model you supply | Conditional | https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI (manual, `DUBLAJ_RVC_KOK`) | Use only a model of your own voice or of a voice whose owner consented; the run is blocked unless `ses.rvc_riza_onayi = true` |
 | **OpenCV** (smart crop) — optional extra `akilli-kare` | Apache-2.0 (`opencv-python-headless`, PyPI) | — | No restriction | Yes | PyPI `opencv-python-headless` | The wheel bundles FFmpeg libraries; keep notices if you redistribute |
 
 ## 2. Online services (optional; your own account and key)
@@ -64,7 +64,7 @@ Nothing is sent anywhere unless you select one of these. When you do, your audio
 
 ## 3. Tools and binaries (downloaded or called, never bundled)
 
-| Component | License | How we use it | Source / pin | Your obligations |
+| Component | License | How it is used | Source / pin | Your obligations |
 |---|---|---|---|---|
 | **FFmpeg** 9.0.2 "essentials" build (gyan.dev) | **GPL-3.0** (this build enables GPL parts such as libx264) | separate program, called as a subprocess; downloaded by the installer to `runtime_assets/` | https://www.gyan.dev/ffmpeg/builds/ (linked from ffmpeg.org), SHA-256 in `scripts/modeller.json` | If you redistribute this binary, you must comply with the GPL-3.0 (offer the corresponding source) |
 | **yt-dlp** — optional extra `youtube` | Unlicense | URL input, only when you install the extra | PyPI `yt-dlp==2026.8.19` (security floor 2026.7.4; keep it updated) | **Download only content you own or are permitted to download, and follow the site's terms and your local law** (see `ETHICS.md`) |
@@ -74,7 +74,7 @@ Nothing is sent anywhere unless you select one of these. When you do, your audio
 | **uv** 0.13.5 (Astral) | MIT OR Apache-2.0 (both license files in `astral-sh/uv`) | installer: creates the virtual environment | GitHub release `astral-sh/uv` 0.13.5 | — |
 | PyTorch CUDA wheels → NVIDIA CUDA runtime libraries (`nvidia-*` wheels) | NVIDIA CUDA EULA | GPU profile only, pulled by `torch` | https://download.pytorch.org/whl/cu128 | Do not redistribute the CUDA libraries outside the EULA's terms |
 
-## 4. Code included in this repository that is not ours
+## 4. Code from other projects included in this repository
 
 | Path | Upstream | License | Changes |
 |---|---|---|---|
@@ -83,7 +83,7 @@ Nothing is sent anywhere unless you select one of these. When you do, your audio
 
 ## 5. Training-data note (sector practice, stated openly)
 
-Some models we download were trained on large speech datasets collected by their authors: the 3D-Speaker CAM++
+Some downloaded models were trained on large speech datasets collected by their authors: the 3D-Speaker CAM++
 model on a large-scale Chinese–English speaker dataset (per its ModelScope card), pyannote on public diarization
 benchmarks, the gender classifier on LibriSpeech (CC BY 4.0), the Turkish alignment model on Common Voice /
 MediaSpeech. The model licenses above are what their authors grant; dataset terms are described on each model card.
@@ -96,7 +96,7 @@ These are **not** in this repository and are not installed by it:
 - **edge-tts** and any other unofficial client for a non-public Microsoft speech endpoint.
 - **Unofficial Google Translate endpoints** (`googletrans`, `deep-translator`'s Google path and similar).
 - **Voice samples of real people** (celebrity / public-figure reference clips and similar). Bundled or example
-  audio, where present, is synthetic or our own.
+  audio, where present, is synthetic or made for this project.
 
 ## 7. Review items
 
@@ -112,7 +112,7 @@ No open item blocks a release. Resolved items stay here for the record.
 All packages installed by `requirements/gpu.txt` / `cpu.txt` (profile **core**) and by the optional extras
 (`requirements/ek_*.txt`). Every extra is locked (`requirements/ek_*.txt`) except `stt-moonshine` (manual install, listed in §1 at its top-level package). License = SPDX expression from the installed package metadata or its bundled `LICENSE`
 file; packages not installed on the test machine (extras) were read from PyPI JSON. Read 2026-10-24.
-Copyleft entries are libraries we call through their public API and do not modify; they are installed by pip from
+Copyleft entries are libraries called through their public API and do not modify; they are installed by pip from
 PyPI, never copied into this repository.
 
 | Package | Version | License | Profile | Note |
@@ -130,7 +130,7 @@ PyPI, never copied into this repository.
 | asteroid-filterbanks | 0.4.0 | MIT | core |  |
 | attrs | 26.1.0 | MIT | core/extra:speechmatics/extra:tts-xtts |  |
 | audioread | 3.1.0 | MIT | extra:tts-xtts |  |
-| av | 18.1.0 | BSD-3-Clause | core | binary wheel bundles FFmpeg shared libraries (incl. libmp3lame, dav1d, SVT-AV1); their exact build licenses: **not verified** |
+| av | 18.1.0 | BSD-3-Clause | core | pulled in by faster-whisper (audio decoding); not imported by this package. The Windows wheel bundles FFmpeg shared libraries that report **LGPL version 3 or later** (`av._core.library_meta[...]['license']`, read from the installed wheel); its build configuration has `--enable-version3`, no `--enable-gpl` / `--enable-nonfree`, and lists external libraries (libmp3lame, dav1d, SVT-AV1, libvpx, opus, libx264, libx265 among others) whose own licenses apply to those parts; redistributing the wheel follows PyAV's and FFmpeg's terms |
 | certifi | 2026.10.23 | MPL-2.0 | core/extra:galeri/extra:telegram/extra:tts-xtts | file-level copyleft; used unmodified |
 | cffi | 2.1.1 | MIT-0 | core/extra:tts-xtts |  |
 | charset-normalizer | 3.5.2 | MIT | core/extra:galeri/extra:tts-xtts |  |

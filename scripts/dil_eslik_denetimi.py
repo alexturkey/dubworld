@@ -72,6 +72,7 @@ README_DILLERI = ("zh-CN", "ja", "es", "ru", "de", "fr")
 MUAF: dict[str, str] = {
     "CHANGELOG.md": "sürüm notları İngilizce tutulur / release notes are kept in English",
     "CLAUDE.md": "AGENTS.md'ye yönlendiren üç satır / three-line pointer to AGENTS.md",
+    "GEMINI.md": "AGENTS.md'ye yönlendiren üç satır (Gemini CLI) / three-line pointer to AGENTS.md (Gemini CLI)",
     "CODE_OF_CONDUCT.md": "Contributor Covenant özgün metni + Türkçe özet / original Covenant text + Turkish summary",
     "THIRD_PARTY.md": "lisans ve sürüm tablosu, iki dilli başlıklar / licence tables with bilingual headings",
     "docs/adr/README.md": "ADR fihristi; Türkçe karşılığı kararlar.md / ADR index; Turkish counterpart is kararlar.md",

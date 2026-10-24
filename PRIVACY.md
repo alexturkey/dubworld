@@ -26,10 +26,10 @@ Türkçe bölüm tam çevirisidir.
 | Cerebras (`cerebras_llama_3_1_8b`) | transcript text | Cerebras | `CEREBRAS_API_KEY` |
 | Mistral (`mistral_nemo`) | transcript text | Mistral AI | `MISTRAL_API_KEY` |
 | Speechmatics (`transkripsiyon.motor = speechmatics`) | the extracted audio track | Speechmatics | `SPEECHMATICS_API_KEY_1` |
-| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | the extracted audio track; also account and usage queries made with your key (subscription and request analytics, to report cost) | ElevenLabs | `ELEVENLABS_API_KEY` |
+| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | the extracted audio track; also account and usage queries made with your key (subscription and request analytics, to report cost); for the cost in Turkish lira, one exchange-rate request (USD→TRY, ECB rate) without any key, audio or text | ElevenLabs; the rate request goes to `api.frankfurter.dev` | `ELEVENLABS_API_KEY` (none for the rate request) |
 | Cover image (`python -m ...kapak_gorseli`, never automatic) | the transcript, from which a neutral English image prompt is written | OpenAI, through your Codex CLI | your Codex login |
 | Link input (`indir`, yt-dlp / gallery-dl) | an ordinary download request for the link you gave | the site of that link | none added by this project (a gallery-dl config you point to with `DUBLAJ_GALLERY_DL_AYAR` is used as you wrote it) |
-| Install (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | file download requests | Hugging Face, GitHub, PyPI, PyTorch, ModelScope (fixed addresses + SHA-256 in `scripts/modeller.json` and the lock files) | none |
+| Install (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | file download requests | Hugging Face, GitHub, PyPI, PyTorch, ModelScope, `dl.fbaipublicfiles.com` (Meta, Demucs weight, `-Adim demucs`); Docker Hub only for the optional `-Adim telegram-sunucu` image (fixed addresses + SHA-256 in `scripts/modeller.json` and the lock files; the image by digest) | none |
 | Telegram bot (`dubla-telegram`, optional) | messages and files you exchange with **your own** bot | Telegram | your `TELEGRAM_BOT_TOKEN` |
 
 What the providers do with the data is governed by **their** terms and privacy policies, which you accept with your
@@ -98,10 +98,10 @@ Privacy questions about this code: open an issue (no personal data in it). Secur
 | Cerebras (`cerebras_llama_3_1_8b`) | transkript metni | Cerebras | `CEREBRAS_API_KEY` |
 | Mistral (`mistral_nemo`) | transkript metni | Mistral AI | `MISTRAL_API_KEY` |
 | Speechmatics (`transkripsiyon.motor = speechmatics`) | çıkarılan ses izi | Speechmatics | `SPEECHMATICS_API_KEY_1` |
-| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | çıkarılan ses izi; ayrıca anahtarınızla hesap ve kullanım sorguları (abonelik ve istek analizi, maliyeti raporlamak için) | ElevenLabs | `ELEVENLABS_API_KEY` |
+| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | çıkarılan ses izi; ayrıca anahtarınızla hesap ve kullanım sorguları (abonelik ve istek analizi, maliyeti raporlamak için); maliyeti Türk lirasıyla yazmak için anahtar, ses ve metin içermeyen tek bir kur isteği (USD→TRY, ECB kuru) | ElevenLabs; kur isteği `api.frankfurter.dev`'e gider | `ELEVENLABS_API_KEY` (kur isteği için yok) |
 | Kapak görseli (`python -m ...kapak_gorseli`, hiçbir zaman otomatik değil) | transkript (ondan nötr İngilizce görsel istemi yazılır) | OpenAI, Codex CLI'niz üzerinden | Codex oturumunuz |
 | Bağlantı girdisi (`indir`, yt-dlp / gallery-dl) | verdiğiniz bağlantı için olağan indirme isteği | o bağlantının sitesi | proje eklemez (`DUBLAJ_GALLERY_DL_AYAR` ile gösterdiğiniz gallery-dl ayar dosyası yazdığınız gibi kullanılır) |
-| Kurulum (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | dosya indirme istekleri | Hugging Face, GitHub, PyPI, PyTorch, ModelScope (sabit adres + SHA-256: `scripts/modeller.json` ve kilit dosyaları) | yok |
+| Kurulum (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | dosya indirme istekleri | Hugging Face, GitHub, PyPI, PyTorch, ModelScope, `dl.fbaipublicfiles.com` (Meta, Demucs ağırlığı, `-Adim demucs`); Docker Hub yalnız isteğe bağlı `-Adim telegram-sunucu` imajı için (sabit adres + SHA-256: `scripts/modeller.json` ve kilit dosyaları; imaj özetle) | yok |
 | Telegram botu (`dubla-telegram`, isteğe bağlı) | **kendi** botunuzla alıp verdiğiniz mesaj ve dosyalar | Telegram | `TELEGRAM_BOT_TOKEN`'ınız |
 
 Sağlayıcıların veriyle ne yaptığı, hesabınızla kabul ettiğiniz **onların** şartları ve gizlilik politikalarıyla

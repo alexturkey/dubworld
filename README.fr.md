@@ -2,7 +2,7 @@
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · Français
 
-> DubWorld double une vidéo dans une autre langue sur votre propre ordinateur : transcription avec horodatage des mots, traduction, voix de synthèse calée sur le minutage d'origine, sous-titres et nouvelle vidéo. Turc par défaut ; autres langues selon le moteur de voix ([docs/diller.md](docs/diller.md)).
+> DubWorld double une vidéo dans une autre langue sur votre propre ordinateur : transcription avec horodatage des mots, traduction, voix de synthèse au rythme de la vidéo d'origine (parole accélérée au plus de 1,25×, l'image absorbe le reste), sous-titres et nouvelle vidéo. Turc par défaut ; autres langues selon le moteur de voix ([docs/diller.md](docs/diller.md)).
 
 ## Laissez votre assistant IA l'installer
 
@@ -13,10 +13,12 @@ votre ordinateur (Claude Code, Codex, Gemini CLI ou équivalent) et collez cette
 Installe sur cet ordinateur le programme de doublage vidéo de https://github.com/alexturkey/DubWorld. Suis pas à pas le fichier AGENTS.md de ce dépôt, détecte toi-même mon matériel et ne me pose pas de questions techniques. Quand `dubla kontrol` affiche READY et que le doublage d'exemple fonctionne, ouvre-moi la fenêtre du programme.
 ```
 
-L'assistant vérifie votre ordinateur, choisit lui-même l'installation avec carte graphique (GPU) ou processeur seul
-(CPU) et vous pose une seule question : acceptez-vous les conditions d'utilisation de la voix. Ensuite, la fenêtre du
-programme s'ouvre. Premiers pas, explications simples et problèmes fréquents (en anglais) :
-**[docs/getting-started.md](docs/getting-started.md)**.
+L'assistant mesure votre ordinateur (carte graphique, processeur, mémoire, disque) et vous demande une seule fois, en
+mots simples, quelle installation vous voulez : rapide, recommandée pour votre ordinateur ou complète. Il explique
+chaque partie (ce qu'elle fait, son espace disque, son temps, sa licence) et vous demande si vous acceptez les
+conditions d'utilisation des parties choisies, à commencer par la voix par défaut. Ensuite il installe, fait un
+doublage d'exemple et ouvre la fenêtre du programme. Premiers pas, explications simples et problèmes fréquents (en
+anglais) : **[docs/getting-started.md](docs/getting-started.md)**.
 
 **Résumé des licences :** code Apache-2.0. Modèles par défaut : voix Supertonic 3 sous OpenRAIL-M (restrictions d'usage, acceptées une fois) ; Opus-MT et le modèle d'horodatage turc sous CC BY 4.0 (attribution, NOTICE) ; build FFmpeg GPL-3.0 (programme séparé). Non commerciaux uniquement et désactivés par défaut : CrisperWhisper 2.0, XTTS-v2, modèles d'horodatage WhisperX pour fr / de / es / it. Ce dépôt ne contient aucun poids de modèle ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
@@ -26,7 +28,7 @@ Windows 10/11 x64 ; Python, CUDA et ffmpeg ne sont pas nécessaires au préalabl
 lancez `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1`) ; le profil GPU ou CPU est choisi
 automatiquement (`-Cpu` force le CPU). Double-cliquez ensuite sur `arayuz.cmd` pour ouvrir l'application.
 Tout s'installe dans le dossier du dépôt (`.venv`, `runtime_assets/`) ; chaque téléchargement est figé en version et
-vérifié par sha256. Disque : ≈ 22 Go avec le profil GPU, ≈ 13 Go en CPU seul. Vérification : `.venv\Scripts\dubla.exe kontrol`.
+vérifié par sha256. Disque libre pour commencer : 22 Go avec le profil GPU, 14 Go en CPU seul ; occupation mesurée après installation ≈ 14,6 Go (GPU, fichiers en liens physiques comptés une fois ; l'explorateur affiche ≈ 22 Go). Vérification : `.venv\Scripts\dubla.exe kontrol`.
 
 Prérequis, ordre des étapes, carte des environnements Python, moteurs optionnels, utilisation hors ligne, mise à jour,
 désinstallation et erreurs fréquentes (en anglais) : **[docs/installation.md](docs/installation.md)**. Linux et macOS
@@ -34,7 +36,7 @@ ne sont pas encore testés.
 
 ## Utilisation
 
-Application de bureau : double-cliquez sur `arayuz.cmd` (application web locale : `web.cmd`, 127.0.0.1 uniquement). En ligne de commande :
+Application de bureau : double-cliquez sur `arayuz.cmd` (application web locale : `web.cmd`, 127.0.0.1 uniquement). L'interface de l'application est en turc pour l'instant. En ligne de commande :
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -49,7 +51,7 @@ Les résultats vont dans `cikti/<video>_<time>/` : `dubbed_tr.mp4` (étiqueté `
 2. **Parole en texte :** faster-whisper large-v3-turbo (MIT) plus horodatage des mots par wav2vec2 CTC (anglais MIT, turc CC BY 4.0) ; en option CrisperWhisper 2.0 (non commercial) et d'autres moteurs.
 3. **Locuteurs :** 3D-Speaker CAM++ (Apache-2.0) et un classifieur de genre (Apache-2.0) choisissent une voix de synthèse par locuteur.
 4. **Traduction :** Codex CLI ou Claude Code CLI s'ils sont installés et connectés, sinon Opus-MT local anglais → turc (CC BY 4.0) ; backends API optionnels.
-5. **Voix et minutage :** Supertonic 3 (OpenRAIL-M) par défaut, VoxCPM2 (Apache-2.0) ou XTTS-v2 (non commercial) en option ; chaque phrase est calée sur la durée du segment d'origine.
+5. **Voix et minutage :** Supertonic 3 (OpenRAIL-M) par défaut, VoxCPM2 (Apache-2.0) ou XTTS-v2 (non commercial) en option ; chaque phrase est accélérée au plus de 1,25× vers la durée du segment d'origine et la vidéo est recalée pour le reste, le doublage peut donc durer plus longtemps que la source.
 6. **Vidéo :** FFmpeg écrit le nouveau son, les sous-titres SRT / VTT / ASS et l'étiquette `AI-dubbed`.
 
 ## Mesures
@@ -58,8 +60,8 @@ Machine de référence : GPU Pascal 4 Go, Windows 10 ; méthode et toutes les li
 
 | Quoi | Profil CPU | Profil GPU |
 |---|---|---|
-| Première installation, étapes par défaut | ≈ 38 min | ≈ 13,5 min (paquets) |
-| Disque après installation | ≈ 13 Go | ≈ 22 Go |
+| Première installation, étapes par défaut, de bout en bout | ≈ 38 min | ≈ 44 min (paquets 13,7 min) |
+| Disque après installation | ≈ 13,2 Go (somme des dossiers) | ≈ 14,6 Go (liens physiques comptés une fois) |
 | Doublage de l'exemple de 9 s, traduction hors ligne | 528 s | 376 s |
 | Extrait anglais de 30 s, Demucs, traduction Claude Code | – | 744 s |
 
@@ -125,4 +127,4 @@ Confidentialité (ce qui reste en local, ce qu'un service cloud reçoit) : PRIVA
 > This translation may lag; English is authoritative. Cette traduction peut être en retard ; la version anglaise fait
 > foi. Source : README.md (marque de synchronisation ci-dessous). Traduction automatique (Claude) ; les PR de correction sont bienvenues.
 
-<!-- i18n-source: README.md sha256:64e0ac274650 -->
+<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->

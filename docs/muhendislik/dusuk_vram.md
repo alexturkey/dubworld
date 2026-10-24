@@ -23,11 +23,11 @@ kullanıldı. Her değerin gerekçesi bağlantı verilen sayfalarda.
 | Aşama | Ayar | Tepe |
 |---|---|---|
 | Ayrıştırma (isteğe bağlı) | `ses_temizligi.kip = "auto_background"` ya da `"original"`; Demucs `htdemucs`, batch 4, OOM'da (bellek yetmedi hatası) otomatik tek seferlik batch 1 yeniden denemesi, overlap 0.25, shifts 0, zorlanmış segment yok | 75 dk ses için ≈ 2,75 GB VRAM, ≈ 7,2 GB RAM |
-| Transkripsiyon (konuşmayı yazıya dökme) | `transkripsiyon.motor = "auto"`; `hesap_tipi = "auto"` (GPU'da fp32'ye izin var; GPU'yu paylaşıyorsan int8) | WhisperX turbo fp32 3.45 GB / int8 1.15 GB; CrisperWhisper Turbo int8 ≈ 1.4 GB |
+| Transkripsiyon (konuşmayı yazıya dökme) | `transkripsiyon.motor = "auto"`; `hesap_tipi = "auto"` (kod `hesap_tipi_coz`: GPU'da CTranslate2 bildiriyorsa `float16`, değilse `int8`, değilse `float32`; bu Pascal kartta CTranslate2 4.8.3 `float16` bildirmez, yani `auto` = `int8`, ölçüldü). `float32` yalnız elle seçilince ve GPU'yu başka iş kullanmıyorken sığar | WhisperX turbo fp32 3.45 GB / int8 1.15 GB; CrisperWhisper Turbo int8 ≈ 1.4 GB |
 | WhisperX | batch 1; VAD (konuşma etkinliği algılama) **CPU**'da; gerçek bir CUDA OOM'u otomatik olarak bir kez int8'de yeniden dener | – |
 | Kelime hizalama | tanımadan sonra kendi sürecinde çalışır | dile göre ≈ 1.6–2.4 GB |
 | Konuşmacı + cinsiyet | ayrı alt süreçler, art arda | her biri < 1 GB |
-| TTS (metinden sese) | Supertonic **CPU**'da çalışır (4 şerit × 2 iş parçacığı); VoxCPM2 GPU'yu tek başına ister | – |
+| TTS (metinden sese) | Supertonic **CPU**'da çalışır (4 şerit × 2 iş parçacığı); VoxCPM2 GPU'yu tek başına ister; 4 GB derlemesi kardeş reponun [docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) sayfasında | – |
 | Video | `video.cq = 26`; kodlayıcı otomatik seçilir (çalışıyorsa NVENC, yoksa x264) | – |
 
 Bunu mümkün kılan kurallar:

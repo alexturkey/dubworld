@@ -10,7 +10,7 @@ edilen yapılandırmada çalıştırıldı), **belgeye göre** (betikten, kilit 
 burada çalıştırılmadı), **denenmedi**.
 
 Test edilen yapılandırma (bu sayfadaki bütün ölçümler): Windows 10 x64, 4 GB VRAM'li Pascal sınıfı NVIDIA GPU
-(hesaplama yeteneği 6.1), 16 GB RAM, R580 serisi NVIDIA sürücüsü.
+(hesaplama yeteneği 6.1), 4 çekirdekli dizüstü işlemcisi, 16 GB RAM, HDD.
 
 ## 0. Yapay zekâ asistanınıza kurdurun
 
@@ -21,9 +21,10 @@ Code, Codex, Gemini CLI ya da benzeri) açın ve şunu yapıştırın:
 https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
-Asistan [../AGENTS.md](../AGENTS.md)'deki sabit akışı izler: ön koşul denetimleri, tek kurulum komutu, `dubla kontrol`
-(son satır `HAZIR / READY`), tek soru (varsayılan sesin kullanım şartlarının kabulü), örnek dublaj; sonra masaüstü
-arayüzünü açar. Kullanıcı için sade rehber: [baslarken.md](baslarken.md).
+Asistan [../AGENTS.tr.md](../AGENTS.tr.md)'deki akışı izler: makineyi ölçer (GPU ve VRAM, işlemci, RAM, disk), düz
+dille kısa bir kurulum görüşmesi yapar (her parçanın ne işe yaradığı, disk ve süre bedeli, lisansı; hazır kurulumlar:
+hızlı, bu makine için önerilen, tam), seçimi ve lisans onayını `ayarlar/` altına kaydeder, uygun `kur.ps1` adımlarını
+çalıştırır, `dubla kontrol`'ü denetler (son satır `HAZIR / READY`), örnek dublaj yapar ve masaüstü arayüzünü açar. Kullanıcı için sade rehber: [baslarken.md](baslarken.md).
 
 ## 1. Sistem gereksinimleri
 
@@ -32,7 +33,7 @@ arayüzünü açar. Kullanıcı için sade rehber: [baslarken.md](baslarken.md).
 | İşletim sistemi | Windows 10 ya da 11, x64 | Kurulum betiği PowerShell 5.1+ ile çalışır (Windows'ta yerleşik). Linux / macOS: bölüm 11. |
 | Python | **önceden gerekmez** | `kur.ps1`, sabit sürümlü `uv` 0.13.5 ile CPython **3.11.14**'ü repo klasörünün içine kurar. Paket Python 3.11 ister. İsteğe bağlı `voxcpm2` adımı kardeş reponun kurulum betiğini bu Python'u yalnız o süreç için `PATH` başına koyarak çalıştırır (bölüm 7); sistem `PATH`'i değişmez. |
 | git | yalnız isteğe bağlı `crisper` ve `voxcpm2` adımları için | Taban kurulum reponun ZIP indirmesiyle de çalışır. |
-| NVIDIA sürücüsü (GPU profili) | R570 ya da daha yeni (CUDA 12.8 çalışma zamanı); `nvidia-smi` çalışmalı | CUDA, PyTorch tekerleğinin içinde gelir (`torch 2.8.0+cu128`); **CUDA Toolkit, cuDNN ya da PATH değişikliği gerekmez**. R580, Pascal'ı destekleyen son sürücü serisi olarak duyurulmuştur; eski kartlarda sürücü yükseltmeden önce destek doğrulanır. |
+| NVIDIA sürücüsü (GPU profili) | R570 ya da daha yeni (CUDA 12.8 çalışma zamanı); `nvidia-smi` çalışmalı | CUDA, PyTorch tekerleğinin içinde gelir (`torch 2.8.0+cu128`); **CUDA Toolkit, cuDNN ya da PATH değişikliği gerekmez**. NVIDIA'nın [Unix grafik sürücüsü kullanımdan kaldırma takvimi](https://forums.developer.nvidia.com/t/unix-graphics-feature-deprecation-schedule/60588) R580'i Maxwell, Pascal ve Volta için son sürücü serisi olarak adlandırır; Windows desteği orada yazmaz, bu yüzden eski kartta sürücü yükseltmeden önce NVIDIA sürüm notlarına bakın. |
 | GPU | isteğe bağlı; Önerilen akış için 4 GB VRAM'li NVIDIA yeterli | Pascal (sm_61) ve sonrası. CUDA 13 derlemeleri Pascal'ı desteklemez (bölüm 12). AMD / Intel GPU'da işlemci profili kullanılır. |
 | RAM | en az 8 GB (tahmin), 16 GB ile denendi | Test edilen yapılandırmada ölçülen tepeler: Supertonic ≈ 1,8 GB, Demucs 75 dk seste ≈ 7,2 GB, CrisperWhisper Turbo model dönüşümü ≈ 4,5 GB boş RAM. |
 | ffmpeg | önceden gerekmez | FFmpeg **9.0.2** (sabit derleme, sha256 doğrulamalı) `runtime_assets/ffmpeg/bin` altına kurulur; CLI kendi süreci için onu `PATH`'in başına koyar. |
@@ -44,11 +45,11 @@ Profillere göre disk alanı:
 | Profil / ek | Boyut | Dayanak |
 |---|---|---|
 | Varsayılan adımların modelleri ve araçları (`runtime_assets/`, uv önbelleği hariç) | ≈ 5,5 GB (manifest toplamı); temiz kurulumdan sonra ≈ 5,5 GB ölçüldü | belgeye göre (`scripts/modeller.json`) / denendi (temiz kök) |
-| Ana ortam `.venv`, GPU profili | ≈ 7,8 GB | denendi (temiz kök) |
+| Ana ortam `.venv`, GPU profili | ≈ 7,8–8,0 GB | denendi (temiz kök, iki kurulum) |
 | Ana ortam `.venv`, işlemci profili | ≈ 3,8 GB | denendi (temiz kök) |
-| uv indirme önbelleği `runtime_assets/onbellek/uv` | ≈ 7,8 GB (GPU) / ≈ 3,9 GB (işlemci); kurulumdan sonra silinebilir | denendi (temiz kök) |
-| **Toplam, GPU profili** | **≈ 22 GB** (uv önbelleği silinince ≈ 14 GB); indirme ≈ 13 GB | denendi (temiz kök) |
-| **Toplam, işlemci profili** | **≈ 13,2 GB** (uv önbelleği silinince ≈ 9,3 GB); indirme ≈ 9,5 GB | denendi (temiz kök) |
+| uv indirme önbelleği `runtime_assets/onbellek/uv` | tek başına ≈ 7,9 GB (GPU) / ≈ 3,9 GB (işlemci); dosyaların çoğu `.venv` ile ortak sabit bağdır (hard link), kurulumdan sonra silmek çok daha az yer açar | denendi (temiz kök) |
+| **Toplam, GPU profili** | **başlamak için boş yer: 22 GB** (kurucu bunun altında uyarır); kurulumdan sonra kullanılan **≈ 14,6 GB**, sabit bağlar bir kez sayılarak (`du`; dosya gezgini ortak uv önbelleği dosyalarını iki kez saydığı için ≈ 22 GB gösterir); indirme ≈ 13 GB | denendi (temiz kök, kabul testi) |
+| **Toplam, işlemci profili** | **başlamak için boş yer: 14 GB** (kurucu bunun altında uyarır); kurulumdan sonra klasör başına toplam ≈ 13,2 GB (tekil boyut ölçülmedi); indirme ≈ 9,5 GB | denendi (temiz kök) |
 | `crisper` eki | ≈ 7 GB (torch cu126 ≈ 3 GB, model 1,6 GB + dönüştürülmüş 1,6 GB) | belgeye göre (kardeş STT reposu) |
 | `voxcpm2` eki | ≈ 3,7 GB indirme (model 2,95 GB + CUDA çalışma DLL'leri + motor) | belgeye göre (kardeş TTS reposu) |
 | `tts-ema` eki | ≈ 0,12 GB (ağırlık 34 MB, yerelde dışa aktarılan ONNX 79 MB, paketler ≈ 4 MB; PyTorch zaten `.venv`'de) | ölçüldü |
@@ -60,8 +61,8 @@ Profillere göre disk alanı:
 1. Repoyu kısa ve boşluksuz bir yola indirin ya da klonlayın (ör. `C:\dublaj`).
 2. Repo kökündeki **`kur.cmd`** dosyasına çift tıklayın (ya da terminalden çalıştırın). Varsayılan adımlarla
    `scripts\kur.ps1`'i çağırır ve sonda pencereyi açık tutar.
-3. Son satır `KURULUM_OK` olana kadar bekleyin. İlk kurulum ≈ 9 GB indirir (GPU profili); sonraki çalıştırmalar
-   sha256'sı doğru olan her dosyayı atlar.
+3. Son satır `KURULUM_OK` olana kadar bekleyin. İlk kurulum ≈ 13 GB (GPU profili) ya da ≈ 9,5 GB (işlemci profili) indirir; sonraki
+   çalıştırmalar sha256'sı doğru olan her dosyayı atlar.
 4. Başlatma: `arayuz.cmd`'ye çift tıklayın (masaüstü arayüzü); yerel web arayüzü `web.cmd`; komut satırı
    `.venv\Scripts\dubla.exe <video.mp4>`. Kurulum durursa pencerede `KURULUM DURDU / INSTALL STOPPED` ve ne
    yapılacağı yazar; `kur.cmd`'yi yeniden çalıştırın (bölüm 12).
@@ -157,7 +158,7 @@ dokunmadan tek başına kaldırılabilir.
 - **Nereye:** `runtime_assets/model_cache/` (çevrimdışı çözüm için `refs/main` yazılmış Hugging Face önbellek düzeni),
   `runtime_assets/tts_motorlari/`, `runtime_assets/ffmpeg/`, `runtime_assets/indirilen/`. İndirici
   `runtime_assets/` dışına hedefi reddeder.
-- **Doğrulama:** yalnız HTTPS, alan adı izin listesi (Hugging Face, PyTorch, GitHub, ModelScope); her dosya önce
+- **Doğrulama:** yalnız HTTPS, `scripts/modelleri_indir.py` alan adı izin listesi: `huggingface.co`, `github.com`, `objects.githubusercontent.com`, `raw.githubusercontent.com`, `download.pytorch.org`, `www.modelscope.cn`, `dl.fbaipublicfiles.com` (Meta, Demucs ağırlığı); Python paketleri hash kilitli `requirements/*.txt` ile PyPI'dan ve PyTorch dizininden gelir; her dosya önce
   `<ad>.part` olarak iner, boyut ve sha256 denetlenir, sonra yerine taşınır. Uyuşmazlıkta yarım dosya silinir ve
   beklenen ile gelen özet yazılarak durulur. Doğru olan mevcut dosya atlanır.
 - **Çalışma anında çevrimdışı:** CLI `HF_HUB_OFFLINE=1` ayarlar, `HF_HOME` / `TORCH_HOME`'u
@@ -211,7 +212,10 @@ Kurulum adımı olmayan motorlar (elle; `docs/motorlar/` altındaki sayfalarına
 .venv\Scripts\dubla.exe kontrol --json     # makine okur
 ```
 
-Test edilen yapılandırmada örnek çıktı (`--ayar genel.cihaz=cpu` ile işlemci zorlandı; satırlar kısaltıldı):
+Test edilen yapılandırmada, EMA Lightning eki kuruluyken örnek çıktı (`--ayar genel.cihaz=cpu` ile işlemci zorlandı;
+uzun satırlar `...` ile kısaltıldı). Kurulumdan sonraki ilk çalıştırma sonrakilerden belirgin uzun sürebilir, çünkü
+kütüphaneler diskten soğuk okunur (HDD'den soğuk `import torch` 38–44 sn ölçüldü,
+[muhendislik/gpu_bellek_ve_yalitim.md](muhendislik/gpu_bellek_ve_yalitim.md)):
 
 ```text
 DubWorld 0.1.0 · Python 3.11.14
@@ -219,12 +223,16 @@ DubWorld 0.1.0 · Python 3.11.14
   donanım.torch: 2.8.0+cu128
   donanım.cihaz: cpu
   donanım.whisper_hesap_tipi: int8
-  ffmpeg: <repo>\runtime_assets\ffmpeg\bin\ffmpeg.EXE
-  stt: faster-whisper=var, whisperx=var, crisperwhisper_turbo_ct2=yok, ...
+  ffmpeg: <repo>\runtime_assets\ffmpeg\bin\ffmpeg.exe
+  stt: faster-whisper=var, faster_whisper_ctc=var, whisperx=var, crisperwhisper_turbo_ct2=yok, ...
   ceviri: yerel=var, codex=var, claude_code=var, gemini_2_5_flash=yok, ...
-  tts: supertonic=var, voxcpm2=yok, xtts=yok
-  ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, ...
+  tts: supertonic=var, voxcpm2=yok, ema_lightning=var, xtts=yok
+  ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, segment_cinsiyet_kipi=var, ...
   deneysel / experimental: moonshine_medium_streaming_en (...)
+  telegram yerel sunucu: kapalı (bulut Bot API, en çok 50 MB; 2 GB için: dubla-telegram sunucu kur)
+  tts ema_lightning: GPU (torch) + işlemci ONNX; auto şimdi: onnx-cpu (GPU yok: işlemci)
+  hizalama (CTC): en=var, tr=var
+SONUÇ / RESULT: Önerilen akış HAZIR / recommended flow READY · arayüz / app: arayuz.cmd
 ```
 
 Nasıl okunur:

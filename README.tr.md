@@ -2,7 +2,7 @@
 
 [English](README.md) · Türkçe · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> DubWorld bir videoyu kendi bilgisayarınızda başka bir dile dublajlar: kelime zamanlı yazıya dökme, çeviri, özgün zamana oturtulmuş yapay ses, altyazı ve yeni video. Varsayılan dil Türkçe; diğer diller ses motoruna göre ([docs/diller.md](docs/diller.md)).
+> DubWorld bir videoyu kendi bilgisayarınızda başka bir dile dublajlar: kelime zamanlı yazıya dökme, çeviri, özgün videoyla adım adım giden yapay ses (konuşma en çok 1,25 kat hızlanır, kalanı için görüntü yeniden zamanlanır), altyazı ve yeni video. Varsayılan dil Türkçe; diğer diller ses motoruna göre ([docs/diller.md](docs/diller.md)).
 
 ## Yapay zekâ asistanınıza kurdurun
 
@@ -13,9 +13,11 @@ Gemini CLI ya da benzeri) açın ve şu tek cümleyi yapıştırın:
 https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
-Asistan bilgisayarınızı denetler, ekran kartıyla (GPU) mı yalnız işlemciyle (CPU) mi kurulacağını kendisi seçer ve
-size tek bir soru sorar: sesin kullanım şartlarını kabul edip etmediğiniz. Sonra program penceresi açılır. İlk
-adımlar, sade anlatım ve sık sorunlar: **[docs/baslarken.md](docs/baslarken.md)**.
+Asistan bilgisayarınızı ölçer (ekran kartı, işlemci, bellek, disk) ve size sade sözcüklerle bir kez nasıl bir kurulum
+istediğinizi sorar: hızlı, bilgisayarınız için önerilen ya da tam. Her parçayı anlatır (ne yapar, ne kadar disk ve
+zaman tutar, lisansı ne) ve seçtiğiniz parçaların kullanım şartlarını, önce varsayılan sesinkini, kabul edip
+etmediğinizi sorar. Sonra kurar, örnek bir dublaj yapar ve program penceresini açar. İlk adımlar, sade anlatım ve sık
+sorunlar: **[docs/baslarken.md](docs/baslarken.md)**.
 
 **Lisans kutusu:** kod Apache-2.0. Varsayılan modeller: Supertonic 3 sesi OpenRAIL-M (kullanım kısıtları, bir kez onaylanır); Opus-MT ve Türkçe kelime zamanı modeli CC BY 4.0 (atıf, NOTICE); FFmpeg derlemesi GPL-3.0 (ayrı program). Yalnız ticari olmayan ve varsayılan kapalı: CrisperWhisper 2.0, XTTS-v2, fr / de / es / it için WhisperX kelime zamanı modelleri. Bu repoda hiçbir model ağırlığı yoktur ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
@@ -24,15 +26,15 @@ adımlar, sade anlatım ve sık sorunlar: **[docs/baslarken.md](docs/baslarken.m
 Windows 10/11 x64; önceden Python, CUDA ya da ffmpeg gerekmez. **`kur.cmd`**'ye çift tıklayın (ya da
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1`); GPU ya da işlemci profilini kendisi seçer
 (`-Cpu` işlemciyi zorlar). Sonra programı açmak için `arayuz.cmd`'ye çift tıklayın. Her şey repo
-klasörünün içine kurulur (`.venv`, `runtime_assets/`); her indirme sabit ve sha256 doğrulamalıdır. Disk: GPU
-profiliyle ≈ 22 GB, yalnız işlemciyle ≈ 13 GB. Doğrulama: `.venv\Scripts\dubla.exe kontrol`.
+klasörünün içine kurulur (`.venv`, `runtime_assets/`); her indirme sabit ve sha256 doğrulamalıdır. Başlamak için boş disk: GPU
+profiliyle 22 GB, yalnız işlemciyle 14 GB; kurulum sonrası ölçülen kullanım ≈ 14,6 GB (GPU, sabit bağlı dosyalar bir kez sayıldı; dosya gezgini ≈ 22 GB gösterir). Doğrulama: `.venv\Scripts\dubla.exe kontrol`.
 
 Gereksinimler, adım sırası, Python ortamları haritası, isteğe bağlı motorlar, çevrimdışı kullanım, güncelleme,
 kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macOS henüz denenmedi.
 
 ## Kullanım
 
-Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Komut satırından:
+Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Uygulamanın arayüzü şimdilik Türkçedir. Komut satırından:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -47,7 +49,7 @@ Sonuçlar `cikti/<video>_<zaman>/` altına yazılır: `dubbed_tr.mp4` (`AI-dubbe
 2. **Yazıya dökme:** faster-whisper large-v3-turbo (MIT) ve wav2vec2 CTC kelime zamanı (İngilizce MIT, Türkçe CC BY 4.0); isteğe bağlı CrisperWhisper 2.0 (ticari olmayan) ve diğer motorlar.
 3. **Konuşmacılar:** 3D-Speaker CAM++ (Apache-2.0) ve cinsiyet sınıflandırıcı (Apache-2.0) her konuşmacıya yapay bir ses seçer.
 4. **Çeviri:** kurulu ve oturum açıksa Codex CLI ya da Claude Code CLI, yoksa yerel Opus-MT İngilizceden Türkçeye (CC BY 4.0); API arka uçları isteğe bağlı.
-5. **Ses ve zaman:** varsayılan Supertonic 3 (OpenRAIL-M), isteğe bağlı VoxCPM2 (Apache-2.0) ya da XTTS-v2 (ticari olmayan); her satır özgün segment süresine oturtulur.
+5. **Ses ve zaman:** varsayılan Supertonic 3 (OpenRAIL-M), isteğe bağlı VoxCPM2 (Apache-2.0) ya da XTTS-v2 (ticari olmayan); her satır özgün segment süresine doğru en çok 1,25 kat hızlandırılır, kalanı için video yeniden zamanlanır; dublaj bu yüzden kaynaktan uzun olabilir.
 6. **Video:** FFmpeg yeni sesi, SRT / VTT / ASS altyazıyı ve `AI-dubbed` etiketini yazar.
 
 ## Ölçümler
@@ -56,8 +58,8 @@ Başvuru makinesi: 4 GB Pascal GPU, Windows 10; yöntem ve bütün satırlar [do
 
 | Ne | İşlemci profili | GPU profili |
 |---|---|---|
-| İlk kurulum, varsayılan adımlar | ≈ 38 dk | ≈ 13,5 dk (paketler) |
-| Kurulum sonrası disk | ≈ 13 GB | ≈ 22 GB |
+| İlk kurulum, varsayılan adımlar, baştan sona | ≈ 38 dk | ≈ 44 dk (paketler 13,7 dk) |
+| Kurulum sonrası disk | ≈ 13,2 GB (klasör toplamı) | ≈ 14,6 GB (sabit bağlar bir kez sayıldı) |
 | 9 sn örnek dublaj, çevrimdışı çeviri | 528 sn | 376 sn |
 | 30 sn İngilizce parça, Demucs, Claude Code çevirisi | – | 744 sn |
 

@@ -123,7 +123,7 @@ responsibility (see [../../ETHICS.md](../../ETHICS.md)).
 | Track type | **automatic captions only** (`automatic_captions` in yt-dlp metadata). Uploaded/manual subtitles (`subtitles`) are not read |
 | Format | **`json3` only**. `vtt`, `srv1/2/3`, `ttml` and `srt` are never used as a fallback |
 | Language order | 1) the video's language (`language`, else `original_language`; region dropped: `fr-FR` → `fr`), 2) `en`, 3) any other language alphabetically. With no language metadata the preferred language is `en` |
-| yt-dlp calls | `YoutubeDL({"quiet": True, "no_warnings": True, "skip_download": True}).extract_info(url, download=False)` for metadata; the chosen track URL is read with `YoutubeDL({"quiet": True, "no_warnings": True}).urlopen(url)`. Only public, documented yt-dlp API; no other endpoint and no signature handling of our own |
+| yt-dlp calls | `YoutubeDL({"quiet": True, "no_warnings": True, "skip_download": True}).extract_info(url, download=False)` for metadata; the chosen track URL is read with `YoutubeDL({"quiet": True, "no_warnings": True}).urlopen(url)`. Only public, documented yt-dlp API; no other endpoint and no signature handling of its own |
 | URL check | host must be `youtube.com` / `youtu.be` or a subdomain (`www.`, `m.`); look-alike hosts are rejected |
 | Parser | per event `tStartMs`, per piece `tOffsetMs` → `start_hint` (seconds); HTML entities decoded; multi-word pieces split into words that share one hint; `[Music]`, `(laughs)`, `♪`, `♫` and empty pieces dropped; events without `tStartMs` ignored; words sorted by hint. **No `end` is produced** |
 | Alignment windows | words grouped at sentence ends, gaps > 2.5 s, > 18 s span or 80 words; window = first hint − 0.25 s … next window's first hint (last one: audio end) |

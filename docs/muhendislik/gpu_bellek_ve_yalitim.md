@@ -160,7 +160,7 @@ Model dosya boyutu VRAM ihtiyacı değildir: 213 MB ağırlığı olan bir konu�
    kodda hiç denenmedi.
 3. Aralıklı WhisperX OOM'unun tetikleyicisi bilinmiyor.
 
-## 10. Nasıl ölçüyoruz (her sayfa için geçerli)
+## 10. Ölçüm yöntemi (her sayfa için geçerli)
 
 - Her değişiklik, bildirim dosyası (manifest) olan yalıtılmış bir deney klasöründe test edilir; bir deneyin kabulü
   onu birleştirmek demek değildir; birleştirme gerçek uygulama giriş noktasından ikinci bir kanıt ister.

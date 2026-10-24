@@ -155,7 +155,7 @@ Model file size is not VRAM need: one speech-enhancement model with 213 MB of we
    memory-fraction guard were never tried in code.
 3. The trigger of the intermittent WhisperX OOM is unknown.
 
-## 10. How we measure (applies to every page)
+## 10. Measurement method (applies to every page)
 
 - Each change is tested in an isolated experiment folder with a manifest; accepting an experiment does not
   integrate it; integration needs a second proof through the real application entry point.

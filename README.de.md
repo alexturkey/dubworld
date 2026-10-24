@@ -2,7 +2,7 @@
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · Deutsch · [Français](README.fr.md)
 
-> DubWorld synchronisiert ein Video auf dem eigenen Computer in eine andere Sprache: Spracherkennung mit Wort-Zeitstempeln, Übersetzung, synthetische Stimme im Originaltiming, Untertitel und ein neues Video. Standard ist Türkisch; weitere Sprachen je nach Sprachausgabe-Engine ([docs/diller.md](docs/diller.md)).
+> DubWorld synchronisiert ein Video auf dem eigenen Computer in eine andere Sprache: Spracherkennung mit Wort-Zeitstempeln, Übersetzung, synthetische Stimme im Takt des Originalvideos (Sprache höchstens 1,25× beschleunigt, den Rest gleicht das Bild aus), Untertitel und ein neues Video. Standard ist Türkisch; weitere Sprachen je nach Sprachausgabe-Engine ([docs/diller.md](docs/diller.md)).
 
 ## Lass deinen KI-Assistenten die Installation übernehmen
 
@@ -13,10 +13,12 @@ Programmierkenntnisse sind nicht nötig. Öffne einen KI-Assistenten, der auf de
 Installiere das Video-Synchronisationsprogramm von https://github.com/alexturkey/DubWorld auf diesem Computer. Folge Schritt für Schritt der Datei AGENTS.md in diesem Repository, erkenne meine Hardware selbst und stelle mir keine technischen Fragen. Wenn `dubla kontrol` READY meldet und die Beispiel-Synchronisation funktioniert, öffne mir das Programmfenster.
 ```
 
-Der Assistent prüft deinen Computer, wählt selbst die Einrichtung mit Grafikkarte (GPU) oder nur mit Prozessor (CPU)
-und stellt dir genau eine Frage: ob du die Nutzungsbedingungen der Stimme akzeptierst. Danach öffnet sich das
-Programmfenster. Erste Schritte, einfache Erklärungen und häufige Probleme (auf Englisch):
-**[docs/getting-started.md](docs/getting-started.md)**.
+Der Assistent misst deinen Computer (Grafikkarte, Prozessor, Arbeitsspeicher, Festplatte) und fragt dich einmal in
+einfachen Worten, welche Einrichtung du willst: schnell, für deinen Computer empfohlen oder vollständig. Er erklärt
+jeden Teil (was er tut, wie viel Speicherplatz und Zeit er braucht, seine Lizenz) und fragt, ob du die
+Nutzungsbedingungen der gewählten Teile akzeptierst, zuerst die der Standardstimme. Danach installiert er, macht eine
+Beispielsynchronisation und öffnet das Programmfenster. Erste Schritte, einfache Erklärungen und häufige Probleme (auf
+Englisch): **[docs/getting-started.md](docs/getting-started.md)**.
 
 **Lizenzübersicht:** Code Apache-2.0. Standardmodelle: Supertonic-3-Stimme unter OpenRAIL-M (Nutzungsbeschränkungen, einmalige Zustimmung); Opus-MT und das türkische Wort-Zeitmodell unter CC BY 4.0 (Namensnennung, NOTICE); FFmpeg-Build GPL-3.0 (separates Programm). Nur nicht kommerziell und standardmäßig aus: CrisperWhisper 2.0, XTTS-v2, WhisperX-Wort-Zeitmodelle für fr / de / es / it. Dieses Repository enthält keine Modellgewichte ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
@@ -26,7 +28,7 @@ Windows 10/11 x64; Python, CUDA oder ffmpeg müssen vorher nicht installiert sei
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1` ausführen); das GPU- oder CPU-Profil wird
 automatisch gewählt (`-Cpu` erzwingt CPU). Danach `arayuz.cmd` doppelklicken, um die Anwendung zu öffnen.
 Alles landet im Repository-Ordner (`.venv`, `runtime_assets/`); jeder Download ist versionsfixiert und per sha256
-geprüft. Speicherplatz: ≈ 22 GB mit GPU-Profil, ≈ 13 GB nur CPU. Prüfen mit `.venv\Scripts\dubla.exe kontrol`.
+geprüft. Freier Speicherplatz zum Start: 22 GB mit GPU-Profil, 14 GB nur CPU; gemessene Belegung nach der Installation ≈ 14,6 GB (GPU, Dateien mit festen Links einmal gezählt; der Explorer zeigt ≈ 22 GB). Prüfen mit `.venv\Scripts\dubla.exe kontrol`.
 
 Voraussetzungen, Reihenfolge der Schritte, Übersicht der Python-Umgebungen, optionale Engines, Offline-Nutzung,
 Aktualisierung, Deinstallation und häufige Fehler (auf Englisch): **[docs/installation.md](docs/installation.md)**.
@@ -34,7 +36,7 @@ Linux und macOS sind noch nicht getestet.
 
 ## Verwendung
 
-Desktop-App: Doppelklick auf `arayuz.cmd` (lokale Web-App: `web.cmd`, nur 127.0.0.1). Über die Kommandozeile:
+Desktop-App: Doppelklick auf `arayuz.cmd` (lokale Web-App: `web.cmd`, nur 127.0.0.1). Die Oberfläche der App ist vorerst auf Türkisch. Über die Kommandozeile:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -49,7 +51,7 @@ Ergebnisse landen in `cikti/<video>_<time>/`: `dubbed_tr.mp4` (mit `AI-dubbed`-K
 2. **Sprache zu Text:** faster-whisper large-v3-turbo (MIT) plus Wort-Zeitstempel mit wav2vec2 CTC (Englisch MIT, Türkisch CC BY 4.0); optional CrisperWhisper 2.0 (nicht kommerziell) und weitere Engines.
 3. **Sprecher:** 3D-Speaker CAM++ (Apache-2.0) und ein Geschlechtsklassifikator (Apache-2.0) wählen pro Sprecher eine synthetische Stimme.
 4. **Übersetzung:** Codex CLI oder Claude Code CLI, wenn installiert und angemeldet, sonst lokales Opus-MT Englisch→Türkisch (CC BY 4.0); API-Backends optional.
-5. **Stimme und Timing:** standardmäßig Supertonic 3 (OpenRAIL-M), optional VoxCPM2 (Apache-2.0) oder XTTS-v2 (nicht kommerziell); jede Zeile wird an die Dauer des Originalsegments angepasst.
+5. **Stimme und Timing:** standardmäßig Supertonic 3 (OpenRAIL-M), optional VoxCPM2 (Apache-2.0) oder XTTS-v2 (nicht kommerziell); jede Zeile wird höchstens 1,25× in Richtung der Dauer des Originalsegments beschleunigt, den Rest gleicht das Video aus, daher kann die Synchronisation länger sein als die Quelle.
 6. **Video:** FFmpeg schreibt den neuen Ton, SRT-/VTT-/ASS-Untertitel und die `AI-dubbed`-Kennzeichnung.
 
 ## Messungen
@@ -58,8 +60,8 @@ Referenzrechner: Pascal-GPU mit 4 GB, Windows 10; Methode und alle Zeilen in [do
 
 | Was | CPU-Profil | GPU-Profil |
 |---|---|---|
-| Erstinstallation, Standardschritte | ≈ 38 min | ≈ 13,5 min (Pakete) |
-| Speicherplatz nach der Installation | ≈ 13 GB | ≈ 22 GB |
+| Erstinstallation, Standardschritte, komplett | ≈ 38 min | ≈ 44 min (Pakete 13,7 min) |
+| Speicherplatz nach der Installation | ≈ 13,2 GB (Ordnersumme) | ≈ 14,6 GB (feste Links einmal gezählt) |
 | Synchronisation des 9-s-Beispiels, Offline-Übersetzung | 528 s | 376 s |
 | 30-s-Clip auf Englisch, Demucs, Übersetzung mit Claude Code | – | 744 s |
 
@@ -125,4 +127,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:64e0ac274650 -->
+<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->

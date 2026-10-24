@@ -1,18 +1,21 @@
 # DubWorld src haritası
 
-Bu klasor uygulamanin aktif akisindaki butun kodun kanonik kokudur. Ilk
-seviyede yalniz akis sirasina gore numaralanmis bolumler ve `testler/`
-bulunur; her bolum kendi kutularini tasir. Bolum ve kutu listesinin, siralama
-kurallarinin ve yeni kutu yerlesiminin sahibi `docs/arac_katalogu.md`
-belgesidir. Importlar `src` kokune goredir, ornegin
-`from dublaj_hatti.bolum_00_omurga.core.dubber import ...`.
+Bu klasor uygulamanin aktif akisindaki butun kodun kanonik kokudur (`dublaj_hatti` paketi). Ilk seviyede
+akis sirasina gore numaralanmis bolumler ve ortak giris dosyalari (CLI, GUI, web, ayar, motor kaydi) bulunur; her
+bolum kendi kutularini tasir. Uctan uca akis ve dosya:satir haritasi: `docs/engineering/pipeline-flow.md`.
+Importlar paket adiyladir, ornegin `from dublaj_hatti.bolum_00_omurga.core.dubber import ...`.
 
 ```text
-src/
-  bolum_00_omurga/              pipeline orkestrasyonu, secim grafigi ve motor sinir adapterleri
-    core/                       Segment Senkron ve Full Metin ana akisi, checkpoint cekirdegi
-    selection_graph/            menu/is sozlesmesi grafigi ve implementation registry
-    runtime/                    output yolu, harici motor kutusu adapterleri, internet gateway
+src/dublaj_hatti/
+  cli.py, gui.py, web.py        dubla, dubla-gui, dubla-web girisleri; asama_komutlari.py tek asama komutlari
+  api.py                        Python API (asama islevleri)
+  yapilandirma.py, varsayilan.toml  ayar katmanlari ve "Onerilen akis" varsayilanlari
+  kayit.py, lisans_onayi.py     motor kaydi (lisans, donanim) ve tek lisans kapisi
+  is_yonetimi/, is_yurutucu.py  is kuyrugu, devam, arayuz alt sureci
+  semalar/                      asama dosyalarinin JSON Schema'lari
+  bolum_00_omurga/              pipeline orkestrasyonu ve motor sinir adapterleri
+    core/                       Segment Senkron ana akisi (dubber.py), checkpoint cekirdegi
+    runtime/                    donanim, kaynak kilidi, cikti yollari, harici motor adapterleri, internet gateway
     full_metin_dublaji.py       Full Metin akisi
   bolum_10_kaynak_edinme/       URL/lokal video girdisinden ASR-ready ses uretimi
     adim_10_dosya_adi_guvenligi/
@@ -20,9 +23,8 @@ src/
     adim_30_video_bilgisi/
     adim_40_ses_cikarma/
     adim_50_asr_sesi_hazirlama/ Demucs ve ASR sesi
-    akilli_kare_yakalama/       Instagram tasiyici karesinde gercek video alanini bulan kutu
-  bolum_20_transkripsiyon/      ASR motor kutulari, Telegram presetleri ve YouTube JSON3 kaynagi
-    ayarlar/
+    akilli_kare_yakalama/       video kenar bantlarini kirpan istege bagli kutu
+  bolum_20_transkripsiyon/      ASR motor kutulari ve YouTube JSON3 kaynagi
     whisperx_motoru/
     faster_whisper_motoru/
     whisper_cpp_cpu_align_motoru/
@@ -33,22 +35,20 @@ src/
     crisperwhisper_turbo_ct2_motoru/    WSL2 CUDA INT8 motor kutusu
     moonshine_medium_streaming_motoru/  CPU offline motor kutusu
     youtube_json3_kaynagi/
-  bolum_30_hizalama_ve_segment/ nihai dublaj segmenti API'si ve konusmaci/cinsiyet
+    zaman_kaynaklari.py
+  bolum_30_hizalama_ve_segment/ nihai dublaj segmenti API'si ve CTC kelime hizalama
     nihai_dublaj_segmentleri.py
-    konusmaci_ve_cinsiyet/
-  bolum_40_ceviri/              ceviri motorlari, aday hazirlama ve backend bridge kutulari
-  bolum_50_seslendirme/         TTS orkestratoru, Edge/Supertonic/XTTS kutulari, hizalayicilar
-    dub_timing_profiler/        Edge TTS timing profiler kutusu
+    ctc_kelime_hizalama/
+  bolum_40_ceviri/              yerel ceviri, arka uc secimi, LLM kopru kutulari, dil ekleri
+  bolum_50_seslendirme/         TTS orkestratoru, Supertonic / VoxCPM2 / EMA Lightning / XTTS kutulari, RVC, hizalayicilar
     metinden_seslendirme.py     metinden seslendirme akisi
   bolum_60_video_ve_encode/
+    kodlayici.py                NVENC / x264 secimi
     timeline_ve_final_encode/   dublaj sonrasi timeline, audio/video isleme ve final encode
   bolum_70_gorsel_uretim/
     kapak_gorseli/              tek transkript plani ve paralel Codex Exec/ImageGen kapak uretimi
   bolum_80_arayuz_ve_teslim/
-    telegram_bot/               Telegram arayuzu, kuyruk isleyici ve is soy projeksiyonu
-    telegram_control_bot/       bagimsiz kontrol botu
-    gui/                        masaustu GUI girisleri
-  testler/                      birim ve entegrasyon testleri
+    telegram_botu/              Telegram uzaktan kumanda botu, yerel Bot API sunucusu, teslim
 ```
 
 `src/bolum_20_transkripsiyon/moonshine_medium_streaming_motoru/`, deney çalıştırıcısının
@@ -129,10 +129,5 @@ kelime ve segment zamanlari Crisper kelime zamanlarindan uretilmeye devam eder.
 Bu kosullu dosya debug kanitidir ve tamamlanmis transkripsiyon checkpoint'i
 sayilmaz.
 
-Kokte Python dosyasi tutulmaz. Gecis shim'i gerekiyorsa once cagiran kod
-kanonik kutu yoluna alinir, sonra kok shim kaldirilir.
-
-Yeni uygulama kodu kok `src` altina veya proje kokune eklenmez. Once
-`docs/arac_katalogu.md` kurallarina gore bolum ve kutu secilir; kutu yoksa
-yeni kutu, katalog satiri ve README haritasi birlikte olusturulur. Uyum
-`src/testler/test_arac_katalogu.py` ile denetlenir.
+Yeni uygulama kodu `src/dublaj_hatti/` disina eklenmez. Yeni motor once `kayit.py`'ye bir satir olarak
+girer (CONTRIBUTING.md "Add an engine"); testler repo kokundeki `tests/` altindadir.

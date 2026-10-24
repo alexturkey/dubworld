@@ -40,6 +40,7 @@
   mixer places each segment at its start. There are no candidates, repair rounds or `atempo` for this engine, so
   `ses.akis` has no effect; the video retiming absorbs the difference. A per-speaker voice map skips gender prediction.
   Near the 4 GB limit, VRAM can spill into shared memory and slow generation without an error.
+- **4 GB speed-ups (audio.cpp CUDA build, sm_61):** Q8_0 GGUF weights, a KV cache sized to the request, the AudioVAE encoder on the CPU, LM and decoder never in VRAM together, chunked decoding, zeroed CUDA buffers and an on-disk reference-embedding cache. Each change, its environment variable and its measurement are in the sister repository: [docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md). This repository installs that build at a pinned commit and does not modify it.
 - Details: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §3
 - Place in the end-to-end flow: [pipeline-flow.md, branch table](../engineering/pipeline-flow.md#5-branches-what-a-choice-changes)
 
@@ -83,5 +84,6 @@
   karıştırıcı her segmenti başlangıcına yerleştirir. Bu motor için aday, onarım turu ya da `atempo` yoktur, bu yüzden
   `ses.akis` etkisizdir; farkı video yeniden zamanlaması karşılar. Konuşmacı başına ses haritası cinsiyet tahminini atlar.
   4 GB sınırına yakın VRAM paylaşılan belleğe taşabilir ve üretimi hata vermeden yavaşlatabilir.
+- **4 GB hızlandırmaları (audio.cpp CUDA derlemesi, sm_61):** Q8_0 GGUF ağırlık, isteğe göre boyutlanan KV önbelleği, işlemcide AudioVAE kodlayıcı, LM ile kod çözücünün VRAM'de hiç birlikte durmaması, parçalı kod çözme, sıfırlanan CUDA arabellekleri ve diskte referans gömme önbelleği. Her değişiklik, ortam değişkeni ve ölçümü kardeş repoda: [docs/4gb.md](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md). Bu repo o derlemeyi sabit commit'te kurar ve değiştirmez.
 - Ayrıntı: [tts_timing_and_mix.md](../engineering/tts_timing_and_mix.md) §7 · [gpu_memory_and_isolation.md](../engineering/gpu_memory_and_isolation.md) §3
 - Uçtan uca akıştaki yeri: [hat_akisi.md, dallanma tablosu](../muhendislik/hat_akisi.md#5-dallanmalar-bir-seçim-neyi-değiştirir)

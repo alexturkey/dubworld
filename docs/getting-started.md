@@ -9,7 +9,8 @@ uploaded anywhere (one exception, explained under "Choose another language").
 ## What you need
 
 - A **Windows 10 or 11** computer (64-bit). Mac and Linux have not been tested yet.
-- **Free disk space:** about 22 GB if the computer has an NVIDIA graphics card, about 14 GB if it does not (about 8 / 4 GB of it is a download cache you can delete after the install).
+- **Free disk space:** about 22 GB if the computer has an NVIDIA graphics card, about 14 GB if it does not. A measured install with an NVIDIA card uses about 14.6 GB; Windows Explorer shows about
+  22 GB because a download cache shares most of its files with the program and Explorer counts them twice.
 - **Internet** during the installation only.
 - A **graphics card** is optional. A *graphics card* (also called *GPU*) is the part of the computer that draws the
   picture; NVIDIA cards can also do the heavy work of this program and make it much faster. Without one, the
@@ -25,12 +26,15 @@ computer for you. Open it and paste this one sentence (the address is the page w
 Install the video dubbing program from https://github.com/alexturkey/DubWorld on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
 ```
 
-The assistant checks the computer, chooses the GPU or CPU setup by itself, downloads everything, tests it on a small
-sample video and opens the program window. It asks you **one question**: whether you accept the terms of use of the
-voice the program speaks with. In short they say: do not imitate real people, do not deceive, and tell your viewers
-that the voice is computer-made. If you agree, answer "yes".
+The assistant measures the computer and chooses the GPU or CPU setup by itself. Then it asks you, once and in plain
+words, **what kind of setup you want**: quick, recommended for your computer, or full; it tells you what each part
+does, how much disk space and time it needs and what its license allows. It also asks whether you accept the terms
+of use of the voice the program speaks with. In short they say: do not imitate real people, do not deceive, and
+tell your viewers that the voice is computer-made. If you agree, answer "yes". Then it downloads everything, tests
+it on a small sample video and opens the program window. The program's window is in Turkish for now.
 
-The download is about 13 GB (9.5 GB without an NVIDIA card); a measured first install took between 15 minutes and about 40 minutes depending on the connection.
+The download is about 13 GB (9.5 GB without an NVIDIA card); measured first installs took about 38 minutes (without an NVIDIA card) and about 44 minutes (with one; most of it
+was the model download). A faster connection is quicker.
 
 ## Install, by yourself
 

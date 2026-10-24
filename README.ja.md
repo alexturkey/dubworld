@@ -2,7 +2,7 @@
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · 日本語 · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> DubWorld は自分のコンピューター上で動画を別の言語に吹き替えます。単語タイムスタンプ付きの文字起こし、翻訳、元のタイミングに合わせた合成音声、字幕、新しい動画を作ります。既定はトルコ語で、他の言語は音声エンジンによります（[docs/diller.md](docs/diller.md)）。
+> DubWorld は自分のコンピューター上で動画を別の言語に吹き替えます。単語タイムスタンプ付きの文字起こし、翻訳、元の動画と歩調を合わせた合成音声（発話は最大 1.25 倍まで速め、残りは映像の時間を調整）、字幕、新しい動画を作ります。既定はトルコ語で、他の言語は音声エンジンによります（[docs/diller.md](docs/diller.md)）。
 
 ## AI アシスタントにインストールしてもらう
 
@@ -13,8 +13,8 @@ Gemini CLI など）を開き、次の一文を貼り付けてください。
 https://github.com/alexturkey/DubWorld にある動画吹き替えプログラムをこのコンピューターにインストールしてください。そのリポジトリの AGENTS.md ファイルに一歩ずつ従い、ハードウェアは自分で検出し、私に技術的な質問をしないでください。`dubla kontrol` が READY と表示し、サンプルの吹き替えが動いたら、プログラムのウィンドウを開いてください。
 ```
 
-アシスタントはコンピューターを調べ、グラフィックカード（GPU）か CPU のみの構成かを自分で選び、質問は一つだけです：
-音声モデルの利用規約に同意するかどうか。その後プログラムのウィンドウが開きます。最初の手順、平易な説明、よくある問題（英語）：
+アシスタントはコンピューター（グラフィックカード、プロセッサー、メモリー、ディスク）を測り、どんなインストールにするかを平易な言葉で一度だけ尋ねます：
+クイック、このコンピューター向けの推奨、またはフル。各部分（何をするか、ディスク容量と時間、ライセンス）を説明し、選んだ部分の利用規約に同意するかどうかを、まず既定の音声から尋ねます。その後インストールし、サンプルの吹き替えを作り、プログラムのウィンドウを開きます。最初の手順、平易な説明、よくある問題（英語）：
 **[docs/getting-started.md](docs/getting-started.md)**。
 
 **ライセンス概要：** コードは Apache-2.0。既定のモデル：Supertonic 3 の音声は OpenRAIL-M（利用制限あり、同意は一度だけ）、Opus-MT とトルコ語の単語タイミングモデルは CC BY 4.0（帰属表示、NOTICE）、FFmpeg のビルドは GPL-3.0（別プログラム）。非商用のみで既定は無効：CrisperWhisper 2.0、XTTS-v2、fr / de / es / it 用の WhisperX 単語タイミングモデル。このリポジトリにモデルの重みは含まれません（[THIRD_PARTY.md](THIRD_PARTY.md)）。
@@ -25,14 +25,14 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1` を実行）すると、GPU か CPU のプロファイルを自動で選びます
 （`-Cpu` で CPU を強制）。その後 `arayuz.cmd` をダブルクリックしてアプリを開きます。
 すべてリポジトリのフォルダー内に入ります（`.venv`、`runtime_assets/`）。ダウンロードはすべて固定版で sha256 検証済みです。
-ディスク：GPU プロファイルで約 22 GB、CPU のみで約 13 GB。確認：`.venv\Scripts\dubla.exe kontrol`。
+開始に必要な空きディスク：GPU プロファイルで 22 GB、CPU のみで 14 GB。インストール後の実測使用量は約 14.6 GB（GPU、ハードリンクのファイルは一度だけ数える。エクスプローラーでは約 22 GB と表示）。確認：`.venv\Scripts\dubla.exe kontrol`。
 
 要件、手順の順序、Python 環境の一覧、オプションのエンジン、オフライン利用、更新、アンインストール、よくあるエラー（英語）：
 **[docs/installation.md](docs/installation.md)**。Linux と macOS はまだテストされていません。
 
 ## 使い方
 
-デスクトップアプリ：`arayuz.cmd` をダブルクリック（ローカル Web アプリ：`web.cmd`、127.0.0.1 のみ）。コマンドラインから：
+デスクトップアプリ：`arayuz.cmd` をダブルクリック（ローカル Web アプリ：`web.cmd`、127.0.0.1 のみ）。アプリの画面は今のところトルコ語です。コマンドラインから：
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -47,7 +47,7 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 2. **文字起こし：** faster-whisper large-v3-turbo（MIT）と wav2vec2 CTC による単語タイミング（英語 MIT、トルコ語 CC BY 4.0）。任意で CrisperWhisper 2.0（非商用）など他のエンジン。
 3. **話者：** 3D-Speaker CAM++（Apache-2.0）と性別分類器（Apache-2.0）が話者ごとに合成音声を選びます。
 4. **翻訳：** インストール済みでログインしていれば Codex CLI または Claude Code CLI、なければローカルの Opus-MT 英語→トルコ語（CC BY 4.0）。API バックエンドは任意。
-5. **音声とタイミング：** 既定は Supertonic 3（OpenRAIL-M）、任意で VoxCPM2（Apache-2.0）または XTTS-v2（非商用）。各行を元のセグメントの長さに合わせます。
+5. **音声とタイミング：** 既定は Supertonic 3（OpenRAIL-M）、任意で VoxCPM2（Apache-2.0）または XTTS-v2（非商用）。各行は元のセグメントの長さに向けて最大 1.25 倍まで速め、残りは動画の時間を調整するため、吹き替えが元より長くなることがあります。
 6. **動画：** FFmpeg が新しい音声、SRT / VTT / ASS 字幕、`AI-dubbed` タグを書き込みます。
 
 ## 計測結果
@@ -56,8 +56,8 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 
 | 項目 | CPU プロファイル | GPU プロファイル |
 |---|---|---|
-| 初回インストール、既定の手順 | 約 38 分 | 約 13.5 分（パッケージ） |
-| インストール後のディスク | 約 13 GB | 約 22 GB |
+| 初回インストール、既定の手順、全体 | 約 38 分 | 約 44 分（パッケージ 13.7 分） |
+| インストール後のディスク | 約 13.2 GB（フォルダー合計） | 約 14.6 GB（ハードリンクは一度だけ） |
 | 9 秒のサンプル吹き替え、オフライン翻訳 | 528 秒 | 376 秒 |
 | 30 秒の英語クリップ、Demucs、Claude Code 翻訳 | – | 744 秒 |
 
@@ -119,4 +119,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:64e0ac274650 -->
+<!-- i18n-source: README.md sha256:f86ecfa8ff1f -->

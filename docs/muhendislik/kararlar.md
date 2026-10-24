@@ -51,7 +51,7 @@ segment gönderir ve ilk özel işçi dört parçanın (stem) tamamını CPU RAM
 işçi süresi ve 16 GB'lık bir sistemi %93'e iten bir RAM tepesi demekti.
 
 ### Karar
-- Kendi işçimiz: model çağrısı başına 4 dolgulu parçadan oluşan gruplar (`overlap=0.25`, `shifts=0`, modelin kendi
+- Projenin kendi işçisi: model çağrısı başına 4 dolgulu parçadan oluşan gruplar (`overlap=0.25`, `shifts=0`, modelin kendi
   segment uzunluğu, asla zorlanmaz).
 - Her parça biriktirilmeden önce GPU'da `[vocals, drums+bass+other]` biçimine indirilir; referans, girdi ve model
   tensörleri olabildiğince erken serbest bırakılır; matematik korunur (`no_vocals*std + 3*mean`).

@@ -53,7 +53,7 @@
 
 ## Acceleration history and rationale
 
-The engine was first used outside this repository on the reference machine (4 GB Pascal-class GPU, 8-thread CPU)
+The engine was first used outside this repository on the reference machine (4 GB Pascal-class GPU, 4-core laptop CPU)
 for short spoken answers; the settings below come from that history. Every figure is "seconds of audio per second
 of compute". Records without a measurement say so.
 
@@ -164,7 +164,7 @@ figures to `runtime_assets/tts_motorlari/ema_lightning/onnx/aktarim.json`.
 
 ## Hızlandırma geçmişi ve gerekçe
 
-Motor bu repodan önce başvuru makinesinde (4 GB Pascal sınıfı GPU, 8 iş parçacıklı işlemci) kısa sesli cevaplar
+Motor bu repodan önce başvuru makinesinde (4 GB Pascal sınıfı GPU, 4 çekirdekli dizüstü işlemcisi) kısa sesli cevaplar
 için kullanıldı; aşağıdaki ayarlar o geçmişten gelir. Her sayı "hesap saniyesi başına ses saniyesi"dir. Ölçümü
 olmayan kayıt bunu açıkça yazar.
 

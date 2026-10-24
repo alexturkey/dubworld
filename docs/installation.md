@@ -10,7 +10,7 @@ command below exists in `scripts/kur.ps1` or in the files it calls. Statements c
 **not tested**.
 
 Test configuration (all measured numbers on this page): Windows 10 x64, a 4 GB VRAM Pascal-class NVIDIA GPU
-(compute capability 6.1), 16 GB RAM, NVIDIA driver from the R580 series.
+(compute capability 6.1), 4-core laptop CPU, 16 GB RAM, HDD.
 
 ## 0. Let your AI assistant install it
 
@@ -21,9 +21,11 @@ The shortest route, also for people who do not program: open an AI assistant tha
 Install the video dubbing program from https://github.com/alexturkey/DubWorld on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
 ```
 
-The assistant follows the deterministic flow in [../AGENTS.md](../AGENTS.md): prerequisite checks, one install
-command, `dubla kontrol` (last line `READY`), one question (acceptance of the default voice's use conditions), a
-sample dub, then it opens the desktop app. Plain-language guide for the user: [getting-started.md](getting-started.md).
+The assistant follows the flow in [../AGENTS.md](../AGENTS.md): it measures the machine (GPU and VRAM, CPU, RAM,
+disk), holds a short setup interview in plain words (what each part does, its disk and time cost and its license;
+ready-made setups: quick, recommended for this machine, full), records the choice and the license acceptance in
+`ayarlar/`, runs the matching `kur.ps1` steps, checks `dubla kontrol` (last line `READY`), makes a sample dub and opens
+the desktop app. Plain-language guide for the user: [getting-started.md](getting-started.md).
 
 ## 1. System requirements
 
@@ -32,7 +34,7 @@ sample dub, then it opens the desktop app. Plain-language guide for the user: [g
 | Operating system | Windows 10 or 11, x64 | The installer is PowerShell 5.1+ (built into Windows). Linux / macOS: section 11. |
 | Python | **none needed beforehand** | `kur.ps1` installs CPython **3.11.14** with a pinned `uv` 0.13.5 into the repository folder. The package requires Python 3.11. The optional `voxcpm2` step runs the sister repository's installer with this Python put on `PATH` for that process only (section 7); the system `PATH` is not changed. |
 | git | needed for the optional `crisper` and `voxcpm2` steps | The base install works from a ZIP download of the repository. |
-| NVIDIA driver (GPU profile) | R570 or newer (CUDA 12.8 runtime), `nvidia-smi` must run | CUDA comes inside the PyTorch wheel (`torch 2.8.0+cu128`); **no CUDA Toolkit, cuDNN or PATH change is required**. R580 is announced as the last driver series with Pascal support; check support before upgrading the driver on an older card. |
+| NVIDIA driver (GPU profile) | R570 or newer (CUDA 12.8 runtime), `nvidia-smi` must run | CUDA comes inside the PyTorch wheel (`torch 2.8.0+cu128`); **no CUDA Toolkit, cuDNN or PATH change is required**. NVIDIA's [Unix graphics deprecation schedule](https://forums.developer.nvidia.com/t/unix-graphics-feature-deprecation-schedule/60588) names R580 as the last driver series for Maxwell, Pascal and Volta; Windows support is not stated there, so check NVIDIA's release notes before upgrading the driver on an older card. |
 | GPU | optional; NVIDIA with 4 GB VRAM is enough for the recommended flow | Pascal (sm_61) and newer. CUDA 13 builds do not support Pascal (section 12). AMD / Intel GPUs: the CPU profile is used. |
 | RAM | 8 GB minimum (estimate), 16 GB tested | Peaks measured on the test configuration: Supertonic ≈ 1.8 GB, Demucs ≈ 7.2 GB for 75 min of audio, CrisperWhisper Turbo model conversion ≈ 4.5 GB free RAM. |
 | ffmpeg | none needed beforehand | FFmpeg **9.0.2** (pinned build, sha256-verified) is installed to `runtime_assets/ffmpeg/bin`; the CLI puts it first on `PATH` for its own process. |
@@ -44,11 +46,11 @@ Disk space per profile:
 | Profile / add-on | Size | Evidence |
 |---|---|---|
 | Models and tools of the default steps (`runtime_assets/` without the uv cache) | ≈ 5.5 GB (manifest sum); ≈ 5.5 GB measured after a clean install | per docs (`scripts/modeller.json`) / tested (clean root) |
-| Main environment `.venv`, GPU profile | ≈ 7.8 GB | tested (clean root) |
+| Main environment `.venv`, GPU profile | ≈ 7.8–8.0 GB | tested (clean root, two installs) |
 | Main environment `.venv`, CPU profile | ≈ 3.8 GB | tested (clean root) |
-| uv download cache `runtime_assets/onbellek/uv` | ≈ 7.8 GB (GPU) / ≈ 3.9 GB (CPU); can be deleted after install | tested (clean root) |
-| **Total, GPU profile** | **≈ 22 GB** (≈ 14 GB after deleting the uv cache); download ≈ 13 GB | tested (clean root) |
-| **Total, CPU profile** | **≈ 13.2 GB** (≈ 9.3 GB after deleting the uv cache); download ≈ 9.5 GB | tested (clean root) |
+| uv download cache `runtime_assets/onbellek/uv` | ≈ 7.9 GB (GPU) / ≈ 3.9 GB (CPU) on its own; most files are hard links shared with `.venv`, so deleting it after the install frees much less | tested (clean root) |
+| **Total, GPU profile** | **free space to start: 22 GB** (the installer warns below this); used after install **≈ 14.6 GB** counted with hard links once (`du`; a file explorer shows ≈ 22 GB because it counts the shared uv cache files twice); download ≈ 13 GB | tested (clean root, acceptance test) |
+| **Total, CPU profile** | **free space to start: 14 GB** (the installer warns below this); per-folder sum after install ≈ 13.2 GB (unique size not measured); download ≈ 9.5 GB | tested (clean root) |
 | `crisper` add-on | ≈ 7 GB (torch cu126 ≈ 3 GB, model 1.6 GB + converted 1.6 GB) | per docs (sister STT repository) |
 | `voxcpm2` add-on | ≈ 3.7 GB download (model 2.95 GB + CUDA runtime DLLs + engine) | per docs (sister TTS repository) |
 | `tts-ema` add-on | ≈ 0.12 GB (weights 34 MB, locally exported ONNX 79 MB, packages ≈ 4 MB; PyTorch is already in `.venv`) | measured |
@@ -60,8 +62,8 @@ Disk space per profile:
 1. Download or clone the repository to a short path without spaces (for example `C:\dublaj`).
 2. Double-click **`kur.cmd`** in the repository root (or run it from a terminal). It calls `scripts\kur.ps1` with the
    default steps and keeps the window open at the end.
-3. Wait for the last line `KURULUM_OK`. A first install downloads ≈ 9 GB (GPU profile); later runs skip every file
-   whose sha256 is already correct.
+3. Wait for the last line `KURULUM_OK`. A first install downloads ≈ 13 GB (GPU profile) or ≈ 9.5 GB (CPU profile); later
+   runs skip every file whose sha256 is already correct.
 4. Start: double-click `arayuz.cmd` (desktop interface); local web interface `web.cmd`; command line
    `.venv\Scripts\dubla.exe <video.mp4>`. If the install stops, the window shows `KURULUM DURDU / INSTALL STOPPED`
    and what to do; run `kur.cmd` again (section 12).
@@ -158,7 +160,7 @@ environment can be removed alone without touching `.venv`.
 - **Where:** `runtime_assets/model_cache/` (Hugging Face cache layout with `refs/main` written for offline lookup),
   `runtime_assets/tts_motorlari/`, `runtime_assets/ffmpeg/`, `runtime_assets/indirilen/`. The downloader refuses a
   target outside `runtime_assets/`.
-- **Verification:** HTTPS only, host allow-list (Hugging Face, PyTorch, GitHub, ModelScope); each file downloads to
+- **Verification:** HTTPS only, host allow-list in `scripts/modelleri_indir.py`: `huggingface.co`, `github.com`, `objects.githubusercontent.com`, `raw.githubusercontent.com`, `download.pytorch.org`, `www.modelscope.cn`, `dl.fbaipublicfiles.com` (Meta, the Demucs weight); Python packages come from PyPI and the PyTorch index through the hash-locked `requirements/*.txt`; each file downloads to
   `<name>.part`, size and sha256 are checked, then it is moved into place. A mismatch deletes the partial file and
   stops with the expected and received hash. Correct existing files are skipped.
 - **Offline at run time:** the CLI sets `HF_HUB_OFFLINE=1` and points `HF_HOME` / `TORCH_HOME` to
@@ -214,7 +216,10 @@ The `kontrol` step runs automatically at the end of the default install. It can 
 .venv\Scripts\dubla.exe kontrol --json     # machine-readable
 ```
 
-Example output on the test configuration (CPU forced with `--ayar genel.cihaz=cpu`; lines shortened):
+Example output on the test configuration with the EMA Lightning add-on installed (CPU forced with
+`--ayar genel.cihaz=cpu`; long lines shortened with `...`). The first run after an install can take noticeably longer
+than later runs because the libraries are read from disk cold (cold `import torch` measured 38–44 s from an HDD,
+[engineering/gpu_memory_and_isolation.md](engineering/gpu_memory_and_isolation.md)):
 
 ```text
 DubWorld 0.1.0 · Python 3.11.14
@@ -222,12 +227,16 @@ DubWorld 0.1.0 · Python 3.11.14
   donanım.torch: 2.8.0+cu128
   donanım.cihaz: cpu
   donanım.whisper_hesap_tipi: int8
-  ffmpeg: <repo>\runtime_assets\ffmpeg\bin\ffmpeg.EXE
-  stt: faster-whisper=var, whisperx=var, crisperwhisper_turbo_ct2=yok, ...
+  ffmpeg: <repo>\runtime_assets\ffmpeg\bin\ffmpeg.exe
+  stt: faster-whisper=var, faster_whisper_ctc=var, whisperx=var, crisperwhisper_turbo_ct2=yok, ...
   ceviri: yerel=var, codex=var, claude_code=var, gemini_2_5_flash=yok, ...
-  tts: supertonic=var, voxcpm2=yok, xtts=yok
-  ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, ...
+  tts: supertonic=var, voxcpm2=yok, ema_lightning=var, xtts=yok
+  ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, segment_cinsiyet_kipi=var, ...
   deneysel / experimental: moonshine_medium_streaming_en (...)
+  telegram yerel sunucu: kapalı (bulut Bot API, en çok 50 MB; 2 GB için: dubla-telegram sunucu kur)
+  tts ema_lightning: GPU (torch) + işlemci ONNX; auto şimdi: onnx-cpu (GPU yok: işlemci)
+  hizalama (CTC): en=var, tr=var
+SONUÇ / RESULT: Önerilen akış HAZIR / recommended flow READY · arayüz / app: arayuz.cmd
 ```
 
 How to read it:
