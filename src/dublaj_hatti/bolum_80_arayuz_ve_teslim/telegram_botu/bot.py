@@ -81,6 +81,7 @@ class DublajBotu:
         self.arka_uc = arka_uc or arka_uc_sec()
         self.ogeler = menuler.menu_ogeleri(ayar_formu())
         self.secimler: dict[int, dict[str, Any]] = {}
+        self.ozel_bekleyen: dict[int, dict[str, Any]] = {}  # kişi -> "özel değer gir" denen menü öğesi
         self.izinsiz_istek = 0
         if girdi_klasoru is None:
             from dublaj_hatti.web import cikti_koku
@@ -118,6 +119,7 @@ class DublajBotu:
 
     async def ayarlar(self, update: Any, context: Any) -> None:
         if self._yetkili(update):
+            self.ozel_bekleyen.pop(update.effective_user.id, None)
             await update.message.reply_text("Bölüm seçin:", reply_markup=self._klavye(menuler.bolum_dugmeleri(self.ogeler)))
 
     async def dugme(self, update: Any, context: Any) -> None:
@@ -140,17 +142,15 @@ class DublajBotu:
                                           reply_markup=self._klavye(menuler.deger_dugmeleri(self.ogeler, deger)))
         elif tur == "deger":
             anahtar, yeni = deger
-            deneme = {**secim, anahtar: yeni}
-            try:
-                from dublaj_hatti.is_yurutucu import ayar_degisiklikleri
-
-                ayar_degisiklikleri(deneme)  # ayar katmanı doğrular (kombinasyon dahil)
-            except ValueError as hata:
+            hata = self._secimi_uygula(secim, anahtar, yeni)
+            if hata:
                 await sorgu.edit_message_text(f"Olmadı: {hata}")
                 return
-            secim[anahtar] = yeni
-            await sorgu.edit_message_text(f"{anahtar} = {menuler.deger_metni(yeni)}",
+            await sorgu.edit_message_text(self._secim_metni(anahtar, yeni),
                                           reply_markup=self._klavye(menuler.bolum_dugmeleri(self.ogeler)))
+        elif tur == "ozel":
+            self.ozel_bekleyen[kisi] = deger
+            await sorgu.edit_message_text(menuler.ozel_istem_metni(deger))
         elif tur == "sifirla" and sorgu.data == "s":
             self.secimler.pop(kisi, None)
             await sorgu.edit_message_text("Seçimler varsayılana döndü.")
@@ -158,6 +158,40 @@ class DublajBotu:
             await sorgu.edit_message_text("Bölüm seçin:", reply_markup=self._klavye(menuler.bolum_dugmeleri(self.ogeler)))
         else:
             await sorgu.edit_message_text("Menü kapandı.")
+
+    @staticmethod
+    def _secimi_uygula(secim: dict[str, Any], anahtar: str, yeni: Any) -> str:
+        """Seçimi (ve birlikte değişen ayarı) ayar katmanında doğrular, geçerse kaydeder; hata metni ya da ""."""
+        degisen = {anahtar: yeni, **menuler.birlikte_degisen(anahtar)}
+        try:
+            from dublaj_hatti.is_yurutucu import ayar_degisiklikleri
+
+            ayar_degisiklikleri({**secim, **degisen})  # ayar katmanı doğrular (kombinasyon dahil)
+        except ValueError as hata:
+            return str(hata)
+        secim.update(degisen)
+        return ""
+
+    @staticmethod
+    def _secim_metni(anahtar: str, yeni: Any) -> str:
+        ek = "".join(f"\n{a} = {menuler.deger_metni(d)}" for a, d in menuler.birlikte_degisen(anahtar).items())
+        return f"{anahtar} = {menuler.deger_metni(yeni)}{ek}"
+
+    async def _ozel_deger(self, update: Any) -> None:
+        kisi = update.effective_user.id
+        oge = self.ozel_bekleyen[kisi]
+        try:
+            yeni = menuler.ozel_deger_coz(oge, update.message.text or "")
+        except ValueError as hata:
+            await update.message.reply_text(f"Olmadı: {hata}. Yeniden yazın ya da /ayarlar.")
+            return
+        hata = self._secimi_uygula(self.secimler.setdefault(kisi, {}), oge["anahtar"], yeni)
+        if hata:
+            await update.message.reply_text(f"Olmadı: {hata}")
+            return
+        self.ozel_bekleyen.pop(kisi, None)
+        await update.message.reply_text(self._secim_metni(oge["anahtar"], yeni),
+                                        reply_markup=self._klavye(menuler.bolum_dugmeleri(self.ogeler)))
 
     async def isler(self, update: Any, context: Any) -> None:
         if not self._yetkili(update):
@@ -286,6 +320,9 @@ class DublajBotu:
 
     async def baglanti(self, update: Any, context: Any) -> None:
         if not self._yetkili(update):
+            return
+        if update.effective_user.id in self.ozel_bekleyen:  # "özel değer gir" sonrası gelen metin
+            await self._ozel_deger(update)
             return
         metin = (update.message.text or "").strip()
         if not metin.startswith("https://") or any(c.isspace() for c in metin):
