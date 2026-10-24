@@ -1,21 +1,21 @@
-# Türkçe video dublaj hattı
+# DubWorld
 
 [English](README.md) · [Türkçe](README.tr.md) · 简体中文 · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> __TEK_CUMLE__（一句话说明它的用途）
+> DubWorld 在你自己的电脑上把视频配音成另一种语言：带词级时间戳的语音转文字、翻译、贴合原始时间的合成语音、字幕和新视频。默认目标语言为土耳其语；其他语言取决于语音引擎（[docs/diller.md](docs/diller.md)）。
 
 ## 让 AI 助手替你安装
 
 无需编程。打开一个能在你电脑上执行命令的 AI 助手（Claude Code、Codex、Gemini CLI 或类似工具），粘贴下面这一句话：
 
 ```text
-请把 __REPO_URL__ 上的视频配音程序安装到这台电脑上。逐步按照该仓库中的 AGENTS.md 文件操作，自行检测我的硬件，不要问我技术问题。当 `dubla kontrol` 显示 READY 且示例配音成功后，为我打开程序窗口。
+请把 https://github.com/alexturkey/DubWorld 上的视频配音程序安装到这台电脑上。逐步按照该仓库中的 AGENTS.md 文件操作，自行检测我的硬件，不要问我技术问题。当 `dubla kontrol` 显示 READY 且示例配音成功后，为我打开程序窗口。
 ```
 
 助手会检查你的电脑，自行选择显卡（GPU）或仅处理器（CPU）的安装方式，并只问你一个问题：是否接受语音模型的使用条款。
 随后程序窗口会打开。入门步骤、通俗说明和常见问题（英文）：**[docs/getting-started.md](docs/getting-started.md)**。
 
-**许可证概览：** 代码为 Apache-2.0。__LISANS_KUTUSU__（与代码不同的模型/数据许可证；若全部兼容 Apache 则写"无"）
+**许可证概览：** 代码为 Apache-2.0。默认模型：Supertonic 3 声音采用 OpenRAIL-M（有使用限制，只需同意一次）；Opus-MT 和土耳其语词级时间模型采用 CC BY 4.0（需署名，见 NOTICE）；FFmpeg 构建为 GPL-3.0（独立程序）。仅限非商业且默认关闭：CrisperWhisper 2.0、XTTS-v2、fr / de / es / it 的 WhisperX 词级时间模型。本仓库不包含任何模型权重（[THIRD_PARTY.md](THIRD_PARTY.md)）。
 
 ## 快速安装
 
@@ -30,19 +30,42 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 
 ## 用法
 
-__KULLANIM__（一条示例命令 + 输出文件说明）
+桌面应用：双击 `arayuz.cmd`（本地网页应用：`web.cmd`，仅 127.0.0.1）。命令行：
+
+```powershell
+.venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
+.venv\Scripts\dubla.exe talk.mp4 --ayar genel.hedef_dil=de  # another target language
+```
+
+结果写入 `cikti/<video>_<time>/`：`dubbed_tr.mp4`（带 `AI-dubbed` 标签）、源字幕 `transcript_<lang>.srt` 以及任务的 JSON 文件；最后一行 `dubbed_video:` 给出路径。全部设置：[docs/tarifler/kombinasyonlar.md](docs/tarifler/kombinasyonlar.md)。
 
 ## 工作原理
 
-__NASIL__（用 4–6 个要点描述流水线；写明每个外部模型及其许可证）
+1. **音频：** FFmpeg 提取声音；可选 Demucs（MIT）把语音和背景分开。
+2. **语音转文字：** faster-whisper large-v3-turbo（MIT）加 wav2vec2 CTC 词级时间（英语 MIT，土耳其语 CC BY 4.0）；可选 CrisperWhisper 2.0（非商业）及其他引擎。
+3. **说话人：** 3D-Speaker CAM++（Apache-2.0）和性别分类器（Apache-2.0）为每位说话人选择合成声音。
+4. **翻译：** 已安装并登录时使用 Codex CLI 或 Claude Code CLI，否则使用本地 Opus-MT 英译土（CC BY 4.0）；API 后端可选。
+5. **声音与时间：** 默认 Supertonic 3（OpenRAIL-M），可选 VoxCPM2（Apache-2.0）或 XTTS-v2（非商业）；每一行都贴合原始片段时长。
+6. **视频：** FFmpeg 写入新音频、SRT / VTT / ASS 字幕和 `AI-dubbed` 标签。
 
 ## 测量结果
 
-__OLCUM_TABLOSU__（在参考机器上测量，方法见 docs/olcumler.md；不得从别处抄数字）
+参考机器：4 GB Pascal GPU，Windows 10；方法和全部数据见 [docs/olcumler.md](docs/olcumler.md)。
+
+| 项目 | CPU 配置 | GPU 配置 |
+|---|---|---|
+| 首次安装，默认步骤 | ≈ 38 分钟 | ≈ 13.5 分钟（软件包） |
+| 安装后磁盘占用 | ≈ 13 GB | ≈ 22 GB |
+| 9 秒示例配音，离线翻译 | 528 秒 | 376 秒 |
+| 30 秒英语片段，Demucs，Claude Code 翻译 | – | 744 秒 |
 
 ## 局限
 
-__SINIRLAR__（哪些未测量、哪些是实验性的、哪些硬件未试过）
+- 未安装 CrisperWhisper（可选引擎 13）时，faster-whisper 在中文和日语上可能漏掉语音或编造内容（实际观察：一段中文片段的前 ≈ 10 秒被跳过；喊叫变成了一长串 "ああ…"）。
+- CI 只测试 CPU；GPU 路径在一张 4 GB Pascal 显卡上手动运行。较新的显卡（RTX 50）、Linux 和 macOS 未测试。
+- 离线翻译器只支持英语到土耳其语；其他语言对需要 Codex / Claude Code CLI 或 API 后端。
+- 英语和土耳其语以外源语言的词级时间：日语和中文用 `scripts/kur.ps1 -Adim hizalama-diller`，其他语言需用 `DUBLAJ_CEVRIMICI=1` 运行一次。
+- 未做端到端测试：XTTS-v2 实际安装、RVC、连接真实服务的 Telegram 机器人、CrisperWhisper 引擎；Moonshine 为实验性。
 
 ## 构建模块
 
@@ -64,9 +87,9 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 | 仓库 | 内容 | 本仓库如何使用 |
 |---|---|---|
-| **turkce-video-dublaj-hatti**（本仓库） | 端到端本地视频配音流水线，每个阶段都可单独使用 | - |
-| [crisperwhisper-turkce-kelime-zamani](__STT_REPO_URL__) | 带词级时间戳的逐字语音转文字（CrisperWhisper 2.0 Turbo + CTC 对齐） | 可选引擎 13：`scripts/kur.ps1 -Adim crisper` 通过该仓库在固定 commit 安装模型（权重**仅限非商业**） |
-| [voxcpm2-turkce-ses-tasarimi](__TTS_REPO_URL__) | VoxCPM2 声音设计与朗读，8 种语言，现成声音 | 可选 TTS 引擎 `voxcpm2`：`scripts/kur.ps1 -Adim voxcpm2` 在固定 commit 安装；本仓库通过一个薄适配器调用它 |
+| **DubWorld**（本仓库） | 端到端本地视频配音流水线，每个阶段都可单独使用 | - |
+| [crisperwhisper-turkce-kelime-zamani](https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani) | 带词级时间戳的逐字语音转文字（CrisperWhisper 2.0 Turbo + CTC 对齐） | 可选引擎 13：`scripts/kur.ps1 -Adim crisper` 通过该仓库在固定 commit 安装模型（权重**仅限非商业**） |
+| [voxcpm2-turkce-ses-tasarimi](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi) | VoxCPM2 声音设计与朗读，8 种语言，现成声音 | 可选 TTS 引擎 `voxcpm2`：`scripts/kur.ps1 -Adim voxcpm2` 在固定 commit 安装；本仓库通过一个薄适配器调用它 |
 
 每个兄弟仓库各自保留许可证、安装方式和问题跟踪；固定 commit 让组合可复现。
 
@@ -92,4 +115,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:bf85d79d8132 -->
+<!-- i18n-source: README.md sha256:64e0ac274650 -->

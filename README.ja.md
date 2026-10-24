@@ -1,8 +1,8 @@
-# Türkçe video dublaj hattı
+# DubWorld
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · 日本語 · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> __TEK_CUMLE__（何をするものかを一文で）
+> DubWorld は自分のコンピューター上で動画を別の言語に吹き替えます。単語タイムスタンプ付きの文字起こし、翻訳、元のタイミングに合わせた合成音声、字幕、新しい動画を作ります。既定はトルコ語で、他の言語は音声エンジンによります（[docs/diller.md](docs/diller.md)）。
 
 ## AI アシスタントにインストールしてもらう
 
@@ -10,14 +10,14 @@
 Gemini CLI など）を開き、次の一文を貼り付けてください。
 
 ```text
-__REPO_URL__ にある動画吹き替えプログラムをこのコンピューターにインストールしてください。そのリポジトリの AGENTS.md ファイルに一歩ずつ従い、ハードウェアは自分で検出し、私に技術的な質問をしないでください。`dubla kontrol` が READY と表示し、サンプルの吹き替えが動いたら、プログラムのウィンドウを開いてください。
+https://github.com/alexturkey/DubWorld にある動画吹き替えプログラムをこのコンピューターにインストールしてください。そのリポジトリの AGENTS.md ファイルに一歩ずつ従い、ハードウェアは自分で検出し、私に技術的な質問をしないでください。`dubla kontrol` が READY と表示し、サンプルの吹き替えが動いたら、プログラムのウィンドウを開いてください。
 ```
 
 アシスタントはコンピューターを調べ、グラフィックカード（GPU）か CPU のみの構成かを自分で選び、質問は一つだけです：
 音声モデルの利用規約に同意するかどうか。その後プログラムのウィンドウが開きます。最初の手順、平易な説明、よくある問題（英語）：
 **[docs/getting-started.md](docs/getting-started.md)**。
 
-**ライセンス概要：** コードは Apache-2.0。__LISANS_KUTUSU__（コードと異なるモデル／データのライセンス。すべて Apache 互換なら「なし」）
+**ライセンス概要：** コードは Apache-2.0。既定のモデル：Supertonic 3 の音声は OpenRAIL-M（利用制限あり、同意は一度だけ）、Opus-MT とトルコ語の単語タイミングモデルは CC BY 4.0（帰属表示、NOTICE）、FFmpeg のビルドは GPL-3.0（別プログラム）。非商用のみで既定は無効：CrisperWhisper 2.0、XTTS-v2、fr / de / es / it 用の WhisperX 単語タイミングモデル。このリポジトリにモデルの重みは含まれません（[THIRD_PARTY.md](THIRD_PARTY.md)）。
 
 ## クイックインストール
 
@@ -32,19 +32,42 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 
 ## 使い方
 
-__KULLANIM__（コマンド例を一つ＋出力ファイルの説明）
+デスクトップアプリ：`arayuz.cmd` をダブルクリック（ローカル Web アプリ：`web.cmd`、127.0.0.1 のみ）。コマンドラインから：
+
+```powershell
+.venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
+.venv\Scripts\dubla.exe talk.mp4 --ayar genel.hedef_dil=de  # another target language
+```
+
+結果は `cikti/<video>_<time>/` に出力されます：`dubbed_tr.mp4`（`AI-dubbed` タグ付き）、元言語の字幕 `transcript_<lang>.srt`、ジョブの JSON ファイル。最後の行 `dubbed_video:` がパスを示します。すべての設定：[docs/tarifler/kombinasyonlar.md](docs/tarifler/kombinasyonlar.md)。
 
 ## 仕組み
 
-__NASIL__（パイプラインを 4–6 項目で。外部モデルはすべてライセンスとともに明記）
+1. **音声：** FFmpeg が音を取り出し、任意の Demucs（MIT）が話し声と背景を分離します。
+2. **文字起こし：** faster-whisper large-v3-turbo（MIT）と wav2vec2 CTC による単語タイミング（英語 MIT、トルコ語 CC BY 4.0）。任意で CrisperWhisper 2.0（非商用）など他のエンジン。
+3. **話者：** 3D-Speaker CAM++（Apache-2.0）と性別分類器（Apache-2.0）が話者ごとに合成音声を選びます。
+4. **翻訳：** インストール済みでログインしていれば Codex CLI または Claude Code CLI、なければローカルの Opus-MT 英語→トルコ語（CC BY 4.0）。API バックエンドは任意。
+5. **音声とタイミング：** 既定は Supertonic 3（OpenRAIL-M）、任意で VoxCPM2（Apache-2.0）または XTTS-v2（非商用）。各行を元のセグメントの長さに合わせます。
+6. **動画：** FFmpeg が新しい音声、SRT / VTT / ASS 字幕、`AI-dubbed` タグを書き込みます。
 
 ## 計測結果
 
-__OLCUM_TABLOSU__（基準マシンで計測、方法は docs/olcumler.md。他所の数値を転記しない）
+基準マシン：4 GB Pascal GPU、Windows 10。方法と全データは [docs/olcumler.md](docs/olcumler.md)。
+
+| 項目 | CPU プロファイル | GPU プロファイル |
+|---|---|---|
+| 初回インストール、既定の手順 | 約 38 分 | 約 13.5 分（パッケージ） |
+| インストール後のディスク | 約 13 GB | 約 22 GB |
+| 9 秒のサンプル吹き替え、オフライン翻訳 | 528 秒 | 376 秒 |
+| 30 秒の英語クリップ、Demucs、Claude Code 翻訳 | – | 744 秒 |
 
 ## 制限
 
-__SINIRLAR__（計測していないもの、実験的なもの、試していないハードウェア）
+- CrisperWhisper（任意のエンジン 13）がない場合、faster-whisper は中国語と日本語で発話を飛ばしたり内容を作り出したりすることがあります（確認例：中国語クリップの最初の約 10 秒が抜けた、叫び声が長い "ああ…" の行になった）。
+- CI は CPU のみをテストします。GPU 経路は 4 GB Pascal カード 1 枚で手動実行しました。新しいカード（RTX 50）、Linux、macOS は未検証です。
+- オフライン翻訳は英語→トルコ語のみです。他の言語の組み合わせには Codex / Claude Code CLI または API バックエンドが必要です。
+- 英語とトルコ語以外の元言語の単語タイミング：日本語と中国語は `scripts/kur.ps1 -Adim hizalama-diller`、その他は `DUBLAJ_CEVRIMICI=1` で一度実行した後。
+- エンドツーエンド未検証：XTTS-v2 の実インストール、RVC、実サービスに接続した Telegram ボット、CrisperWhisper エンジン。Moonshine は実験的です。
 
 ## 構成要素
 
@@ -66,9 +89,9 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 | リポジトリ | 内容 | このリポジトリでの使い方 |
 |---|---|---|
-| **turkce-video-dublaj-hatti**（このリポジトリ） | エンドツーエンドのローカル動画吹き替えパイプライン。各段階を単独でも利用可能 | - |
-| [crisperwhisper-turkce-kelime-zamani](__STT_REPO_URL__) | 単語タイムスタンプ付きの逐語的な音声文字起こし（CrisperWhisper 2.0 Turbo + CTC アライメント） | オプションのエンジン 13：`scripts/kur.ps1 -Adim crisper` がそのリポジトリ経由で固定コミットのモデルをインストール（重みは**非商用のみ**） |
-| [voxcpm2-turkce-ses-tasarimi](__TTS_REPO_URL__) | VoxCPM2 による音声デザインと読み上げ、8 言語、既製の音声 | オプションの TTS エンジン `voxcpm2`：`scripts/kur.ps1 -Adim voxcpm2` が固定コミットでインストール。このリポジトリは薄いアダプター経由で呼び出す |
+| **DubWorld**（このリポジトリ） | エンドツーエンドのローカル動画吹き替えパイプライン。各段階を単独でも利用可能 | - |
+| [crisperwhisper-turkce-kelime-zamani](https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani) | 単語タイムスタンプ付きの逐語的な音声文字起こし（CrisperWhisper 2.0 Turbo + CTC アライメント） | オプションのエンジン 13：`scripts/kur.ps1 -Adim crisper` がそのリポジトリ経由で固定コミットのモデルをインストール（重みは**非商用のみ**） |
+| [voxcpm2-turkce-ses-tasarimi](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi) | VoxCPM2 による音声デザインと読み上げ、8 言語、既製の音声 | オプションの TTS エンジン `voxcpm2`：`scripts/kur.ps1 -Adim voxcpm2` が固定コミットでインストール。このリポジトリは薄いアダプター経由で呼び出す |
 
 兄弟リポジトリはそれぞれ独自のライセンス、インストール方法、課題管理を持ちます。固定コミットにより組み合わせを再現できます。
 
@@ -96,4 +119,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:bf85d79d8132 -->
+<!-- i18n-source: README.md sha256:64e0ac274650 -->

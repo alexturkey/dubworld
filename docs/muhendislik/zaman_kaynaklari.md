@@ -98,7 +98,9 @@ kaynakta WhisperX'e geçer; günlüğe yazılır; bkz. [transkripsiyon.md](trans
 - **Model yoksa sessiz düşüş yok:** `kaynak_dil` sabitse model iş başlamadan denetlenir (ayar hatası); dil `auto` ise
   eksik sabit modeller başta gerekçe olarak yazılır, iş dil tespitinden hemen sonra, hizalamadan önce durur. Mesaj adımı
   söyler: `scripts/kur.ps1 -Adim modeller` (yalnız hizalayıcılar: `python scripts/modelleri_indir.py --adim hizalama`).
-  Sabit modeller: `en`, `tr`. Başka dil bir kez bilerek `DUBLAJ_CEVRIMICI=1` ile çalıştırılır. `dubla kontrol`
+  Sabit modeller: `en`, `tr`; isteğe bağlı sabit adım `-Adim hizalama-diller`: `ja`, `zh`. Başka dil bir kez
+  bilerek `DUBLAJ_CEVRIMICI=1` ile çalıştırılır. Kaynak dil otomatikse faster-whisper işçisi tespitten hemen sonra,
+  çözümlemeden önce denetler. `dubla kontrol`
   `hizalama (CTC): en=…, tr=…` satırını ve uyarı satırını yazar. Kod: `bolum_00_omurga/runtime/ctc_model_durumu.py`.
 - **İşlemci bedeli (ölçüldü, birer koşu, `genel.cihaz = cpu`):** 23,8 sn İngilizce: tanıma ≈ 140 sn, CTC 16,5 sn (yükleme
   11 sn, hizalama 2,6 sn, konuşma sınırlama 1,8 sn). 60 sn Türkçe: tanıma ≈ 161 sn, CTC 42,9 sn (yükleme ≈ 10 sn,

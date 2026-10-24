@@ -60,13 +60,31 @@ def prepare_model_feature_extractor(model, model_name: str, feature_extractor_fa
     return True
 
 
+def ctc_dil_denetimi(dil: str, cache_dir: str):
+    """Message when the CTC model for the detected language is missing (faster_whisper_ctc, auto language), else None.
+
+    Runs right after language detection and before decoding, so a missing model costs seconds, not the whole
+    transcription. The full check runs again in the main process before alignment (ctc_model_durumu).
+    """
+    try:
+        from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import CtcModeliEksikHatasi, ctc_modeli_gerekli
+    except Exception:  # package not importable: the main process still checks before alignment
+        return None
+    try:
+        ctc_modeli_gerekli(dil, cache_dir)
+    except CtcModeliEksikHatasi as hata:
+        return str(hata)
+    return None
+
+
 def transcribe_audio(
     audio_path: str,
     model_name: str,
     device: str,
     compute_type: str,
     language: str,
-    cache_dir: str
+    cache_dir: str,
+    ctc_denetimi: bool = False,
 ) -> dict:
     """
     faster-whisper transcription (subprocess icinde)
@@ -226,6 +244,18 @@ def transcribe_audio(
             no_speech_threshold=0.6
         )
 
+        if ctc_denetimi:
+            # Segments are a lazy generator: info.language is known before any decoding work
+            ctc_hatasi = ctc_dil_denetimi(info.language, cache_dir)
+            if ctc_hatasi:
+                logger.error("[WORKER] CTC modeli eksik, tanima baslamadan duruldu: %s", ctc_hatasi)
+                return {
+                    "success": False,
+                    "error": ctc_hatasi,
+                    "hata_turu": "ctc_modeli_eksik",
+                    "detected_language": info.language,
+                }
+
         segments_list = list(segments_generator)
 
         detected_language = info.language
@@ -325,6 +355,12 @@ def parse_args():
         help="HuggingFace cache directory"
     )
 
+    parser.add_argument(
+        "--ctc_dil_denetimi",
+        action="store_true",
+        help="faster_whisper_ctc with auto language: stop right after detection if the CTC model is missing"
+    )
+
     return parser.parse_args()
 
 
@@ -344,7 +380,8 @@ if __name__ == "__main__":
         device=args.device,
         compute_type=args.compute_type,
         language=args.language,
-        cache_dir=args.cache_dir
+        cache_dir=args.cache_dir,
+        ctc_denetimi=args.ctc_dil_denetimi,
     )
 
     sys.stdout = original_stdout

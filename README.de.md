@@ -1,8 +1,8 @@
-# Türkçe video dublaj hattı
+# DubWorld
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · Deutsch · [Français](README.fr.md)
 
-> __TEK_CUMLE__ (was es tut, in einem Satz)
+> DubWorld synchronisiert ein Video auf dem eigenen Computer in eine andere Sprache: Spracherkennung mit Wort-Zeitstempeln, Übersetzung, synthetische Stimme im Originaltiming, Untertitel und ein neues Video. Standard ist Türkisch; weitere Sprachen je nach Sprachausgabe-Engine ([docs/diller.md](docs/diller.md)).
 
 ## Lass deinen KI-Assistenten die Installation übernehmen
 
@@ -10,7 +10,7 @@ Programmierkenntnisse sind nicht nötig. Öffne einen KI-Assistenten, der auf de
 (Claude Code, Codex, Gemini CLI o. ä.), und füge diesen einen Satz ein:
 
 ```text
-Installiere das Video-Synchronisationsprogramm von __REPO_URL__ auf diesem Computer. Folge Schritt für Schritt der Datei AGENTS.md in diesem Repository, erkenne meine Hardware selbst und stelle mir keine technischen Fragen. Wenn `dubla kontrol` READY meldet und die Beispiel-Synchronisation funktioniert, öffne mir das Programmfenster.
+Installiere das Video-Synchronisationsprogramm von https://github.com/alexturkey/DubWorld auf diesem Computer. Folge Schritt für Schritt der Datei AGENTS.md in diesem Repository, erkenne meine Hardware selbst und stelle mir keine technischen Fragen. Wenn `dubla kontrol` READY meldet und die Beispiel-Synchronisation funktioniert, öffne mir das Programmfenster.
 ```
 
 Der Assistent prüft deinen Computer, wählt selbst die Einrichtung mit Grafikkarte (GPU) oder nur mit Prozessor (CPU)
@@ -18,7 +18,7 @@ und stellt dir genau eine Frage: ob du die Nutzungsbedingungen der Stimme akzept
 Programmfenster. Erste Schritte, einfache Erklärungen und häufige Probleme (auf Englisch):
 **[docs/getting-started.md](docs/getting-started.md)**.
 
-**Lizenzübersicht:** Code Apache-2.0. __LISANS_KUTUSU__ (Modell-/Datenlizenzen, die vom Code abweichen; „keine“, wenn alles Apache-kompatibel ist)
+**Lizenzübersicht:** Code Apache-2.0. Standardmodelle: Supertonic-3-Stimme unter OpenRAIL-M (Nutzungsbeschränkungen, einmalige Zustimmung); Opus-MT und das türkische Wort-Zeitmodell unter CC BY 4.0 (Namensnennung, NOTICE); FFmpeg-Build GPL-3.0 (separates Programm). Nur nicht kommerziell und standardmäßig aus: CrisperWhisper 2.0, XTTS-v2, WhisperX-Wort-Zeitmodelle für fr / de / es / it. Dieses Repository enthält keine Modellgewichte ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Schnellinstallation
 
@@ -34,19 +34,42 @@ Linux und macOS sind noch nicht getestet.
 
 ## Verwendung
 
-__KULLANIM__ (ein Beispielbefehl + welche Ausgabedateien entstehen)
+Desktop-App: Doppelklick auf `arayuz.cmd` (lokale Web-App: `web.cmd`, nur 127.0.0.1). Über die Kommandozeile:
+
+```powershell
+.venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
+.venv\Scripts\dubla.exe talk.mp4 --ayar genel.hedef_dil=de  # another target language
+```
+
+Ergebnisse landen in `cikti/<video>_<time>/`: `dubbed_tr.mp4` (mit `AI-dubbed`-Kennzeichnung), die Quell-Untertitel `transcript_<lang>.srt` und die JSON-Dateien des Auftrags; die letzte Zeile `dubbed_video:` nennt den Pfad. Alle Einstellungen: [docs/tarifler/kombinasyonlar.md](docs/tarifler/kombinasyonlar.md).
 
 ## Funktionsweise
 
-__NASIL__ (Pipeline in 4–6 Punkten; jedes externe Modell mit seiner Lizenz)
+1. **Audio:** FFmpeg extrahiert den Ton; optional trennt Demucs (MIT) Sprache vom Hintergrund.
+2. **Sprache zu Text:** faster-whisper large-v3-turbo (MIT) plus Wort-Zeitstempel mit wav2vec2 CTC (Englisch MIT, Türkisch CC BY 4.0); optional CrisperWhisper 2.0 (nicht kommerziell) und weitere Engines.
+3. **Sprecher:** 3D-Speaker CAM++ (Apache-2.0) und ein Geschlechtsklassifikator (Apache-2.0) wählen pro Sprecher eine synthetische Stimme.
+4. **Übersetzung:** Codex CLI oder Claude Code CLI, wenn installiert und angemeldet, sonst lokales Opus-MT Englisch→Türkisch (CC BY 4.0); API-Backends optional.
+5. **Stimme und Timing:** standardmäßig Supertonic 3 (OpenRAIL-M), optional VoxCPM2 (Apache-2.0) oder XTTS-v2 (nicht kommerziell); jede Zeile wird an die Dauer des Originalsegments angepasst.
+6. **Video:** FFmpeg schreibt den neuen Ton, SRT-/VTT-/ASS-Untertitel und die `AI-dubbed`-Kennzeichnung.
 
 ## Messungen
 
-__OLCUM_TABLOSU__ (auf der Referenzmaschine gemessen, Methode in docs/olcumler.md; niemals Zahlen von anderswo übernehmen)
+Referenzrechner: Pascal-GPU mit 4 GB, Windows 10; Methode und alle Zeilen in [docs/olcumler.md](docs/olcumler.md).
+
+| Was | CPU-Profil | GPU-Profil |
+|---|---|---|
+| Erstinstallation, Standardschritte | ≈ 38 min | ≈ 13,5 min (Pakete) |
+| Speicherplatz nach der Installation | ≈ 13 GB | ≈ 22 GB |
+| Synchronisation des 9-s-Beispiels, Offline-Übersetzung | 528 s | 376 s |
+| 30-s-Clip auf Englisch, Demucs, Übersetzung mit Claude Code | – | 744 s |
 
 ## Grenzen
 
-__SINIRLAR__ (was nicht gemessen wurde, was experimentell ist, welche Hardware nicht getestet wurde)
+- Ohne CrisperWhisper (optionale Engine 13) kann faster-whisper auf Chinesisch und Japanisch Sprache überspringen oder Text erfinden (beobachtet: die ersten ≈ 10 s eines chinesischen Clips fehlten; Geschrei wurde zu einer langen Zeile "ああ…").
+- Die CI testet nur die CPU; der GPU-Pfad wurde von Hand auf einer Pascal-Karte mit 4 GB ausgeführt. Neuere Karten (RTX 50), Linux und macOS wurden nicht getestet.
+- Der Offline-Übersetzer kann nur Englisch→Türkisch; andere Sprachpaare brauchen die Codex / Claude Code CLI oder ein API-Backend.
+- Wort-Zeitstempel für andere Quellsprachen als Englisch und Türkisch: Japanisch und Chinesisch mit `scripts/kur.ps1 -Adim hizalama-diller`, andere nach einem Lauf mit `DUBLAJ_CEVRIMICI=1`.
+- Nicht durchgängig getestet: echte Installation von XTTS-v2, RVC, der Telegram-Bot mit dem echten Dienst, CrisperWhisper-Engines; Moonshine ist experimentell.
 
 ## Bausteine
 
@@ -68,9 +91,9 @@ z. B. `pip install -e ".[stt,hizalama,cpu]"` für Untertitel. Fünf kleine Werkz
 
 | Repository | Was es ist | Wie dieses Repository es nutzt |
 |---|---|---|
-| **turkce-video-dublaj-hatti** (dieses Repository) | lokale Video-Synchronisationspipeline von Anfang bis Ende; jede Stufe einzeln nutzbar | - |
-| [crisperwhisper-turkce-kelime-zamani](__STT_REPO_URL__) | wortgetreue Spracherkennung mit Wort-Zeitstempeln (CrisperWhisper 2.0 Turbo + CTC-Ausrichtung) | optionale Engine 13: `scripts/kur.ps1 -Adim crisper` installiert ihr Modell über dieses Repository auf einem festen Commit (Gewichte **nur nicht-kommerziell**) |
-| [voxcpm2-turkce-ses-tasarimi](__TTS_REPO_URL__) | Stimmdesign und Vorlesen mit VoxCPM2, 8 Sprachen, fertige Stimmen | optionale TTS-Engine `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` installiert sie auf einem festen Commit; dieses Repository ruft sie über einen schlanken Adapter auf |
+| **DubWorld** (dieses Repository) | lokale Video-Synchronisationspipeline von Anfang bis Ende; jede Stufe einzeln nutzbar | - |
+| [crisperwhisper-turkce-kelime-zamani](https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani) | wortgetreue Spracherkennung mit Wort-Zeitstempeln (CrisperWhisper 2.0 Turbo + CTC-Ausrichtung) | optionale Engine 13: `scripts/kur.ps1 -Adim crisper` installiert ihr Modell über dieses Repository auf einem festen Commit (Gewichte **nur nicht-kommerziell**) |
+| [voxcpm2-turkce-ses-tasarimi](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi) | Stimmdesign und Vorlesen mit VoxCPM2, 8 Sprachen, fertige Stimmen | optionale TTS-Engine `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` installiert sie auf einem festen Commit; dieses Repository ruft sie über einen schlanken Adapter auf |
 
 Jedes Schwester-Repository hat eigene Lizenz, Installation und Issues; feste Commits machen die Kombination reproduzierbar.
 
@@ -102,4 +125,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:bf85d79d8132 -->
+<!-- i18n-source: README.md sha256:64e0ac274650 -->

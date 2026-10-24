@@ -22,7 +22,7 @@ yüklenmez (tek istisna aşağıda, "Başka bir dil seçmek" bölümünde).
 Code, Codex, Gemini CLI gibi. Asistanı açın ve şu tek cümleyi yapıştırın (adres, bu programı bulduğunuz sayfadır):
 
 ```text
-__REPO_URL__ adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
+https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
 Asistan bilgisayarı denetler, ekran kartıyla mı işlemciyle mi kurulacağını kendisi seçer, gerekenleri indirir,

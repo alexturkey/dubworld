@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - __TARIH__
+## [0.1.0] - YYYY-MM-DD (release date is written on release day)
 
-First public release (draft). __ILK_SURUM__
+First public release of DubWorld (draft until release day).
+
+### Changed
+
+- Product name DubWorld (distribution `dubworld`); the `dubla*` commands and the import package `dublaj_hatti` keep
+  their names.
+- The Demucs `htdemucs` weight is pinned (URL + sha256) and fetched by `kur.ps1 -Adim demucs`; a missing weight stops
+  the job before Demucs starts instead of downloading at run time.
+- Optional pinned word-timing models for Japanese and Chinese sources (`kur.ps1 -Adim hizalama-diller`); with an
+  automatic source language a missing CTC model now stops the job right after language detection.
 
 ### Added
 

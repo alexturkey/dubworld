@@ -1,4 +1,4 @@
-# Dublaj hatti Src Haritasi
+# DubWorld src haritası
 
 Bu klasor uygulamanin aktif akisindaki butun kodun kanonik kokudur. Ilk
 seviyede yalniz akis sirasina gore numaralanmis bolumler ve `testler/`

@@ -14,7 +14,7 @@ requires = ["setuptools>=77"]  # PEP 639 SPDX license string
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "turkce-video-dublaj-hatti"
+name = "dubworld"
 dynamic = ["version"]
 description = "Local, end-to-end video dubbing pipeline: transcript, word timing, translation, TTS, timing fit, subtitles and video."
 readme = "README.md"
@@ -66,7 +66,7 @@ konusmaci = ["modelscope>=1.33.0", "scikit-learn>=1.9.1", "hdbscan>=0.8.44", "um
              "addict>=2.4.0", "simplejson>=4.1.1", "PyYAML>=6.0.3", "transformers>=4.57.6"]
 video = ["pillow>=12.3.0"]                      # subtitle burn-in images; ffmpeg itself is a binary (kur.ps1 -Adim modeller)
 # the recommended flow = every stage above (same set as requirements/temel.in)
-onerilen = ["turkce-video-dublaj-hatti[stt,hizalama,ceviri,tts,konusmaci,video]"]
+onerilen = ["dubworld[stt,hizalama,ceviri,tts,konusmaci,video]"]
 
 # --- Optional stages and engines (locked files: requirements/ek_*.txt) -------------------------
 separation = ["demucs>=4.0.1"]                 # ses_temizligi.kip = clean / preserve_background
@@ -106,8 +106,8 @@ dubla-telegram = "dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.bot:main"
 dubla-gui = "dublaj_hatti.gui:main"
 
 [project.urls]
-Homepage = "__REPO_URL__"
-Issues = "__REPO_URL__/issues"
+Homepage = "https://github.com/alexturkey/DubWorld"
+Issues = "https://github.com/alexturkey/DubWorld/issues"
 # TODO: hazırlayıcı doldurur (Homepage / Issues / Changelog once the public repo URL is decided)
 
 [tool.setuptools.dynamic]

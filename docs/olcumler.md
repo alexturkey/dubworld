@@ -39,7 +39,7 @@ the first public release. Everything below was produced on this machine; nothing
 - Dub times on this 4 GB Pascal card are several times the clip length; most of it is transcription, Demucs and
   model loading, not speech synthesis. Two jobs running at the same time share the CPU and slow each other down.
 - The uv download cache (`runtime_assets/onbellek/uv`) is only needed for reinstalling; it can be deleted.
-- Limits seen: on the Chinese clip with burned-in subtitles faster-whisper (large-v3-turbo) returned two segments for ≈ 35 s of continuous speech and skipped the first ≈ 10 s; on the Japanese clip it turned shouting into a long "ああ…" line. Languages other than English and Turkish need their CTC model downloaded once (`DUBLAJ_CEVRIMICI=1`); otherwise the job stops after transcription.
+- Limits seen: on the Chinese clip with burned-in subtitles faster-whisper (large-v3-turbo) returned two segments for ≈ 35 s of continuous speech and skipped the first ≈ 10 s; on the Japanese clip it turned shouting into a long "ああ…" line. Languages other than English and Turkish need their CTC model: Japanese and Chinese are pinned in the optional step `kur.ps1 -Adim hizalama-diller`, other languages need one deliberate run with `DUBLAJ_CEVRIMICI=1`; a missing model now stops the job right after language detection, before transcription (it used to cost the whole transcription, 185 s on the Japanese clip).
 
 ---
 
@@ -82,4 +82,4 @@ Aşağıdaki her şey bu makinede üretildi; makalelerden ya da başka README'le
 - Bu 4 GB Pascal kartta dublaj süresi parça süresinin birkaç katıdır; çoğu konuşma sentezi değil, yazıya dökme, Demucs ve
   model yüklemedir. Aynı anda koşan iki iş işlemciyi paylaşır ve birbirini yavaşlatır.
 - uv indirme önbelleği (`runtime_assets/onbellek/uv`) yalnız yeniden kurulum içindir; silinebilir.
-- Görülen sınırlar: yakılmış altyazılı Çince parçada faster-whisper (large-v3-turbo) ≈ 35 sn kesintisiz konuşma için iki segment döndürdü ve ilk ≈ 10 sn'yi atladı; Japonca parçada bağırmayı uzun bir "ああ…" satırına çevirdi. İngilizce ve Türkçe dışındaki dillerin CTC modeli bir kez indirilmelidir (`DUBLAJ_CEVRIMICI=1`); yoksa iş yazıya dökmeden sonra durur.
+- Görülen sınırlar: yakılmış altyazılı Çince parçada faster-whisper (large-v3-turbo) ≈ 35 sn kesintisiz konuşma için iki segment döndürdü ve ilk ≈ 10 sn'yi atladı; Japonca parçada bağırmayı uzun bir "ああ…" satırına çevirdi. İngilizce ve Türkçe dışındaki dillerin CTC modeli gerekir: Japonca ve Çince isteğe bağlı `kur.ps1 -Adim hizalama-diller` adımında sabitlidir, diğer diller bir kez bilerek `DUBLAJ_CEVRIMICI=1` ile çalıştırılır; eksik model artık işi dil tespitinden hemen sonra, yazıya dökmeden önce durdurur (eskiden bütün yazıya dökme süresi kaybediliyordu, Japonca parçada 185 sn).

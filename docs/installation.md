@@ -18,7 +18,7 @@ The shortest route, also for people who do not program: open an AI assistant tha
 (Claude Code, Codex, Gemini CLI or similar) and paste:
 
 ```text
-Install the video dubbing program from __REPO_URL__ on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
+Install the video dubbing program from https://github.com/alexturkey/DubWorld on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
 ```
 
 The assistant follows the deterministic flow in [../AGENTS.md](../AGENTS.md): prerequisite checks, one install
@@ -102,7 +102,8 @@ marker line on success.
 | 2 | `python` | yes | `uv python install 3.11.14 --no-bin` into `runtime_assets/python` | 1 | `PYTHON_OK` |
 | 3 | `paketler` | yes | detects the profile, creates `.venv`, installs `requirements/gpu.txt` or `cpu.txt` with `--require-hashes`, then this package with `--no-deps -e .` (commands `dubla`, `dubla-gui`, `dubla-web`, `dubla-telegram`) | 2 | `PAKETLER_OK` |
 | 4 | `modeller` | yes | `scripts/modelleri_indir.py --adim supertonic,ceviri,stt,hizalama,konusmaci,ffmpeg` (section 6) | 3 | `MODELLER_OK` |
-| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | no | hash-locked add-ons into `.venv` (`requirements/ek_<name>.txt`; on the CPU profile `ek_<name>_cpu.txt` when present); `parakeet` also downloads its model | 3 | `<NAME>_OK` |
+| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | no | hash-locked add-ons into `.venv` (`requirements/ek_<name>.txt`; on the CPU profile `ek_<name>_cpu.txt` when present); `demucs` also downloads the `htdemucs` weight (≈ 84 MB, sha256), `parakeet` its model | 3 | `<NAME>_OK` |
+| 5b | `hizalama-diller` | no | CTC word-timing models for Japanese and Chinese sources (`modelleri_indir.py --adim hizalama-diller`, ≈ 2.5 GB, Apache-2.0) | 3 | `HIZALAMA-DILLER_OK` |
 | 6 | `akilli-kare`, `galeri`, `telegram` | no | add-ons into `.venv` from `requirements/ek_<name>.txt` (hash-locked) | 3 | `<NAME>_OK` |
 | 7 | `tts-xtts` | no | separate environment for XTTS v2 (section 5), requires `-TicariOlmayanKabul` | 3 | `XTTS_OK` |
 | 8 | `crisper` | no | CrisperWhisper 2.0 Turbo through the sister STT repository + WSL environment, requires `-TicariOlmayanKabul` | 3, git, WSL2 | `CRISPER_MOTOR_OK`, `CRISPER_OK` |
@@ -159,7 +160,9 @@ environment can be removed alone without touching `.venv`.
   stops with the expected and received hash. Correct existing files are skipped.
 - **Offline at run time:** the CLI sets `HF_HUB_OFFLINE=1` and points `HF_HOME` / `TORCH_HOME` to
   `runtime_assets/model_cache`; nothing is downloaded during a job. `DUBLAJ_CEVRIMICI=1` allows run-time downloads
-  (needed only for engines whose models are not in the manifest).
+  (needed only for engines whose models are not in the manifest). A missing Demucs weight or CTC model stops the job
+  before that stage starts, with the install step in the message (for an automatic source language: right after
+  language detection, before transcription).
 - **Air-gapped machine (not tested):** install on a connected machine at the same absolute path, then copy the whole
   repository folder. The environment stores absolute paths (`.venv/pyvenv.cfg`); a different path requires re-running
   `-Adim python,paketler`, which needs the wheel cache (`runtime_assets/onbellek/uv`) and `UV_OFFLINE=1` without
@@ -169,7 +172,8 @@ environment can be removed alone without touching `.venv`.
 
 | `-Adim` | Installs | Into | License note | Confirmation flag |
 |---|---|---|---|---|
-| `demucs` | Demucs 4.0.1 (`ses_temizligi.kip = clean / preserve_background`) | `.venv` | MIT code; weights per model card | – |
+| `demucs` | Demucs 4.0.1 (`ses_temizligi.kip = clean / preserve_background`) + pinned `htdemucs` weight | `.venv`, `runtime_assets/model_cache/torch/` | MIT (code and weight) | – |
+| `hizalama-diller` | wav2vec2 CTC models for Japanese and Chinese sources (other source languages: `DUBLAJ_CEVRIMICI=1`; WhisperX's fr/de/es/it defaults are CC BY-NC 4.0) | `runtime_assets/model_cache/huggingface/` | Apache-2.0 | – |
 | `youtube` | yt-dlp (URL input) | `.venv` | Unlicense; only content you own or may download (ETHICS.md) | – |
 | `parakeet` | sherpa-onnx + Parakeet Unified EN 0.6B INT8 (English, CPU) | `.venv`, `runtime_assets/model_cache/` | NVIDIA Open Model License (commercial use with conditions) | – |
 | `speechmatics` | Speechmatics batch client | `.venv` | cloud service, your own key in `.env`; audio leaves the machine | – |
@@ -208,7 +212,7 @@ The `kontrol` step runs automatically at the end of the default install. It can 
 Example output on the test configuration (CPU forced with `--ayar genel.cihaz=cpu`; lines shortened):
 
 ```text
-dublaj-hatti 0.1.0 · Python 3.11.14
+DubWorld 0.1.0 · Python 3.11.14
   donanım.cuda: False
   donanım.torch: 2.8.0+cu128
   donanım.cihaz: cpu

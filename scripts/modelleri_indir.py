@@ -26,7 +26,7 @@ KOK = Path(__file__).resolve().parents[1]
 MANIFEST = Path(__file__).with_name("modeller.json")
 VARSAYILAN_ADIMLAR = ("supertonic", "ceviri", "stt", "hizalama", "konusmaci", "ffmpeg")
 IZINLI_ALAN_ADLARI = ("huggingface.co", "download.pytorch.org", "raw.githubusercontent.com", "github.com",
-                      "www.modelscope.cn", "objects.githubusercontent.com")
+                      "www.modelscope.cn", "objects.githubusercontent.com", "dl.fbaipublicfiles.com")
 
 
 def sha256_dosya(yol: Path) -> str:
@@ -72,7 +72,7 @@ def indir(kayit: dict, kok: Path) -> str:
     hedef.parent.mkdir(parents=True, exist_ok=True)
     gecici = hedef.with_name(hedef.name + ".part")
     # S310: şema yukarıda https_dogrula ile yalnız https'e sınırlı; yönlendirme de yalnız https (_ACICI).
-    istek = urllib.request.Request(url, headers={"User-Agent": "dublaj-hatti-kurulum"})  # noqa: S310
+    istek = urllib.request.Request(url, headers={"User-Agent": "dubworld-kurulum"})  # noqa: S310
     for deneme in range(1, 4):
         try:
             with _ACICI.open(istek, timeout=60) as yanit, open(gecici, "wb") as cikti:

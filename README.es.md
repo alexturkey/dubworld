@@ -1,8 +1,8 @@
-# Türkçe video dublaj hattı
+# DubWorld
 
 [English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · Español · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> __TEK_CUMLE__ (qué hace, en una línea)
+> DubWorld dobla un vídeo a otro idioma en tu propio ordenador: transcripción con marcas de tiempo por palabra, traducción, voz sintética ajustada al tiempo original, subtítulos y un vídeo nuevo. Turco por defecto; otros idiomas según el motor de voz ([docs/diller.md](docs/diller.md)).
 
 ## Deja que tu asistente de IA lo instale
 
@@ -10,7 +10,7 @@ No hace falta saber programar. Abre un asistente de IA que pueda ejecutar comand
 Gemini CLI o similar) y pega esta única frase:
 
 ```text
-Instala en este ordenador el programa de doblaje de vídeo de __REPO_URL__. Sigue paso a paso el archivo AGENTS.md de ese repositorio, detecta tú mismo mi hardware y no me hagas preguntas técnicas. Cuando `dubla kontrol` diga READY y el doblaje de ejemplo funcione, ábreme la ventana del programa.
+Instala en este ordenador el programa de doblaje de vídeo de https://github.com/alexturkey/DubWorld. Sigue paso a paso el archivo AGENTS.md de ese repositorio, detecta tú mismo mi hardware y no me hagas preguntas técnicas. Cuando `dubla kontrol` diga READY y el doblaje de ejemplo funcione, ábreme la ventana del programa.
 ```
 
 El asistente revisa tu ordenador, elige por sí mismo la instalación con tarjeta gráfica (GPU) o solo con procesador
@@ -18,7 +18,7 @@ El asistente revisa tu ordenador, elige por sí mismo la instalación con tarjet
 programa. Primeros pasos, explicaciones sencillas y problemas frecuentes (en inglés):
 **[docs/getting-started.md](docs/getting-started.md)**.
 
-**Resumen de licencias:** código Apache-2.0. __LISANS_KUTUSU__ (licencias de modelos/datos distintas de la del código; "ninguna" si todo es compatible con Apache)
+**Resumen de licencias:** código Apache-2.0. Modelos por defecto: voz Supertonic 3 con OpenRAIL-M (restricciones de uso, se acepta una vez); Opus-MT y el modelo de tiempo por palabra para turco con CC BY 4.0 (atribución, NOTICE); compilación de FFmpeg GPL-3.0 (programa aparte). Solo no comercial y desactivados por defecto: CrisperWhisper 2.0, XTTS-v2, modelos de tiempo por palabra de WhisperX para fr / de / es / it. Este repositorio no contiene pesos de modelos ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Instalación rápida
 
@@ -33,19 +33,42 @@ desinstalación y errores frecuentes (en inglés): **[docs/installation.md](docs
 
 ## Uso
 
-__KULLANIM__ (un comando de ejemplo + qué archivos produce)
+Aplicación de escritorio: doble clic en `arayuz.cmd` (aplicación web local: `web.cmd`, solo 127.0.0.1). Desde la línea de comandos:
+
+```powershell
+.venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
+.venv\Scripts\dubla.exe talk.mp4 --ayar genel.hedef_dil=de  # another target language
+```
+
+Los resultados van a `cikti/<video>_<time>/`: `dubbed_tr.mp4` (con la etiqueta `AI-dubbed`), los subtítulos de origen `transcript_<lang>.srt` y los archivos JSON del trabajo; la última línea `dubbed_video:` muestra la ruta. Todos los ajustes: [docs/tarifler/kombinasyonlar.md](docs/tarifler/kombinasyonlar.md).
 
 ## Cómo funciona
 
-__NASIL__ (la cadena de procesamiento en 4–6 puntos; cada modelo externo con su licencia)
+1. **Audio:** FFmpeg extrae el sonido; Demucs opcional (MIT) separa la voz del fondo.
+2. **Voz a texto:** faster-whisper large-v3-turbo (MIT) más tiempos por palabra con wav2vec2 CTC (inglés MIT, turco CC BY 4.0); opcional CrisperWhisper 2.0 (no comercial) y otros motores.
+3. **Hablantes:** 3D-Speaker CAM++ (Apache-2.0) y un clasificador de género (Apache-2.0) eligen una voz sintética por hablante.
+4. **Traducción:** Codex CLI o Claude Code CLI si están instalados y con sesión iniciada; si no, Opus-MT local de inglés a turco (CC BY 4.0); backends por API opcionales.
+5. **Voz y tiempo:** Supertonic 3 (OpenRAIL-M) por defecto, VoxCPM2 (Apache-2.0) o XTTS-v2 (no comercial) opcionales; cada frase se ajusta a la duración del segmento original.
+6. **Vídeo:** FFmpeg escribe el audio nuevo, subtítulos SRT / VTT / ASS y la etiqueta `AI-dubbed`.
 
 ## Mediciones
 
-__OLCUM_TABLOSU__ (medido en la máquina de referencia, método en docs/olcumler.md; nunca copiar cifras de otra fuente)
+Máquina de referencia: GPU Pascal de 4 GB, Windows 10; método y todas las filas en [docs/olcumler.md](docs/olcumler.md).
+
+| Qué | Perfil CPU | Perfil GPU |
+|---|---|---|
+| Primera instalación, pasos por defecto | ≈ 38 min | ≈ 13,5 min (paquetes) |
+| Disco tras la instalación | ≈ 13 GB | ≈ 22 GB |
+| Doblaje de la muestra de 9 s, traducción sin conexión | 528 s | 376 s |
+| Clip en inglés de 30 s, Demucs, traducción con Claude Code | – | 744 s |
 
 ## Límites
 
-__SINIRLAR__ (qué no se ha medido, qué es experimental, qué hardware no se ha probado)
+- Sin CrisperWhisper (motor opcional 13), faster-whisper puede saltarse habla o inventar texto en chino y japonés (visto: se saltaron los primeros ≈ 10 s de un clip en chino; unos gritos se convirtieron en una larga línea "ああ…").
+- La CI solo prueba la CPU; la ruta GPU se ejecutó a mano en una tarjeta Pascal de 4 GB. No se probaron tarjetas nuevas (RTX 50), Linux ni macOS.
+- El traductor sin conexión solo traduce de inglés a turco; otros pares necesitan Codex / Claude Code CLI o un backend por API.
+- Tiempo por palabra para idiomas de origen distintos de inglés y turco: japonés y chino con `scripts/kur.ps1 -Adim hizalama-diller`, el resto tras una ejecución con `DUBLAJ_CEVRIMICI=1`.
+- Sin probar de extremo a extremo: instalación real de XTTS-v2, RVC, el bot de Telegram contra el servicio real, motores CrisperWhisper; Moonshine es experimental.
 
 ## Bloques de construcción
 
@@ -67,9 +90,9 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 | Repositorio | Qué es | Cómo lo usa este repositorio |
 |---|---|---|
-| **turkce-video-dublaj-hatti** (este repositorio) | cadena local de doblaje de vídeo de principio a fin; cada etapa se puede usar por separado | - |
-| [crisperwhisper-turkce-kelime-zamani](__STT_REPO_URL__) | transcripción literal con marcas de tiempo por palabra (CrisperWhisper 2.0 Turbo + alineación CTC) | motor opcional 13: `scripts/kur.ps1 -Adim crisper` instala su modelo a través de ese repositorio en un commit fijo (pesos **solo no comerciales**) |
-| [voxcpm2-turkce-ses-tasarimi](__TTS_REPO_URL__) | diseño de voz y lectura con VoxCPM2, 8 idiomas, voces listas | motor TTS opcional `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` lo instala en un commit fijo; este repositorio lo llama mediante un adaptador ligero |
+| **DubWorld** (este repositorio) | cadena local de doblaje de vídeo de principio a fin; cada etapa se puede usar por separado | - |
+| [crisperwhisper-turkce-kelime-zamani](https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani) | transcripción literal con marcas de tiempo por palabra (CrisperWhisper 2.0 Turbo + alineación CTC) | motor opcional 13: `scripts/kur.ps1 -Adim crisper` instala su modelo a través de ese repositorio en un commit fijo (pesos **solo no comerciales**) |
+| [voxcpm2-turkce-ses-tasarimi](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi) | diseño de voz y lectura con VoxCPM2, 8 idiomas, voces listas | motor TTS opcional `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` lo instala en un commit fijo; este repositorio lo llama mediante un adaptador ligero |
 
 Cada repositorio hermano mantiene su propia licencia, instalación e incidencias; los commits fijos hacen reproducible la combinación.
 
@@ -99,4 +122,4 @@ Privacidad (qué se queda en local, qué recibe un servicio en la nube): PRIVACY
 > This translation may lag; English is authoritative. Esta traducción puede ir con retraso; la versión inglesa es la que
 > vale. Fuente: README.md (marca de sincronización abajo). Traducción automática (Claude); se agradecen PR de corrección.
 
-<!-- i18n-source: README.md sha256:bf85d79d8132 -->
+<!-- i18n-source: README.md sha256:64e0ac274650 -->

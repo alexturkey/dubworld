@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Dublaj hattı kurulumu (Windows 10/11, NVIDIA GPU ya da yalnız işlemci).
+  DubWorld kurulumu (Windows 10/11, NVIDIA GPU ya da yalnız işlemci).
 
 .DESCRIPTION
   Her şey repo klasörünün içine kurulur (runtime_assets\, .venv\); sistem PATH'ine, kayıt defterine ve
@@ -16,7 +16,8 @@
     kontrol   gerçek CUDA çekirdeği (ya da işlemci) + dubla kontrol
 
   İsteğe bağlı adımlar (-Adim ile ayrıca):
-    demucs    ses ayrıştırma (ses_temizligi.kip = clean / preserve_background)
+    demucs    ses ayrıştırma (ses_temizligi.kip = clean / preserve_background) + htdemucs modeli (~84 MB, MIT)
+    hizalama-diller  ja, zh kaynak dilleri için CTC kelime zamanı modelleri (~2,5 GB, Apache-2.0)
     youtube   yt-dlp (bağlantıdan indirme; yalnız hakkınız olan ya da izinli içerik)
     parakeet  sherpa-onnx + Parakeet Unified EN 0.6B INT8 modeli (~663 MB; İngilizce, işlemci)
     speechmatics  bulut STT istemcisi (kendi anahtarınız: .env)
@@ -76,9 +77,9 @@ $UV_SHA = "a38b8d1902b7cfbc76b423ba1bb456f623f42064cdc72628b6075b89afd1019a"
 $PY_SURUM = "3.11.14"
 # Kardeş repolar (README "Family"): adres yayında doldurulur; çatal (fork) için ortam değişkeniyle değiştirilebilir.
 # Commit sabittir: başka adresten gelen kod da yalnız bu commit'le kurulur.
-$VOX_REPO = if ($env:DUBLAJ_TTS_REPO_URL) { $env:DUBLAJ_TTS_REPO_URL } else { "__TTS_REPO_URL__" }
+$VOX_REPO = if ($env:DUBLAJ_TTS_REPO_URL) { $env:DUBLAJ_TTS_REPO_URL } else { "https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi" }
 $VOX_COMMIT = "1b9ec4c338d1b2ca944644aaf3c89244daf73d30"
-$STT_REPO = if ($env:DUBLAJ_STT_REPO_URL) { $env:DUBLAJ_STT_REPO_URL } else { "__STT_REPO_URL__" }
+$STT_REPO = if ($env:DUBLAJ_STT_REPO_URL) { $env:DUBLAJ_STT_REPO_URL } else { "https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani" }
 $STT_COMMIT = "2ca4b160e4bf9254185df01b21b281db4b209c19"
 # Kilidi henüz olmayan isteğe bağlı ekler: sabit sürüm (pyproject [project.optional-dependencies] alt sınırıyla aynı).
 $EK_SABIT = @{
@@ -128,7 +129,7 @@ function Paketle([string]$Kilit) {
   if ($LASTEXITCODE -ne 0) { throw "paket kurulumu başarısız: $Kilit (çoğunlukla internet kesintisi; yeniden çalıştırın)" }
 }
 
-Bilgi "Dublaj hattı kurulumu · repo: $Repo · adımlar: $($Adimlar -join ', ')"
+Bilgi "DubWorld kurulumu · repo: $Repo · adımlar: $($Adimlar -join ', ')"
 
 # İlk kurulumda disk yeri (yalnız uyarı; kurulum sürer). Rakamlar: docs/kurulum.md §1.
 if (((Adim "paketler") -or (Adim "modeller")) -and -not (Test-Path $Py)) {
@@ -171,7 +172,7 @@ if (Adim "paketler") {
   if (-not (Test-Path $Py)) { & $Uv venv $Venv --python $PY_SURUM; if ($LASTEXITCODE -ne 0) { throw "venv kurulamadı" } }
   Paketle $profil
   & $Uv pip install --python $Py --no-deps -e $Repo
-  if ($LASTEXITCODE -ne 0) { throw "dublaj-hatti paketi kurulamadı" }
+  if ($LASTEXITCODE -ne 0) { throw "DubWorld paketi kurulamadı" }
   Set-Content -Path (Join-Path $Venv "dublaj_profil.txt") -Value $profil -Encoding UTF8
   Bilgi "PAKETLER_OK"
 }
@@ -191,6 +192,11 @@ foreach ($ek in @("demucs", "youtube", "parakeet", "speechmatics")) {
     $profilNe = (Get-Content (Join-Path $Venv "dublaj_profil.txt") -ErrorAction SilentlyContinue)
     if ($profilNe -eq "cpu.txt" -and (Test-Path (Join-Path $Repo "requirements\ek_$($ek)_cpu.txt"))) { $ekKilit = "ek_$($ek)_cpu.txt" }
     Paketle $ekKilit
+    if ($ek -eq "demucs") {
+      # Model: htdemucs ağırlığı (MIT), sabit adres + sha256; çalışma anında torch.hub indirmesi olmaz.
+      & $Py -B (Join-Path $Repo "scripts\modelleri_indir.py") --adim demucs
+      if ($LASTEXITCODE -ne 0) { throw "Demucs modeli indirilemedi" }
+    }
     if ($ek -eq "parakeet") {
       # Model: nvidia/parakeet-unified-en-0.6b'nin sherpa-onnx INT8 dönüşümü (k2-fsa), sabit commit + sha256.
       Bilgi "  Model lisansı: NVIDIA Open Model License (ticari kullanım şartlı; model kartı modelle birlikte iner)."
@@ -245,6 +251,14 @@ if (Adim "tts-xtts") {
     Bilgi "  .env: $satir"
   }
   Bilgi "XTTS_OK (kullanım: --ayar ses.motor=xtts --ayar ses.xtts_referans_ses=<kendi sesiniz.wav>)"
+}
+
+if (Adim "hizalama-diller") {
+  # en/tr dışındaki kaynak diller için CTC kelime zamanı modelleri (ja, zh; Apache-2.0), sabit commit + sha256 (~2,5 GB).
+  Bilgi "== isteğe bağlı: hizalama-diller (ja, zh)"
+  & $Py -B (Join-Path $Repo "scripts\modelleri_indir.py") --adim hizalama-diller
+  if ($LASTEXITCODE -ne 0) { throw "CTC dil modelleri indirilemedi (inen dosyalar korunur; yeniden çalıştırın)" }
+  Bilgi "HIZALAMA-DILLER_OK"
 }
 
 if (Adim "crisper") {

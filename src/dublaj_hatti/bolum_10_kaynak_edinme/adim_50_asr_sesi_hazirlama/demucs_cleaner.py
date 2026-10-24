@@ -19,6 +19,30 @@ class DemucsPreparationError(RuntimeError):
     pass
 
 
+# htdemucs ağırlığı kurulumda sabit adres + sha256 ile iner (scripts/modeller.json adım "demucs"; kur.ps1 -Adim demucs).
+# Yoksa ve çalışma anı indirmesine izin verilmemişse (varsayılan çevrimdışı) iş Demucs başlamadan açık hatayla durur.
+HTDEMUCS_AGIRLIK = "955717e8-8726e21a.th"
+DEMUCS_KURULUM_ADIMI = "scripts/kur.ps1 -Adim demucs (yalnız model: python scripts/modelleri_indir.py --adim demucs)"
+
+
+def demucs_modeli_gerekli(demucs_model_name: str = "htdemucs") -> None:
+    """Raise DemucsPreparationError when the pinned htdemucs weight is missing and runtime downloads are off."""
+    if demucs_model_name != "htdemucs":
+        return
+    agirlik = torch_home() / "hub" / "checkpoints" / HTDEMUCS_AGIRLIK
+    if agirlik.is_file():
+        return
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import CEVRIMICI_DEGISKENI, cevrimici_mi
+
+    if cevrimici_mi():
+        return
+    raise DemucsPreparationError(
+        f"Demucs htdemucs modeli kurulu değil (beklenen yer {agirlik}). Kurulum: {DEMUCS_KURULUM_ADIMI}. "
+        f"Çalışma anında denetimsiz indirme yapılmaz; bilerek indirmek için {CEVRIMICI_DEGISKENI}=1. "
+        "Ayrıştırmasız çalışmak için: ses_temizligi.kip=original."
+    )
+
+
 def _validate_cuda_batch_report(
     batch_report: dict,
     audio_path: str,
@@ -80,6 +104,7 @@ def clean_audio_with_demucs(
     logger: Optional[object] = None,
     prepare_asr_ready: bool = True,
 ) -> str:
+    demucs_modeli_gerekli(demucs_model_name)
     if logger:
         logger.info("Demucs ile vokal izolasyonu baslatiliyor.")
     demucs_root = os.path.join(run_dir, "demucs")

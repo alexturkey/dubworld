@@ -3,9 +3,11 @@
 Used before the shared CTC box runs for `faster_whisper_ctc` (the `auto` fallback) and by `dubla kontrol`, so a missing
 model stops the job with the install step instead of silently keeping Whisper's own word times (ADR 0009).
 
-Pinned models (`scripts/modeller.json`, step `hizalama`; `scripts/kur.ps1 -Adim modeller`): `en`, `tr`. Every other
-language uses the WhisperX default model, which is not pinned; it can be fetched only on purpose with
-`DUBLAJ_CEVRIMICI=1` (the runtime is offline by default, `cli.ortami_hazirla`).
+Pinned models (`scripts/modeller.json`, step `hizalama`; `scripts/kur.ps1 -Adim modeller`): `en`, `tr`. Optional pinned
+models (step `hizalama-diller`; `scripts/kur.ps1 -Adim hizalama-diller`): `ja`, `zh`. Every other language uses the
+WhisperX default model, which is not pinned; it can be fetched only on purpose with `DUBLAJ_CEVRIMICI=1` (the runtime
+is offline by default, `cli.ortami_hazirla`). The WhisperX defaults for fr, de, es, it are VoxPopuli models under
+CC BY-NC 4.0 (non-commercial); the message says so.
 """
 
 from __future__ import annotations
@@ -23,6 +25,16 @@ SABIT_CTC_MODELLERI: dict[str, tuple[str, str]] = {
     "tr": ("hf", "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish"),
 }
 # The CTC box's own override (worker.ALIGN_MODEL_BY_LANGUAGE); WhisperX's default table has no "id".
+# Optional, pinned the same way (scripts/modeller.json step "hizalama-diller"; test checks). Names = WhisperX defaults.
+ISTEGE_BAGLI_CTC_MODELLERI: dict[str, tuple[str, str]] = {
+    "ja": ("hf", "jonatasgrosman/wav2vec2-large-xlsr-53-japanese"),
+    "zh": ("hf", "jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn"),
+}
+ISTEGE_BAGLI_KURULUM_ADIMI = (
+    "scripts/kur.ps1 -Adim hizalama-diller (yalnız model: python scripts/modelleri_indir.py --adim hizalama-diller)"
+)
+# WhisperX default CTC models that are VoxPopuli checkpoints (torchaudio: CC BY-NC 4.0).
+TICARI_OLMAYAN_VARSAYILAN_DILLER = frozenset({"fr", "de", "es", "it"})
 KUTU_OZEL_MODELLER: dict[str, str] = {"id": "Galuh/wav2vec2-large-xlsr-indonesian"}
 AGIRLIK_DOSYALARI = ("pytorch_model.bin", "model.safetensors")
 
@@ -80,12 +92,13 @@ def ctc_modeli_durumu(dil: str, cache_dir: str | Path | None = None) -> dict[str
     """{"dil", "model", "sabit", "kurulu" (True/False/None = unknown), "yol"} for one language."""
     kod = _dil(dil) or "en"
     sabit = kod in SABIT_CTC_MODELLERI
-    secim = SABIT_CTC_MODELLERI.get(kod) or _varsayilan_model(kod)
+    istege_bagli = kod in ISTEGE_BAGLI_CTC_MODELLERI
+    secim = SABIT_CTC_MODELLERI.get(kod) or ISTEGE_BAGLI_CTC_MODELLERI.get(kod) or _varsayilan_model(kod)
     if secim is None:
-        return {"dil": kod, "model": "", "sabit": False, "kurulu": None, "yol": ""}
+        return {"dil": kod, "model": "", "sabit": False, "istege_bagli": False, "kurulu": None, "yol": ""}
     hf_hub, torch_kok = _hf_ve_torch_kokleri(cache_dir)
     var, yol = _var_mi(secim[0], secim[1], hf_hub, torch_kok)
-    return {"dil": kod, "model": secim[1], "sabit": sabit, "kurulu": var, "yol": str(yol)}
+    return {"dil": kod, "model": secim[1], "sabit": sabit, "istege_bagli": istege_bagli, "kurulu": var, "yol": str(yol)}
 
 
 def cevrimici_mi() -> bool:
@@ -106,12 +119,21 @@ def ctc_modeli_gerekli(dil: str, cache_dir: str | Path | None = None, motor: str
         )
     if cevrimici_mi():
         return durum  # not pinned, but the user allowed downloads: the CTC worker fetches it
+    if durum["istege_bagli"]:
+        raise CtcModeliEksikHatasi(
+            f"{motor}: '{durum['dil']}' dili için CTC hizalama modeli kurulu değil ({durum['model']}; beklenen yer "
+            f"{durum['yol']}). Bu dilin modeli isteğe bağlı kurulum adımında sabitlidir: {ISTEGE_BAGLI_KURULUM_ADIMI}. "
+            "Bilerek Whisper zamanı için: transkripsiyon.motor=faster-whisper."
+        )
     model = durum["model"] or "bilinmiyor (WhisperX bulunamadı)"
+    lisans = ""
+    if durum["dil"] in TICARI_OLMAYAN_VARSAYILAN_DILLER:
+        lisans = " Not: bu dilin WhisperX varsayılan modeli VoxPopuli, CC BY-NC 4.0 (ticari olmayan) lisanslıdır."
     raise CtcModeliEksikHatasi(
         f"{motor}: '{durum['dil']}' dili için CTC hizalama modeli diskte yok ({model}). Bu dilin modeli kurulum "
-        f"betiğinde sabitlenmiş değil (yalnız en, tr: {KURULUM_ADIMI}); bir kez {CEVRIMICI_DEGISKENI}=1 ile "
-        "çalıştırıp WhisperX'in varsayılan modelini indirin. Bilerek Whisper zamanı için: "
-        "transkripsiyon.motor=faster-whisper."
+        f"betiğinde sabitlenmiş değil (en, tr: {KURULUM_ADIMI}; ja, zh: {ISTEGE_BAGLI_KURULUM_ADIMI}); bir kez "
+        f"{CEVRIMICI_DEGISKENI}=1 ile çalıştırıp WhisperX'in varsayılan modelini indirin. Bilerek Whisper zamanı için: "
+        f"transkripsiyon.motor=faster-whisper.{lisans}"
     )
 
 

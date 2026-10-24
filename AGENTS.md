@@ -37,9 +37,9 @@ Install folder: a short path without spaces or non-ASCII letters, for example `C
 inside a copy of this repository, use it.
 
 ```powershell
-git clone __REPO_URL__.git C:\dublaj
+git clone https://github.com/alexturkey/DubWorld.git C:\dublaj
 # without git:
-Invoke-WebRequest __REPO_URL__/archive/HEAD.zip -OutFile $env:TEMP\dublaj.zip
+Invoke-WebRequest https://github.com/alexturkey/DubWorld/archive/HEAD.zip -OutFile $env:TEMP\dublaj.zip
 Expand-Archive $env:TEMP\dublaj.zip $env:TEMP\dublaj_zip -Force
 Move-Item (Get-ChildItem $env:TEMP\dublaj_zip -Directory)[0].FullName C:\dublaj
 ```

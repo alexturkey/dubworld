@@ -13,7 +13,7 @@ or not installed).
 | Source | https://github.com/SYSTRAN/faster-whisper , https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo |
 | Install | base install (`scripts/kur.ps1`, step `modeller`: model steps `stt` + `hizalama`) |
 | Hardware | recognition and alignment run one after another in separate processes: recognition GPU int8 ≈ 1.15 GB VRAM, CTC 1.65–2.4 GB VRAM (measured); CPU works (timings below) |
-| Languages | multilingual recognition; word times need a CTC model for the language: `en`, `tr` pinned; other languages only after a deliberate download (`DUBLAJ_CEVRIMICI=1`) |
+| Languages | multilingual recognition; word times need a CTC model for the language: `en`, `tr` pinned; `ja`, `zh` pinned in the optional step `-Adim hizalama-diller`; other languages only after a deliberate download (`DUBLAJ_CEVRIMICI=1`) |
 | Default | fallback of `transkripsiyon.motor = auto` |
 
 **Settings**
@@ -33,7 +33,8 @@ or not installed).
 
 - `CTC hizalama modeli kurulu değil` → run `scripts/kur.ps1 -Adim modeller` (only the aligners:
   `python scripts/modelleri_indir.py --adim hizalama`). The job never falls back to Whisper's own times silently.
-- Language without a pinned CTC model → the error says to run once with `DUBLAJ_CEVRIMICI=1`.
+- Language without a pinned CTC model → the error says to run once with `DUBLAJ_CEVRIMICI=1`. With an automatic source
+  language the worker checks right after language detection, so the job stops before transcription.
 - Fewer CTC words than Whisper words → usually Whisper splitting `İstanbul'a` into two tokens; `report.json`
   `text_identical` tells whether the text really changed.
 
@@ -70,7 +71,7 @@ CTC hizalama kutusundan. CrisperWhisper Turbo çalışamadığında (NVIDIA GPU 
 | Kaynak | https://github.com/SYSTRAN/faster-whisper , https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo |
 | Kurulum | temel kurulum (`scripts/kur.ps1`, `modeller` adımı: model adımları `stt` + `hizalama`) |
 | Donanım | tanıma ve hizalama ayrı süreçlerde art arda çalışır: tanıma GPU int8 ≈ 1.15 GB VRAM, CTC 1.65–2.4 GB VRAM (ölçüldü); CPU çalışır (süreler aşağıda) |
-| Diller | çok dilli tanıma; kelime zamanları için dilin bir CTC modeli gerekir: `en`, `tr` sabitlenmiş; diğer diller yalnız bilinçli bir indirmeden sonra (`DUBLAJ_CEVRIMICI=1`) |
+| Diller | çok dilli tanıma; kelime zamanları için dilin bir CTC modeli gerekir: `en`, `tr` sabitlenmiş; `ja`, `zh` isteğe bağlı `-Adim hizalama-diller` adımında sabit; diğer diller yalnız bilinçli bir indirmeden sonra (`DUBLAJ_CEVRIMICI=1`) |
 | Varsayılan | `transkripsiyon.motor = auto` için yedek |
 
 **Ayarlar**
@@ -90,7 +91,8 @@ CTC hizalama kutusundan. CrisperWhisper Turbo çalışamadığında (NVIDIA GPU 
 
 - `CTC hizalama modeli kurulu değil` → `scripts/kur.ps1 -Adim modeller` çalıştırın (yalnız hizalayıcılar:
   `python scripts/modelleri_indir.py --adim hizalama`). İş asla sessizce Whisper'ın kendi zamanlarına düşmez.
-- Sabitlenmiş CTC modeli olmayan dil → hata, bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırmayı söyler.
+- Sabitlenmiş CTC modeli olmayan dil → hata, bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırmayı söyler. Kaynak dil
+  otomatikse işçi dil tespitinden hemen sonra denetler; iş yazıya dökmeden önce durur.
 - CTC kelimeleri Whisper kelimelerinden az → genellikle Whisper'ın `İstanbul'a` kelimesini iki jetona bölmesi;
   `report.json` içindeki `text_identical` metnin gerçekten değişip değişmediğini söyler.
 

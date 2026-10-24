@@ -1,6 +1,6 @@
 # Shared Result Contract
 
-Bu klasor, provider bridge backendlerinden gelen sonucun Dublaj hatti'a gecmeden
+Bu klasor, provider bridge backendlerinden gelen sonucun DubWorld'e gecmeden
 once uymasi gereken ortak kabul kurallarini tasir.
 
 Kanonik giris:

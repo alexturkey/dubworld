@@ -106,8 +106,8 @@ def _lisans_kapisi(ayar: dict[str, Any], stt_motoru: str, onay: bool, etkilesiml
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="dubla", description="Yerel video için otomatik Türkçe dublaj hattı.")
-    parser.add_argument("--surum", action="version", version=f"dublaj-hatti {__version__}")
+    parser = argparse.ArgumentParser(prog="dubla", description="DubWorld: yerel video için otomatik dublaj.")
+    parser.add_argument("--surum", action="version", version=f"DubWorld {__version__}")
     alt = parser.add_subparsers(dest="komut")
 
     dubla = alt.add_parser("dubla", help="videoyu dublajla (varsayılan komut)")
@@ -186,11 +186,20 @@ def kontrol_raporu(ayar: dict[str, Any] | None = None) -> dict[str, Any]:
         **{grup: kayit.durum(grup) for grup in ("stt", "ceviri", "tts", "ek")},
         "deneysel": {m.ad: m.deneysel for m in kayit.MOTORLAR if m.deneysel},
         "ctc_modelleri": kontrol_ozeti((ayar or {}).get("genel.onbellek_klasoru") or None),
+        "telegram_sunucu": _telegram_sunucu_ozeti(),
     }
 
 
+def _telegram_sunucu_ozeti() -> dict[str, Any]:
+    """Yerel Telegram Bot API sunucusu (isteğe bağlı; 2000 MB teslim). Docker'a dokunmaz, en çok ~5 sn."""
+    from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu import yerel_sunucu
+
+    yerel_sunucu.env_yukle()
+    return yerel_sunucu.kontrol_ozeti()
+
+
 def _kontrol_yaz(rapor: dict[str, Any]) -> None:
-    print(f"dublaj-hatti {rapor['surum']} · Python {rapor['python']}")
+    print(f"DubWorld {rapor['surum']} · Python {rapor['python']}")
     for anahtar, deger in rapor["donanim"].items():
         print(f"  donanım.{anahtar}: {deger}")
     print(f"  ffmpeg: {rapor['ffmpeg'] or 'YOK (scripts/kur.ps1 -Adim modeller; FFmpeg bu adımla iner)'}")
@@ -199,6 +208,10 @@ def _kontrol_yaz(rapor: dict[str, Any]) -> None:
         print(f"  {grup}: {satir}")
     for ad, neden in rapor.get("deneysel", {}).items():
         print(f"  deneysel / experimental: {ad} ({neden})")
+    if rapor.get("telegram_sunucu"):
+        from dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.yerel_sunucu import kontrol_metni
+
+        print(f"  telegram yerel sunucu: {kontrol_metni(rapor['telegram_sunucu'])}")
     ctc = rapor.get("ctc_modelleri", {})
     print("  hizalama (CTC): " + ", ".join(f"{dil}={'var' if var else 'yok'}" for dil, var in ctc.items()))
     eksik = [dil for dil, var in ctc.items() if not var]

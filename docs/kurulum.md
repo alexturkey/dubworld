@@ -18,7 +18,7 @@ En kısa yol, programlama bilmeyenler için de: bilgisayarda komut çalıştıra
 Code, Codex, Gemini CLI ya da benzeri) açın ve şunu yapıştırın:
 
 ```text
-__REPO_URL__ adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
+https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
 Asistan [../AGENTS.md](../AGENTS.md)'deki sabit akışı izler: ön koşul denetimleri, tek kurulum komutu, `dubla kontrol`
@@ -103,7 +103,8 @@ gibidir. Her adım başarıda bir işaret satırı yazar.
 | 2 | `python` | evet | `uv python install 3.11.14 --no-bin` ile `runtime_assets/python` altına kurar | 1 | `PYTHON_OK` |
 | 3 | `paketler` | evet | profili algılar, `.venv`'i kurar, `requirements/gpu.txt` ya da `cpu.txt`'yi `--require-hashes` ile, ardından bu paketi `--no-deps -e .` ile kurar (`dubla`, `dubla-gui`, `dubla-web`, `dubla-telegram` komutları) | 2 | `PAKETLER_OK` |
 | 4 | `modeller` | evet | `scripts/modelleri_indir.py --adim supertonic,ceviri,stt,hizalama,konusmaci,ffmpeg` (bölüm 6) | 3 | `MODELLER_OK` |
-| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | hayır | `.venv`'e hash'li ekler (`requirements/ek_<ad>.txt`; işlemci profilinde varsa `ek_<ad>_cpu.txt`); `parakeet` modelini de indirir | 3 | `<AD>_OK` |
+| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | hayır | `.venv`'e hash'li ekler (`requirements/ek_<ad>.txt`; işlemci profilinde varsa `ek_<ad>_cpu.txt`); `demucs` `htdemucs` ağırlığını da indirir (≈ 84 MB, sha256), `parakeet` modelini | 3 | `<AD>_OK` |
+| 5b | `hizalama-diller` | hayır | Japonca ve Çince kaynaklar için CTC kelime zamanı modelleri (`modelleri_indir.py --adim hizalama-diller`, ≈ 2,5 GB, Apache-2.0) | 3 | `HIZALAMA-DILLER_OK` |
 | 6 | `akilli-kare`, `galeri`, `telegram` | hayır | `.venv`'e `requirements/ek_<ad>.txt`'den ekler (hash'li) | 3 | `<AD>_OK` |
 | 7 | `tts-xtts` | hayır | XTTS v2 için ayrı ortam (bölüm 5); `-TicariOlmayanKabul` ister | 3 | `XTTS_OK` |
 | 8 | `crisper` | hayır | kardeş STT reposu üzerinden CrisperWhisper 2.0 Turbo + WSL ortamı; `-TicariOlmayanKabul` ister | 3, git, WSL2 | `CRISPER_MOTOR_OK`, `CRISPER_OK` |
@@ -158,7 +159,8 @@ dokunmadan tek başına kaldırılabilir.
   beklenen ile gelen özet yazılarak durulur. Doğru olan mevcut dosya atlanır.
 - **Çalışma anında çevrimdışı:** CLI `HF_HUB_OFFLINE=1` ayarlar, `HF_HOME` / `TORCH_HOME`'u
   `runtime_assets/model_cache`'e yöneltir; iş sırasında hiçbir şey inmez. `DUBLAJ_CEVRIMICI=1` çalışma anı indirmesine
-  izin verir (yalnız modeli manifestte olmayan motorlar için gerekir).
+  izin verir (yalnız modeli manifestte olmayan motorlar için gerekir). Demucs ağırlığı ya da CTC modeli eksikse iş o aşama
+  başlamadan, mesajda kurulum adımıyla durur (kaynak dil otomatikse dil tespitinden hemen sonra, yazıya dökmeden önce).
 - **Ağsız makine (denenmedi):** bağlantılı bir makinede aynı mutlak yola kurulur, ardından repo klasörünün tamamı
   kopyalanır. Ortam mutlak yol saklar (`.venv/pyvenv.cfg`); farklı yolda `-Adim python,paketler` yeniden çalıştırılır,
   bu da ağ olmadan tekerlek önbelleğini (`runtime_assets/onbellek/uv`) ve `UV_OFFLINE=1`'i gerektirir.
@@ -167,7 +169,8 @@ dokunmadan tek başına kaldırılabilir.
 
 | `-Adim` | Ne kurar | Nereye | Lisans notu | Onay bayrağı |
 |---|---|---|---|---|
-| `demucs` | Demucs 4.0.1 (`ses_temizligi.kip = clean / preserve_background`) | `.venv` | kod MIT; ağırlık model kartına göre | – |
+| `demucs` | Demucs 4.0.1 (`ses_temizligi.kip = clean / preserve_background`) + sabit `htdemucs` ağırlığı | `.venv`, `runtime_assets/model_cache/torch/` | MIT (kod ve ağırlık) | – |
+| `hizalama-diller` | Japonca ve Çince kaynaklar için wav2vec2 CTC modelleri (diğer kaynak diller: `DUBLAJ_CEVRIMICI=1`; WhisperX'in fr/de/es/it varsayılanları CC BY-NC 4.0) | `runtime_assets/model_cache/huggingface/` | Apache-2.0 | – |
 | `youtube` | yt-dlp (bağlantı girişi) | `.venv` | Unlicense; yalnız sahibi olunan ya da indirme izni olan içerik (ETHICS.md) | – |
 | `parakeet` | sherpa-onnx + Parakeet Unified EN 0.6B INT8 (İngilizce, işlemci) | `.venv`, `runtime_assets/model_cache/` | NVIDIA Open Model License (şartlı ticari kullanım) | – |
 | `speechmatics` | Speechmatics toplu istemcisi | `.venv` | bulut hizmeti, `.env`'de kullanıcının kendi anahtarı; ses makineden çıkar | – |
@@ -206,7 +209,7 @@ Kurulum adımı olmayan motorlar (elle; `docs/motorlar/` altındaki sayfalarına
 Test edilen yapılandırmada örnek çıktı (`--ayar genel.cihaz=cpu` ile işlemci zorlandı; satırlar kısaltıldı):
 
 ```text
-dublaj-hatti 0.1.0 · Python 3.11.14
+DubWorld 0.1.0 · Python 3.11.14
   donanım.cuda: False
   donanım.torch: 2.8.0+cu128
   donanım.cihaz: cpu

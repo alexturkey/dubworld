@@ -1,6 +1,6 @@
 # CrisperWhisper Turbo CT2 motor kutusu
 
-Bu kutu, Nyralabs CrisperWhisper2.0 Turbo kombinasyonunun güncel Dublaj hatti
+Bu kutu, Nyralabs CrisperWhisper2.0 Turbo kombinasyonunun güncel DubWorld
 üretim sahibidir. Tek-dil modunda geçerli platform dilini CTranslate2 dil
 tablosunda doğrulayıp doğrudan kullanabilir; bilgi yoksa kaynak dili kendi dil
 kimliği olasılıklarıyla bulur. Sürekli çok dilli modda platform bilgisi karar
@@ -9,7 +9,7 @@ olmaz ve motor ses akışını kendi ölçer.
 Bu iletişim internet API'si, HTTP portu veya sürekli sunucu değildir. Auto
 Dubber tam 16 kHz mono sesi atomik yerel JSON istekle verir; Ubuntu/WSL2 alt
 süreci metni, doğal kelime zamanlarını, tespit edilen dili ve denetim
-artefaktlarını geri döndürür. Dublaj hatti'ın ortak job alanı
+artefaktlarını geri döndürür. DubWorld'ün ortak job alanı
 `use_diarization=false` worker isteğine gönderilmez; motorun yerel API'sinde
 diarization girdisi ve konuşmacı çıktısı yoktur.
 

@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Soru-Cevap / Q&A (Discussions)
-    url: __REPO_URL__/discussions
+    url: https://github.com/alexturkey/DubWorld/discussions
     about: Kurulum ve kullanım soruları için önce buraya. / Install and usage questions go here first.

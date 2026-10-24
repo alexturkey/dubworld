@@ -1,4 +1,4 @@
-// Dublaj hattı web arayüzü. Dış kaynak yok; bütün metin textContent ile yazılır (HTML enjeksiyonu yok).
+// DubWorld web arayüzü. Dış kaynak yok; bütün metin textContent ile yazılır (HTML enjeksiyonu yok).
 "use strict";
 const BELIRTEC = document.querySelector('meta[name="dublaj-belirtec"]').content;
 const $ = (id) => document.getElementById(id);

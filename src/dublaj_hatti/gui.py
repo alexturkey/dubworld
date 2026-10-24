@@ -128,7 +128,7 @@ class Uygulama:
         self.video: Path | None = None
         self.baglanti: str | None = None  # https bağlantısı (isteğe bağlı yt-dlp / gallery-dl)
         self.alanlar: list[AyarAlani] = []
-        kok.title(f"Dublaj hattı {__version__}")
+        kok.title(f"DubWorld {__version__}")
         kok.minsize(820, 600)
         kok.protocol("WM_DELETE_WINDOW", self.kapat)
 
@@ -296,7 +296,7 @@ class Uygulama:
         if eksik:
             self.kurulum_uyari.configure(text=(
                 f"Kurulum tamamlanmamış, eksik: {', '.join(eksik)}.\nRepo klasöründeki kur.cmd dosyasına çift tıklayın "
-                "(ya da yapay zekâ asistanınıza \"dublaj hattının kurulumunu bitir\" deyin), sonra bu pencereyi yeniden "
+                "(ya da yapay zekâ asistanınıza \"DubWorld kurulumunu bitir\" deyin), sonra bu pencereyi yeniden "
                 "açın. Ayrıntı: docs/baslarken.md\n"))
 
     def video_sec(self) -> None:

@@ -540,6 +540,136 @@
    "boyut": 17800,
    "lisans": "NVIDIA Open Model License",
    "kaynak": "https://huggingface.co/nvidia/parakeet-unified-en-0.6b/tree/fe53cd885760c96b6a5f51a0bfd362cb4584a98b"
+  },
+  {
+   "adim": "demucs",
+   "ad": "Demucs v4 htdemucs (Hybrid Transformer)",
+   "url": "https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th",
+   "hedef": "runtime_assets/model_cache/torch/hub/checkpoints/955717e8-8726e21a.th",
+   "sha256": "8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4",
+   "boyut": 84141911,
+   "lisans": "MIT (Demucs)",
+   "kaynak": "https://github.com/facebookresearch/demucs/tree/v4.0.1"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/README.md",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/README.md",
+   "sha256": "5b903915e4edb98bf7a5a7f6be42792458272c73cbff07f5c2f8f33765f8f070",
+   "boyut": 8634,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/config.json",
+   "sha256": "552b8c8c85c54a761899eb94b5eb3d58166e769df8e26cf515ab9da695772cd7",
+   "boyut": 1567,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/preprocessor_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/preprocessor_config.json",
+   "sha256": "c403ce09975b90dff0dd8302c42d422e9de1f166cd7772df23490069893cb0cf",
+   "boyut": 158,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/pytorch_model.bin",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/pytorch_model.bin",
+   "sha256": "4f6821dcd79770fcd4c11487c4ee5c040b3a7e1863425224014ba5ea8fbc1b67",
+   "boyut": 1271531927,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/special_tokens_map.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/special_tokens_map.json",
+   "sha256": "bb7068de1150661a10b55f9e4b12a0e77af8bf91f5e45e1b58afaf1d0e17f675",
+   "boyut": 85,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 ja CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/resolve/cf031e020336460d15a417eba710bbc5bb43be9a/vocab.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-japanese/snapshots/cf031e020336460d15a417eba710bbc5bb43be9a/vocab.json",
+   "sha256": "9ffedf9c2da2617b01c4227a4db875d2dfd4e8c31fb9a13182d03c3280679ffe",
+   "boyut": 29298,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-japanese/tree/cf031e020336460d15a417eba710bbc5bb43be9a"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/README.md",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/README.md",
+   "sha256": "9b14283ce428f729bfbf8a82313f61e76d83c760b5a72f2fadf516523ff412b7",
+   "boyut": 7722,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/config.json",
+   "sha256": "9af98614e322a5300c75605227d93c98af0c8f78754aba1dfc279166688afddd",
+   "boyut": 1567,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/preprocessor_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/preprocessor_config.json",
+   "sha256": "c403ce09975b90dff0dd8302c42d422e9de1f166cd7772df23490069893cb0cf",
+   "boyut": 158,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/pytorch_model.bin",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/pytorch_model.bin",
+   "sha256": "de031fd4b29e0c0667e5346450fadfe1326c89936b888b59c4ede608db763ee4",
+   "boyut": 1276296151,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/special_tokens_map.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/special_tokens_map.json",
+   "sha256": "bb7068de1150661a10b55f9e4b12a0e77af8bf91f5e45e1b58afaf1d0e17f675",
+   "boyut": 85,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
+  },
+  {
+   "adim": "hizalama-diller",
+   "ad": "wav2vec2 XLSR-53 zh CTC",
+   "url": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/resolve/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/vocab.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--jonatasgrosman--wav2vec2-large-xlsr-53-chinese-zh-cn/snapshots/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd/vocab.json",
+   "sha256": "33fea3444869c2cd2433f59da079b04ce91515f946d21fe1b0ff3825398bcec7",
+   "boyut": 44357,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn/tree/99ccb2737be22b8bb50dcfcc39ad4d567fb90cfd"
   }
  ]
 }

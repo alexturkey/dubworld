@@ -96,8 +96,9 @@ non-English source; logged; see [transcription.md](transcription.md) §9).
 - **Missing model, never a silent fallback:** with a fixed `kaynak_dil` the model is checked before the job starts
   (settings error); with `auto` language the missing pinned models are written as a reason at start and the job stops
   right after language detection, before alignment. The message names the step: `scripts/kur.ps1 -Adim modeller`
-  (aligners only: `python scripts/modelleri_indir.py --adim hizalama`). Pinned: `en`, `tr`. Other languages need one
-  deliberate run with `DUBLAJ_CEVRIMICI=1`. `dubla kontrol` prints `hizalama (CTC): en=…, tr=…` and a warning line.
+  (aligners only: `python scripts/modelleri_indir.py --adim hizalama`). Pinned: `en`, `tr`; optional pinned step
+  `-Adim hizalama-diller`: `ja`, `zh`. Other languages need one deliberate run with `DUBLAJ_CEVRIMICI=1`. With an
+  automatic source language the faster-whisper worker checks right after detection, before decoding. `dubla kontrol` prints `hizalama (CTC): en=…, tr=…` and a warning line.
   Code: `bolum_00_omurga/runtime/ctc_model_durumu.py`.
 - **CPU cost (measured, one run each, `genel.cihaz = cpu`):** 23.8 s English: recognition ≈ 140 s, CTC 16.5 s
   (load 11 s, align 2.6 s, speech bounding 1.8 s). 60 s Turkish: recognition ≈ 161 s, CTC 42.9 s (load ≈ 10 s, align

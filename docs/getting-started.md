@@ -22,7 +22,7 @@ An *AI assistant* here means a program such as Claude Code, Codex or Gemini CLI 
 computer for you. Open it and paste this one sentence (the address is the page where you found this program):
 
 ```text
-Install the video dubbing program from __REPO_URL__ on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
+Install the video dubbing program from https://github.com/alexturkey/DubWorld on this computer. Follow the AGENTS.md file in that repository step by step, detect my hardware yourself and do not ask me technical questions. When `dubla kontrol` says READY and the sample dub works, open the program's window for me.
 ```
 
 The assistant checks the computer, chooses the GPU or CPU setup by itself, downloads everything, tests it on a small

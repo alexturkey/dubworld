@@ -3347,6 +3347,9 @@ def transcribe_and_align(
         ])
     if full_text_mode and engine_name == "whisperx":
         cmd.append("--skip_alignment")
+    if engine_name == FASTER_WHISPER_CTC_ENGINE and not whisper_lang and not full_text_mode:
+        # Dil otomatikse işçi, tespitten hemen sonra ve tanımadan önce CTC modelini denetler
+        cmd.append("--ctc_dil_denetimi")
 
     logger.info("=" * 60)
     logger.info("SUBPROCESS BASLATILIYOR")
@@ -3430,6 +3433,10 @@ def transcribe_and_align(
     if not data.get("success"):
         error_msg = data.get("error", "Bilinmeyen hata")
         logger.error("Worker hatasi: %s", error_msg)
+        if data.get("hata_turu") == "ctc_modeli_eksik":
+            from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import CtcModeliEksikHatasi
+
+            raise CtcModeliEksikHatasi(error_msg)
         raise RuntimeError(f"{engine_display} worker hatasi: {error_msg}")
 
     if distil_english_only and data.get("fallback_required"):

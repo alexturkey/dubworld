@@ -2169,7 +2169,7 @@ def run_openai_compatible(
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json; charset=utf-8",
-            "User-Agent": "dublaj-hatti-codex-bridge/1.0",
+            "User-Agent": "dubworld-codex-bridge/1.0",
         },
     )
     started = time.time()

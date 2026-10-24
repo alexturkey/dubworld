@@ -147,6 +147,8 @@ WebVTT inline timestamps; silences between words are kept exact).
 
 * Everything in `dublaj_hatti.api.__all__` and `dublaj_hatti.bicimler.__all__` follows semantic versioning; schema
   ids carry their own version (`@1`) and change only with a new id.
+* Names: the product and distribution are `DubWorld` / `dubworld`; the import package stays `dublaj_hatti`, the
+  commands stay `dubla*` and schema ids stay `dublaj-hatti/...@1`, so code, saved files and resumable jobs keep working.
 * Importing `dublaj_hatti.api` is cheap: torch and models load inside the stage that needs them.
 * Settings: `with api.ayarlarla(dosya=None, ifadeler=["genel.cihaz=cpu"]): ...` applies a layer to every stage call
   in the block. Order: `varsayilan.toml` < user files < this layer < explicit stage arguments < the `ayarlar` dict.
@@ -316,6 +318,8 @@ etiketleri ya da WebVTT satır içi zaman damgaları; kelimeler arasındaki sess
 
 * `dublaj_hatti.api.__all__` ve `dublaj_hatti.bicimler.__all__` içindeki her şey anlamsal sürümlemeye uyar; şema
   kimlikleri kendi sürümlerini taşır (`@1`) ve yalnız yeni bir kimlikle değişir.
+* Adlar: ürün ve dağıtım adı `DubWorld` / `dubworld`; içe aktarma paketi `dublaj_hatti`, komutlar `dubla*` ve şema
+  kimlikleri `dublaj-hatti/...@1` olarak kalır; böylece kod, kayıtlı dosyalar ve devam ettirilebilir işler bozulmaz.
 * `dublaj_hatti.api`'yi içe aktarmak ucuzdur: torch ve modeller yalnız onlara ihtiyaç duyan aşamanın içinde yüklenir.
 * Ayarlar: `with api.ayarlarla(dosya=None, ifadeler=["genel.cihaz=cpu"]): ...` bloktaki her aşama çağrısına bir
   katman uygular. Sıra: `varsayilan.toml` < kullanıcı dosyaları < bu katman < açık aşama argümanları < `ayarlar`

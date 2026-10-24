@@ -348,7 +348,7 @@ class Sunucu(http.server.ThreadingHTTPServer):
 
 
 def main(argv: list[str] | None = None) -> int:
-    ayr = argparse.ArgumentParser(prog="dubla-web", description="Dublaj hattı yerel web arayüzü (127.0.0.1)")
+    ayr = argparse.ArgumentParser(prog="dubla-web", description="DubWorld yerel web arayüzü (127.0.0.1)")
     ayr.add_argument("--port", type=int, default=0, help="0 = boş port seç")
     ayr.add_argument("--tarayici-acma", action="store_true", help="tarayıcıyı otomatik açma")
     ayr.add_argument("--yukleme-siniri-mb", type=int, default=8192)
@@ -359,7 +359,7 @@ def main(argv: list[str] | None = None) -> int:
     uygulama = Uygulama(port, args.yukleme_siniri_mb)
     Isleyici.uygulama = uygulama
     adres = f"http://127.0.0.1:{port}/?t={uygulama.belirtec}"
-    print(f"Dublaj hattı web arayüzü: {adres}", flush=True)
+    print(f"DubWorld web arayüzü: {adres}", flush=True)
     print("Kapatmak için bu pencerede Ctrl+C. Adres yalnız bu bilgisayardan açılır.", flush=True)
     if not args.tarayici_acma:
         threading.Timer(0.5, lambda: webbrowser.open(adres)).start()

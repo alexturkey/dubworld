@@ -17,7 +17,7 @@ ETIKET_EN = "AI-dubbed: the audio track of this video is AI-generated (synthetic
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
 
 
-def yapay_zeka_etiketi_ekle(video_yolu: str | os.PathLike, araci: str = "dublaj-hatti") -> Dict[str, Any]:
+def yapay_zeka_etiketi_ekle(video_yolu: str | os.PathLike, araci: str = "DubWorld") -> Dict[str, Any]:
     kaynak = Path(video_yolu)
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg or not kaynak.is_file():

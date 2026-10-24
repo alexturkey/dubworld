@@ -1,8 +1,8 @@
-# Türkçe video dublaj hattı
+# DubWorld
 
 [English](README.md) · Türkçe · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
 
-> __TEK_CUMLE__ (tek cümleyle ne yapar)
+> DubWorld bir videoyu kendi bilgisayarınızda başka bir dile dublajlar: kelime zamanlı yazıya dökme, çeviri, özgün zamana oturtulmuş yapay ses, altyazı ve yeni video. Varsayılan dil Türkçe; diğer diller ses motoruna göre ([docs/diller.md](docs/diller.md)).
 
 ## Yapay zekâ asistanınıza kurdurun
 
@@ -10,14 +10,14 @@ Programlama bilgisi gerekmez. Bilgisayarınızda komut çalıştırabilen bir ya
 Gemini CLI ya da benzeri) açın ve şu tek cümleyi yapıştırın:
 
 ```text
-__REPO_URL__ adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
+https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu bilgisayara kur. Depodaki AGENTS.md dosyasını adım adım uygula, donanımımı kendin algıla, bana teknik soru sorma. `dubla kontrol` HAZIR deyip örnek dublaj çalışınca programın penceresini benim için aç.
 ```
 
 Asistan bilgisayarınızı denetler, ekran kartıyla (GPU) mı yalnız işlemciyle (CPU) mi kurulacağını kendisi seçer ve
 size tek bir soru sorar: sesin kullanım şartlarını kabul edip etmediğiniz. Sonra program penceresi açılır. İlk
 adımlar, sade anlatım ve sık sorunlar: **[docs/baslarken.md](docs/baslarken.md)**.
 
-**Lisans kutusu:** kod Apache-2.0. __LISANS_KUTUSU__
+**Lisans kutusu:** kod Apache-2.0. Varsayılan modeller: Supertonic 3 sesi OpenRAIL-M (kullanım kısıtları, bir kez onaylanır); Opus-MT ve Türkçe kelime zamanı modeli CC BY 4.0 (atıf, NOTICE); FFmpeg derlemesi GPL-3.0 (ayrı program). Yalnız ticari olmayan ve varsayılan kapalı: CrisperWhisper 2.0, XTTS-v2, fr / de / es / it için WhisperX kelime zamanı modelleri. Bu repoda hiçbir model ağırlığı yoktur ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Hızlı kurulum
 
@@ -32,19 +32,42 @@ kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macO
 
 ## Kullanım
 
-__KULLANIM__
+Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Komut satırından:
+
+```powershell
+.venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
+.venv\Scripts\dubla.exe talk.mp4 --ayar genel.hedef_dil=de  # another target language
+```
+
+Sonuçlar `cikti/<video>_<zaman>/` altına yazılır: `dubbed_tr.mp4` (`AI-dubbed` etiketli), kaynak altyazı `transcript_<dil>.srt` ve işin JSON dosyaları; son satır `dubbed_video:` yolu yazar. Bütün ayarlar: [docs/tarifler/kombinasyonlar.md](docs/tarifler/kombinasyonlar.md).
 
 ## Nasıl çalışır
 
-__NASIL__
+1. **Ses:** FFmpeg sesi çıkarır; isteğe bağlı Demucs (MIT) konuşmayı arka plandan ayırır.
+2. **Yazıya dökme:** faster-whisper large-v3-turbo (MIT) ve wav2vec2 CTC kelime zamanı (İngilizce MIT, Türkçe CC BY 4.0); isteğe bağlı CrisperWhisper 2.0 (ticari olmayan) ve diğer motorlar.
+3. **Konuşmacılar:** 3D-Speaker CAM++ (Apache-2.0) ve cinsiyet sınıflandırıcı (Apache-2.0) her konuşmacıya yapay bir ses seçer.
+4. **Çeviri:** kurulu ve oturum açıksa Codex CLI ya da Claude Code CLI, yoksa yerel Opus-MT İngilizceden Türkçeye (CC BY 4.0); API arka uçları isteğe bağlı.
+5. **Ses ve zaman:** varsayılan Supertonic 3 (OpenRAIL-M), isteğe bağlı VoxCPM2 (Apache-2.0) ya da XTTS-v2 (ticari olmayan); her satır özgün segment süresine oturtulur.
+6. **Video:** FFmpeg yeni sesi, SRT / VTT / ASS altyazıyı ve `AI-dubbed` etiketini yazar.
 
 ## Ölçümler
 
-__OLCUM_TABLOSU__ (başvuru makinesinde ölçüldü, yöntem docs/olcumler.md; başka yerden sayı kopyalanmaz)
+Başvuru makinesi: 4 GB Pascal GPU, Windows 10; yöntem ve bütün satırlar [docs/olcumler.md](docs/olcumler.md).
+
+| Ne | İşlemci profili | GPU profili |
+|---|---|---|
+| İlk kurulum, varsayılan adımlar | ≈ 38 dk | ≈ 13,5 dk (paketler) |
+| Kurulum sonrası disk | ≈ 13 GB | ≈ 22 GB |
+| 9 sn örnek dublaj, çevrimdışı çeviri | 528 sn | 376 sn |
+| 30 sn İngilizce parça, Demucs, Claude Code çevirisi | – | 744 sn |
 
 ## Sınırlar
 
-__SINIRLAR__
+- CrisperWhisper (isteğe bağlı 13. motor) yokken faster-whisper Çince ve Japoncada konuşmayı atlayabilir ya da uydurabilir (görülen: bir Çince parçanın ilk ≈ 10 sn'si atlandı; bağırma uzun bir "ああ…" satırına dönüştü).
+- CI yalnız işlemciyi sınar; GPU yolu tek bir 4 GB Pascal kartta elle koşuldu. Yeni kartlar (RTX 50), Linux ve macOS denenmedi.
+- Çevrimdışı çevirmen yalnız İngilizceden Türkçeye çevirir; diğer dil çiftleri Codex / Claude Code CLI ya da bir API arka ucu ister.
+- İngilizce ve Türkçe dışındaki kaynak dillerde kelime zamanı: Japonca ve Çince `scripts/kur.ps1 -Adim hizalama-diller` ile, diğerleri bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırınca.
+- Uçtan uca denenmedi: XTTS-v2 gerçek kurulumu, RVC, gerçek hizmete bağlı Telegram botu, CrisperWhisper motorları; Moonshine deneyseldir.
 
 ## Yapı taşları
 
@@ -66,9 +89,9 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 | Repo | Ne | Bu repo nasıl kullanır |
 |---|---|---|
-| **turkce-video-dublaj-hatti** (bu repo) | uçtan uca yerel video dublaj hattı, her aşama tek başına kullanılabilir | - |
-| [crisperwhisper-turkce-kelime-zamani](__STT_REPO_URL__) | kelime zamanlı birebir yazıya dökme (CrisperWhisper 2.0 Turbo + CTC hizalama) | isteğe bağlı 13. motor: `scripts/kur.ps1 -Adim crisper` modeli o repo üzerinden sabit commit ile kurar (ağırlık **ticari olmayan**) |
-| [voxcpm2-turkce-ses-tasarimi](__TTS_REPO_URL__) | VoxCPM2 ses tasarımı ve okuma, 8 dil, hazır sesler | isteğe bağlı TTS motoru `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` sabit commit ile kurar; bu repo onu ince bir adaptörle çağırır |
+| **DubWorld** (bu repo) | uçtan uca yerel video dublaj hattı, her aşama tek başına kullanılabilir | - |
+| [crisperwhisper-turkce-kelime-zamani](https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani) | kelime zamanlı birebir yazıya dökme (CrisperWhisper 2.0 Turbo + CTC hizalama) | isteğe bağlı 13. motor: `scripts/kur.ps1 -Adim crisper` modeli o repo üzerinden sabit commit ile kurar (ağırlık **ticari olmayan**) |
+| [voxcpm2-turkce-ses-tasarimi](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi) | VoxCPM2 ses tasarımı ve okuma, 8 dil, hazır sesler | isteğe bağlı TTS motoru `voxcpm2`: `scripts/kur.ps1 -Adim voxcpm2` sabit commit ile kurar; bu repo onu ince bir adaptörle çağırır |
 
 Her kardeş repo kendi lisansını, kurulumunu ve sorun kaydını taşır; sabit commit'ler birleşimi tekrarlanabilir kılar.
 

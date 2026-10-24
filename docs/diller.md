@@ -105,7 +105,7 @@ How the source language is detected (first window, per window, code-switching, c
 not plain `faster-whisper`, CrisperWhisper Medium, Moonshine or the cloud engines) get word times from a wav2vec2 CTC
 model chosen by language: `en` torchaudio WAV2VEC2_ASR_BASE_960H, `tr` mpoyraz/wav2vec2-xls-r-300m-cv7-turkish (pinned in
 `scripts/modeller.json`), `id` Galuh/wav2vec2-large-xlsr-indonesian, others WhisperX defaults
-(`bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/worker.py`). A language without a CTC model cannot be aligned. Only `en` and `tr` are installed by `scripts/kur.ps1 -Adim modeller`; for another language run once with `DUBLAJ_CEVRIMICI=1` (otherwise `faster_whisper_ctc`, the `auto` fallback, stops with this instruction).
+(`bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/worker.py`). A language without a CTC model cannot be aligned. Only `en` and `tr` are installed by `scripts/kur.ps1 -Adim modeller`; `ja` and `zh` by the optional `-Adim hizalama-diller`; for another language run once with `DUBLAJ_CEVRIMICI=1` (otherwise `faster_whisper_ctc`, the `auto` fallback, stops with this instruction right after language detection). The WhisperX defaults for `fr`, `de`, `es`, `it` are VoxPopuli models under CC BY-NC 4.0 (non-commercial).
 
 ---
 
@@ -217,5 +217,7 @@ düz `faster-whisper`, CrisperWhisper Medium, Moonshine ve bulut motorları değ
 bir wav2vec2 CTC modelinden alır: `en` torchaudio WAV2VEC2_ASR_BASE_960H, `tr` mpoyraz/wav2vec2-xls-r-300m-cv7-turkish
 (`scripts/modeller.json` içinde sabitlenmiş), `id` Galuh/wav2vec2-large-xlsr-indonesian, diğerleri WhisperX
 varsayılanları (`bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/worker.py`). CTC modeli olmayan dil hizalanamaz.
-`scripts/kur.ps1 -Adim modeller` yalnız `en` ve `tr` modellerini kurar; başka dil için bir kez `DUBLAJ_CEVRIMICI=1`
-ile çalıştırın (yoksa `auto`'nun yedeği `faster_whisper_ctc` bu talimatla durur).
+`scripts/kur.ps1 -Adim modeller` yalnız `en` ve `tr` modellerini kurar; `ja` ve `zh` isteğe bağlı `-Adim hizalama-diller`
+ile kurulur; başka dil için bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırın (yoksa `auto`'nun yedeği `faster_whisper_ctc`
+bu talimatla dil tespitinden hemen sonra durur). WhisperX'in `fr`, `de`, `es`, `it` varsayılanları VoxPopuli modelleridir,
+CC BY-NC 4.0 (ticari olmayan).

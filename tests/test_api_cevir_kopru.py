@@ -25,6 +25,7 @@ class KopruGibi:
 
 
 def test_api_cevir_kopru_imzasiyla_calisir(tmp_path, monkeypatch):
+    pytest.importorskip("numpy")  # dubber imports numpy; the CI core environment is standard library only
     from dublaj_hatti.bicimler import json_yaz, transkript_olustur
     from dublaj_hatti.bolum_00_omurga.core import dubber
 
