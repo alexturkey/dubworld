@@ -588,9 +588,9 @@ coqui-tts==0.27.5 \
     # via
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   -r ek_tts_xtts.in
-coqui-tts-trainer==0.3.3 \
-    --hash=sha256:4a3910be7cd1c05e32e43dbdf90b5a796c33e649bbe030916f6f6446cb51ffc6 \
-    --hash=sha256:829333dd1eea1089ee26685c3bfdf3791e5e4706c4fdaf70f8db0cc785ffe7cb
+coqui-tts-trainer==0.4.0 \
+    --hash=sha256:2a2490ddd1c8ed276c7749734f9d0663bf23ce2469ff2815c16c26fd98534845 \
+    --hash=sha256:d1658b5ee7cfc0a5a24dafbc899dab02a58e119115762dbfc37e1062045ad41d
     # via
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   coqui-tts
