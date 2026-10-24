@@ -1,0 +1,13 @@
+{
+  "backend": "gemini_31_flash_lite",
+  "provider": "google_gemini",
+  "runner": "gemini_rest",
+  "model_env": "CODEX_BRIDGE_GEMINI_31_FLASH_LITE_MODEL",
+  "default_model": "gemini-3.1-flash-lite",
+  "api_key_env_names": [
+    "CODEX_BRIDGE_GEMINI_API_KEY"
+  ],
+  "prompt_file": "prompt.md",
+  "request_spacing_seconds_env": "CODEX_BRIDGE_GEMINI_31_FLASH_LITE_REQUEST_SPACING_SECONDS",
+  "fallback_enabled": false
+}

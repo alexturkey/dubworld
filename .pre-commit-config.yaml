@@ -1,0 +1,27 @@
+# pre-commit install   (once)   ->  checks run on every `git commit`
+# pre-commit run --all-files    ->  run everything by hand
+# Hook versions: bump with `pre-commit autoupdate` and keep ruff in step with the "dev" extra in pyproject.toml.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+      - id: check-json
+        exclude: '(^|/)vendor/'
+      - id: end-of-file-fixer
+        exclude: '(^|/)vendor/'
+      - id: trailing-whitespace
+        exclude: '(^|/)vendor/|\.md$'
+      - id: mixed-line-ending
+        args: [--fix=no]
+      - id: check-merge-conflict
+      - id: check-added-large-files # weights and media never go into the repo
+        args: [--maxkb=1024]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.3
+    hooks:
+      - id: ruff
+        args: [--select, "E9,F63,F7,F82"] # blocking gate = same as CI; full rule set: `ruff check src`

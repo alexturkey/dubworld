@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job_id", "status", "translated_text", "integrity"],
+  "properties": {
+    "job_id": {"type": "string"},
+    "status": {"type": "string", "enum": ["success", "partial", "failed"]},
+    "translated_text": {"type": "string", "minLength": 1},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_coverage", "omitted_source_content", "added_content"],
+      "properties": {
+        "source_coverage": {"type": "string", "enum": ["complete", "partial"]},
+        "omitted_source_content": {"type": "array", "items": {"type": "string"}},
+        "added_content": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

@@ -1,0 +1,182 @@
+# Sabit değerler: ne oldukları ve neden
+
+English: [../engineering/pinned-values.md](../engineering/pinned-values.md).
+
+**Sabit değer**, kodda ya da `src/dublaj_hatti/varsayilan.toml` içinde sabitlenmiş bir sayı ya da seçimdir: ses kimliği,
+eşik, pencere süresi, toplu iş boyu, zaman aşımı, örnekleme hızı. Çoğu rastgele görünür ama değildir. Her satır değerin
+nerede durduğunu, ne yaptığını, neden bu değer olduğunu ve değişirse neyin bozulacağını söyler. Motor ve aşama düzeyindeki
+gerekçe bu klasörün diğer sayfalarında ve [../adr/](../adr/README.md) içindedir; bu sayfa bir alt düzeyde, değer değer
+çalışır.
+
+**"Kayıt yok"**, gerekçenin projenin ölçüm notlarında arandığı ve bulunamadığı anlamına gelir. Değerin serbestçe
+değiştirilebileceği anlamına gelmez: "bilinmeyen risk" say, önce ve sonra ölç.
+
+## Sabit bir değeri değiştirmeden önce
+
+1. Satırını ve bağlı sayfayı ya da ADR'yi oku.
+2. "Değişirse" sütunundaki ölçümü tam uzunlukta girdilerle yeniden yap (bazı hatalar yalnız uzun dosyalarda göründü).
+3. Değeri, bu sayfayı (TR + EN) ve `tests/test_sabit_degerler.py` dosyasını aynı değişiklikte güncelle.
+4. Değer bir aşamanın çıktısını etkiliyorsa o aşamanın ara kayıt sözleşme sürümünü artır
+   ([ADR 0012](../adr/0012-stage-checkpoints-and-resume.md)); sessiz yedek ekleme
+   ([ADR 0009](../adr/0009-fail-closed-no-silent-fallback.md)).
+
+Yollar `src/dublaj_hatti/` köküne göredir; satır numaraları sayfa yazılırken alındı, kayabilir.
+
+## Supertonic sesleri
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Ses başına hız F1 1.30, F2 1.15, F3 1.30, F4 1.00, F5 1.15, M1 1.15, M2 1.00, M3 1.00, M4 1.15, M5 1.25 | `bolum_50_seslendirme/supertonic_tts/speed_policy.py:11` | Supertonic'in model içi sentez hızı, ses başına tek sabit | Supertonic `speed` sonradan esnetme değil, örnekleme parametresidir. Genel 1.20 ve dinamik 0.85–1.45 hız son kelimeleri düşürdü, heceleri yer değiştirdi ya da tekrarladı; çalışan bir değer yakın bir değerde bozulabildi. Her değer, o ses aynı 5 Türkçe metni okuyup 5 transkriptin tamamı eşleşince (5/5) kabul edildi. Her sesin neden tam bu sayıyı aldığı: kayıt yok | Zorla hizalamanın fark etmediği eksik ya da bozuk kelimeler (beklenen metni sese yerleştirir). Yeni değer aynı 5/5 testinden geçmeli; TTS ara kayıtları yeniden üretilir | [0010](../adr/0010-real-tts-duration-is-canonical.md), [0015](../adr/0015-tts-engine-set-and-default.md) |
+| Hız tohuma girmez | `speed_policy.py` (`fixed_voice_profile_v1`) | Tohum = dil + ses + adım + metin özeti | Testte onaylanan ses aynen yeniden üretilir | Onaylı ses yeniden üretilemez | 0015 |
+| Varsayılan ses F1; yedek ses F1 | `speed_policy.py:9`, `varsayilan.toml:95`, `supertonic_tts/konusmaci_secimi/router.py:487` | Başka seçim yokken ses; kullanılabilir konuşmacı sesi olmayan segmentin sesi | Kadın sese düşme: cinsiyet sınıflandırıcısının "bilinmiyor" sınıfı yok, son çare gerekir. Neden başka değil de F1: kayıt yok | Varsayılan işlerin sesi değişir | [0017](../adr/0017-defaults-and-licence-gate.md) |
+| Havuzlar F1–F5 (kadın), M1–M5 (erkek); atama sırası | `supertonic_tts/konusmaci_secimi/voice_assignment.py:6-7` | Önce açık eşleme; sonra konuşmacı etiketi sırasıyla algılanan cinsiyetin havuzundan sıradaki boş ses (başa döner); bilinmeyen cinsiyet kadın havuzu | Bilinmeyen → kadın havuzu: yukarıdaki yedekle aynı neden. Bu dönüş sırası neden: kayıt yok | Tekrar çalıştırmada konuşmacılar başka ses alır; sabit eşleme için `ses.konusmaci_sesleri` | 0017 |
+| Segment kipi çifti F1 / M1 | `varsayilan.toml:116,118` | Cinsiyet segment başına seçilince kadın / erkek ses | Kayıt yok | Segment kipinin varsayılan sesleri değişir | 0017 |
+
+## Supertonic sentezi
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| 10 adım, 7. adımda geçiş, CFG 5.0, sabit zaman ızgarası (sözleşme `supertonic_k15_cfg5_7plus3_silence_v2`) | `bolum_50_seslendirme/supertonic_tts/synthesis_profile.py:4-11` | Örnekleme tarifi: tahmini uzunlukta 7 adım, latent hedef uzunluğa esnetilir, 3 adım daha | Fabrika 8 adımlı örneklemede duyulur kusur vardı; temiz 22 adımlı tarif pahalıydı. 16 tarif ASR kelime hata oranı ve dinlemeyle puanlandı; seçilen, temiz referanstan ≈ %52–54 ucuz ve test paragrafında %0 WER (tek ses ve test metinlerinde ölçüldü) | Sözleşme kimliği çalışma anı, aday önbelleği ve ara kayıt anahtarlarında: bütün TTS yeniden üretilir; kalite aynı yolla yeniden puanlanmalı | [0012](../adr/0012-stage-checkpoints-and-resume.md), 0015 |
+| Sessizlik temizliği: tepeden 20 dB aşağısı aday, tepeden 45 dB aşağısı sessiz kare, sessizlik < −95 dB, konuşma > −50 dB, 8 tekrar karesi, komşu yarıçapı 2, 3 yayılma turu | `supertonic_tts/silence_cleanup.py:13-19` | Vocoder'dan önce "ne konuşma ne sessizlik" latent karelerini bulur, tek kanonik sessizlik latentiyle değiştirir | Tek tek çözülen kareler üç gruba ayrıldı: sessizlik (< −95 dB), konuşma (> −50 dB), kararsız (−63 … −80 dB; duyulan hışırtı). Tepeye 20 dB'den yakın kareler hiç aday olmaz, konuşmaya dokunulmaz. 3 tur referans sırasını izler, testle sabittir. Ölçüldü: temizlenen kareler −64…−84 → −85…−108 dB. Yarıçap 2 ve 45 dB neden: kayıt yok | Konuşma sınırlarında hışırtı döner ya da kelime kuyrukları kesilir | 0015 |
+| Ses yüksekliği: hedef −18 LUFS, gerçek tepe tavanı −1.3 dBTP, tek sabit kazanç, sınırlayıcı yok | `supertonic_tts/final_audio_profile.py:16-17` | Bütün dosyaya `kazanç_dB = min(−18 − LUFS, −1.3 − gerçek_tepe)` | Dublajlar kısıktı (−23 ile −26 LUFS). Kazanç + sınırlayıcı kulakla yetmedi, sıkıştırıcı/sınırlayıcı denemeleri cızırdadı; sabit kazanç sesin karakterini korur. −1.3, −1.1 dBTP kabul sınırının altında pay bırakır. Neden tam −18: kayıt yok | Cızırtı (sınırlayıcı dönerse) ya da −1.1 dBTP üstü kırpılma | 0015 |
+| İşlemci paralelliği: 4 şerit × 2 iç iş parçacığı, dış 1; doğrudan yolda 3 iç iş parçacığı | `supertonic_tts/parallel.py:26-30` | Sentez şeridi başına ONNX Runtime iş parçacığı | En hızlı ve çıktısı aynı olan ölçüldü (19,5 sn; 2 şerit × 3 ile 23,1 sn); dış 2 kazanç vermedi; iç 4/6/8 daha hızlıydı ama çıktılar aynı değildi | Ses bayt bayt aynı olmaz ya da işlemci çekişmesi TTS'i yavaşlatır | 0015 |
+
+## Süre uydurma
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| atempo bandı 0.90–1.25 | `bolum_50_seslendirme/supertonic_tts/atempo_sure_uyumu/policy.py:9-10` | Sentez sonrası izinli saf `atempo` çarpanı | Sesin model içi hızına dokunmadan süre uydurur (saf tempo süzgeci, EQ ya da perde yok). Bu iki sınır neden: kayıt yok | Gerçek süre ve perde testleri yeniden koşulmalı; bunun yerine ses hız tablosu değiştirilmez | [0010](../adr/0010-real-tts-duration-is-canonical.md) |
+| Gerçek TTS kabul bandı: örtük video hızı 0.90–1.15 | `bolum_50_seslendirme/tts_orkestratoru/service.py:43-44` | 1.15 üstü ses çok kısa, 0.90 altı çok uzun; dışarısı onarıma gider | Kanonik kabul bandı; eski 0.70 eşiği geri gelmemeli. Bant dışı uyarı eksik kelime kanıtı değildir. Sınırlar neden: kayıt yok | Daha çok ya da az onarım turu; gözle görülür hızlanmış/yavaşlamış video | 0010 |
+| `ses.hiz = 1.2` | `varsayilan.toml:103`, `bolum_00_omurga/core/dubber.py:671` | Çeviri hedef süresi = kaynak süre × 1.2 | Model içi hızı olmayan motorların sonradan perdeyi koruyan `atempo` ile hızlandırıldığı ilk hattan korundu. Supertonic'e hiç geçirilmez; onun hızı yalnız ses başına tablodan gelir | Çeviri uzunluk hedefleri değişir; Supertonic hızını değiştirmez | 0010 |
+| Aday hizalama: başlangıç toleransı 5 ms, bitiş toleransı 25 ms (yalnız son kelime), kesim tamponu 0.05 / 0.08 sn, ön/arka boşluk 0.35 sn | `bolum_50_seslendirme/candidate_alignment/aligner.py:19-25` | Hizalanan kelimenin penceresini ne kadar aşabileceği; birleştirilen adaylar arasındaki sessizlik çiti | Ölçüldü: ilk kelimeler 0,1–0,3 ms taştı (5 ms yuvarlamayı kapsar, gerçek kaymayı gizlemez), son kelimeler ≈ 20 ms (25 ms, sonra kırpılır); başka her taşma adayı geçersiz kılar. 50/80 ms kesim tamponları segment duraklarını koruyan düzeltmeyle geri geldi. 0.35 sn boşluk neden: kayıt yok | Gevşek tolerans pencere kaymasını gizler; çit kaldırılınca komşu segmentlerin sesi birbirine karıştı (görüldü, geri alındı) | 0010 |
+| Uzun şerit 30 sn | `supertonic_tts/candidate_lanes.py:12` | 30 sn'den uzun (ya da kısa çok segmentli) şeritler her fiziksel parça için ayrı hizalama penceresi alır | Pencere başına üst sınır değil, toplam şerit anahtarı; gerçek parça metni ve örnek sayısından kurulur | Hizalama pencereleri fiziksel parçalarla örtüşmez | 0010 |
+
+## Örnekleme hızları ve diğer TTS motorları
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Supertonic doğal hızı 44 100 Hz | `bolum_00_omurga/core/dubber.py:643` | Hat motorun kendi hızını izler | Motor 44,1 kHz üretir; sabit hat hızı onu boşuna yeniden örnekliyordu | Gereksiz yeniden örnekleme | 0015 |
+| `ileri.ornekleme_hizi = 24000` | `varsayilan.toml:164`, `dubber.py:670` | Kendi hızını vermeyen motorlar için çıktı hızı | Önceki motorlardan kalan ortak varsayılan; Supertonic yok sayar | Diğer motorların çıktı hızı değişir | – |
+| Cinsiyet modeli ve konuşmacı hattı için 16 000 Hz | `supertonic_tts/cinsiyet_secimi/gender_worker.py:14`, `gender_classifier.py:20` | Sınıflandırıcı girdi hızı | Cinsiyet modelinin ve konuşmacı hattının girdi hızı | Sınıflandırıcı yanlış hız alır | – |
+| CTC konuşma sınırı için 16 000 Hz, en küçük pencere 400 örnek | `bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/ctc_konusma_siniri.py:9-10` | Çözümleme hızı ve en küçük pencere | Kayıt yok | – | [0005](../adr/0005-ctc-forced-alignment-only-time-source.md) |
+| VoxCPM2 16 adım, CFG 2.0, 48 000 Hz (bilgi amaçlı; sahibi kardeş TTS reposu) | `bolum_50_seslendirme/voxcpm2_tts/ayarlar.py:17-19` | VoxCPM2 koşucusunun kalite ayarı | 16 adım / CFG 2.0 model kartının temiz varsayılanı; CFG 2.5 bazı örnekleri 0 dBFS'ye fazla yaklaştırdı. 48 kHz: kayıt yok | Kalite burada değil kardeş repoda değişir | 0015 |
+| XTTS parçaları arası sessizlik 0.05 sn | `bolum_50_seslendirme/xtts_tts/kosucu.py:17` | Birleştirilen XTTS parçaları arasına sessizlik | Kayıt yok | – | 0015 |
+| Metinden seslendirmede parça arası 0.25 sn | `api.py:76` | Yalnız metin TTS yolunda parçalar arası sessizlik | Kayıt yok | – | – |
+
+## Konuşmacı ve cinsiyet
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Cinsiyet modeli `alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech`, sabit sürüm | `supertonic_tts/cinsiyet_secimi/gender_classifier.py:18-19` | Konuşmacı cinsiyetini sınıflandırır, çevrimdışı yüklenir | Apache-2.0 ağırlık, LibriSpeech ile eğitilmiş; önceki sınıflandırıcının eğitim verisi izni belirsizdi ([konusmaci_ve_segmentler.md](konusmaci_ve_segmentler.md) §3) | Sabitlenmemiş sürüm sonucu ya da lisansı sessizce değiştirebilir | 0017 |
+| En kısa segment 0.30 sn, konuşmacı başına en çok 30 sn, kısa grup birleştirme 0.40 sn | `konusmaci_secimi/router.py:24-27`, `cinsiyet_secimi/segment_gender_router.py:14`, `gender_worker.py:15` | Daha kısa segment komşunun sesini alır; konuşmacı başına ≤ 30 sn sesten tek karar; 0.40 sn altı gruplar komşuya katılır (kelime silinmez) | Davranış belgeli; tam sayılar: kayıt yok (A/B yok) | Kısa segmentlerde cinsiyet kararları değişir | – |
+| Konuşmacı ayrımı zaman aşımı 3600 sn | `konusmaci_secimi/diarization_adapter.py:14` | Ayrım işçisinin üst sınırı | Kayıt yok | – | [0001](../adr/0001-one-gpu-job-and-process-per-model.md) |
+
+## Çeviri
+
+Değerler `bolum_40_ceviri/` altında; sözleşme için [ceviri.md](ceviri.md).
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Önerilen akış `natural_blocks_1` (ayar varsayılanı); kod yedeği `single_pass_2` | `varsayilan.toml:99`, `dubber.py:694`; `supertonic_tts/flow_modes.py:2` | Segment kimliği başına tek doğal aday, sahiplik denetimi ve kod kapıları | Konuşma sınırları cümle sınırı değildir: segment segment çeviri altyazı gibi duyulur, serbest çevirip yeniden bölmek anlamı komşu kimliğe taşır. Ayar varsayılanı ölçümlerin çoğunu taşıyan akışı izler; `single_pass_2` kod yedeği olarak tutulan önceki referans akıştır | LLM arka ucu gerekir; yerel arka uç yok sayar | [0007](../adr/0007-natural-blocks-translation-contract.md), 0017 |
+| Doğal blok adaylarında Arap rakamı yok | `bolum_40_ceviri/*/backends/*/output_schema_natural_blocks_v2.json` | Model sayının okunuşunu yazar | Mekanik kural "8K video" ile "8K token"ı ayıramaz; sonradan yeniden yazmak altyazı metnini TTS metninden ayırır | TTS rakamı yanlış okur ya da altyazı ile konuşma ayrışır | 0007 |
+| Arka uç sırası `auto` = Codex → Claude Code → yerel Opus-MT | `varsayilan.toml:73` | Kurulu ilk arka ucu seçer; iş ortasında değiştirmez | Codex en çok ölçüme ve CLI'ın zorladığı şemaya sahip; Claude aynı sözleşmeyi kullanır; Opus-MT çevrimdışı taban. İş ortasında arka uç karıştırmak üslubu karıştırır ve gizli yedek hatalarına yol açtı | Karışık üslup; sessiz yedek | [0008](../adr/0008-translation-backend-order.md), 0009 |
+| Varsayılan modeller `gpt-5.6-luna` / `claude-sonnet-5-5`, çaba `medium` | `varsayilan.toml:77-87` | LLM modeli ve çabası | Kayıt yok (A/B yok) | – | 0008 |
+| Tam metin: 6000 kelime üstünde çaba `high` | `llm_kopru/scripts/bridge_worker.py:71`, `claude_code_cli/scripts/bridge_worker.py:72` | Çok uzun tek çağrılı çeviride çabayı yükseltir | 10.497 kelimelik kaynak medium'da `partial` döndü, high'da geçti; 3.000–5.250 kelime medium'da geçti. Temkinli politika, resmî model sınırı değil | Uzun tam metin işleri yarım döner; aynı isteği tekrarlamak işe yaramadı (ölçüldü) | 0007 |
+| Kapsama kapısı: kaynak ≥ 8 kelime ve aday kelime × 4 < kaynak kelime → ret | `*/scripts/natural_blocks_chain_contract.py:14-15` | Büyük anlam kaybını yakalar | Modelin "tamam" beyanına tek başına güvenilmez; 8+ kelimelik kaynağın dörtte birinden azı büyük kayıp sayılır, grup yeniden denenir | Kayıp anlam sessizce geçer ya da kısa geçerli adaylar reddedilir | 0007, 0009 |
+| Kaynağa benzerlik eşiği 0.90 | `bridge_motor_orkestratoru/quality.py:10` | Kaynağa ≥ %90 benzeyen adayı reddeder | Çevrilmemiş ya da zar zor değişmiş çıktı zamanlama verisine başarı diye girmemeli; olağan teknik kelimeler hedef değil | Çevrilmemiş metin TTS'e gider ya da geçerli çeviriler reddedilir | 0009 |
+| Korunan kimlik ≤ 3 kelime | `quality.py:11` | Kaynakla aynı kısa parçalara (adlar) izin | Kayıt yok | – | – |
+| Yeniden deneme sayıları: sözleşme 2, zincir incelemesi 1, iş kimliği uyuşmazlığı 1, tam metin yarım 2 | `*/scripts/bridge_worker.py:63-70` | Kötü cevabın kaç kez yeniden sorulacağı | Sözleşme belgeli (yalnız sorunlu kimlikler yeniden sorulur). Sayılar neden: kayıt yok. Aynı yarım isteği yeniden göndermek düzeltmeden token yaktı (ölçüldü) | Kalite kazancı olmadan maliyet artar ya da iş erken durur | 0009 |
+| Aday 7, kabul tavanı 10 | `*/scripts/bridge_worker.py:67-73` | Onarım kiplerinin aday sayısı; üst sınır | `repair_*` kipleri segment başına 7, `single_pass_10` 10 ister. Tavanlar neden: kayıt yok | – | – |
+| Gruplama: 10 segment, 2 bağlam segmenti, 7 paralel iş, bekleme 2/4/6/8/16/32 sn; onarım 8 / 4 / 5 hızlı aday / 12 sn | `bridge_motor_orkestratoru/engine.py:35-43` | İstek boyu ve eşzamanlılık | Kayıt yok | – | – |
+| Zamanlama onarım eşikleri 0.70 / 1.35, en az hedef 2.5 sn, 1 tur | `engine.py:30-33` | Çevirinin ne zaman uzunluk onarımına döneceği | Kayıt yok. Not: yalnız onarımı tetikler; kabul 0.90–1.15 kalır (yukarıda) | – | 0010 |
+| Türkçe konuşma hızı 0.43 sn/kelime (tablosu olmayan dillerde de varsayılan) | `engine.py:34`, `*/scripts/hedef_dil.py:258` | Hedef saniyeyi kelime bütçesine çevirir | Değer için kayıt yok; varsayılan, tabloda olmayan dillerde önceki davranışı korur | Çeviri uzunluk hedefleri değişir | – |
+| Zaman aşımları: zamanlama onarımı 45 sn; işçi 900 sn (+60 sn) | `*/scripts/bridge_worker.py:73,118` | Çağrı başına üst sınır | 45 sn: onarım çağrıları için bilerek kısa. 900 sn: kayıt yok | – | – |
+| Gemini istek aralığı 2.0 sn / 0.75 sn; 503 bekleme 0.5–8 sn | `llm_kopru/scripts/bridge_worker.py:119-121` | Hız ayarı; kapasite hatası denemeleri | Aralık: kayıt yok. Denemeler yalnız 503 "high demand" için (toplam ≈ 15–20 sn, aynı model ve yük, sonra grup ertelenir); 429/401/403/400 hariç | Sessiz model değişimi ya da çok uzun bekleme | 0009 |
+| Çıktı dili denetimi: ≥ 4 kelime, ≥ 8 harf, ≥ 3 iz, yazı payı 0.5 | `*/scripts/hedef_dil.py:360-363` | Yanlış dilde adayı yakalar | Yalnız kod yorumu (kısa segmentte yanlış alarmı önlemek; kaynaktaki adlar çıkarılır); ölçüm kaydı yok | – | – |
+| Yerel Opus-MT toplu 16, ışın 4, `max_new_tokens` 256 | `bolum_40_ceviri/yerel_ceviri/engine.py:22-24` | Yerel İngilizce→Türkçe çeviri | Kayıt yok (kalite, VRAM ve hız ölçülmedi) | – | 0008 |
+
+## Transkripsiyon
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| ASR ön dolgu 1.0 sn | `bolum_00_omurga/core/dubber.py:136` | Listedeki motorlarda tanımadan önce sessizlik eklenir; kayma bir kez çıkarılır | Motorlar sıkı kesilmiş videolarda ilk kelimeleri kırpıyordu. CrisperWhisper Medium'da neden kapalı: kayıt yok | Çıkarılan kayma dolguya eşit olmalı, yoksa her zaman damgası kayar | [0005](../adr/0005-ctc-forced-alignment-only-time-source.md) |
+| Distil kapısı 0.90 | `bolum_20_transkripsiyon/faster_whisper_motoru/worker.py:40` | Distil (yalnız İngilizce) yalnız dil `en` ve P(en) ≥ 0.90 ise kalır, değilse WhisperX turbo fp32 | Distil modelleri yalnız İngilizcedir. Ölçüldü: İngilizce P = 0,995 kaldı; P(en) = 0,767 olan İngilizce dışı klip geçti ve doğru algılandı. Neden 0.90: kayıt yok | İngilizce olmayan ses yalnız İngilizce modelle yazıya dökülür | – |
+| WhisperX toplu: CUDA 1, işlemci 4 | `whisperx_motoru/worker.py:66-67` | Transkripsiyon toplu boyu | CUDA'da 1, iki uzun fp32 dosyada 2'den ≈ %41 hızlıydı, 4 en yavaş, metin aynı. İşlemci 4: kayıt yok | Değiştirmek en az iki uzun dosyada 2 → 1 → 2 kontrolü ister | [0001](../adr/0001-one-gpu-job-and-process-per-model.md) |
+| WhisperX VAD parça 30, onset 0.500, offset 0.363 | `whisperx_motoru/worker.py:71-73` | pyannote VAD parametreleri (VAD işlemcide) | Değerler: kayıt yok. VAD işlemcide: GPU'da 4 GB kartta tekrarlanabilir OOM verdi | – | 0001 |
+| Parakeet teknik üst sınır 400 sn, işletim üst sınırı 399 sn | `parakeet_cpu_align_motoru/worker.py:24-25` | Kodlayıcı çağrısı başına en uzun girdi | Kodlayıcı en çok 5000 adım × 80 ms = 400 sn alır: 400,000 sn çalışır, 400,080 sn kararsız metin, 400,160 sn biçim hatası; 399 sn pay bırakır | 400 sn üstünde ONNX ≈ 10 GB MatMul ister ya da düşer | – |
+| Parakeet sınır sessizliği 600 ms, doğal boşluk 1.0 sn, kare 0.08 sn | `worker.py:26-28` | Kesim noktası arama; hizalama penceresini bitiren boşluk; CTC pencere dolgusu | 0.08 sn bir kodlayıcı karesi. 1.0 sn: CTC ≈ 0,4 sn boşlukları kaldırdı ama 6,4 sn sessizliği bir kelimeye çekti. 600 ms: kayıt yok | 80 ms dolgu başka motorlara kopyalanmamalı | 0005 |
+| Parakeet ışın: 4 etkin yol, boşluk cezası 2.0 | `worker.py:30-31` | Kod çözücü ayarı | 396 sn'lik dosyada WER %11,1 (açgözlü) → %8,4; 8 yol aynı WER ve %49 yavaş; yüksek cezalar tekrar uydurdu (%12,3) | Daha yüksek WER ya da yavaş çözme | – |
+| CrisperWhisper Turbo pencere 29.5 sn, örtüşme 1.0 sn | `crisperwhisper_turbo_ct2_motoru/config/runtime_profile.json:63` | Uzun biçim penceresi | 29.5 sn model girdisinin üst sınırı, kör kesim değil. Örtüşme 1.0 sn: kayıt yok | Bkz. [crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) §5 | [0004](../adr/0004-crisperwhisper-turbo-ct2-int8.md) |
+| Ortak hizalama sınırları: uzun kelime 1.5 sn, onarım 0.3 sn, ham sessizlik 0.5 sn | `bolum_00_omurga/runtime/crisperwhisper_turbo_ct2_runtime.py:25-27` | 1.5 sn'den uzun kelime yalnız ölçülen konuşma aralığındaysa kabul; en çok 0.3 sn zaman onarımı; iç sessizlik sınırı | Sabit 1.5 sn kapısı gerçek 1,662 sn'lik harf harf okunan kelimeyi yanlışlıkla düşürdü; aralık denetimi bu yüzden var. 0.5 sn: gerçek kelimelerde iç sessizlik ≤ 0,36 sn | Sessizlik kelimelere yutulur ya da geçerli uzun kelimeler reddedilir | 0005 |
+| Kapsama kurtarma adayları (0.8, tohum 7/8/6) | `crisperwhisper_turbo_ct2_motoru/src/coverage_recovery.py:17` | Pencere kapsanmazsa yeniden deneme ayarı | Kayıt yok (10 seslik kabul testi bunlarla yapıldı) | – | 0004 |
+| YouTube altyazı hizalama zaman aşımı max(120, 90 + 8 × ses dakikası) sn; onarım sınırı 0.3 sn | `youtube_json3_kaynagi/engine.py:24-27` | Yalnız hizalama çağrısının üst sınırı | Başarılı hizalama ses dakikası başına ≈ 2,8–3,1 sn sürdü; sınır sabit değil, sesle ölçeklenir. 0.3 sn: kayıt yok | Uzun dosyalar zaman aşımına düşer | 0005 |
+
+## Kelime hizalama
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Konuşma dolgusu 0.15 sn | `bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/ctc_konusma_siniri.py:8` | Kelime zamanları ölçülen konuşma aralığı ± 150 ms içine kısıtlanır | 100 dk seste: 1,5 sn'den uzun kelime 0, ortanca 180 ms; 100–200 ms dolgularda sonuç kararlı. Kısıtlamasız 1.457 kelime 40 ms'den kısaydı | Sınırlama politikasını değiştirmek bütün motorların transkripsiyon ara kayıtlarını geçersiz kılar | 0005, 0012 |
+| Ham sessizlik denetimi: kare 0.02 sn, bağlam 2.0 sn, düzey oranı 0.35, en az karşıtlık 6 dB | `ctc_konusma_siniri.py:11-14` | Kelimeye yutulan sessizliğe karşı yalnız veto eden enerji denetimi | 7 sesle ayarlandı: gerçek kelimelerde iç sessizlik ≤ 0,36 sn; 36 yapay yutulmuş duraktan 31'i yakalandı. Karşıtlık < 6 dB = ölçülemez | Yutulan duraklar geçer ya da gerçek kelimeler veto edilir | 0005 |
+| Onarılan kelime en kısa süresi 0.01 sn | `ctc_kelime_hizalama/zaman_onarimi.py:5` | Zaman onarımından sonra taban | Kayıt yok | – | 0005 |
+
+## Dublaj segmentleri
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Boşluk eşiği 1.0 sn | `bolum_30_hizalama_ve_segment/nihai_dublaj_segmentleri.py:6` | 1.0 sn'den uzun boşluk yeni segment başlatır | Motor segmentleri gerçek durak değildir (27,4 sn'lik bir segmentte 17,2 sn konuşma, 10,2 sn boşluk vardı). 1.0 sn hizalamanın doğal boşluk kuralıyla aynı. 0.6 ↔ 1.0 sn A/B kaydı yok | Her işte segmentler, çeviri ve TTS değişir | [0006](../adr/0006-two-stage-dub-segmentation.md) |
+| En çok 150 kelime | `nihai_dublaj_segmentleri.py:7` | Daha uzun segment içeriden bölünür | Çok uzun segmentler bir API çevirmeninin çıktı token tavanına çarptı | Çeviri çağrıları kesilir | 0006 |
+| Noktalama önceliği `.` `?` `!` `,` | `nihai_dublaj_segmentleri.py:8` | Bölme noktalarının sırası | En büyük anlamlı parçaları korur; zayıf işarete yalnız gerekince iner | Daha az doğal bölünme | 0006 |
+
+## Kaynak ses ve ayrıştırma
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Demucs `htdemucs`, iki parça | `bolum_00_omurga/core/dubber.py:133` | Ayrıştırma modeli | Hibrit transformer modeli; diğer Demucs modelleriyle karşılaştırma kaydı yok | Ayrıştırma kalitesi ve süresi değişir | [0002](../adr/0002-demucs-batched-two-stem-worker.md) |
+| CUDA toplu 4, örtüşme 0.25, shifts 0, segment = model varsayılanı | `bolum_10_kaynak_edinme/adim_50_asr_sesi_hazirlama/demucs_cleaner.py:14-15` | Toplu ayrıştırma | Toplu 4: 74 dk ses 498,7 → ≈ 397–401 sn (−%20), torch tepe ≈ 1,69 GB. Örtüşme 0.25 ve shifts 0 önceki akışın kalitesini korur (daha çok shifts yavaş). htdemucs 7,8 sn ile eğitildi, daha uzun segmenti reddeder | Toplu 4 ile 1 arasında örneklerin %0,035'inde ≤ 1 int16 adım fark; diğer toplu boyları ölçülmedi; uzun segment düşer | 0002 |
+| OOM'da toplu 1 ile tek yeniden deneme | `demucs_batch_worker.py` | Yalnız gerçek CUDA OOM'dan kurtarır | Diğer hatalar asla OOM diye etiketlenmez | OOM olmayan hatada sessiz yedek | 0002, 0009 |
+| Demucs ortamı: `PYTHONHASHSEED=0`, `CUBLAS_WORKSPACE_CONFIG=:4096:8`, OMP/MKL iş parçacığı 1, normalin altı öncelik | `demucs_cleaner.py:128-137` | Belirlenimcilik ve bilgisayarın yanıt vermesi | Normalin altı öncelik uzun WAV yazımında bilgisayarı kullanılabilir tutar. Demucs için belirlenimcilik değişkenleri: kayıt yok | – | 0001 |
+| Demucs → ASR geçiş beklemesi 3 sn | `dubber.py:152` | Ayrıştırma ile tanıma arasında bekleme | Kayıt yok; gereksiz olduğu hiç kanıtlanmadığı için güvenlik katmanı olarak tutuluyor | Sonraki GPU işinde yerel/OOM hatası olası (ölçülmedi) | 0001 |
+| Arka plan algılama: kare 0.05 sn, yüzdelik 5 / 95, dinamik aralık < 32 dB = arka plan, tepe < −60 dB = sessiz | `adim_50_asr_sesi_hazirlama/arka_plan_sesi_olcumu.py:10-14` | Ayrıştırma yapılıp yapılmayacağına karar verir | Önceki ayrıştırılmış işlerle ayarlandı: açık arka planlı vaka kaçmadı (0), kesinlik ≈ %90; 30 sn pencereler daha kötü ayırdı. Sınırlar: ≤ 4 dk klipler, yalnız İngilizce | Temiz konuşmada ayrıştırma (maliyet, konuşma kaybı) ya da gürültülü seste atlama | [0003](../adr/0003-automatic-background-detection.md) |
+
+## Video ve çıktı
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| CQ 26 | `varsayilan.toml:149`, `bolum_60_video_ve_encode/timeline_ve_final_encode/video_processor.py:68`, `dubber.py:336,703` | Son kodlamanın sabit kalite hedefi | Üç videoda CQ 23'e karşı SSIM 0,997 / 0,995 / 0,996, dosyalar ≈ %28–30 küçüldü; video aşaması da hızlandı (küçük dosya daha hızlı doğrulanır ve birleştirilir). SSIM, yazı yoğun ya da ince çizgili videoda göz kontrolünün yerini tutmaz | Büyük dosya ve yavaş aşama (düşük CQ) ya da görünür kayıp (yüksek CQ) | [0011](../adr/0011-video-encoder-selection.md) |
+| NVENC ön ayarı `p2` | `video_processor.py:67` | Kodlayıcı hız/boyut dengesi | `p1` daha hızlıydı ama daha büyük dosya üretti | Büyük dosya | 0011 |
+| Segment sayısına göre toplu boy: ≤ 40 → tek parti, sonra 40 / 35 / 30 | `video_processor.py:544-563` | Kodlama partisi başına zaman çizelgesi öğesi | Yalnız kod yorumu ("büyük parti, az birleştirme yükü"; önceki 30/25/20'nin yerine); ölçüm kaydı yok | – | 0011 |
+| En çok 3 paralel parti (altyazılı çok partili işler); kısa son parti birleştirilir | `video_processor.py:1237` | Sınırlı paralel kodlama | En uzun partiyle başlayan sınırlı paralellik 54 dakikalık referansı 1602'den 668 sn'ye indirdi, zaman çizelgesi farkı 0; paralelde düşen parti tek başına yeniden denenir (kodlayıcı oturum sınırı). 1–2 sn'lik son parti beklenen süresine ulaşamayıp düştü. Neden 3: kayıt yok | Sınırsız paralellik bilinen bir gerilemedir | 0011 |
+| x264 yedeği: `medium`, CRF = CQ; ikinci yedek `veryfast` CRF 23 | `video_processor.py:708,722` | NVENC'siz kodlama | İşlemci yedeği bulunmak zorunda; ön ayar/CRF değerleri: kayıt yok | – | 0011 |
+| `max_mb`: AAC 96 kbps gerçekten kodlanır ve ölçülür; 1 MB = 1 000 000 bayt | `video_processor.py:643`, `yapilandirma.py:88` | Boyut sınırlı çıktı | Bütçe kâğıt üstü bit hızıyla değil gerçek AAC bayt boyutuyla hesaplanır; ondalık MB paylaşım hizmetlerinin sınırlarıyla aynı birim. Neden 96 kbps: kayıt yok | Kâğıt üstü ses tahminine dönmek boyut sınırını aşar | 0011 |
+| Yapay zekâ ile dublaj meta etiketi açık | `varsayilan.toml:153` | Çıktıyı yapay zekâ ile dublajlanmış diye işaretler | Açıklama yükümlülüğü, bkz. [../../ETHICS.md](../../ETHICS.md) (AB Yapay Zekâ Yasası md. 50) | Kapatmak etik yönergeye aykırı | 0017 |
+
+## Altyazı
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Yakılmış altyazı düzeni: yazı 72; 1920×1080 genişlik 0.74 / kutu 104 / alt pay 70; 1080×1920 0.82 / 108 / 210; 1080×1080 0.78 / 104 / 110 | `bolum_50_seslendirme/altyazili_dublaj/burnin.py:16-31` | Tuval başına sabit altyazı kutusu | Kullanımdaki çizicinden değiştirilmeden alındı; gerçek işlerde ASS çıktısının bayt bayt aynı olduğu denetlendi. Tek tek sayılar: kayıt yok | Bütün motorları etkiler; gerçek motor gerileme testleri yeniden koşulur | – |
+| Kayan altyazı profili: genişlik 0.44, 2 satır, yazı 62, kayma 0.25 sn, durak 1.0 sn, kuyruk 0.65 sn, en küçük yazı 16 | `altyazili_dublaj/rollup_profile.json` | 1080 birimlik tuvalde kayan altyazı | Bir referans altyazı deneyinden onaylanmış varsayılanlar; tam sayıları açıklayan ölçüm yok | En uzun kelime 16'da sığmazsa iş hata verir; değişiklik altyazı aşamasını yeniden koşturur | 0012 |
+
+## Akıllı kare, ara kayıt, çalışma anı sınırları
+
+| Değer | Nerede | Ne yapar | Neden | Değişirse | ADR |
+|---|---|---|---|---|---|
+| Akıllı kare: 24 örnek, 540 piksel çözümleme genişliği, 16 uzlaşı örneği, dış oranlar 0.05 / 0.72 | `bolum_10_kaynak_edinme/akilli_kare_yakalama/service.py:24-26`, `detector.py:6-7` | Siyah/bulanık kenar bantlarını algılar | Kayıt yok | – | – |
+| Ara kayıt özeti: 32 MiB'a kadar (ve bütün ses) tam özet, üstü boyut + ilk/son 1 MiB | `bolum_00_omurga/core/pipeline_checkpoint.py:30-31` | Devam için girdi parmak izi | Kayıt yok | Değiştirmek var olan ara kayıtları geçersiz kılar | 0012 |
+| Kaynak kilidi meşgul çıkış kodu 75 | `bolum_00_omurga/runtime/kaynak_kilidi.py:46` | GPU meşgulken çıkış kodu | Kilidin kendisi ölçülü (iki paralel iş her biri ≈ 1,95 kat uzun sürdü, toplam iş +%2,6); kod sayısı: kayıt yok | 75'i denetleyen çağıranlar bozulur | 0001 |
+| Zaman aşımları: galeri indirme 900 sn, RVC 7200 sn, kapak üretimi 900 sn (ilk çalıştırma) | `adim_20_kaynak_alma/galeri_indirici.py:24`, `rvc_ses_donusturme/donusturucu.py:27`, `bolum_70_gorsel_uretim/kapak_gorseli/codex_kapak.py:28` | Dış araçlar için üst sınır | Kapak: 900 sn yalnız başarılı çalıştırma yokken, sonra ortalama × 1,20. Diğerleri: kayıt yok | – | – |
+| Hata mesajı ≤ 300 karakter | `bolum_00_omurga/runtime/hata_aciklama.py:8` | Tek satır kullanıcı hatası, sırlar maskeli | Kullanıcıya dönük hata sözleşmesi | Uzun ya da çok satırlı hatalar | – |
+| YouTube indirme en çok 4 GiB, 5 sn sonra bir kez yeniden deneme | `adim_20_kaynak_alma/youtube_downloader.py:25-26` | İndirme sınırları | Kayıt yok | – | – |
+| TTS işçisi 4, deneme 3, bekleme 2.0 sn | `varsayilan.toml:159-162` | Paralel TTS istekleri ve denemeler | Kayıt yok | – | – |
+
+## Sürüm kilitleri
+
+Paket sürümleri `requirements/*.txt` içinde özetle (hash), model dosyaları `scripts/modeller.json` içinde commit + SHA-256
+ile kilitlidir; riskli olanların gerekçesi (torch yapıları ve Pascal çekirdekleri, Demucs 4.0.1, FFmpeg)
+[gpu_bellek_ve_yalitim.md](gpu_bellek_ve_yalitim.md), [dusuk_vram.md](dusuk_vram.md) ve [../kurulum.md](../kurulum.md)
+içindedir. Kilit denetimi: `tests/test_kurulum_kilitleri.py`.
+
+## Koruma testi
+
+`tests/test_sabit_degerler.py` yukarıdaki kritik değerleri kaynaktan okur (içe aktarma yok, model yok); biri değişirse bu
+sayfanın ilgili bölümünü gösteren bir mesajla düşer.

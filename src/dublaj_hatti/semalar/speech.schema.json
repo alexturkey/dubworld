@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dublaj-hatti.invalid/schemas/speech.schema.json",
+  "type": "object",
+  "title": "Speech (dublaj-hatti/speech@1)",
+  "description": "Output of `dubla seslendir` in segment mode: one timed track plus one file per segment (paths relative to this file).",
+  "required": [
+    "schema",
+    "engine",
+    "sample_rate",
+    "audio",
+    "segments"
+  ],
+  "properties": {
+    "schema": {
+      "const": "dublaj-hatti/speech@1"
+    },
+    "engine": {
+      "type": "string"
+    },
+    "voice": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "sample_rate": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "audio": {
+      "type": "string",
+      "description": "timed mix (WAV), relative path"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "text",
+          "audio"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "number",
+            "minimum": 0
+          },
+          "end": {
+            "type": "number",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/word"
+            }
+          },
+          "audio": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "word": {
+      "type": "object",
+      "required": [
+        "word",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0
+        },
+        "score": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

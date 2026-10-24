@@ -1,0 +1,9 @@
+# Allow-list for scripts/yasal_denetim.py. Keep it narrow: one rule, one path (glob), an optional text regex
+# ("-" = any text on that path) and a reason. Repository-wide globs are rejected by the script.
+# Format: rule | path glob | text regex or - | reason
+
+edge_tts | THIRD_PARTY.md | ^edge-tts$ | "Deliberately not included" section names the excluded component
+google_resmi_degil | THIRD_PARTY.md | ^(googletrans|deep-translator)$ | "Deliberately not included" section names the excluded clients
+e_posta | src/dublaj_hatti/bolum_50_seslendirme/supertonic_tts/konusmaci_secimi/vendor/3D-Speaker/* | - | upstream maintainers' public contact addresses inside vendored Apache-2.0 code (kept byte-identical)
+kullanim_izi | docs/tarifler/telegram_botu.md | ^1[05] iş$ | bot command list sizes ("last 10 / 15 jobs"), not usage statistics
+kisisel_yol | docs/tarifler/devam_ve_sorunlu_isler.md | ^D:\\d$ | example output folder in a usage recipe (D:\dublajlar), not a real machine path

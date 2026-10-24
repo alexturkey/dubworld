@@ -1,0 +1,63 @@
+name: Hata raporu / Bug report
+description: hat çalışıyor ama yanlış sonuç veriyor ya da bir adımda düşüyor / the pipeline runs but fails or gives a wrong result
+title: "[hata] "
+labels: ["hata"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Kurulum düşüyorsa "Kurulum sorunu" formunu kullanın. Güvenlik açığını burada değil `SECURITY.md` yoluyla bildirin.
+        Videonun kendisini, kişisel yolları, API anahtarlarını ve hesap adlarını yapıştırmayın.
+        / Install failing? Use the "Install problem" form. Report security issues via `SECURITY.md`, not here.
+        Do not paste the video itself, personal paths, API keys or account names.
+  - type: input
+    id: surum
+    attributes:
+      label: Sürüm / Version
+      description: "`dubla --version` ya da commit / or commit hash"
+    validations:
+      required: true
+  - type: input
+    id: sistem
+    attributes:
+      label: İşletim sistemi, Python, donanım / OS, Python, hardware
+      placeholder: "Windows 11, Python 3.10, NVIDIA 4 GB / CPU only"
+    validations:
+      required: true
+  - type: dropdown
+    id: adim
+    attributes:
+      label: Hangi adım? / Which stage?
+      options:
+        - kaynak / source
+        - transkript (STT)
+        - kelime zamanı / word timing
+        - çeviri / translation
+        - seslendirme (TTS)
+        - zaman uydurma / timing fit
+        - altyazı / subtitles
+        - video / mux
+        - arayüz (GUI / web) / interface
+        - bilmiyorum / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: ayar
+    attributes:
+      label: Ayarlar / Settings
+      description: Komut ya da "Önerilen akış" / "Gelişmiş" seçimleri, motor adları. / Command or chosen options, engine names.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: beklenen
+    attributes:
+      label: Beklenen ve olan / Expected vs actual
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Günlük / Log
+      description: Son 50 satır. / Last 50 lines.
+      render: text

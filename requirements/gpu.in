@@ -1,0 +1,3 @@
+-r temel.in
+torch==2.8.0+cu128
+torchaudio==2.8.0+cu128

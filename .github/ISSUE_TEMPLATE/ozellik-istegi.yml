@@ -1,0 +1,29 @@
+name: Özellik isteği / Feature request
+description: yeni motor, dil, ayar ya da arayüz önerisi / a new engine, language, option or interface idea
+title: "[öneri] "
+labels: ["oneri"]
+body:
+  - type: textarea
+    id: ihtiyac
+    attributes:
+      label: Hangi sorunu çözüyor? / What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: oneri
+    attributes:
+      label: Önerilen çözüm / Proposed solution
+    validations:
+      required: true
+  - type: input
+    id: lisans
+    attributes:
+      label: Yeni bir model ya da araç varsa resmî kaynak ve lisans / Official source and license of any new model or tool
+      description: Resmî olmayan dönüşümler ve ticari olmayan ağırlıklar varsayılan olamaz. / Unofficial conversions and non-commercial weights cannot become defaults.
+  - type: checkboxes
+    id: etik
+    attributes:
+      label: Sorumlu kullanım / Responsible use
+      options:
+        - label: Öneri gerçek bir kişinin sesini taklit etmeyi gerektirmiyor (`ETHICS.md`). / It does not require imitating a real person's voice.
+          required: true

@@ -1,0 +1,34 @@
+{
+  "backend": "claude_code",
+  "provider": "anthropic_claude_code_cli",
+  "runner": "claude_code_cli",
+  "model_env": "CODEX_BRIDGE_CLAUDE_MODEL",
+  "default_model": "claude-sonnet-5-5",
+  "effort_env": "CODEX_BRIDGE_CLAUDE_EFFORT",
+  "default_effort": "medium",
+  "full_text_high_effort_word_threshold": 6000,
+  "full_text_high_effort": "high",
+  "api_key_env_names": [],
+  "auth_mode": "saved_cli_login",
+  "prompt_files": {
+    "full_text_translation": "prompts/full_text_translation.md",
+    "supertonic_tts": "prompts/supertonic.md",
+    "supertonic_single_pass_1_natural": "prompts/supertonic_single_pass_1_natural.md",
+    "supertonic_natural_blocks_1": "prompts/v4_en_supertonic_natural_blocks_.md",
+    "supertonic_whole_chain_master": "prompts/supertonic_whole_chain_master.md",
+    "supertonic_whole_chain_candidates": "prompts/supertonic_whole_chain_candidates.md",
+    "supertonic_whole_chain_repair": "prompts/supertonic_whole_chain_repair.md",
+    "vtt_transcript_segments": "prompts/vtt_transcript_segments.md",
+    "default": "prompts/supertonic.md"
+  },
+  "output_schema": "output_schema.json",
+  "output_schemas": {
+    "full_text_translation": "output_schema_full_text_translation.json",
+    "supertonic_natural_blocks_1": "output_schema_natural_blocks_v2.json",
+    "supertonic_whole_chain_master": "output_schema_supertonic_whole_chain.json",
+    "supertonic_whole_chain_candidates": "output_schema_supertonic_whole_chain.json",
+    "supertonic_whole_chain_repair": "output_schema_supertonic_whole_chain.json",
+    "default": "output_schema.json"
+  },
+  "fallback_enabled": false
+}

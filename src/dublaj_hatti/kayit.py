@@ -1,0 +1,451 @@
+"""Motor kaydı: hattın seçilebilir her motoru (transkripsiyon, çeviri, seslendirme, isteğe bağlı ekler) tek yerde.
+
+Bu kayıt; ayar şemasının seçenek listelerini, `dubla kontrol` çıktısını, arayüzlerin seçeneklerini ve belge
+tablolarını besler. Yeni motor eklemek (CONTRIBUTING.md "Yeni motor"):
+  1. motor kodunu ilgili `bolum_*` klasörüne koy,
+  2. buraya bir `Motor` satırı ekle (ad, lisans, kaynak, kurulum adımı, kurulu mu denetimi),
+  3. `bolum_00_omurga/core/dubber.py` içinde motor adına göre dalı ekle (çalıştırma noktası),
+  4. `docs/motorlar/<ad>.md` sayfasını yaz, THIRD_PARTY.md'ye satır ekle.
+
+Donanım ve dil alanları (`cihaz`, `vram_mb`, `cpu`, `bellek`, `kanit`, `diller`) aşağıdaki `_DONANIM_DIL` tablosundan
+gelir; her değerin kaynağı `kanit` alanında ("ölçüldü" / "belgeye göre" / "tahmin") ve docs/donanim.md, docs/diller.md
+tablolarında yazılıdır. Ölçümler 4 GB VRAM'li Pascal sınıfı bir GPU'da alınmıştır (docs/engineering/).
+
+`lisans` alanı ağırlığın/hizmetin lisansıdır ve resmî kaynaktan okunur (THIRD_PARTY.md ile aynı, 2026-10-24).
+`ticari`: "evet" | "hayır" | "şartlı" (kullanım kısıtı ya da yükümlülük var) | "hizmet şartları" (bulut).
+Ticari olmayan ya da şartlı motorun ilk kullanımında gösterilecek metin tek yerde: `lisans_uyarisi(ad)`.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import os
+from collections.abc import Callable
+from dataclasses import dataclass, field, replace
+
+
+def _modul(ad: str) -> Callable[[], bool]:
+    return lambda: importlib.util.find_spec(ad) is not None
+
+
+def _ortam(*degiskenler: str) -> Callable[[], bool]:
+    return lambda: any(os.environ.get(d, "").strip() for d in degiskenler)
+
+
+# Bulut STT motorlarının okuduğu anahtar adları (motorun kendi config.py'si ile aynı; test eşitliği denetler).
+STT_API_ANAHTARLARI: dict[str, tuple[str, ...]] = {
+    "speechmatics": ("SPEECHMATICS_API_KEY_1", "SPEECHMATICS_API_KEY_2"),  # speechmatics_motoru/config.py
+    "elevenlabs_scribe_v2": ("ELEVENLABS_API_KEY",),  # elevenlabs_scribe_v2_motoru/config.py
+}
+
+
+def _ceviri_anahtari(ad: str) -> Callable[[], bool]:
+    """Çeviri API anahtarı: tek kaynak köprünün okuduğu adlar (arka_uc_secimi.API_ANAHTARI_DEGISKENLERI)."""
+
+    def denetle() -> bool:
+        from dublaj_hatti.bolum_40_ceviri.arka_uc_secimi import api_anahtari_var
+
+        return api_anahtari_var(ad)
+
+    return denetle
+
+
+def _crisper() -> bool:
+    from dublaj_hatti.yapilandirma import crisper_turbo_kurulu
+
+    return crisper_turbo_kurulu()
+
+
+def _konusmaci() -> bool:
+    from dublaj_hatti.yapilandirma import konusmaci_modelleri_kurulu
+
+    return konusmaci_modelleri_kurulu()
+
+
+def _voxcpm2() -> bool:
+    from dublaj_hatti.bolum_50_seslendirme.voxcpm2_tts import voxcpm2_durumu
+
+    return bool(voxcpm2_durumu()["kurulu"])
+
+
+def _xtts() -> bool:
+    from dublaj_hatti.bolum_50_seslendirme.xtts_tts import xtts_durumu
+
+    return bool(xtts_durumu()["kurulu"])
+
+
+def _rvc() -> bool:
+    from dublaj_hatti.bolum_50_seslendirme.rvc_ses_donusturme import rvc_durumu
+
+    return bool(rvc_durumu()["kurulu"])
+
+
+def _parakeet() -> bool:
+    """Paket (sherpa-onnx) ve model dosyaları (kur.ps1 -Adim parakeet; scripts/modeller.json adım `parakeet`)."""
+    if importlib.util.find_spec("sherpa_onnx") is None:
+        return False
+    from dublaj_hatti.bolum_00_omurga.runtime.asset_paths import parakeet_unified_en_int8_model_dir
+
+    kok = parakeet_unified_en_int8_model_dir()
+    return all((kok / ad).is_file() for ad in PARAKEET_MODEL_DOSYALARI)
+
+
+PARAKEET_MODEL_DOSYALARI = ("encoder.int8.onnx", "decoder.int8.onnx", "joiner.int8.onnx", "tokens.txt")
+
+
+def _faster_whisper_ctc() -> bool:
+    """faster-whisper + CTC kutusunun Python'u (WhisperX) + sabit CTC modelleri en/tr (kur.ps1 -Adim modeller)."""
+    if importlib.util.find_spec("faster_whisper") is None:
+        return False
+    if not os.environ.get("DUBLAJ_WHISPERX_PYTHON", "").strip() and importlib.util.find_spec("whisperx") is None:
+        return False
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import kontrol_ozeti
+
+    return all(kontrol_ozeti().values())
+
+
+def _galeri() -> bool:
+    from dublaj_hatti.bolum_10_kaynak_edinme.adim_20_kaynak_alma.galeri_indirici import galeri_kurulu
+
+    return galeri_kurulu()
+
+
+def _cli(degisken: str, komut: str) -> Callable[[], bool]:
+    def denetle() -> bool:
+        import shutil
+
+        return bool(os.environ.get(degisken, "").strip() or shutil.which(komut))
+
+    return denetle
+
+
+@dataclass(frozen=True)
+class Motor:
+    tur: str  # stt | ceviri | tts | ek
+    ad: str  # ayar değeri (ör. transkripsiyon.motor = "faster-whisper")
+    gorunen_ad: str
+    lisans: str
+    ticari: str
+    kaynak: str  # resmî kaynak (model kartı / proje sayfası)
+    kurulum: str  # scripts/kur.ps1 adımı ya da kısa yol
+    cihaz: str  # gpu | cpu | gpu+cpu | bulut
+    kurulu: Callable[[], bool] = field(compare=False, repr=False, default=lambda: False)
+    not_: str = ""
+    bellek: str = ""  # tepe bellek / donanım notu, kaynağıyla (docs/donanim.md)
+    vram_mb: int = 0  # GPU'da tepe VRAM (MB); 0 = GPU kullanmaz ya da bilinmiyor
+    cpu: str = ""  # işlemcide: iyi | çalışır | yavaş | çalışmaz | bulut
+    kanit: str = ""  # vram_mb / cpu değerinin dayanağı: ölçüldü | belgeye göre | tahmin
+    diller: frozenset[str] | None = None  # stt: kaynak dilleri, tts/çeviri: hedef dilleri; None = çok dilli
+    dil_notu: str = ""
+    deneysel: str = ""  # boş değilse motor DENEYSEL: bilinen sınırın kısa gerekçesi (arayüz etiketi + ayar uyarısı)
+
+    @property
+    def belge(self) -> str:
+        return f"docs/motorlar/{self.ad}.md"
+
+
+# --- dil listeleri (kaynakları docs/diller.md) ----------------------------------------------------------------
+# Supertonic 3: bolum_50_seslendirme/supertonic_tts/runtime.py AVAILABLE_LANGS ("na" hariç; test eşitliği denetler)
+SUPERTONIC_DILLERI = frozenset({
+    "ar", "bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "hi", "hr", "hu", "id", "it", "ja", "ko",
+    "lt", "lv", "nl", "pl", "pt", "ro", "ru", "sk", "sl", "sv", "tr", "uk", "vi",
+})
+# VoxCPM2: ses tasarımı (kardeş) reposunda uçtan uca denenmiş diller; başka dil okunur ama denenmedi (uyarı)
+VOXCPM2_DENENEN_DILLER = frozenset({"tr", "en", "fr", "de", "es", "ru", "zh", "ja"})
+# XTTS v2: model kartı (huggingface.co/coqui/XTTS-v2) dilleri; bolum_50_seslendirme/xtts_tts/api.py XTTS_DILLERI
+XTTS_DILLERI = frozenset({"en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl", "cs", "ar", "zh", "ja", "hu",
+                          "ko", "hi"})
+# Hedef dil seçicilerinde (Önerilen sekmesi, düğme "<Dil> dublajla") dilin kendi dilindeki adı; tts_hedef_dilleri()
+# içindeki her kodun burada adı olmalı (tests/test_hedef_dil_secici.py). Bilinmeyen kod arayüzde kodun kendisiyle görünür.
+DIL_KENDI_ADLARI: dict[str, str] = {
+    "ar": "العربية", "bg": "Български", "cs": "Čeština", "da": "Dansk", "de": "Deutsch", "el": "Ελληνικά",
+    "en": "English", "es": "Español", "et": "Eesti", "fi": "Suomi", "fr": "Français", "hi": "हिन्दी",
+    "hr": "Hrvatski", "hu": "Magyar", "id": "Bahasa Indonesia", "it": "Italiano", "ja": "日本語", "ko": "한국어",
+    "lt": "Lietuvių", "lv": "Latviešu", "nl": "Nederlands", "pl": "Polski", "pt": "Português", "ro": "Română",
+    "ru": "Русский", "sk": "Slovenčina", "sl": "Slovenščina", "sv": "Svenska", "tr": "Türkçe", "uk": "Українська",
+    "vi": "Tiếng Việt", "zh": "中文",
+}
+
+
+def dil_kendi_adi(kod: str) -> str:
+    """Dil kodunun kendi dilindeki adı ("de" → "Deutsch"); tabloda yoksa kodun kendisi."""
+    return DIL_KENDI_ADLARI.get(kod, kod)
+
+
+def dublajla_etiketi(kod: str) -> str:
+    """Önerilen sekmesindeki ana düğmenin yazısı: "<Dil> dublajla" (ör. "Türkçe dublajla", "Deutsch dublajla")."""
+    return f"{dil_kendi_adi(kod)} dublajla"
+# VoxCPM2 hazır sesleri (kardeş repo hazir_sesler/, sabit commit; açıklamalar docs/sesler.md)
+VOXCPM2_HAZIR_SESLER = (
+    "haber_spikeri", "cekici_spiker", "belgesel_hanim", "gizemli_bilge", "tok_anlatici", "yasli_bilge",
+    "masal_cadisi", "anlatici_en", "anlatici_fr", "anlatici_de", "anlatici_es", "anlatici_ru", "anlatici_zh",
+    "anlatici_ja",
+)
+SUPERTONIC_SESLER = tuple(f"F{i}" for i in range(1, 6)) + tuple(f"M{i}" for i in range(1, 6))
+YALNIZ_INGILIZCE = frozenset({"en"})
+
+_HAM_MOTORLAR: tuple[Motor, ...] = (
+    # --- transkripsiyon (STT) -------------------------------------------------------------------------
+    Motor("stt", "faster-whisper", "faster-whisper (Whisper large-v3-turbo, CTranslate2)", "MIT", "evet",
+          "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo", "varsayılan (modeller)",
+          "gpu+cpu", _modul("faster_whisper"),
+          "Kelime zamanı Whisper'ın kendisinden (CTC yok); önerilen akışın yedeği faster_whisper_ctc'dir."),
+    Motor("stt", "faster_whisper_ctc", "faster-whisper + CTC hizalama (önerilen akışın yedeği)",
+          "MIT (faster-whisper); hizalama: tr CC-BY-4.0 (atıf), en MIT (fairseq) (THIRD_PARTY.md)", "evet",
+          "https://github.com/SYSTRAN/faster-whisper", "varsayılan (modeller: stt + hizalama)", "gpu+cpu",
+          _faster_whisper_ctc, "transkripsiyon.motor=auto CrisperWhisper kullanamazsa bunu seçer."),
+    Motor("stt", "whisperx", "WhisperX (faster-whisper + wav2vec2 hizalama)",
+          "BSD-2-Clause (kod); modeller MIT / CC-BY-4.0", "evet",
+          "https://github.com/m-bain/whisperX", "varsayılan (paketler)", "gpu+cpu", _modul("whisperx")),
+    Motor("stt", "crisperwhisper_turbo_ct2", "CrisperWhisper 2.0 Turbo (CT2)",
+          "nyra health Non-Commercial Research License (ağırlık); kod MIT", "hayır",
+          "https://huggingface.co/nyralabs/CrisperWhisper2.0_turbo", "crisper (-TicariOlmayanKabul)", "gpu",
+          _crisper, "WSL2 + NVIDIA gerekir; kelime zamanı en hassas motor."),
+    Motor("stt", "crisperwhisper2_medium", "CrisperWhisper 2.0 Medium",
+          "nyra health Non-Commercial Research License (ağırlık); kod MIT", "hayır",
+          "https://huggingface.co/nyralabs", "elle (docs/motorlar/crisperwhisper2_medium.md)", "gpu"),
+    Motor("stt", "moonshine_medium_streaming_en", "Moonshine Medium Streaming (yalnız İngilizce) [deneysel]",
+          "MIT (kod ve İngilizce akış modeli)", "evet", "https://github.com/moonshine-ai/moonshine",
+          "elle (docs/motorlar/moonshine_medium_streaming_en.md)", "cpu",
+          deneysel="parça sınırında kelime zamanları geri kayabilir; zaman kapısı çıktıyı açık hatayla reddeder "
+                   "(docs/engineering/transcription.md §6); İngilizce işlemci için parakeet_cpu_align önerilir"),
+    Motor("stt", "whisper_cpp_cpu_align", "whisper.cpp (işlemci) + CTC hizalama", "MIT (whisper.cpp)", "evet",
+          "https://github.com/ggml-org/whisper.cpp", "elle (docs/motorlar/...)", "cpu"),
+    Motor("stt", "parakeet_cpu_align", "Parakeet (sherpa-onnx, yalnız İngilizce) + CTC hizalama",
+          "NVIDIA Open Model License (ağırlık); sherpa-onnx Apache-2.0", "şartlı", "https://github.com/k2-fsa/sherpa-onnx",
+          "parakeet (paket + model)", "cpu", _parakeet),
+    Motor("stt", "speechmatics", "Speechmatics (bulut)", "hizmet şartları", "hizmet şartları",
+          "https://www.speechmatics.com", "speechmatics + .env anahtarı", "bulut",
+          _ortam(*STT_API_ANAHTARLARI["speechmatics"]), "Ses dosyası hizmete gönderilir (PRIVACY.md)."),
+    Motor("stt", "elevenlabs_scribe_v2", "ElevenLabs Scribe v2 (bulut)", "hizmet şartları", "hizmet şartları",
+          "https://elevenlabs.io", ".env anahtarı", "bulut", _ortam(*STT_API_ANAHTARLARI["elevenlabs_scribe_v2"]),
+          "Ses dosyası hizmete gönderilir (PRIVACY.md)."),
+    Motor("stt", "youtube_translate", "YouTube json3 altyazı metni + CTC kelime hizalama",
+          "kod: yt-dlp Unlicense; metin: videonun otomatik altyazısı (YouTube şartları); hizalama ağırlığı CTC ile aynı",
+          "hizmet şartları", "https://github.com/yt-dlp/yt-dlp", "youtube (pip install .[youtube])", "gpu+cpu",
+          _modul("yt_dlp"), "Yalnız YouTube bağlantısıyla; ses tanıma çalışmaz, metin altyazıdan gelir.",
+          "CTC hizalama kadar: işlemcide ~2 GB RAM (tahmini)"),
+    # --- çeviri ---------------------------------------------------------------------------------------
+    Motor("ceviri", "yerel", "Opus-MT en→tr (yerel)", "CC-BY-4.0", "evet",
+          "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr", "varsayılan (modeller)", "gpu+cpu",
+          _modul("transformers"), "Yalnız İngilizce → Türkçe; ağsız çalışır."),
+    Motor("ceviri", "codex", "Codex CLI (OpenAI)", "hizmet şartları", "hizmet şartları",
+          "https://github.com/openai/codex", "npm i -g @openai/codex ; codex login", "bulut",
+          _cli("CODEX_BRIDGE_CODEX_BIN", "codex"), "Metin hizmete gönderilir (PRIVACY.md)."),
+    Motor("ceviri", "claude_code", "Claude Code CLI (Anthropic)", "hizmet şartları", "hizmet şartları",
+          "https://docs.anthropic.com/en/docs/claude-code", "npm i -g @anthropic-ai/claude-code", "bulut",
+          _cli("CODEX_BRIDGE_CLAUDE_CLI", "claude"), "Metin hizmete gönderilir (PRIVACY.md)."),
+    Motor("ceviri", "gemini_2_5_flash", "Gemini 2.5 Flash (API)", "hizmet şartları", "hizmet şartları",
+          "https://ai.google.dev", ".env anahtarı", "bulut", _ceviri_anahtari("gemini_2_5_flash")),
+    Motor("ceviri", "gemini_3_1_flash_lite_tier_1", "Gemini 3.1 Flash Lite (API)", "hizmet şartları",
+          "hizmet şartları", "https://ai.google.dev", ".env anahtarı", "bulut", _ceviri_anahtari("gemini_3_1_flash_lite_tier_1")),
+    Motor("ceviri", "gemma_4_26b", "Gemma 4 26B (Gemini API)", "hizmet şartları", "hizmet şartları",
+          "https://ai.google.dev", ".env anahtarı", "bulut", _ceviri_anahtari("gemma_4_26b")),
+    Motor("ceviri", "groq_llama_4_scout", "Llama 4 Scout (Groq API)", "hizmet şartları", "hizmet şartları",
+          "https://console.groq.com", ".env anahtarı", "bulut", _ceviri_anahtari("groq_llama_4_scout")),
+    Motor("ceviri", "cerebras_llama_3_1_8b", "Llama 3.1 8B (Cerebras API)", "hizmet şartları", "hizmet şartları",
+          "https://cloud.cerebras.ai", ".env anahtarı", "bulut", _ceviri_anahtari("cerebras_llama_3_1_8b")),
+    Motor("ceviri", "mistral_nemo", "Mistral Nemo (Mistral API)", "hizmet şartları", "hizmet şartları",
+          "https://console.mistral.ai", ".env anahtarı", "bulut", _ceviri_anahtari("mistral_nemo")),
+    # --- seslendirme (TTS) ----------------------------------------------------------------------------
+    Motor("tts", "supertonic", "Supertonic 3", "BigScience Open RAIL-M (kullanım kısıtları, Ek A)", "şartlı",
+          "https://huggingface.co/Supertone/supertonic-3", "varsayılan (modeller)", "gpu+cpu",
+          _modul("onnxruntime"), "Önerilen akışın sesi; işlemcide de hızlı."),
+    Motor("tts", "voxcpm2", "VoxCPM2 (Türkçe ses tasarımı)", "Apache-2.0 (kod ve ağırlık)", "evet",
+          "https://github.com/OpenBMB/VoxCPM", "voxcpm2", "gpu", _voxcpm2, "NVIDIA GPU gerekir."),
+    Motor("tts", "xtts", "XTTS v2 (Coqui, referans sesle)",
+          "kod: coqui-tts MPL-2.0; ağırlık: Coqui Public Model License (ticari olmayan); çıktı: CPML'e tabi",
+          "hayır", "https://huggingface.co/coqui/XTTS-v2", "tts-xtts (pip install .[tts-xtts]) + CPML onayı",
+          "gpu+cpu", _xtts, "Varsayılan kapalı; referans ses yalnız kendi ya da izinli ses; ağırlığı kullanıcı indirir.",
+          "GPU ~4 GB VRAM ya da işlemci + 8 GB RAM (yavaş); tahmini, ölçülmedi"),
+    # --- isteğe bağlı ekler ---------------------------------------------------------------------------
+    Motor("ek", "demucs", "Demucs (konuşma / arka plan ayrıştırma)", "MIT", "evet",
+          "https://github.com/facebookresearch/demucs", "demucs", "gpu+cpu", _modul("demucs")),
+    Motor("ek", "yt_dlp", "yt-dlp (bağlantıdan indirme)", "Unlicense", "evet",
+          "https://github.com/yt-dlp/yt-dlp", "youtube", "cpu", _modul("yt_dlp"),
+          "Yalnız hakkınız olan ya da izinli içerik; sitenin kullanım şartları size aittir."),
+    Motor("ek", "konusmaci_ayrimi", "3D-Speaker CAM++ (ModelScope) + Silero VAD", "Apache-2.0 / MIT", "evet",
+          "https://github.com/modelscope/3D-Speaker", "varsayılan (modeller)", "gpu+cpu",
+          _konusmaci),
+    Motor("ek", "cinsiyet_siniflandirici", "wav2vec2 XLSR-53 cinsiyet sınıflandırıcı", "Apache-2.0", "evet",
+          "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech",
+          "varsayılan (modeller)", "gpu+cpu", _konusmaci, "Eğitim verisi LibriSpeech (CC BY 4.0)."),
+    Motor("ek", "segment_cinsiyet_kipi", "Segment bazlı cinsiyet kipi (her cümle ayrı ses)",
+          "Apache-2.0 (kod ve ağırlık: alefiury wav2vec2 @7a28165f)", "evet",
+          "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech",
+          "varsayılan (modeller)", "gpu+cpu", _konusmaci, "ses.cinsiyet_kipi = segment; konuşmacı ayrımı yapılmaz.",
+          "model 1,26 GB; işlemcide ~3 GB RAM (tahmini)"),
+    Motor("ek", "akilli_kare", "Akıllı kare (kenar bandı kırpma)", "kod: OpenCV Apache-2.0", "evet",
+          "https://github.com/opencv/opencv-python", "akilli-kare (pip install .[akilli-kare])", "cpu",
+          _modul("cv2"), "Varsayılan kapalı; yalnız görüntüyü kırpar, ses ve altyazı değişmez.", "~500 MB RAM (tahmini)"),
+    Motor("ek", "rvc", "RVC ses dönüştürme (kendi modeliniz)",
+          "kod: RVC WebUI MIT; model: kullanıcının (sesin sahibinin rızası zorunlu)", "şartlı",
+          "https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI",
+          "elle (docs/motorlar/rvc.md; DUBLAJ_RVC_KOK)", "gpu+cpu", _rvc,
+          "Varsayılan kapalı; ses.rvc_riza_onayi = true olmadan çalışmaz.", "GPU ~2 GB VRAM önerilir (tahmini)"),
+    Motor("ek", "gallery_dl", "gallery-dl (galeri bağlantısından indirme, ayrı süreç)",
+          "GPL-2.0-only (yalnız komut satırı alt süreci; içe aktarılmaz)", "evet",
+          "https://github.com/mikf/gallery-dl", "galeri (pip install .[galeri])", "cpu", _galeri,
+          "Yalnız hakkınız olan ya da izinli içerik; giriş çerezleri yalnız sizin gallery-dl ayarınızda.", "<100 MB RAM"),
+    Motor("ek", "kapak_gorseli", "Kapak görseli (Codex CLI görsel üretimi)", "hizmet şartları (OpenAI)",
+          "hizmet şartları", "https://github.com/openai/codex", "npm i -g @openai/codex ; codex login", "bulut",
+          _cli("CODEX_BRIDGE_CODEX_BIN", "codex"), "Transkript hizmete gönderilir (PRIVACY.md); Codex yoksa atlanır.",
+          "yerel yük yok"),
+    Motor("ek", "telegram_botu", "Telegram botu (uzaktan kumanda)", "kod: python-telegram-bot LGPL-3.0-only",
+          "evet", "https://github.com/python-telegram-bot/python-telegram-bot", "telegram (pip install .[telegram])",
+          "cpu", _modul("telegram"), "Varsayılan kapalı; belirteç ve izinli kimlik yalnız .env'de.", "~100 MB RAM"),
+)
+
+# --- motor × donanım × dil (K7/K5) ------------------------------------------------------------------------------
+# Kaynaklar: docs/engineering/{gpu_memory_and_isolation,transcription,crisperwhisper_turbo_ct2,word_alignment,
+# source_audio_and_separation,speakers_and_segments,tts_timing_and_mix,low_vram}.md; VoxCPM2 kardeş repo docs/4gb.md.
+# Tablo biçimi ve tam kaynak sütunu: docs/donanim.md. "ölçüldü" = gerçek koşu kaydı; "belgeye göre" = model kartı,
+# kod sabiti ya da yazılı kural (koşu kaydı yok); "tahmin" = doğrulanmadı.
+_DONANIM_DIL: dict[str, dict] = {
+    "faster-whisper": dict(vram_mb=1150, cpu="çalışır", kanit="ölçüldü",
+                           bellek="GPU int8 ~1,15 GB / float32 ~3,45 GB VRAM (aynı model WhisperX içinde ölçüldü); "
+                                  "işlemcide int8 (hız ölçülmedi)",
+                           dil_notu="çok dilli (Whisper large-v3-turbo); distil-* yalnız İngilizce"),
+    "faster_whisper_ctc": dict(vram_mb=2400, cpu="çalışır", kanit="ölçüldü",
+                               bellek="tanıma ve hizalama sırayla, ayrı süreçte: tanıma GPU int8 ~1,15 GB; CTC 1,65-2,4 GB "
+                                      "VRAM (ölçüldü). İşlemcide CTC süresi docs/engineering/timing-sources.md §2.1",
+                               dil_notu="çok dilli tanıma; kelime zamanı CTC modeli olan dillerde (sabit: en, tr; "
+                                        "diğerleri DUBLAJ_CEVRIMICI=1 ile bir kez; docs/diller.md)"),
+    "whisperx": dict(vram_mb=1150, cpu="çalışır", kanit="ölçüldü",
+                     bellek="GPU int8 1147 MiB / float32 3451 MiB VRAM (ölçüldü); işlemcide hız ölçülmedi",
+                     dil_notu="çok dilli; hizalama modeli dile göre (docs/diller.md)"),
+    "crisperwhisper_turbo_ct2": dict(vram_mb=1450, cpu="çalışmaz", kanit="ölçüldü",
+                                     bellek="GPU int8 ~1,4 GB VRAM (74 dk seste 1435 MiB, ölçüldü); işlemci yolu yok",
+                                     dil_notu="Whisper dilleri; gerçek seste denenen tr, en, ja"),
+    "crisperwhisper2_medium": dict(vram_mb=3600, cpu="çalışmaz", kanit="ölçüldü",
+                                   bellek="GPU float16 3,5-3,6 GB VRAM (ölçüldü; float32 4 GB'a sığmaz); işlemci yasak",
+                                   dil_notu="Whisper dilleri; üretimde kabul edilen en, es, zh, ja"),
+    "moonshine_medium_streaming_en": dict(vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=YALNIZ_INGILIZCE,
+                                          bellek="yalnız işlemci; 96,9 sn ses akışta 75,4 sn (ölçüldü), RAM ölçülmedi"),
+    "whisper_cpp_cpu_align": dict(vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=YALNIZ_INGILIZCE,
+                                  bellek="işlemci; 96,9 sn ses 32,4 sn (tanıma 12,7 + hizalama 19,4; ölçüldü)"),
+    "parakeet_cpu_align": dict(vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=YALNIZ_INGILIZCE,
+                               bellek="işlemci int8 ~1,9 GB RAM; 96,9 sn ses 11,9 sn, 8 iş parçacığı (ölçüldü)"),
+    "speechmatics": dict(vram_mb=0, cpu="bulut", kanit="belgeye göre", bellek="yerel yük yok (bulut)",
+                         dil_notu="hizmetin dil listesi (ISO 639-1 ya da auto)"),
+    "elevenlabs_scribe_v2": dict(vram_mb=0, cpu="bulut", kanit="ölçüldü",
+                                 bellek="yerel yük yok (bulut); 41,9 dk ses 112 sn (ölçüldü)",
+                                 dil_notu="hizmetin dil listesi (language_code ya da otomatik)"),
+    "youtube_translate": dict(vram_mb=2400, cpu="yavaş", kanit="ölçüldü",
+                              bellek="yalnız CTC hizalama: GPU 1,65-2,4 GB VRAM; işlemcide 3,5 dk ses ~10 dk (ölçüldü)",
+                              dil_notu="videonun altyazı izi; CTC hizalama modeli olan diller"),
+    "yerel": dict(vram_mb=1000, cpu="çalışır", kanit="tahmin", diller=frozenset({"tr"}),
+                  bellek="Opus-MT tc-big (MarianMT); VRAM/RAM ölçülmedi (~1 GB tahmin); CPU duman testi geçti",
+                  dil_notu="yalnız İngilizce → Türkçe"),
+    "supertonic": dict(cihaz="cpu", vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=SUPERTONIC_DILLERI,
+                       bellek="işlemci ~1,8 GB RAM (önbellekle; ölçüldü); ~2,3x gerçek zaman. CUDA sağlayıcısı daha "
+                              "yavaş çıktı, kullanılmaz"),
+    "voxcpm2": dict(vram_mb=3000, cpu="çalışmaz", kanit="ölçüldü", diller=None,
+                    bellek="GPU 2,6-3,0 GB VRAM (Q8_0 GGUF + 4 GB yaması; ölçüldü), 1 sn ses ~2 sn; işlemcide 48,5 sn "
+                           "ses 535 sn (ölçüldü) → bu repoda işlemci kapalı",
+                    dil_notu="denenen: tr, en, fr, de, es, ru, zh, ja; diğerleri denenmedi (uyarı)"),
+    "xtts": dict(vram_mb=2000, cpu="yavaş", kanit="belgeye göre", diller=XTTS_DILLERI,
+                 bellek="model yükü ~2 GB VRAM (kaynak belge; tepe ölçülmedi); işlemcide çok yavaş (tahmin)"),
+    "demucs": dict(vram_mb=2750, cpu="yavaş", kanit="ölçüldü",
+                   bellek="GPU 2749 MiB VRAM, 75 dk seste süreç ağacı 7,15 GB RAM (ölçüldü); işlemcide yavaş (belge)"),
+    "konusmaci_ayrimi": dict(vram_mb=1000, cpu="çalışır", kanit="belgeye göre",
+                             bellek="<1 GB VRAM (belge); işlemcide CPU duman testinde çalıştı"),
+    "cinsiyet_siniflandirici": dict(vram_mb=1000, cpu="çalışır", kanit="belgeye göre",
+                                    bellek="model 1,26 GB; <1 GB VRAM (belge); işlemcide CPU duman testinde çalıştı"),
+    "segment_cinsiyet_kipi": dict(vram_mb=1000, cpu="çalışır", kanit="belgeye göre",
+                                  bellek="cinsiyet sınıflandırıcıyla aynı: <1 GB VRAM (belge), işlemcide ~3 GB RAM "
+                                         "(tahmin)"),
+    "akilli_kare": dict(vram_mb=0, cpu="iyi", kanit="tahmin", bellek="yalnız işlemci, ~500 MB RAM (tahmin)"),
+    "rvc": dict(vram_mb=2000, cpu="yavaş", kanit="tahmin", bellek="~2 GB VRAM önerilir; işlemcide yavaş (tahmin)"),
+    "yt_dlp": dict(vram_mb=0, cpu="iyi", kanit="tahmin", bellek="ağ işi, <100 MB RAM (tahmin)"),
+    "gallery_dl": dict(vram_mb=0, cpu="iyi", kanit="tahmin", bellek="ağ işi, <100 MB RAM (tahmin)"),
+    "kapak_gorseli": dict(vram_mb=0, cpu="bulut", kanit="belgeye göre", bellek="yerel yük yok (bulut)"),
+    "telegram_botu": dict(vram_mb=0, cpu="iyi", kanit="tahmin", bellek="~100 MB RAM (tahmin)"),
+}
+_BULUT_VARSAYILAN = dict(vram_mb=0, cpu="bulut", kanit="belgeye göre", bellek="yerel yük yok (bulut)")
+
+MOTORLAR: tuple[Motor, ...] = tuple(
+    replace(m, **_DONANIM_DIL.get(m.ad, _BULUT_VARSAYILAN if m.cihaz == "bulut" else {})) for m in _HAM_MOTORLAR
+)
+
+
+def motorlar(tur: str) -> tuple[Motor, ...]:
+    return tuple(m for m in MOTORLAR if m.tur == tur)
+
+
+def motor(ad: str) -> Motor:
+    for m in MOTORLAR:
+        if m.ad == ad:
+            return m
+    raise KeyError(ad)
+
+
+def adlar(tur: str, auto: bool = True) -> list[str]:
+    return (["auto"] if auto else []) + [m.ad for m in motorlar(tur)]
+
+
+def tts_hedef_dilleri() -> list[str]:
+    """Arayüzün hedef dil listesi: TTS motorlarının okuyabildiği dillerin birleşimi (VoxCPM2 için denenenler)."""
+    return sorted(SUPERTONIC_DILLERI | VOXCPM2_DENENEN_DILLER | XTTS_DILLERI)
+
+
+def tts_dil_suzgeci() -> dict[str, dict[str, list[str]]]:
+    """Seçili TTS'e göre hedef dil açılır listesi: {"tts": {"izinli": [...], "denenmemis": [...]}}.
+
+    "izinli" dışındaki dil o TTS'te hata verir; "denenmemis" dil seçilebilir ama uyarı verir (VoxCPM2).
+    """
+    tum = tts_hedef_dilleri()
+    return {
+        "supertonic": {"izinli": sorted(SUPERTONIC_DILLERI), "denenmemis": []},
+        "voxcpm2": {"izinli": tum, "denenmemis": sorted(set(tum) - VOXCPM2_DENENEN_DILLER)},
+        "xtts": {"izinli": sorted(XTTS_DILLERI), "denenmemis": []},
+    }
+
+
+def durum(tur: str) -> dict[str, bool]:
+    cikti = {}
+    for m in motorlar(tur):
+        try:
+            cikti[m.ad] = bool(m.kurulu())
+        except Exception:  # denetim hiçbir zaman `kontrol` komutunu düşürmez
+            cikti[m.ad] = False
+    return cikti
+
+
+# --- lisans uyarıları (ilk kullanımda gösterilir; metin yalnız burada) ------------------------------------
+_UYARI_TICARI_DEGIL = (
+    "{ad}: model ağırlıkları yalnız TİCARİ OLMAYAN kullanım için lisanslıdır ({lisans}). "
+    "Ücretli, müşteri ya da gelir getiren işte kullanmayın; çıktıları ticari model eğitiminde kullanmayın. "
+    "Ayrıntı: THIRD_PARTY.md, ETHICS.md.\n"
+    "{ad}: the model weights are licensed for NON-COMMERCIAL use only ({lisans}). "
+    "Do not use them for paid, client or monetised work, or to train commercial models. See THIRD_PARTY.md."
+)
+_UYARI_SARTLI = (
+    "{ad}: lisans kullanım şartı getirir ({lisans}). {ek}Ayrıntı: THIRD_PARTY.md.\n"
+    "{ad}: this license carries use conditions ({lisans}). {ek_en}See THIRD_PARTY.md."
+)
+_SARTLI_EK = {
+    "rvc": (
+        "Modelin sesi size ait değilse sesin sahibinin açık izni gerekir; gerçek kişiyi izinsiz taklit yasaktır. ",
+        "If the model's voice is not yours you need the owner's explicit consent; no unauthorised impersonation. ",
+    ),
+    "supertonic": (
+        "Taklit, yanıltıcı içerik ve yasa dışı kullanım yasaktır; çıktının makine üretimi olduğu açıklanmalıdır. ",
+        "No impersonation, deceptive or unlawful use; disclose that the output is machine-generated. ",
+    ),
+    "parakeet_cpu_align": (
+        "Modeli yeniden dağıtırsanız NVIDIA lisansını ve atıf notunu ekleyin. ",
+        "If you redistribute the model, include the NVIDIA license and its attribution notice. ",
+    ),
+}
+
+
+def lisans_uyarisi(ad: str) -> str | None:
+    """Ticari olmayan ya da şartlı motor için ilk kullanımda gösterilecek iki dilli uyarı; diğerleri için None."""
+    m = motor(ad)
+    if m.ticari == "hayır":
+        return _UYARI_TICARI_DEGIL.format(ad=m.gorunen_ad, lisans=m.lisans)
+    if m.ticari == "şartlı":
+        ek, ek_en = _SARTLI_EK.get(m.ad, ("", ""))
+        return _UYARI_SARTLI.format(ad=m.gorunen_ad, lisans=m.lisans, ek=ek, ek_en=ek_en)
+    return None

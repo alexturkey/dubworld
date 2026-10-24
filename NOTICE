@@ -1,0 +1,55 @@
+turkce-video-dublaj-hatti
+Copyright 2026 The turkce-video-dublaj-hatti Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product includes software developed by third parties; their licenses and the obligations they carry are listed
+in THIRD_PARTY.md. Model weights are not included in this distribution; the installer downloads them from their
+official sources, and each model stays under its own license.
+
+-------------------------------------------------------------------------------
+Included third-party source code
+-------------------------------------------------------------------------------
+
+3D-Speaker (speaker embedding and diarization inference code)
+  Copyright 3D-Speaker (https://github.com/alibaba-damo-academy/3D-Speaker). Licensed under the Apache License, Version 2.0.
+  https://github.com/modelscope/3D-Speaker
+  Location: src/dublaj_hatti/bolum_50_seslendirme/supertonic_tts/konusmaci_secimi/vendor/3D-Speaker/
+  Modified: torch.load(..., weights_only=True) and yaml.safe_load; training examples removed (see VENDOR_NOTU.md).
+
+CTranslate2 CUDA kernels (softmax)
+  Copyright (c) 2018- SYSTRAN. Copyright (c) 2019- The OpenNMT Authors. Licensed under the MIT License.
+  Location: src/dublaj_hatti/bolum_20_transkripsiyon/crisperwhisper_turbo_ct2_motoru/src/native/
+
+-------------------------------------------------------------------------------
+Attribution for models the installer downloads (CC BY 4.0 and similar)
+-------------------------------------------------------------------------------
+
+Turkish word-timing model: "wav2vec2-xls-r-300m-cv7-turkish" by Mehmet Poyraz,
+  https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish, licensed under CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/). Used unmodified.
+
+Local translation model: "opus-mt-tc-big-en-tr" by Helsinki-NLP (Language Technology Research Group,
+  University of Helsinki), https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr, licensed under CC BY 4.0.
+  Used unmodified.
+
+Optional diarization model: "speaker-diarization-community-1" by pyannote, licensed under CC BY 4.0 (gated; the
+  user downloads it with their own account). Used unmodified.
+
+-------------------------------------------------------------------------------
+Model license notices
+-------------------------------------------------------------------------------
+
+Supertonic 3 (Supertone Inc.) is licensed under the BigScience Open RAIL-M License. Its use-based restrictions
+  (Attachment A) apply to every use of the model and its outputs through this project, including the duty to
+  disclose that generated content is machine-generated. The license file is downloaded next to the model.
+
+CrisperWhisper 2.0 (Nyra Health GmbH), optional and off by default, is licensed under the nyra health
+  Non-Commercial Research License: non-commercial use only.
+
+Parakeet unified EN 0.6B (optional): Licensed by NVIDIA Corporation under the NVIDIA Open Model License.
+
+VoxCPM2 (OpenBMB / ModelBest), optional, is licensed under the Apache License, Version 2.0.
+
+Coqui XTTS-v2, optional and off by default, is licensed under the Coqui Public Model License:
+  non-commercial use only. The user downloads the weights and accepts that license.

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "owner": "crisperwhisper_turbo_ct2_motoru",
+  "git_policy": "manifest_tracked_weights_ignored",
+  "model": {
+    "official_name": "Nyralabs CrisperWhisper2.0 Turbo",
+    "repository_id": "nyralabs/CrisperWhisper2.0_turbo",
+    "resolved_commit": "de0369c8a68025b7f6e86387b6eb5a3b369787c8",
+    "storage_format": "CTranslate2",
+    "storage_compute_type": "float16",
+    "runtime_compute_type": "int8",
+    "relative_root": "model_assets/ct2_float16_align",
+    "files": {
+      "model.bin": {
+        "size_bytes": 1617964289,
+        "sha256": "da1660d26d465818afc047dbfd8f9fa6239defb669bbd9285b8551c8d927ecb9"
+      },
+      "config.json": {
+        "sha256": "c6b4e896830d5c5c0499472ca83383e08fc10f338282f0cba90e694ad6697fa2"
+      },
+      "generation_config.json": {
+        "sha256": "e20fb70a44ce2b3cb3b2bbbea852e064638563b072719640a286d2a6865066e1"
+      },
+      "added_tokens.json": {
+        "size_bytes": 35319,
+        "sha256": "228ddf33a2c2b94033dc0fad8e7847b554b1c9f7d2054f5455ffd562b6a30dc7"
+      }
+    }
+  },
+  "vad": {
+    "provider": "Silero VAD ONNX CPU",
+    "relative_path": "model_assets/silero_vad/silero_vad.onnx",
+    "sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3"
+  }
+}

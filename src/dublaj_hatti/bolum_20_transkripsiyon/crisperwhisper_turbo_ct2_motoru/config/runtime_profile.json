@@ -1,0 +1,110 @@
+{
+  "schema_version": 3,
+  "engine": "crisperwhisper_turbo_ct2",
+  "model": {
+    "official_name": "Nyralabs CrisperWhisper2.0 Turbo",
+    "application_model_id": "CrisperWhisper2.0_turbo",
+    "repository_id": "nyralabs/CrisperWhisper2.0_turbo",
+    "resolved_commit": "de0369c8a68025b7f6e86387b6eb5a3b369787c8",
+    "storage_format": "CTranslate2",
+    "storage_compute_type": "float16",
+    "files": {
+      "model.bin": {
+        "size_bytes": 1617964289,
+        "sha256": "da1660d26d465818afc047dbfd8f9fa6239defb669bbd9285b8551c8d927ecb9"
+      },
+      "config.json": {
+        "sha256": "c6b4e896830d5c5c0499472ca83383e08fc10f338282f0cba90e694ad6697fa2"
+      },
+      "generation_config.json": {
+        "sha256": "e20fb70a44ce2b3cb3b2bbbea852e064638563b072719640a286d2a6865066e1"
+      },
+      "added_tokens.json": {
+        "size_bytes": 35319,
+        "sha256": "228ddf33a2c2b94033dc0fad8e7847b554b1c9f7d2054f5455ffd562b6a30dc7"
+      }
+    }
+  },
+  "runtime": {
+    "platform": "Ubuntu on WSL2",
+    "python": "3.12.3",
+    "crisperwhisper": "2.0.1",
+    "ctranslate2_crisperwhisper": "4.7.1.post3",
+    "onnxruntime": "1.23.2",
+    "device": "cuda",
+    "compute_type": "int8",
+    "cpu_fallback": false
+  },
+  "decoder": {
+    "language": "platform_or_detected_by_ct2_language_id",
+    "mode": "verbatim",
+    "word_timestamps": true,
+    "temperature_fallback": true,
+    "max_new_tokens": 400,
+    "speculative_decoding": false,
+    "hallucination_mitigation": true,
+    "early_eot_recovery": true,
+    "suppress_tokens": null,
+    "beam_size": 1,
+    "no_space_timed_word_unicode_policy": "unicode_safe_native_token_groups_exact_text_coverage_v1",
+    "no_space_coverage_count_policy": "alphanumeric_codepoints_excluding_events_v1"
+  },
+  "vad": {
+    "provider": "Silero VAD ONNX CPU",
+    "threshold": 0.15,
+    "negative_threshold": 0.01,
+    "minimum_speech_ms": 0,
+    "minimum_silence_ms": 100,
+    "speech_pad_ms": 600,
+    "sample_rate": 16000,
+    "frame_samples": 512
+  },
+  "segmentation": {
+    "outer_window_seconds": 29.5,
+    "outer_overlap_seconds": 1.0,
+    "outer_maximum_overlap_seconds": 10.0,
+    "outer_minimum_context_words": 2,
+    "coverage_fallback_strategy": "direct_0_8_first",
+    "audio_specific_rules": false,
+    "no_space_quality_retry_seconds": [
+      15.0,
+      10.0
+    ],
+    "no_space_stitch_policy": "consecutive_native_text_anchor_or_retry"
+  },
+  "language_detection": {
+    "provider": "CTranslate2 Whisper.detect_language",
+    "platform_language_policy": "global_first_window_prefer_valid_platform_else_detect_continuous_evidence_only",
+    "global_first_window_seconds": 29.5,
+    "context_seconds": 4.0,
+    "tick_seconds": 1.0,
+    "confirmation_ticks": 2,
+    "minimum_top_probability": 0.6,
+    "minimum_margin": 0.2,
+    "boundary_policy": "midpoint_between_last_stable_and_first_confirmed_new_tick_centers",
+    "visible_modes": [
+      "global_first_window",
+      "continuous_stream"
+    ]
+  },
+  "contract": {
+    "request_schema_version": 3,
+    "response_schema_version": 3,
+    "runtime_contract_version": "crisperwhisper_turbo_ct2_v6",
+    "full_duration_audio_only": true,
+    "partial_audio_forbidden": true,
+    "external_forced_alignment": true,
+    "reference_text_input": false,
+    "supported_languages": "model_language_id_table",
+    "dubbing_ready_contract_version": 1
+  },
+  "execution": {
+    "model_lifetime": "one_request_then_process_exit",
+    "preparation": "parallel_cpu_vad_and_model_load_v1",
+    "encoder_reuse": "same_window_same_feature_object_v1",
+    "integrity_read_buffer_bytes": 8388608,
+    "integrity_policy": "fresh_full_sha256_host_python_on_windows_mount_v1",
+    "integrity_native_minimum_bytes": 67108864,
+    "vad_io": "preallocated_cpu_iobinding_same_graph_v1"
+  }
+}

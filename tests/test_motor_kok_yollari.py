@@ -1,0 +1,74 @@
+"""Motor kök yolları paket içinden çözülür (src/dublaj_hatti/...), ortam değişkeni geçersiz kılar.
+
+Kök hata (K9 bulgusu): paket `src/dublaj_hatti/` altına taşınınca Moonshine, CrisperWhisper Medium ve CrisperWhisper
+Turbo sözleşme girdileri hâlâ `<repo>/src/bolum_*` gösteriyordu; ortam değişkeni verilmezse motor açılmıyordu.
+"""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import dublaj_hatti
+from dublaj_hatti.bolum_00_omurga.runtime import crisperwhisper_runtime as medium
+from dublaj_hatti.bolum_00_omurga.runtime import crisperwhisper_turbo_ct2_runtime as turbo
+from dublaj_hatti.bolum_00_omurga.runtime import moonshine_medium_streaming_runtime as moonshine
+
+PAKET = Path(dublaj_hatti.__file__).resolve().parent
+KOK = Path(__file__).resolve().parents[1]
+
+
+def test_paket_koku_dogru():
+    for modul in (medium, turbo, moonshine):
+        assert modul.PACKAGE_ROOT == PAKET
+        assert modul.PROJECT_ROOT == KOK
+
+
+def test_moonshine_varsayilan_kok_paket_icinde(monkeypatch):
+    monkeypatch.delenv(moonshine.MOONSHINE_ROOT_ENV, raising=False)
+    kok = moonshine.motor_root()
+    assert kok == PAKET / "bolum_20_transkripsiyon" / "moonshine_medium_streaming_motoru"
+    assert (kok / "src" / "run_experiment.py").is_file()
+    assert (kok / "config" / "model_manifest.json").is_file()
+
+
+def test_moonshine_ortam_degiskeni_gecersiz_kilar(monkeypatch, tmp_path):
+    monkeypatch.setenv(moonshine.MOONSHINE_ROOT_ENV, str(tmp_path))
+    assert moonshine.motor_root() == tmp_path.resolve()
+    monkeypatch.delenv("DUBLAJ_MOONSHINE_PYTHON", raising=False)
+    try:
+        moonshine._python_path()
+    except RuntimeError as hata:
+        assert str(tmp_path) in str(hata)
+    else:  # pragma: no cover - geçici klasörde python yok
+        raise AssertionError("python bulunmamalıydı")
+
+
+def test_crisper_medium_varsayilan_kok_paket_icinde(monkeypatch):
+    monkeypatch.delenv(medium.CRISPERWHISPER_ROOT_ENV, raising=False)
+    kok = medium.crisperwhisper_root()
+    assert kok == PAKET / "bolum_20_transkripsiyon" / "crisperwhisper2_medium_motoru"
+    for goreli in medium.CRISPERWHISPER_SOURCE_FILES:
+        assert (kok / goreli).is_file(), goreli
+
+
+def test_crisper_medium_ortam_degiskeni_gecersiz_kilar(monkeypatch, tmp_path):
+    monkeypatch.setenv(medium.CRISPERWHISPER_ROOT_ENV, str(tmp_path))
+    assert medium.crisperwhisper_root() == tmp_path.resolve()
+
+
+def test_turbo_sozlesme_kaynaklari_var():
+    ctc = PAKET / "bolum_30_hizalama_ve_segment" / "ctc_kelime_hizalama"
+    for ad in ("worker.py", "ctc_konusma_siniri.py", "client.py"):
+        assert (ctc / ad).is_file()
+    assert (PAKET / "bolum_20_transkripsiyon" / "youtube_json3_kaynagi" / "engine.py").is_file()
+
+
+def test_kodda_tasima_oncesi_yol_kalmadi():
+    desen = re.compile(r"""["']src["']\s*/\s*["']bolum_|["']src/bolum_\d""")
+    bulgular = []
+    for dosya in (KOK / "src").rglob("*.py"):
+        for no, satir in enumerate(dosya.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+            if desen.search(satir):
+                bulgular.append(f"{dosya.relative_to(KOK)}:{no}")
+    assert not bulgular, bulgular

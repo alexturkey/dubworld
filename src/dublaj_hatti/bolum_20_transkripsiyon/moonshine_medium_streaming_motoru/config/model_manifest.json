@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "owner": "moonshine_medium_streaming_motoru",
+  "model_id": "medium-streaming-en",
+  "model_arch": "MEDIUM_STREAMING",
+  "quantization": "official_quantized_ort",
+  "device": "cpu",
+  "model_root": "models/download.moonshine.ai/model/medium-streaming-en/quantized",
+  "files": {
+    "adapter.ort": "16307442B7F4229F2F1511FC51B545CEC9616E55872C588F3A297BBC6F4762EA",
+    "cross_kv.ort": "354B9A955CAEB768B528F447F0A36CE4B850CA7B4531900165DF304D97904FBA",
+    "decoder_kv_with_attention.ort": "40919DE95D08690DA3A8FF6DF14CF55B3220046F3B767B4A4B769E7B32AAF2D2",
+    "decoder_kv.ort": "FA67AA87521247F5BF44D3E44D4E4978E58C1F114249C3C6909C882624056715",
+    "encoder.ort": "A5F11167A62EEF61787FE8410453257D6DDB8EBA90AF461A9604E5F2E93D5322",
+    "frontend.ort": "378FE8A5D7090A1B9AB88BBB1FC95BDE010CDD64EC23419350D2D23C675636E9",
+    "streaming_config.json": "28E83B7A28E91472692A035E0DAE3116422AE43AEB2BEF5ED822C44CE89B88AF",
+    "tokenizer.bin": "6884B35FD6377D4C4D32336A0BC152F36B64D1E45B6503683CDC238250A8472D"
+  }
+}

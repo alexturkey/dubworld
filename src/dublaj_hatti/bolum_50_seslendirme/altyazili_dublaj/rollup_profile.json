@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "width_ratio": 0.44,
+  "row_count": 2,
+  "font_size": 62,
+  "frame_height": null,
+  "spacing_ratio": 0.9766666666666667,
+  "horizontal_padding": 24,
+  "bottom_margin": 70,
+  "scroll_seconds": 0.25,
+  "pause_seconds": 1.0,
+  "tail_seconds": 0.65,
+  "minimum_font_size": 16
+}

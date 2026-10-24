@@ -1,0 +1,30 @@
+name: Kurulum sorunu / Install problem
+description: kurulum ya da ilk çalıştırma düşüyor / installer or first run fails
+title: "[kurulum] "
+labels: ["kurulum"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Önce [AGENTS.md](../blob/main/AGENTS.md) "Troubleshooting" tablosuna bakın. / Check the troubleshooting table in AGENTS.md first.
+  - type: input
+    id: sistem
+    attributes:
+      label: İşletim sistemi ve donanım / OS and hardware
+      placeholder: "Windows 10 22H2 + WSL2 Ubuntu 24.04, GTX 1050 Ti 4 GB"
+    validations:
+      required: true
+  - type: input
+    id: komut
+    attributes:
+      label: Çalıştırılan komut / Command you ran
+    validations:
+      required: true
+  - type: textarea
+    id: hata
+    attributes:
+      label: Hata çıktısı / Error output
+      description: Son 30 satır; son geçen `*_OK` satırı dahil. / Last 30 lines including the last `*_OK` marker.
+      render: text
+    validations:
+      required: true

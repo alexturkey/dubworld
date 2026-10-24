@@ -1,0 +1,183 @@
+# Project metadata (PEP 621), build, lint and type-check configuration.
+#
+# Recommended install: scripts/kur.ps1 (Windows). It creates .venv with the exact, hash-locked profiles
+# requirements/gpu.txt (torch 2.8.0+cu128) or requirements/cpu.txt (torch 2.8.0+cpu), Python 3.11.14,
+# and installs this package with --no-deps. The ranges below are lower bounds equal to those locks.
+#
+# Manual install (advanced): pip install -e ".[onerilen,gpu]" --extra-index-url https://download.pytorch.org/whl/cu128
+#                            pip install -e ".[onerilen,cpu]" --extra-index-url https://download.pytorch.org/whl/cpu
+# One stage only (building block): e.g. pip install -e ".[stt,hizalama,cpu]"; formats/subtitles: pip install -e .
+# Models are never pip packages here: scripts/modelleri_indir.py fetches them pinned (commit + sha256).
+
+[build-system]
+requires = ["setuptools>=77"]  # PEP 639 SPDX license string
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turkce-video-dublaj-hatti"
+dynamic = ["version"]
+description = "Local, end-to-end video dubbing pipeline: transcript, word timing, translation, TTS, timing fit, subtitles and video."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Contributors" }]
+keywords = ["dubbing", "speech-to-text", "text-to-speech", "translation", "subtitles", "turkish", "video"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: Turkish",
+    "Natural Language :: English",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Multimedia :: Video",
+]
+
+# Building-block layout (docs/mimari.md): the core is the standard library only, so the stage file formats,
+# subtitle writer, CLI shell and interfaces install with nothing else. Each stage brings its own extras below;
+# `onerilen` = everything the recommended flow needs (torch comes from the cpu/gpu profile).
+#   pip install -e ".[onerilen,cpu]"      whole pipeline        pip install -e ".[stt,hizalama,cpu]"   subtitles only
+# scripts/kur.ps1 does not read this list: it installs the hash-locked requirements/*.txt and then --no-deps.
+dependencies = []
+
+[project.optional-dependencies]
+# --- Profiles (torch source differs, see header) -----------------------------------------------
+cpu = ["torch>=2.8.0", "torchaudio>=2.8.0"]
+gpu = ["torch>=2.8.0", "torchaudio>=2.8.0"]
+
+# --- Stages: each one usable alone (dublaj_hatti.api / `dubla <stage>`; docs/mimari.md) ------------
+# speech-to-text (faster-whisper; other engines below) + .env keys
+stt = ["faster-whisper>=1.2.1", "ctranslate2>=4.8.3", "soundfile>=0.14.0", "numpy>=2.4.6", "huggingface-hub>=0.36.2",
+       "python-dotenv>=1.2.4", "psutil>=7.2.2", "requests>=2.34.2"]
+hizalama = ["whisperx>=3.8.6"]                 # wav2vec2 CTC word alignment (dubla hizala; also used by yaziya-dok)
+ceviri = ["transformers>=4.57.6", "sentencepiece>=0.2.2", "requests>=2.34.2"]  # offline Opus-MT + API backends
+tts = ["onnxruntime>=1.31.0", "onnx>=1.19.1", "soundfile>=0.14.0", "numpy>=2.4.6", "scipy>=1.17.1",
+       "huggingface-hub>=0.36.2", "psutil>=7.2.2"]  # Supertonic (VoxCPM2: separate install, see README "Family")
+# speaker separation (3D-Speaker CAM++, VAD = Silero inside faster-whisper) + gender classifier.
+# Deliberately absent: funasr/kaldiio (kaldiio is NTT evaluation-only, no redistribution) and
+# Unidecode (GPL-2.0+); see THIRD_PARTY.md section 7.
+konusmaci = ["modelscope>=1.33.0", "scikit-learn>=1.9.1", "hdbscan>=0.8.44", "umap-learn>=0.5.7", "fastcluster>=1.3.0",
+             "addict>=2.4.0", "simplejson>=4.1.1", "PyYAML>=6.0.3", "transformers>=4.57.6"]
+video = ["pillow>=12.3.0"]                      # subtitle burn-in images; ffmpeg itself is a binary (kur.ps1 -Adim modeller)
+# the recommended flow = every stage above (same set as requirements/temel.in)
+onerilen = ["turkce-video-dublaj-hatti[stt,hizalama,ceviri,tts,konusmaci,video]"]
+
+# --- Optional stages and engines (locked files: requirements/ek_*.txt) -------------------------
+separation = ["demucs>=4.0.1"]                 # ses_temizligi.kip = clean / preserve_background
+youtube = ["yt-dlp>=2026.7.4"]                 # URL input; only content you own or may use
+stt-parakeet = ["sherpa-onnx>=1.13.4"]         # English, CPU
+stt-speechmatics = ["speechmatics-batch>=0.4.7"]  # cloud, your own key
+stt-moonshine = ["moonshine-voice==0.0.73"]   # pinned: the engine checks the 0.0.73 DLL sha256; English, CPU; manual, see docs/motorlar/moonshine_medium_streaming_en.md
+# CrisperWhisper 2.0 Turbo (non-commercial weights) runs in its own WSL environment built by
+# scripts/kur.ps1 -Adim crisper; VoxCPM2 runs in the sibling repo's environment (-Adim voxcpm2).
+# whisper.cpp uses the official prebuilt binary (docs/motorlar/whisper_cpp_cpu_align.md).
+# All of the following are off by default (docs/motorlar/<name>.md).
+akilli-kare = ["opencv-python-headless>=5.0.0.93"]       # smart frame crop (OpenCV, Apache-2.0)
+galeri = ["gallery-dl>=1.32.17"]               # GPL-2.0-only: called ONLY as a separate CLI process, never imported
+tts-xtts = ["coqui-tts>=0.27.5"]               # code MPL-2.0; XTTS v2 weights CPML = non-commercial, user accepts + downloads
+# RVC: install the official RVC WebUI yourself and set DUBLAJ_RVC_KOK (own venv; docs/motorlar/rvc.md).
+# Cover images: your own Codex CLI login (docs/motorlar/kapak_gorseli.md).
+
+# --- Interfaces ------------------------------------------------------------------------------
+# Desktop (tkinter) and web (http.server) interfaces use only the standard library.
+telegram = ["python-telegram-bot>=22.8"]       # optional remote control bot (LGPL-3.0-only, used as a library)
+
+# --- Development -----------------------------------------------------------------------------
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.14.3",
+    "mypy",
+    "pre-commit",
+]
+
+[project.scripts]
+dubla = "dublaj_hatti.cli:main"
+dubla-web = "dublaj_hatti.web:main"
+dubla-telegram = "dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.bot:main"  # needs extras telegram
+
+[project.gui-scripts]
+# no console window on Windows
+dubla-gui = "dublaj_hatti.gui:main"
+
+[project.urls]
+Homepage = "__REPO_URL__"
+Issues = "__REPO_URL__/issues"
+# TODO: hazırlayıcı doldurur (Homepage / Issues / Changelog once the public repo URL is decided)
+
+[tool.setuptools.dynamic]
+version = { attr = "dublaj_hatti.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["dublaj_hatti*"]
+
+[tool.setuptools.package-data]
+# prompts, JSON schemas, engine manifests and default settings travel with the package
+"*" = ["*.json", "*.txt", "*.yaml", "*.yml", "*.toml", "*.md", "*.html", "*.css", "*.js"]
+
+# --- Ruff ------------------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src", "tests"]
+extend-exclude = [
+    "**/vendor/**", # third-party code kept byte-identical (see THIRD_PARTY.md)
+]
+
+[tool.ruff.lint]
+# Start strict on real bugs, lenient on style; tighten per module as the cleanup progresses.
+select = [
+    "E9", "F63", "F7", "F82", # syntax errors, undefined names (CI gate)
+    "F",                       # pyflakes
+    "E", "W",                  # pycodestyle
+    "I",                       # import order
+    "B",                       # bugbear
+    "UP",                      # pyupgrade
+    "S",                       # bandit: subprocess, paths, hashes
+]
+ignore = [
+    "E501", # long lines: formatter's job
+    "S101", # assert is fine in tests and internal checks
+    "S603", # subprocess without shell is the intended pattern
+    "S607", # tools (ffmpeg, git) are resolved from PATH on purpose
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --- mypy ------------------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["dublaj_hatti"]
+exclude = ['/vendor/']
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = true
+check_untyped_defs = true
+ignore_missing_imports = true # ML libraries ship without stubs
+# Gradual typing: new modules (stage contract, registry, config) should pass `--strict`;
+[[tool.mypy.overrides]]
+module = ["dublaj_hatti.kayit", "dublaj_hatti.yapilandirma", "dublaj_hatti.is_yurutucu", "dublaj_hatti.cli",
+          "dublaj_hatti.api", "dublaj_hatti.bicimler", "dublaj_hatti.kaynak_girdisi", "dublaj_hatti.asama_komutlari"]
+disallow_untyped_defs = true
+
+# --- pytest ----------------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q -ra"
+markers = [
+    "gpu: needs an NVIDIA GPU (skipped in CI)",
+    "slow: downloads models or processes real media (skipped in CI)",
+]

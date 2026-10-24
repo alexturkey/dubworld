@@ -1,0 +1,167 @@
+# Dublaj hattı varsayılan ayarları: "Önerilen akış" (önerilen varsayılanlar).
+#
+# Bu dosya pakete gömülüdür ve DEĞİŞTİRİLMEZ. Kendi ayarınız için yalnız değiştirmek istediğiniz
+# anahtarları şu dosyalardan birine yazın (üstteki alttakini ezer):
+#   1. komut satırı:            dubla video.mp4 --ayar ses.motor=voxcpm2 --ayar altyazi.mod=word
+#   2. --ayarlar <dosya.toml>   (komut satırında verilen dosya)
+#   3. ayarlar/kullanici.toml   (repo kökünde; git'e girmez)
+#   4. bu dosya
+# Arayüzler (dubla-gui, dubla-web) aynı anahtarları "Gelişmiş" sekmesinde gösterir.
+#
+# Gerekçe: her varsayılan, GPU'suz bir bilgisayarda da çalışan, lisansı açık kaynak dağıtıma uygun ve kelime
+# zamanlaması en tutarlı seçimdir. Birbiriyle uyumsuz seçimler yüklenirken açık hata verir; hazır tarifler ve
+# kombinasyon tablosu: docs/tarifler/kombinasyonlar.md
+
+[genel]
+# İş türü: "dublaj" (seslendirilmiş video) | "transkript" (yalnız metin/altyazı dosyası)
+is_turu = "dublaj"
+# Dublaj kipi: "segment_sync" (cümle cümle, zamanlamalı) | "full_text" (tüm metin tek parça; yalnız Codex/Claude)
+dublaj_kipi = "segment_sync"
+# Hedef dil (ISO 639-1). Liste seçili TTS'e göre süzülür (docs/diller.md): Supertonic 31 dil (zh yok),
+# XTTS v2 17 dil, VoxCPM2'de denenen tr en fr de es ru zh ja (diğerleri uyarıyla).
+# Yerel çeviri (Opus-MT) yalnız "tr" üretir; başka dil için LLM çeviri arka ucu gerekir.
+hedef_dil = "tr"
+# "dubla transkript" / "Yalnız altyazı" çıktısı: srt | plain (düz metin) | timestamped (zaman damgalı) | paragraph
+transkript_bicimi = "srt"
+# Cihaz: "auto" (NVIDIA GPU çalışıyorsa GPU, yoksa işlemci) | "cuda" | "cpu"
+cihaz = "auto"
+# Çıktı klasörü; boşsa repo kökünde "cikti/".
+cikti_klasoru = ""
+# Model önbelleği; boşsa "runtime_assets/model_cache".
+onbellek_klasoru = ""
+# Günlük ayrıntısı: "INFO" | "DEBUG" | "WARNING"
+gunluk_seviyesi = "INFO"
+
+[transkripsiyon]
+# Motor: "auto" = CrisperWhisper Turbo CT2 kuruluysa o (en iyi Türkçe/İngilizce kelime zamanı, ticari olmayan
+# lisans), değilse faster-whisper. Seçenekler: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2,
+# crisperwhisper2_medium, moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align,
+# speechmatics (bulut, kendi anahtarınız), elevenlabs_scribe_v2 (bulut, kendi anahtarınız),
+# youtube_translate (yalnız YouTube bağlantısıyla: metin videonun altyazısından + CTC; pip install .[youtube])
+# Yalnız İngilizce: moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align.
+# Yalnız NVIDIA GPU: crisperwhisper_turbo_ct2, crisperwhisper2_medium. Donanım tablosu: docs/donanim.md
+motor = "auto"
+# faster-whisper / whisperx modeli: large-v3-turbo | large-v3 | medium | small (çok dilli) |
+# distil-large-v3 | distil-large-v3.5 (yalnız İngilizce). Diğer motorların modeli sabittir, bu ayar yok sayılır.
+model = "large-v3-turbo"
+# Hesap tipi (faster-whisper / whisperx): "auto" (GPU: float16 > int8, işlemci: int8) | float16 | int8 |
+# int8_float16 | float32. Diğer motorlar kendi sabit hesap tipini kullanır.
+hesap_tipi = "auto"
+# Kaynak dil: "auto" (motor kendisi tespit eder) ya da ISO kodu ("en", "de", ...) = elle sabit dil.
+# Hangi motor nasıl tespit eder, hangi durumda hangisi: docs/tarifler/dil_tespiti.md
+kaynak_dil = "auto"
+# Sessiz bölümleri atlayan ses etkinliği filtresi (VAD)
+vad = true
+# CrisperWhisper dil tespiti: global_first_window (tek dil, ilk pencereden) | per_window (pencere başına;
+# yalnız crisperwhisper2_medium) | continuous_stream (karışık / kod değişimli konuşma: 1 sn'de bir, değişim noktası)
+crisper_dil_tespiti = "global_first_window"
+# WhisperX kod çözücü profili: auto | whisperx_float32_quality_v1 (hesap_tipi=float32) |
+# whisperx_engine_default_v1 (hesap_tipi=int8). Yalnız motor=whisperx.
+whisperx_profili = "auto"
+
+[ses_temizligi]
+# "original" (kaynak ses olduğu gibi) | "clean" (Demucs ile konuşmayı ayır) |
+# "preserve_background" (Demucs; arka plan müziği/efekt dublaja karışır) | "auto_background" (gerekirse korur)
+# Demucs isteğe bağlıdır: pip install .[separation]
+kip = "original"
+
+[ceviri]
+# Arka uç: "auto" = Codex CLI kuruluysa Codex, yoksa Claude Code CLI, yoksa yerel Opus-MT.
+# Seçenekler: auto, yerel, codex, claude_code, gemini_2_5_flash, gemini_3_1_flash_lite_tier_1, gemma_4_26b,
+# groq_llama_4_scout, cerebras_llama_3_1_8b, mistral_nemo (API arka uçları kendi anahtarınızla, .env.example)
+# En iyi kalite LLM arka ucundadır; yerel Opus-MT yalnız İngilizce -> Türkçe çevirir.
+arka_uc = "auto"
+
+[ceviri.codex]
+# Codex CLI (OpenAI). Kurulum: npm i -g @openai/codex ; giriş: codex login (kendi hesabınız).
+model = "gpt-5.6-luna"
+# Akıl yürütme düzeyi: low | medium | high
+akil_yurutme = "medium"
+# Codex CLI yolu; boşsa PATH'ten "codex"
+cli_yolu = ""
+
+[ceviri.claude]
+# Claude Code CLI (Anthropic). Kurulum: npm i -g @anthropic-ai/claude-code ; giriş: "claude" komutunu bir kez açıp hesabınızla oturum açın.
+model = "claude-sonnet-5-5"
+# Çaba düzeyi: low | medium | high ; 6000 kelimeden uzun tam metin çevirisinde otomatik "high"
+caba = "medium"
+cli_yolu = ""
+
+[ses]
+# TTS motoru: "supertonic" (varsayılan; işlemcide çalışır) | "voxcpm2" (NVIDIA GPU, ayrı kurulum) |
+# "xtts" (XTTS v2, isteğe bağlı: pip install .[tts-xtts]; ağırlık ticari olmayan CPML; referans ses zorunlu)
+motor = "supertonic"
+# Supertonic sesi: F1..F5 (kadın), M1..M5 (erkek)
+supertonic_ses = "F1"
+# Çeviri + seslendirme akışı (Supertonic): natural_blocks_1 (önerilen) | single_pass_1 | single_pass_2 |
+# single_pass_10 | repair_3_light | repair_2_initial_1_repair_2 | repair_1 .. repair_7
+# Aday/onarım akışları yalnız LLM çeviri arka ucunda (codex, claude_code, API'ler) çalışır; yerel'de yok sayılır.
+akis = "natural_blocks_1"
+# Çeviri hedef süresi çarpanı: çeviri, kaynak süre × bu değer kadar okunacak uzunlukta istenir (kaynakla aynı, 1.2).
+# Supertonic'in sentez hızını DEĞİŞTİRMEZ: her ses profilinin ölçülmüş tek sabit hızı vardır (F1 1.30, F2 1.15,
+# F3 1.30, F4 1.00, F5 1.15, M1 1.15, M2 1.00, M3 1.00, M4 1.15, M5 1.25; supertonic_tts/speed_policy.py).
+hiz = 1.2
+# Seslendirme kaynak süreye sığmazsa ffmpeg atempo ile hızlandır
+atempo = true
+# VoxCPM2 sesi: "hazir/<ad>" (hazır sesler), "<ad>/<çeşit>" (kendi tasarladığınız) ya da ses klasörü yolu
+voxcpm2_ses = "hazir/haber_spikeri"
+# Konuşmacı ayrımı + cinsiyete göre ses (Önerilen akış): konuşmacılar ayrılır (3D-Speaker), her konuşmacının
+# sesinden kadın/erkek tahmin edilir (wav2vec2 XLSR-53 sınıflandırıcı, LibriSpeech) ve Supertonic havuzundan ses atanır
+# (kadın F1..F5, erkek M1..M5). Kapalıysa tüm video tek sesle (supertonic_ses) okunur.
+konusmaci_cinsiyetine_gore_ses = true
+# Cinsiyet kipi: "konusmaci" (konuşmacı ayrımı + konuşmacı başına ses) | "segment" (ayrım yok; her cümlenin
+# cinsiyeti ayrı tahmin edilir, kadın/erkek sesi aşağıdaki çiftten)
+cinsiyet_kipi = "konusmaci"
+# Segment kipinde kadın sesi (F1..F5)
+kadin_ses = "F1"
+# Segment kipinde erkek sesi (M1..M5)
+erkek_ses = "M1"
+# XTTS v2 referans sesi (6-15 sn wav): yalnız kendi sesiniz ya da sahibinin izin verdiği ses; ses.motor=xtts iken zorunlu
+xtts_referans_ses = ""
+# XTTS v2 ağırlık lisansı (Coqui Public Model License, yalnız ticari olmayan kullanım) onayı. true = okudum, kabul
+# ediyorum (onay yerel dosyaya yazılır). Ayrıntı: docs/motorlar/xtts.md
+xtts_lisans_onayi = false
+# RVC ses dönüştürme: kendi .pth modelinizin yolu; boşsa kapalı. Resmî RVC WebUI ayrı kurulur (docs/motorlar/rvc.md)
+rvc_model = ""
+# RVC .index dosyası (isteğe bağlı)
+rvc_index = ""
+# RVC perde kaydırma, yarım ton (-24..24)
+rvc_perde = 0
+# RVC rıza onayı: modelin sesi size ait değilse sesin sahibinin açık izni alındı (true olmadan RVC çalışmaz; ETHICS.md)
+rvc_riza_onayi = false
+
+[ses.konusmaci_sesleri]
+# Elle konuşmacı -> ses eşlemesi; tahmini ezer. Konuşmacı adları iş klasöründeki speaker_voice_map.json'dadır.
+# Örnek: SPEAKER_00 = "M2" (Supertonic F1..M5; VoxCPM2 "hazir/<ad>"; ses listesi docs/sesler.md)
+# Komut satırı: --ayar ses.konusmaci_sesleri.SPEAKER_00=M2 ya da --ayar "ses.konusmaci_sesleri=SPEAKER_00:M2, SPEAKER_01:F1"
+
+[altyazi]
+# "segment" (cümle) | "word" (kelime kelime) | "rollup" (kayan) | "none"
+mod = "segment"
+
+[video]
+# Akıllı kare: videonun siyah/bulanık kenar bantlarını algılayıp kırpar (isteğe bağlı: pip install .[akilli-kare];
+# kurulu değilse kaynak görüntüyle sürer). Ses ve altyazı değişmez.
+akilli_kare = false
+# Çıktı politikası: "cq" (sabit kalite) | "max_mb" (boyut sınırı)
+politika = "cq"
+# Sabit kalite değeri (düşük = daha iyi kalite, büyük dosya)
+cq = 26
+# max_mb politikasında üst sınır (MB = 1 000 000 bayt); politika=max_mb iken en az 1
+max_mb = 0
+# Çıktıya "yapay zekâ ile dublajlandı / AI-dubbed" meta etiketi (kapatılması önerilmez)
+yapay_zeka_etiketi = true
+# full_text kipinde süre uyumu: "audio_to_video" (ses videoya uyar) | "video_to_audio"
+tam_metin_sure_uyumu = "audio_to_video"
+
+[ileri]
+# Paralel TTS işçisi
+tts_isci = 4
+# TTS yeniden deneme
+tts_deneme = 3
+tts_deneme_bekleme_sn = 2.0
+# Çıktı örnekleme hızı (Supertonic kendi hızını kullanır)
+ornekleme_hizi = 24000
+# Transkriptte konuşmacı ayrımı: whisperx (pyannote; Hugging Face'te iki model şartını kabul edip HF_TOKEN
+# gerekir), speechmatics ve elevenlabs_scribe_v2 (bulutun kendi ayrımı). CrisperWhisper/moonshine/cpu_align desteklemez.
+pyannote_konusmaci_ayrimi = false

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "status",
+    "translations"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "description": "JOB JSON icindeki job_id degeri."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial",
+        "failed"
+      ],
+      "description": "Butun segmentler cevrilip sahiplik denetiminden gectiyse success."
+    },
+    "translations": {
+      "type": "array",
+      "description": "Ana segmentlerle ayni sirada ve her ID icin tam bir kayit.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "candidates",
+          "ownership_check"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kaynak ana segmentin degistirilmemis ID degeri."
+          },
+          "candidates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "description": "Yalniz bu kaynak ID'nin anlamini tasiyan tek dogal {target_lang_name_ascii} aday.",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^0-9]*[^\\s0-9][^0-9]*$"
+            }
+          },
+          "ownership_check": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "source_coverage",
+              "neighbor_meaning_imported",
+              "neighbor_meaning_exported"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail"
+                ],
+                "description": "Aday ayni ID'nin kaynak anlamini eksiksiz ve yalniz kendi icinde tasiyorsa pass."
+              },
+              "source_coverage": {
+                "type": "string",
+                "enum": [
+                  "complete",
+                  "incomplete"
+                ],
+                "description": "Kaynak segmentteki ozne, eylem ve anlam iliskileri adayda karsilaniyorsa complete."
+              },
+              "neighbor_meaning_imported": {
+                "type": "boolean",
+                "description": "Aday komsu kaynak ID'ye ait bir anlami kendi icine aldiysa true."
+              },
+              "neighbor_meaning_exported": {
+                "type": "boolean",
+                "description": "Bu kaynak ID'nin anlami yalniz komsu hedef ID'de birakildiysa true."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

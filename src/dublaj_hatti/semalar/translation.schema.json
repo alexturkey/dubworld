@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dublaj-hatti.invalid/schemas/translation.schema.json",
+  "type": "object",
+  "title": "Translation (dublaj-hatti/translation@1)",
+  "description": "Output of `dubla cevir`: same timing as the transcript, text in the target language, original kept in source_text.",
+  "required": [
+    "schema",
+    "language",
+    "source_language",
+    "segments"
+  ],
+  "properties": {
+    "schema": {
+      "const": "dublaj-hatti/translation@1"
+    },
+    "language": {
+      "type": "string"
+    },
+    "source_language": {
+      "type": "string"
+    },
+    "engine": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "text",
+          "source_text"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "number",
+            "minimum": 0
+          },
+          "end": {
+            "type": "number",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/word"
+            }
+          },
+          "source_text": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "word": {
+      "type": "object",
+      "required": [
+        "word",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0
+        },
+        "score": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

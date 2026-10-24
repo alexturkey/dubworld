@@ -1,0 +1,545 @@
+{
+ "surum": 1,
+ "dosyalar": [
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/LICENSE",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/LICENSE",
+   "sha256": "0d944a9110fed9a9602d60e0423a272903e7bd21ab060490774efc77c2275e9f",
+   "boyut": 15007,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/duration_predictor.onnx",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/duration_predictor.onnx",
+   "sha256": "c3eb91414d5ff8a7a239b7fe9e34e7e2bf8a8140d8375ffb14718b1c639325db",
+   "boyut": 3700147,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/text_encoder.onnx",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/text_encoder.onnx",
+   "sha256": "c7befd5ea8c3119769e8a6c1486c4edc6a3bc8365c67621c881bbb774b9902ff",
+   "boyut": 36416150,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/vector_estimator.onnx",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/vector_estimator.onnx",
+   "sha256": "883ac868ea0275ef0e991524dc64f16b3c0376efd7c320af6b53f5b780d7c61c",
+   "boyut": 256534781,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/vocoder.onnx",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/vocoder.onnx",
+   "sha256": "085de76dd8e8d5836d6ca66826601f615939218f90e519f70ee8a36ed2a4c4ba",
+   "boyut": 101424195,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/tts.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/tts.json",
+   "sha256": "42078d3aef1cd43ab43021f3c54f47d2d75ceb4e75f627f118890128b06a0d09",
+   "boyut": 8253,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/onnx/unicode_indexer.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/onnx/unicode_indexer.json",
+   "sha256": "9bf7346e43883a81f8645c81224f786d43c5b57f3641f6e7671a7d6c493cb24f",
+   "boyut": 277676,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/F1.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/F1.json",
+   "sha256": "bbdec6ee00231c2c742ad05483df5334cab3b52fda3ba38e6a07059c4563dbc2",
+   "boyut": 292046,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/F2.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/F2.json",
+   "sha256": "7c722c6a72707b1a77f035d67f0d1351ba187738e06f7683e8c72b1df3477fc6",
+   "boyut": 292423,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/F3.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/F3.json",
+   "sha256": "12f6ef2573baa2defa1128069cb59f203e3ab67c92af77b42df8a0e3a2f7c6ab",
+   "boyut": 290794,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/F4.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/F4.json",
+   "sha256": "c2fa764c1225a76dfc3e2c73e8aa4f70d9ee48793860eb34c295fff01c2e032b",
+   "boyut": 291808,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/F5.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/F5.json",
+   "sha256": "45966e73316415626cf41a7d1c6f3b4c70dbc1ba2bee5c1978ef0ce33244fc8d",
+   "boyut": 291479,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/M1.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/M1.json",
+   "sha256": "e35604687f5d23694b8e91593a93eec0e4eca6c0b02bb8ed69139ab2ea6b0a5b",
+   "boyut": 291748,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/M2.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/M2.json",
+   "sha256": "b76cbf62bac707c710cf0ae5aba5e31eea1a6339a9734bfae33ab98499534a50",
+   "boyut": 292055,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/M3.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/M3.json",
+   "sha256": "ea1ac35ccb91b0d7ecad533a2fbd0eec10c91513d8951e3b25fbba99954e159b",
+   "boyut": 290198,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/M4.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/M4.json",
+   "sha256": "ca8eefad4fcd989c9379032ff3e50738adc547eeb5e221b82593a6d7b3bac303",
+   "boyut": 291522,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "supertonic",
+   "ad": "Supertonic 3",
+   "url": "https://huggingface.co/Supertone/supertonic-3/resolve/3cadd1ee6394adea1bd021217a0e650ede09a323/voice_styles/M5.json",
+   "hedef": "runtime_assets/tts_motorlari/supertonic_tts/supertonic3/voice_styles/M5.json",
+   "sha256": "dd22b92740314321f8ae11c5e87f8dd60d060f15dd3a632b5adf77f471f77af2",
+   "boyut": 291469,
+   "lisans": "OpenRAIL-M (Supertone)",
+   "kaynak": "https://huggingface.co/Supertone/supertonic-3/tree/3cadd1ee6394adea1bd021217a0e650ede09a323"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/README.md",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/README.md",
+   "sha256": "c79a92d2daf4cc9751e46ea4f47b42a4cd7fde60c8408738a1628a24f28efd23",
+   "boyut": 7151,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/config.json",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/config.json",
+   "sha256": "d5ff17d7f5373c403a3ed253d963e5f487a2b95607abdb873429ad4de64db598",
+   "boyut": 1137,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/generation_config.json",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/generation_config.json",
+   "sha256": "ce15a9d95dab088acce51412f52923d21211575a610d892cd6fa63d07ec7cc16",
+   "boyut": 301,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/pytorch_model.bin",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/pytorch_model.bin",
+   "sha256": "7bc7e1973431752bcbb083c090c3c8f1e6eb3389d2e2e0faf9bf1a85d969a789",
+   "boyut": 469780741,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/source.spm",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/source.spm",
+   "sha256": "180d3f94ddfee5585d78b702290ded0f4f9bd40f299349c8383b32a579fefad4",
+   "boyut": 796953,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/target.spm",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/target.spm",
+   "sha256": "cd0c475692178b6c626aadaef01bd8f98d8053946938e4e67005fc1e4811d797",
+   "boyut": 833391,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/special_tokens_map.json",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/special_tokens_map.json",
+   "sha256": "09059cedc26bc46bc09a52f05b92d4922e11917e87f3b92059bb1a63a59ab2c4",
+   "boyut": 65,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/tokenizer_config.json",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/tokenizer_config.json",
+   "sha256": "d1c0ae7cc1a0792a689b16354433fd8825df850248e31a92b037233a1875b1da",
+   "boyut": 337,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "ceviri",
+   "ad": "Opus-MT tc-big en-tr",
+   "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/resolve/e539fc16a8a1a0ea5950eb339b595bfcce990e90/vocab.json",
+   "hedef": "runtime_assets/model_cache/opus_mt/en-tr/vocab.json",
+   "sha256": "01ef522455d2bf22b0716416ee34688cc2b3f5fa257f742665d21b6acc450ac1",
+   "boyut": 1501287,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-en-tr/tree/e539fc16a8a1a0ea5950eb339b595bfcce990e90"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/README.md",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/README.md",
+   "sha256": "b3068692728faed23580cce5cd569fc47ff76c690c032b2641ffd5554ea64d8f",
+   "boyut": 1445,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/config.json",
+   "sha256": "b0253ea6c0d3bea6b1e19e91a02acfd3b53f4467362efcb5a3e6b16c9b3a9b7e",
+   "boyut": 2263,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/model.bin",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/model.bin",
+   "sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da",
+   "boyut": 1617884929,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/preprocessor_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/preprocessor_config.json",
+   "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711",
+   "boyut": 340,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/tokenizer.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/tokenizer.json",
+   "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd",
+   "boyut": 2710337,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "stt",
+   "ad": "faster-whisper large-v3-turbo (CTranslate2)",
+   "url": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/resolve/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/vocabulary.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mobiuslabsgmbh--faster-whisper-large-v3-turbo/snapshots/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf/vocabulary.json",
+   "sha256": "c69260f2ab26d659b7c398f9a2b2b48ed0df16c3b47d7326782fd9cba71690c1",
+   "boyut": 1068114,
+   "lisans": "MIT",
+   "kaynak": "https://huggingface.co/dropbox-dash/faster-whisper-large-v3-turbo/tree/0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/README.md",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/README.md",
+   "sha256": "813b4863faa849181d6c614f8f5c563a7bf0a108290b7e320aaa7337fd97ee01",
+   "boyut": 3554,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/config.json",
+   "sha256": "8c8c02e416aaca6f258fd270eec4d646e8ad60a7a2bc6516f37cef9f21589df5",
+   "boyut": 2035,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/preprocessor_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/preprocessor_config.json",
+   "sha256": "94c00f2bccbdbf4891a1ed8be371e59debaedd03d64f5e8313cedfa4c60da22b",
+   "boyut": 260,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/pytorch_model.bin",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/pytorch_model.bin",
+   "sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e",
+   "boyut": 1262079473,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/special_tokens_map.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/special_tokens_map.json",
+   "sha256": "50eb73d51191696209d30d42d6ede50e57e7a542ca1db12df714b2c0aa3da8e2",
+   "boyut": 85,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/tokenizer_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/tokenizer_config.json",
+   "sha256": "573f3d46704a5482552885e2ca828fdcb2df1fbe90059a4d18ac2ee15820ca31",
+   "boyut": 181,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 XLS-R 300m Turkce CTC",
+   "url": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/resolve/708639f50559d7970f462e13ec64d3f059ca89f6/vocab.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish/snapshots/708639f50559d7970f462e13ec64d3f059ca89f6/vocab.json",
+   "sha256": "6641ad4761f75bbba7ca2591b1eaef57d1ab444762bf6a51f2ddbd70bfe3ee2f",
+   "boyut": 351,
+   "lisans": "CC-BY-4.0",
+   "kaynak": "https://huggingface.co/mpoyraz/wav2vec2-xls-r-300m-cv7-turkish/tree/708639f50559d7970f462e13ec64d3f059ca89f6"
+  },
+  {
+   "adim": "hizalama",
+   "ad": "wav2vec2 base 960h Ingilizce CTC (torchaudio)",
+   "url": "https://download.pytorch.org/torchaudio/models/wav2vec2_fairseq_base_ls960_asr_ls960.pth",
+   "hedef": "runtime_assets/model_cache/torch/hub/checkpoints/wav2vec2_fairseq_base_ls960_asr_ls960.pth",
+   "sha256": "488fd4f16de84438ffc945334278c1b9fb9b7159a806c1080b16111a958c945d",
+   "boyut": 377664473,
+   "lisans": "MIT (fairseq) / torchaudio BSD-2",
+   "kaynak": "https://pytorch.org/audio/stable/pipelines.html"
+  },
+  {
+   "adim": "crisper",
+   "ad": "Silero VAD v6.2.3",
+   "url": "https://raw.githubusercontent.com/snakers4/silero-vad/5cd7945676eb32225748052e2e6a0580e4686a08/src/silero_vad/data/silero_vad.onnx",
+   "hedef": "runtime_assets/transkripsiyon_motorlari/crisperwhisper_turbo_ct2/model_assets/silero_vad/silero_vad.onnx",
+   "sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+   "boyut": 2327524,
+   "lisans": "MIT",
+   "kaynak": "https://github.com/snakers4/silero-vad/tree/v6.2.3"
+  },
+  {
+   "adim": "ffmpeg",
+   "ad": "FFmpeg 9.0.2 essentials (gyan.dev)",
+   "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+   "hedef": "runtime_assets/indirilen/ffmpeg-9.0.2-essentials_build.zip",
+   "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+   "boyut": 114768076,
+   "lisans": "GPL-3.0 (derleme)",
+   "kaynak": "https://www.gyan.dev/ffmpeg/builds/ (ffmpeg.org indirme sayfasindan baglanir)"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "3D-Speaker speech_campplus_sv_zh_en_16k-common_advanced",
+   "url": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/resolve/v1.0.0/configuration.json",
+   "hedef": "runtime_assets/model_cache/modelscope/hub/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/configuration.json",
+   "sha256": "d1ae364ff71e84ef5918ba30b0f8c2f28d2fdfdac4003b60ce0877b3f4630048",
+   "boyut": 587,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "3D-Speaker speech_campplus_sv_zh_en_16k-common_advanced",
+   "url": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/resolve/v1.0.0/config.yaml",
+   "hedef": "runtime_assets/model_cache/modelscope/hub/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/config.yaml",
+   "sha256": "17342041bd5b22f6fd7e32f6e7a267b0bf65f018c0a721bada6547e3d28fbfc9",
+   "boyut": 537,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "3D-Speaker speech_campplus_sv_zh_en_16k-common_advanced",
+   "url": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/resolve/v1.0.0/campplus_cn_en_common.pt",
+   "hedef": "runtime_assets/model_cache/modelscope/hub/models/iic/speech_campplus_sv_zh_en_16k-common_advanced/campplus_cn_en_common.pt",
+   "sha256": "92f29b94e6948786a26778c9e302525d185bb08c8b9f5252ed98776902840199",
+   "boyut": 28044640,
+   "lisans": "Apache-2.0",
+   "kaynak": "https://www.modelscope.cn/models/iic/speech_campplus_sv_zh_en_16k-common_advanced"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "wav2vec2 XLSR-53 cinsiyet tanima (LibriSpeech)",
+   "url": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/resolve/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/README.md",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--alefiury--wav2vec2-large-xlsr-53-gender-recognition-librispeech/snapshots/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/README.md",
+   "sha256": "68d129da09d9faae66521c364cd38fd9f18952c0237b0f3c11e7e93ea1e2aecf",
+   "boyut": 6957,
+   "lisans": "Apache-2.0 (egitim verisi LibriSpeech CC BY 4.0)",
+   "kaynak": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/tree/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "wav2vec2 XLSR-53 cinsiyet tanima (LibriSpeech)",
+   "url": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/resolve/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--alefiury--wav2vec2-large-xlsr-53-gender-recognition-librispeech/snapshots/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/config.json",
+   "sha256": "bc717b614402f31476111882a07ff64b40ebf09b32e64298258d809885599ecc",
+   "boyut": 2188,
+   "lisans": "Apache-2.0 (egitim verisi LibriSpeech CC BY 4.0)",
+   "kaynak": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/tree/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "wav2vec2 XLSR-53 cinsiyet tanima (LibriSpeech)",
+   "url": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/resolve/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/preprocessor_config.json",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--alefiury--wav2vec2-large-xlsr-53-gender-recognition-librispeech/snapshots/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/preprocessor_config.json",
+   "sha256": "a2254a5b58f72cd4de3632f8eee64f3f098b7c1402128d2f419e7d00ae13e335",
+   "boyut": 212,
+   "lisans": "Apache-2.0 (egitim verisi LibriSpeech CC BY 4.0)",
+   "kaynak": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/tree/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d"
+  },
+  {
+   "adim": "konusmaci",
+   "ad": "wav2vec2 XLSR-53 cinsiyet tanima (LibriSpeech)",
+   "url": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/resolve/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/model.safetensors",
+   "hedef": "runtime_assets/model_cache/huggingface/hub/models--alefiury--wav2vec2-large-xlsr-53-gender-recognition-librispeech/snapshots/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d/model.safetensors",
+   "sha256": "be185e3759a73940ef58184c1eac0ae68cbf97628004aa36e9ed3aaa400e91bf",
+   "boyut": 1262859248,
+   "lisans": "Apache-2.0 (egitim verisi LibriSpeech CC BY 4.0)",
+   "kaynak": "https://huggingface.co/alefiury/wav2vec2-large-xlsr-53-gender-recognition-librispeech/tree/7a28165f33e1dbb37adbce09c0a9afcd6095dd4d"
+  },
+  {
+   "adim": "parakeet",
+   "ad": "Parakeet Unified EN 0.6B INT8 (sherpa-onnx dönüşümü, nvidia/parakeet-unified-en-0.6b)",
+   "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/resolve/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7/encoder.int8.onnx",
+   "hedef": "runtime_assets/model_cache/sherpa_onnx/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/encoder.int8.onnx",
+   "sha256": "6716910b7a0833997fec7a410494c995d70124001a0e9b66d6370d6aced577e0",
+   "boyut": 654040552,
+   "lisans": "NVIDIA Open Model License",
+   "kaynak": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/tree/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7"
+  },
+  {
+   "adim": "parakeet",
+   "ad": "Parakeet Unified EN 0.6B INT8 (sherpa-onnx dönüşümü, nvidia/parakeet-unified-en-0.6b)",
+   "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/resolve/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7/decoder.int8.onnx",
+   "hedef": "runtime_assets/model_cache/sherpa_onnx/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/decoder.int8.onnx",
+   "sha256": "a5e223392c90e75f8144cdb5eb95af7625db389e39edef2bd1a9c872b3298fe6",
+   "boyut": 7257753,
+   "lisans": "NVIDIA Open Model License",
+   "kaynak": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/tree/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7"
+  },
+  {
+   "adim": "parakeet",
+   "ad": "Parakeet Unified EN 0.6B INT8 (sherpa-onnx dönüşümü, nvidia/parakeet-unified-en-0.6b)",
+   "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/resolve/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7/joiner.int8.onnx",
+   "hedef": "runtime_assets/model_cache/sherpa_onnx/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/joiner.int8.onnx",
+   "sha256": "869f43f7d24595c55581ad3bf249a935fb8a71389fbdaa7504b9f46f93140f8a",
+   "boyut": 1735860,
+   "lisans": "NVIDIA Open Model License",
+   "kaynak": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/tree/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7"
+  },
+  {
+   "adim": "parakeet",
+   "ad": "Parakeet Unified EN 0.6B INT8 (sherpa-onnx dönüşümü, nvidia/parakeet-unified-en-0.6b)",
+   "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/resolve/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7/tokens.txt",
+   "hedef": "runtime_assets/model_cache/sherpa_onnx/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/tokens.txt",
+   "sha256": "dc0b4584ab2e4ddbf888425c076c61b736e7356a015250db7d307e6f1a8188ff",
+   "boyut": 8952,
+   "lisans": "NVIDIA Open Model License",
+   "kaynak": "https://huggingface.co/csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/tree/8c3a10fb13408c7a7054f6898958bf1c64a8d6c7"
+  },
+  {
+   "adim": "parakeet",
+   "ad": "Parakeet Unified EN 0.6B model kartı (lisans ve atıf metni)",
+   "url": "https://huggingface.co/nvidia/parakeet-unified-en-0.6b/resolve/fe53cd885760c96b6a5f51a0bfd362cb4584a98b/README.md",
+   "hedef": "runtime_assets/model_cache/sherpa_onnx/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming/NVIDIA_MODEL_CARD.md",
+   "sha256": "505590d4440b38ca33ed4d5b8af2a10c2391ecd8740c945bfdf82825e1a05fb3",
+   "boyut": 17800,
+   "lisans": "NVIDIA Open Model License",
+   "kaynak": "https://huggingface.co/nvidia/parakeet-unified-en-0.6b/tree/fe53cd885760c96b6a5f51a0bfd362cb4584a98b"
+  }
+ ]
+}

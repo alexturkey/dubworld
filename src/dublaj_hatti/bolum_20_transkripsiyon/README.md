@@ -1,0 +1,44 @@
+# Bolum 20: Transkripsiyon
+
+Bu bolum `asr_ready.wav` girdisini metne, kelime zamanlarina ve gerekiyorsa
+konusmaci bilgisine ceviren motor kutularini tasir. Bolum ve kutu listesinin
+sahibi `docs/arac_katalogu.md` belgesidir.
+
+Her motor kendi alt klasorunde izole durur:
+
+```text
+bolum_20_transkripsiyon/
+  ayarlar/                            Telegram transkripsiyon preset sahipligi
+  whisperx_motoru/                    WhisperX (kendi hizalamasiyla)
+  faster_whisper_motoru/
+  whisper_cpp_cpu_align_motoru/
+  parakeet_cpu_align_motoru/
+  speechmatics_motoru/
+  elevenlabs_scribe_v2_motoru/
+  crisperwhisper2_medium_motoru/      kendi venv ve modeliyle Medium motor kutusu
+  crisperwhisper_turbo_ct2_motoru/    kendi WSL venv'i ve modeliyle Turbo CT2 motor kutusu
+  moonshine_medium_streaming_motoru/  kendi venv'i ve modeliyle CPU offline motor kutusu
+  youtube_json3_kaynagi/              YouTube JSON3 metni + WhisperX alignment
+```
+
+Kural: Bu bolum kokune dogrudan motor dosyasi eklenmez. Yeni transkripsiyon
+motoru kendi klasoru, kendi giris dosyasi ve kendi ayarlariyla eklenir. Kendi
+venv'i ve modeli olan motorlar da bu bolumun altindadir; proje kokune motor
+kutusu acilmaz.
+
+Ana akis motor kutularindan implementation import etmez. Harici motor kutulari
+`src/bolum_00_omurga/runtime/` altindaki sinir adapterleriyle JSON istek ve
+subprocess uzerinden cagrilir.
+
+CrisperWhisper2.0 Medium, kutunun kendi sabit venv ve model snapshot'ini
+`src/bolum_00_omurga/runtime/crisperwhisper_runtime.py` araciligiyla kullanir.
+Ana uygulama motor algoritmasini barindirmaz; sesi JSON istekle
+`src/bolum_20_transkripsiyon/crisperwhisper2_medium_motoru/src/crisperwhisper_api_service.py`
+girisine verir. Dil tespiti, Silero VAD konusma bandi, en fazla 29.5 saniyelik
+dogal pencereler, 1.5-10 saniye dinamik overlap, en az iki ortak kelimelik
+Stitch, ozgun zamana esleme ve motor artefaktlari motor API'sinin tek
+sorumlulugudur. Crisper native kelime zamanlarini urettigi icin forced
+alignment calismaz; continuation, onceki metin baglami, referans metni ve CPU
+fallback yoktur. Kutu kokundeki `worker.py`, `language_worker.py` ve
+`__init__.py` yalniz eski girisler icin API yonlendiricisidir ve aktif akista
+cagrilmaz.

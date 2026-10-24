@@ -1,0 +1,14 @@
+{
+  "backend": "mistral",
+  "provider": "mistral",
+  "runner": "openai_compatible_chat_completions",
+  "model_env": "CODEX_BRIDGE_MISTRAL_MODEL",
+  "default_model": "open-mistral-nemo-2407",
+  "api_key_env_names": [
+    "CODEX_BRIDGE_MISTRAL_API_KEY"
+  ],
+  "prompt_file": "prompt.md",
+  "temperature_env": "CODEX_BRIDGE_MISTRAL_TEMPERATURE",
+  "max_tokens_env": "CODEX_BRIDGE_MISTRAL_MAX_OUTPUT_TOKENS",
+  "fallback_enabled": false
+}

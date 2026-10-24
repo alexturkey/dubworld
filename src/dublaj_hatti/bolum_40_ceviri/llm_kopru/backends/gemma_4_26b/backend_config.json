@@ -1,0 +1,12 @@
+{
+  "backend": "gemma",
+  "provider": "google_gemini",
+  "runner": "gemini_rest",
+  "model_env": "CODEX_BRIDGE_GEMMA_MODEL",
+  "default_model": "gemma-4-26b-a4b-it",
+  "api_key_env_names": [
+    "CODEX_BRIDGE_GEMINI_API_KEY"
+  ],
+  "prompt_file": "prompt.md",
+  "fallback_enabled": false
+}

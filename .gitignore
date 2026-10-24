@@ -1,0 +1,31 @@
+# local settings and outputs
+ayarlar.json
+cikti/
+*.log
+*.part
+# python
+.venv/
+__pycache__/
+*.pyc
+# models and caches
+/model/
+/hf/
+/torch/
+/indirme/
+*.safetensors
+*.bin
+*.pth
+*.gguf
+*.egg-info/
+/build/
+/dist/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+ayarlar/kullanici.toml
+.env
+runtime_assets/
+ayarlar/lisans_onaylari.json
+ayarlar/lisans_onaylari.tmp
+# translation bridge working state (job text, translations, usage logs)
+src/dublaj_hatti/bolum_40_ceviri/*/runtime/

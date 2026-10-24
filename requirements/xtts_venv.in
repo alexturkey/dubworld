@@ -1,0 +1,3 @@
+-r ek_tts_xtts.in
+torch==2.8.0
+torchaudio==2.8.0

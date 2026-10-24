@@ -1,0 +1,14 @@
+{
+  "backend": "cerebras",
+  "provider": "cerebras",
+  "runner": "openai_compatible_chat_completions",
+  "model_env": "CODEX_BRIDGE_CEREBRAS_MODEL",
+  "default_model": "llama3.1-8b",
+  "api_key_env_names": [
+    "CODEX_BRIDGE_CEREBRAS_API_KEY"
+  ],
+  "prompt_file": "prompt.md",
+  "temperature_env": "CODEX_BRIDGE_CEREBRAS_TEMPERATURE",
+  "max_tokens_env": "CODEX_BRIDGE_CEREBRAS_MAX_OUTPUT_TOKENS",
+  "fallback_enabled": false
+}

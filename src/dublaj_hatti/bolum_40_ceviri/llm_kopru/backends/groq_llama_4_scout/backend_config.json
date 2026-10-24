@@ -1,0 +1,15 @@
+{
+  "backend": "groq",
+  "provider": "groq",
+  "runner": "openai_compatible_chat_completions",
+  "model_env": "CODEX_BRIDGE_GROQ_MODEL",
+  "default_model": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "api_key_env_names": [
+    "CODEX_BRIDGE_GROQ_API_KEY",
+    "GROQ_API_KEY_1"
+  ],
+  "prompt_file": "prompt.md",
+  "temperature_env": "CODEX_BRIDGE_GROQ_TEMPERATURE",
+  "max_tokens_env": "CODEX_BRIDGE_GROQ_MAX_OUTPUT_TOKENS",
+  "fallback_enabled": false
+}

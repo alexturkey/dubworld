@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "implementation": "softmax_packed_256_v1",
+  "compute_capability": [
+    6,
+    1
+  ],
+  "native_relative_path": ".venv_wsl_ct2/lib/python3.12/site-packages/ctranslate2_crisperwhisper.libs/libctranslate2-89730f84.so.4.7.1.",
+  "native_sha256": "c74bfb05df4318a91899e90733e796bff3e4165001eb1f0918728901ecc3ec3c",
+  "shim_sha256": "3bdba9d3622c36ae43185fca1cfdb89eb3d84f2c918941deb6d35c41780b1c50",
+  "sources": {
+    "softmax_shim.c": "a900909aa3e1ff2f5e9b18120292a38500ccced699708deb14c4b7d5eebdff26",
+    "softmax.ptx": "760e9c2af032caf425caaa85ddd4019f9da64acb67f5bc3ee1f6f0d5a8eabadd",
+    "softmax_padded.cu": "7311d935f14bbce15428028c624dcf8581df2bc3f281a9cc22d23155ccae64e7",
+    "softmax_packed.cu": "38991bbf76584a532d6d1ad3d492b08f2c3609648e77d0a2c6239e67c4323ef3"
+  },
+  "kernel": "softmax_packed_256",
+  "variant": 2,
+  "thread_cap": 256
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dublaj-belirtec" content="__BELIRTEC__">
+<title>Dublaj hattı</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header>
+  <h1>Dublaj hattı <small>__SURUM__</small></h1>
+  <nav>
+    <button class="sekme etkin" data-sekme="onerilen">Önerilen akış</button>
+    <button class="sekme" data-sekme="gelismis">Gelişmiş</button>
+    <button class="sekme" data-sekme="isler">İşler</button>
+  </nav>
+</header>
+
+<main>
+  <section id="onerilen" class="panel etkin">
+    <h2>1. Videonu seç</h2>
+    <label class="dosya-alani" id="dosya-alani">
+      <input type="file" id="dosya" accept=".mp4,.mkv,.mov,.webm,.avi,.m4v">
+      <span id="dosya-yazi">Videoyu buraya bırak ya da tıklayıp seç (mp4, mkv, mov, webm, avi)</span>
+    </label>
+    <div class="cubuk ince" id="yukleme-cubugu" hidden><div></div></div>
+    <input type="url" id="baglanti" maxlength="2048" autocomplete="off"
+           placeholder="ya da https bağlantısı yapıştır (isteğe bağlı: yt-dlp / gallery-dl kurulu olmalı; yalnız hakkınız olan içerik)">
+
+    <h2>2. Dublaj dili</h2>
+    <!-- Gelişmiş'teki genel.hedef_dil ile aynı ayar (app.js onerilenDiliEsitle); ayrı kaynak yok -->
+    <div class="satir">
+      <label for="hedef-dil" class="gizli-etiket">Dublaj dili</label>
+      <select id="hedef-dil" class="dil-secici"></select>
+    </div>
+
+    <h2>3. Başlat</h2>
+    <div class="satir">
+      <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
+      <button id="transkript" disabled>Yalnız altyazı / metin çıkar</button>
+    </div>
+    <p class="not">Önerilen akış önerilen varsayılanlarla çalışır: konuşmayı yazıya döker, kelime zamanlarını hizalar,
+      konuşmacıları ayırıp her birine kadın/erkek sesine uygun bir Türkçe ses verir, çevirir, seslendirir,
+      altyazıyı ekler. Ayarların hepsi "Gelişmiş" sekmesindedir; orada değiştirdiğiniz her şey buradaki
+      düğmeler için de geçerlidir. Birlikte çalışmayan seçimler başlatırken açık hata mesajı verir.</p>
+    <p class="not">Türkçe dışındaki diller ve İngilizce dışındaki kaynak videolar için bir LLM çeviri arka ucu gerekir
+      (Codex, Claude Code ya da kendi API anahtarınız; docs/baslarken.md).</p>
+    <p class="not">Yalnız hakkınız olan ya da izinli içerik kullanın. Çıktıya "yapay zekâ ile dublajlandı"
+      meta etiketi eklenir.</p>
+  </section>
+
+  <section id="gelismis" class="panel">
+    <p class="not">Varsayılandan farklı olan değerler işaretlenir ve yalnız bu oturumda geçerlidir. Kalıcı yapmak için
+      aynı anahtarları <code>ayarlar/kullanici.toml</code> dosyasına yazın.</p>
+    <div class="satir"><button id="sifirla">Varsayılana dön</button></div>
+    <div id="form"></div>
+  </section>
+
+  <section id="isler" class="panel">
+    <p class="not">Bütün işler (masaüstü, web, komut satırı) burada. Hata alan ya da yarıda kesilen iş kaldığı
+      aşamadan sürer; biten işte bir aşamayı yeniden çalıştırmak kaynak işi değiştirmeden yeni işe kopyalar.
+      "Arşivle" yalnız kaydı listeden gizler, dosyalar silinmez.</p>
+    <div class="satir">
+      <button id="isler-yenile">Yenile</button>
+      <label class="kutu"><input type="checkbox" id="arsiv-goster"> Arşivi de göster</label>
+    </div>
+    <h2>Sorunlu işler</h2>
+    <div id="sorunlu-liste" class="is-listesi"></div>
+    <h2>Geçmiş</h2>
+    <div id="is-listesi" class="is-listesi"></div>
+    <div id="is-secenek" hidden>
+      <h2 id="is-secenek-baslik"></h2>
+      <div class="satir">
+        <label>Yeniden çalışacak ilk aşama <select id="is-asama"></select></label>
+        <label class="kutu"><input type="checkbox" id="is-gelismis"> Gelişmiş sekmesindeki değişikliklerle</label>
+      </div>
+      <div class="satir"><button id="is-yeniden" class="ana">Bu aşamadan yeni işe kopyalayarak çalıştır</button>
+        <button id="is-secenek-kapat">Kapat</button></div>
+    </div>
+  </section>
+
+  <section id="ilerleme" hidden>
+    <h2 id="ilerleme-baslik">İş sürüyor</h2>
+    <div class="cubuk"><div id="ilerleme-cubugu"></div></div>
+    <p id="ilerleme-yazi" class="not"></p>
+    <ol id="asamalar"></ol>
+    <div class="satir">
+      <button id="durdur">Durdur</button>
+      <button id="gunluk-ac">Günlüğü göster</button>
+    </div>
+    <pre id="gunluk" hidden></pre>
+  </section>
+
+  <section id="sonuc" hidden>
+    <h2>Sonuç</h2>
+    <video id="onizleme" controls preload="metadata" hidden></video>
+    <ul id="sonuc-dosyalari"></ul>
+    <div class="satir"><button id="klasor-ac">Çıktı klasörünü aç</button></div>
+  </section>
+
+  <p id="hata" class="hata" hidden></p>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Önerilen akışın (ve CPU yolunun) doğrudan bağımlılıkları; geliştirme ve ölçümde kullanılan sürümler.
+# Kilitli tam liste (hash'li): gpu.txt / cpu.txt  (üretim: scripts/kilitle.ps1)
+faster-whisper==1.2.1
+ctranslate2==4.8.3
+whisperx==3.8.6
+transformers==4.57.6
+sentencepiece==0.2.2
+onnxruntime==1.31.0
+onnx==1.19.1
+soundfile==0.14.0
+numpy==2.4.6
+scipy==1.17.1
+requests==2.34.2
+psutil==7.2.2
+python-dotenv==1.2.4
+PyYAML==6.0.3
+pillow==12.3.0
+huggingface-hub==0.36.2
+# konuşmacı ayrımı (3D-Speaker CAM++; VAD faster-whisper içindeki Silero) + cinsiyet sınıflandırıcı
+# funasr/kaldiio bilerek YOK: kaldiio lisansı (NTT, yalnız iç değerlendirme) yeniden dağıtımı yasaklar (THIRD_PARTY §7)
+# Unidecode bilerek YOK (GPL-2.0+); dosya adı temizleyici kendi harf tablosunu kullanır
+modelscope==1.33.0
+scikit-learn==1.9.1
+hdbscan==0.8.44
+umap-learn==0.5.7
+fastcluster==1.3.0
+addict==2.4.0
+simplejson==4.1.1
+# modelscope 1.33 (konuşmacı ayrımı) pkg_resources kullanır; setuptools 81+ onu kaldırdı
+setuptools==80.9.0
+# modelscope.pipelines MsDataset için (3D-Speaker konuşmacı ayrımı); kaynak ortamın sürümü
+datasets==3.1.0
