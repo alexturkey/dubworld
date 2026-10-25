@@ -18,6 +18,7 @@ steps, commands and checks are the same for every agent. Start every session wit
 | One stage alone, Python API, build your own tool | [tek-asama-kullanimi-ve-api](../../.claude/skills/tek-asama-kullanimi-ve-api/SKILL.md) | [mimari.md](../mimari.md), [../examples/README.md](../../examples/README.md) |
 | Errors: OOM / low VRAM, ffmpeg, lock, install, login | [sorun-giderme](../../.claude/skills/sorun-giderme/SKILL.md) | [engineering/README.md](../engineering/README.md), [adr/README.md](../adr/README.md) |
 | Contribute, add an engine (`kayit.py`), tests, legal audit | [katki-ve-motor-ekleme](../../.claude/skills/katki-ve-motor-ekleme/SKILL.md) | [../CONTRIBUTING.md](../../CONTRIBUTING.md), [../THIRD_PARTY.md](../../THIRD_PARTY.md) |
+| Change the web interface: tokens, icons, confirm dialog, no layout shift, motion, checks | [arayuz-tasarimi](../../.claude/skills/arayuz-tasarimi/SKILL.md) | `src/dublaj_hatti/web_statik/`, [arayuz_dili.md](../arayuz_dili.md) |
 
 ## Engine pages
 
@@ -69,6 +70,7 @@ okuyun; adımlar, komutlar ve denetimler her ajan için aynıdır. Her oturum [A
 | Tek aşamayı tek başına kullanma, Python API, kendi aracını kurma | [tek-asama-kullanimi-ve-api](../../.claude/skills/tek-asama-kullanimi-ve-api/SKILL.md) | [mimari.md](../mimari.md), [../examples/README.md](../../examples/README.md) |
 | Hatalar: bellek taşması / düşük VRAM, ffmpeg, kilit, kurulum, giriş | [sorun-giderme](../../.claude/skills/sorun-giderme/SKILL.md) | [engineering/README.md](../engineering/README.md), [adr/README.md](../adr/README.md) |
 | Katkı, motor ekleme (`kayit.py`), testler, yasal denetim | [katki-ve-motor-ekleme](../../.claude/skills/katki-ve-motor-ekleme/SKILL.md) | [../CONTRIBUTING.md](../../CONTRIBUTING.md), [../THIRD_PARTY.md](../../THIRD_PARTY.md) |
+| Web arayüzünü değiştirme: belirteçler, simgeler, onay penceresi, kaymasız yerleşim, hareket, denetim | [arayuz-tasarimi](../../.claude/skills/arayuz-tasarimi/SKILL.md) | `src/dublaj_hatti/web_statik/`, [arayuz_dili.md](../arayuz_dili.md) |
 
 ### Motor sayfaları
 

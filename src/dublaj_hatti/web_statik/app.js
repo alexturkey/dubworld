@@ -23,7 +23,57 @@ async function api(yol, govde) {
   return veri;
 }
 
-function hataGoster(metin) { const h = $("hata"); h.textContent = metin || ""; h.hidden = !metin; }
+// Hata satırı sayfada hep yer tutar (CSS: min-height); görünür/gizli olması düzeni kaydırmaz.
+function hataGoster(metin) { const h = $("hata"); h.textContent = metin || ""; h.classList.toggle("gorunur", !!metin); }
+
+// Tek onay penceresi (<dialog id="onay">): Promise<boolean>. Esc, perdeye tıklama ve "Vazgeç" = false.
+// tehlike:true → kırmızı eylem düğmesi; varsayılan odak her zaman "Vazgeç"te.
+function onayIste({ baslik, metin, tamam, tehlike }) {
+  const pencere = $("onay"), tamamDugme = $("onay-tamam"), vazgec = $("onay-vazgec");
+  const onceki = document.activeElement;
+  $("onay-baslik").textContent = baslik || "";
+  $("onay-metin").textContent = metin || "";
+  tamamDugme.textContent = tamam || t("onay.tamam");
+  tamamDugme.className = tehlike ? "tehlike-dolu" : "ana";
+  return new Promise((coz) => {
+    let sonuc = false;
+    const tamamTik = () => { sonuc = true; pencere.close(); };
+    const perdeTik = (e) => {
+      if (e.target !== pencere) return;
+      const k = pencere.getBoundingClientRect();
+      if (e.clientX < k.left || e.clientX > k.right || e.clientY < k.top || e.clientY > k.bottom) pencere.close();
+    };
+    const kapandi = () => {
+      tamamDugme.removeEventListener("click", tamamTik);
+      vazgec.removeEventListener("click", vazgecTik);
+      pencere.removeEventListener("click", perdeTik);
+      pencere.removeEventListener("close", kapandi);
+      if (onceki && onceki.isConnected && onceki.focus) onceki.focus({ preventScroll: true });
+      coz(sonuc);
+    };
+    const vazgecTik = () => pencere.close();
+    tamamDugme.addEventListener("click", tamamTik);
+    vazgec.addEventListener("click", vazgecTik);
+    pencere.addEventListener("click", perdeTik);
+    pencere.addEventListener("close", kapandi);
+    if (pencere.open) pencere.close();
+    pencere.showModal();
+    vazgec.focus();
+  });
+}
+
+// Küçük bildirim (başarı): ekranın tek yerinde, 4 sn sonra kendiliğinden kaybolur; sayfayı kaydırmaz.
+let bildirimSayaci = null;
+function bildir(metin, { geriAl } = {}) {
+  const kutu = $("bildirim"), geri = $("bildirim-geri");
+  $("bildirim-metin").textContent = metin;
+  geri.hidden = !geriAl;
+  geri.textContent = geriAl ? t("toast.geri_al") : "";
+  geri.onclick = geriAl ? () => { kutu.classList.remove("gorunur"); geriAl(); } : null;
+  kutu.classList.add("gorunur");
+  clearTimeout(bildirimSayaci);
+  bildirimSayaci = setTimeout(() => kutu.classList.remove("gorunur"), 4000);
+}
 
 // --- arayüz dili: sözlük sunucudan (arayuz_dilleri/<dil>.json); sayfadaki seçim bu tarayıcıda hatırlanır ----------
 let SOZLUK = {};
@@ -329,7 +379,8 @@ async function baslat(isTuru) {
       const bekleyen = e.veri && e.veri.lisans_onayi;
       if (!bekleyen) throw e;
       const metin = bekleyen.map((b) => b.metin).join("\n\n");
-      if (!window.confirm(metin + "\n\nKabul ediyor musunuz? / Do you accept?")) return;
+      const kabul = await onayIste({ baslik: t("onay.lisans_baslik"), metin, tamam: t("onay.kabul_et"), tehlike: false });
+      if (!kabul) return;
       await api("/api/baslat", Object.assign({}, govde, { lisans_onay: true }));
     }
     $("sonuc").hidden = true;
@@ -341,7 +392,11 @@ async function baslat(isTuru) {
 }
 $("dublajla").addEventListener("click", () => baslat("dublaj"));
 $("transkript").addEventListener("click", () => baslat("transkript"));
-$("durdur").addEventListener("click", () => api("/api/durdur", {}).catch((e) => hataGoster(e.message)));
+$("durdur").addEventListener("click", async () => {
+  const evet = await onayIste({ baslik: t("onay.durdur_baslik"), metin: t("onay.durdur_metin"), tamam: t("dugme.durdur"), tehlike: true });
+  if (!evet) return;
+  api("/api/durdur", {}).then(() => bildir(t("toast.durduruldu"))).catch((e) => hataGoster(e.message));
+});
 $("gunluk-ac").addEventListener("click", () => {
   $("gunluk").hidden = !$("gunluk").hidden;
   yaz($("gunluk-ac"), $("gunluk").hidden ? "dugme.gunluk_goster" : "dugme.gunluk_gizle");
@@ -361,23 +416,32 @@ let saatTaban = null;  // {sn, an}: sunucunun söylediği geçen süre + o an; k
 let saatSayaci = null;
 function kronometreCiz() {
   if (!saatTaban) return;
-  $("kronometre").textContent = "⏱ " + saatYaz(saatTaban.sn + (saatTaban.akiyor ? (Date.now() - saatTaban.an) / 1000 : 0));
+  $("kronometre").textContent = saatYaz(saatTaban.sn + (saatTaban.akiyor ? (Date.now() - saatTaban.an) / 1000 : 0));
 }
 const hareketAz = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function konfeti() {
   if (hareketAz()) return;
-  const simgeler = ["🎉", "✨", "🎊", "⭐", "🎈"];
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 16; i++) {  // tek seferlik, kısa; renkler tema belirteçlerinden (CSS .konfeti.k0-k2)
     const o = document.createElement("span");
-    o.className = "konfeti"; o.setAttribute("aria-hidden", "true");
-    o.textContent = simgeler[i % simgeler.length];
-    o.style.left = Math.random() * 100 + "vw"; o.style.animationDelay = Math.random() * 0.6 + "s";
+    o.className = "konfeti k" + (i % 3); o.setAttribute("aria-hidden", "true");
+    o.style.left = Math.random() * 100 + "vw"; o.style.animationDelay = Math.random() * 0.4 + "s";
     document.body.appendChild(o);
-    setTimeout(() => o.remove(), 3200);
+    setTimeout(() => o.remove(), 2200);
   }
 }
 function anlatiYaz(s) {
   return t("anlati." + s.anahtar, s.asama ? { asama: cevir("asama", s.asama, s.asama) } : {});
+}
+
+// Durak simgeleri sayfadaki SVG sprite'ından (emoji yok; temanın yazı rengini alır).
+const DURAK_SIMGELERI = { video: "s-dublaj", ses: "s-ses", yazi: "s-altyazi", ceviri: "s-dil", seslendirme: "s-mikrofon", birlestirme: "s-isler" };
+function simgeOlustur(kimlik) {
+  const SVG = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(SVG, "svg"), kullan = document.createElementNS(SVG, "use");
+  svg.setAttribute("aria-hidden", "true");
+  kullan.setAttribute("href", "#" + kimlik);
+  svg.append(kullan);
+  return svg;
 }
 
 function durumCiz(d) {
@@ -390,7 +454,7 @@ function durumCiz(d) {
   if (d.durum !== "bos") yaz($("ilerleme-baslik"), "ilerleme." + d.durum);
   $("ilerleme-cubugu").style.width = d.yuzde + "%";
   $("ilerleme").classList.toggle("bitti", d.durum === "bitti");
-  $("ilerleme-yuzde").textContent = (d.durum === "bitti" ? "🎉 " : "") + t("ilerleme.yuzde", { yuzde: d.yuzde });
+  $("ilerleme-yuzde").textContent = t("ilerleme.yuzde", { yuzde: d.yuzde });
   const cerceve = $("ilerleme-cerceve");
   cerceve.setAttribute("aria-valuenow", d.yuzde);
   cerceve.setAttribute("aria-label", t("ilerleme.cubuk_adi"));
@@ -410,7 +474,7 @@ function durumCiz(d) {
     li.className = o.durum;
     const simge = document.createElement("span");
     simge.className = "simge"; simge.setAttribute("aria-hidden", "true");
-    simge.textContent = o.durum === "bitti" ? "✓" : o.simge;
+    simge.append(simgeOlustur(o.durum === "bitti" ? "s-tamam" : (DURAK_SIMGELERI[o.id] || "s-isler")));
     const ad = document.createElement("span");
     ad.className = "ad"; ad.textContent = t("durak." + o.id);
     li.append(simge, ad);
@@ -474,7 +538,28 @@ function izle() {
 }
 
 // --- İşler: geçmiş, sorunlu, devam, aşamadan yeniden çalıştır, klasör aç, arşivle ------------------------
-function dugme(yazi, islev) { const b = document.createElement("button"); b.textContent = yazi; b.addEventListener("click", islev); return b; }
+// İş satırı düğmesi: simge + görünür yazı + aynı sözlerle ipucu (title). tehlike:true → kırmızıya yatkın (Durdur/İptal).
+function dugme(yazi, islev, simge, tehlike) {
+  const b = document.createElement("button");
+  b.type = "button"; b.title = yazi;
+  if (tehlike) b.className = "tehlike";
+  if (simge) b.append(simgeOlustur(simge));
+  const m = document.createElement("span"); m.textContent = yazi;
+  b.append(m);
+  b.addEventListener("click", islev);
+  return b;
+}
+const hataBildir = (e) => hataGoster(e.message);
+async function isIptalEt(no) {
+  const evet = await onayIste({ baslik: t("onay.is_iptal_baslik", { no }), metin: t("onay.is_iptal_metin"), tamam: t("onay.is_iptal_tamam"), tehlike: true });
+  if (!evet) return;
+  api("/api/is_iptal", { is: no }).then(islerYukle).then(() => bildir(t("toast.is_iptal", { no }))).catch(hataBildir);
+}
+async function isArsivle(no) {
+  const evet = await onayIste({ baslik: t("onay.arsiv_baslik", { no }), metin: t("onay.arsiv_metin"), tamam: t("isler.arsivle"), tehlike: false });
+  if (!evet) return;
+  api("/api/is_arsivle", { is: no }).then(islerYukle).then(() => bildir(t("toast.arsivlendi", { no }))).catch(hataBildir);
+}
 
 async function devamEt(govde) {
   hataGoster("");
@@ -516,18 +601,19 @@ function isSatiri(o, sorunlu) {
   const dugmeler = document.createElement("span"); dugmeler.className = "dugmeler";
   const sorunluMu = o.durum === "failed" || o.durum === "cancelled";
   const devamVar = !sorunlu || (o.devam_secenekleri || []).length > 0;
-  if (sorunluMu && o.komut === "dubla" && devamVar) dugmeler.append(dugme(t("isler.devam"), () => devamEt({ is: o.is })));
-  if ((sorunluMu || o.durum === "completed") && o.komut === "dubla") dugmeler.append(dugme(t("isler.asamadan_dugme"), () => secenekAc(o.is)));
+  if (sorunluMu && o.komut === "dubla" && devamVar) dugmeler.append(dugme(t("isler.devam"), () => devamEt({ is: o.is }), "s-oynat"));
+  if ((sorunluMu || o.durum === "completed") && o.komut === "dubla") dugmeler.append(dugme(t("isler.asamadan_dugme"), () => secenekAc(o.is), "s-ileri"));
   if (o.video) dugmeler.append(dugme(t("dugme.videoyu_ac"), () => {
     sayfaAc("onerilen");
     oynaticiYukle({ orijinal: o.orijinal ? dosyaAdresi(o.orijinal) : "", dublaj: dosyaAdresi(o.video),
       srt: o.srt ? dosyaAdresi(o.srt) : "" });
-  }));
-  if (o.klasor) dugmeler.append(dugme(t("isler.klasor"), () => api("/api/klasor_ac", { yol: o.klasor }).catch((e) => hataGoster(e.message))));
-  if (o.durum === "queued" || o.durum === "deferred")
-    dugmeler.append(dugme(t("isler.iptal"), () => api("/api/is_iptal", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
+  }, "s-dublaj"));
+  if (o.klasor) dugmeler.append(dugme(t("isler.klasor"), () => api("/api/klasor_ac", { yol: o.klasor }).catch(hataBildir), "s-klasor"));
+  // Sıra: kullan, aç, yönet; yıkıcı/durdurucu olan hep sonda.
   if (!["queued", "deferred", "preparing", "processing"].includes(o.durum) && !o.arsiv)
-    dugmeler.append(dugme(t("isler.arsivle"), () => api("/api/is_arsivle", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
+    dugmeler.append(dugme(t("isler.arsivle"), () => isArsivle(o.is), "s-arsiv"));
+  if (o.durum === "queued" || o.durum === "deferred")
+    dugmeler.append(dugme(t("isler.iptal"), () => isIptalEt(o.is), "s-durdur", true));
   const ayrinti = document.createElement("div"); ayrinti.className = "ayrinti";
   const parcalar = [];
   if (o.son_asama_adi) parcalar.push(t("isler.son_asama", { ad: cevir("asama", o.son_asama, o.son_asama_adi) }));

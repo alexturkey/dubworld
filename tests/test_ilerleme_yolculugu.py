@@ -73,6 +73,6 @@ def test_web_ilerleme_bolumu_erisilebilir():
     assert 'role="progressbar"' in html and 'id="anlati"' in html and 'role="status"' in html
     css = (STATIK / "app.css").read_text(encoding="utf-8")
     hareket = css[css.index("prefers-reduced-motion: reduce) {"):]
-    assert ".cubuk.canli > div" in hareket and "animation: none" in hareket
+    assert "*, *::before, *::after" in hareket and "animation: none !important" in hareket  # tek kural hepsini durdurur
     js = (STATIK / "app.js").read_text(encoding="utf-8")
     assert '"anlati." + s.anahtar' in js and '"durak." + o.id' in js

@@ -45,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Web interface is calmer and more consistent: stopping a job, cancelling a queued job, archiving and accepting a
+  licence all use the same in-page confirmation window (no more browser pop-ups); job buttons have icons with words;
+  a small notice confirms what happened; error and progress areas keep their place so the page no longer jumps; small
+  buttons are now large enough to tap; the pulsing animation is gone and all motion stops when the system asks for
+  reduced motion; colours come from one set of day and night tokens.
 - One interface: `dubla-gui` (and `arayuz.cmd`) now opens the web interface in its own app window (Microsoft Edge,
   else Chrome or Chromium, with a separate profile; else the default browser) and stops by itself after the window
   is closed. The old Tk desktop window is removed. Tabs are now **Dub**, **Settings** and **Jobs**.

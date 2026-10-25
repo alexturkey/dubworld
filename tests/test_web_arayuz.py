@@ -44,7 +44,9 @@ def _temalar() -> dict[str, dict[str, str]]:
 def test_renkler_okunur_ve_goz_yormaz(tema):
     r = _temalar()[tema]
     for yazi, zemin in (("yazi", "zemin"), ("yazi", "kart"), ("soluk", "kart"), ("soluk", "zemin"), ("ana", "kart"),
-                        ("ana-yazi", "ana"), ("hata", "kart"), ("tamam", "kart")):
+                        ("ana-yazi", "ana"), ("hata", "kart"), ("tamam", "kart"),
+                        ("hata-yazi", "hata"), ("ov-yazi", "video"), ("ov-soluk", "video"), ("ov-isaret", "video"),
+                        ("ov-vurgu", "video"), ("ov-vurgu-yazi", "ov-vurgu")):
         oran = kontrast(r[yazi], r[zemin])
         assert oran >= 4.5, f"{tema}: {yazi}/{zemin} = {oran:.2f} (en az 4.5)"
     assert kontrast(r["yazi"], r["zemin"]) < 17, "saf siyah/beyaz yok: aşırı kontrast göz yorar"
@@ -86,3 +88,40 @@ def test_tarayici_yoksa_none(monkeypatch, tmp_path):
     monkeypatch.setattr(masaustu.shutil, "which", lambda ad: None)
     monkeypatch.setattr(masaustu.sys, "platform", "linux")
     assert masaustu.pencere_tarayicisi() is None
+
+
+JS = (STATIK / "app.js").read_text(encoding="utf-8")
+
+
+def test_tek_onay_penceresi_window_confirm_yok():
+    """Riskli eylemler sayfa içi <dialog id="onay"> ile sorulur; tarayıcının confirm/alert/prompt penceresi yok."""
+    assert not re.search(r"(window\.)?(confirm|alert|prompt)\(", JS)
+    assert '<dialog id="onay"' in HTML and 'id="onay-vazgec"' in HTML and 'id="onay-tamam"' in HTML
+    assert "function onayIste(" in JS and "showModal()" in JS
+    # lisans, durdur, iş iptali ve arşivleme bu bileşeni kullanır
+    assert JS.count("onayIste(") >= 5
+    assert 'role="status"' in HTML and "function bildir(" in JS
+
+
+def test_simge_sprite_tam_ve_emoji_yok():
+    for kimlik in ("sil", "kopyala", "kalem", "durdur", "tamam", "mikrofon", "klasor", "arsiv"):
+        assert f'<symbol id="s-{kimlik}" viewBox="0 0 24 24">' in HTML, kimlik
+    kullanilan = set(re.findall(r'href="#(s-[a-z]+)"', HTML)) | set(re.findall(r'"(s-[a-z]+)"', JS))
+    tanimli = set(re.findall(r'<symbol id="(s-[a-z]+)"', HTML))
+    assert kullanilan <= tanimli, kullanilan - tanimli
+    emoji = re.compile("[🌀-🫿☀-➿⏱✨]")
+    assert not emoji.search(JS), "simge yerine emoji kullanılmaz"
+
+
+def test_css_renk_yalniz_belirteclerde():
+    """Sabit renk yok: onaltılık renk yalnız :root belirteç bloklarında."""
+    disarida = re.sub(r"(:root[^{]*\{[^}]*\})", "", CSS)
+    assert not re.search(r"#[0-9a-fA-F]{3,8}", disarida)
+
+
+def test_kayma_ve_hareket_kurallari():
+    assert "scrollbar-gutter: stable" in CSS
+    assert re.search(r"\.hata \{[^}]*min-height", CSS) and "visibility: hidden" in CSS
+    assert "nabiz" not in CSS
+    assert "animation: none !important" in CSS and "transition: none !important" in CSS
+    assert not re.search(r"min-height: (3[0-9]|[12]?[0-9])px", CSS), "dokunma alanı en az 44 px"

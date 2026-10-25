@@ -30,6 +30,14 @@
   <symbol id="s-tam" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></symbol>
   <symbol id="s-yukle" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
   <symbol id="s-kapat" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="s-sil" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="s-kopyala" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="s-kalem" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></symbol>
+  <symbol id="s-durdur" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" class="dolu"/></symbol>
+  <symbol id="s-tamam" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="s-mikrofon" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+  <symbol id="s-klasor" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="s-arsiv" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
 </svg>
 
 <header class="ust">
@@ -115,6 +123,7 @@
           <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
           <button id="transkript" disabled data-t="dugme.transkript">Yalnız altyazı / metin çıkar</button>
         </div>
+        <p id="hata" class="hata" role="alert"></p>
       </div>
 
       <div class="kart" id="ilerleme" hidden>
@@ -130,7 +139,7 @@
         <h3 data-t="ilerleme.ne_oluyor">Şimdi ne oluyor?</h3>
         <ol id="anlati" class="anlati" role="status" aria-live="polite"></ol>
         <div class="satir">
-          <button id="durdur" data-t="dugme.durdur">Durdur</button>
+          <button id="durdur" class="tehlike"><svg aria-hidden="true"><use href="#s-durdur"/></svg><span data-t="dugme.durdur">Durdur</span></button>
           <button id="gunluk-ac" data-t="dugme.gunluk_goster">Teknik günlüğü göster</button>
         </div>
         <pre id="gunluk" hidden></pre>
@@ -141,7 +150,6 @@
         <ul id="sonuc-dosyalari" class="dosya-listesi"></ul>
         <div class="satir"><button id="klasor-ac" data-t="dugme.cikti_klasoru">Çıktı klasörünü aç</button></div>
       </div>
-      <p id="hata" class="hata" hidden></p>
     </div>
   </section>
 
@@ -200,6 +208,15 @@
     <li data-t="kisayol.kapat">Esc: açık pencereyi kapat</li>
   </ul>
 </dialog>
+<dialog id="onay" class="onay" aria-labelledby="onay-baslik" aria-describedby="onay-metin">
+  <h2 id="onay-baslik"></h2>
+  <p id="onay-metin" class="onay-metin"></p>
+  <div class="satir onay-dugmeler">
+    <button id="onay-vazgec" type="button" autofocus data-t="onay.vazgec">Vazgeç</button>
+    <button id="onay-tamam" type="button"></button>
+  </div>
+</dialog>
+<div id="bildirim" class="bildirim" role="status" aria-live="polite"><span id="bildirim-metin"></span><button id="bildirim-geri" type="button" class="metin-dugme" hidden></button></div>
 <script src="/app.js"></script>
 </body>
 </html>
