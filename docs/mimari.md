@@ -162,8 +162,7 @@ WebVTT inline timestamps; silences between words are kept exact).
 
 Input is a local file or an https link. `dublaj_hatti.kaynak_girdisi` decides the link type and checks only the tool
 that type needs: gallery sites need gallery-dl (extras `galeri`), video sites need yt-dlp (extras `youtube`); a
-missing tool gives an install hint, never a stack trace. The CLI, the desktop interface ("ya da bağlantı") and the
-web interface (link field; local paths are never accepted there) all use this one check. Only content you own or may
+missing tool gives an install hint, never a stack trace. The CLI and the interface (link field; local paths are never accepted there) both use this one check. Only content you own or may
 use (ETHICS.md).
 
 ---
@@ -336,6 +335,6 @@ etiketleri ya da WebVTT satır içi zaman damgaları; kelimeler arasındaki sess
 
 Girdi yerel bir dosya ya da bir https bağlantısıdır. `dublaj_hatti.kaynak_girdisi` bağlantı türüne karar verir ve
 yalnız o türün gerektirdiği aracı denetler: galeri siteleri gallery-dl (extras `galeri`), video siteleri yt-dlp
-(extras `youtube`) ister; eksik araç yığın izi değil, kurulum ipucu verir. CLI, masaüstü arayüzü ("ya da bağlantı")
-ve web arayüzü (bağlantı alanı; orada yerel yollar asla kabul edilmez) hep bu tek denetimi kullanır. Yalnız sahibi
+(extras `youtube`) ister; eksik araç yığın izi değil, kurulum ipucu verir. CLI ve arayüz (bağlantı alanı; orada yerel yollar asla kabul edilmez)
+bu tek denetimi kullanır. Yalnız sahibi
 olduğunuz ya da kullanma hakkınız olan içerik (ETHICS.md).

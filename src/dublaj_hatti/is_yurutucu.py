@@ -298,7 +298,7 @@ def cikti_klasoru_ac(yol: str) -> None:
 
 
 def ayar_aciklamalari() -> dict[str, str]:
-    """Gelişmiş sekmesi için her anahtarın açıklaması: `varsayilan.toml` içindeki, anahtardan hemen önceki yorum."""
+    """Ayarlar çekmecesi için her anahtarın açıklaması: `varsayilan.toml` içindeki, anahtardan hemen önceki yorum."""
     metin = (Path(__file__).with_name("varsayilan.toml")).read_text(encoding="utf-8")
     bolum, yorum, cikti = "", list[str](), dict[str, str]()
     for satir in metin.splitlines():
@@ -318,7 +318,7 @@ def ayar_aciklamalari() -> dict[str, str]:
 
 
 def ayar_formu(dil: str | None = None) -> list[dict[str, Any]]:
-    """Arayüzlerin Gelişmiş sekmesi: anahtar, bölüm, tür, seçenekler, geçerli değer, açıklama (SEMA sırası).
+    """Arayüzün Ayarlar çekmecesi: anahtar, bölüm, tür, seçenekler, geçerli değer, açıklama (SEMA sırası).
 
     Açıklama arayüz dilindedir (`dil`; yoksa seçili arayüz dili): Türkçenin tek kaynağı `varsayilan.toml`
     yorumlarıdır, öbür diller `arayuz_dilleri/<dil>.json` içindeki `ayar.<anahtar>` (eksikse İngilizce, o da yoksa Türkçe).

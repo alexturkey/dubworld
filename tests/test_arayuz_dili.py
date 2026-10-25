@@ -1,7 +1,7 @@
 """Arayüz dili (arayuz_dilleri/<dil>.json): sözlükler eşit, yer tutucular aynı, sayfada çevrilmemiş yazı yok,
-seçim sırası doğru, masaüstü pencere dil değişince değişiklikleri koruyarak yeniden kurulur (docs/arayuz_dili.md).
+seçim sırası doğru (docs/arayuz_dili.md). Tek arayüz web arayüzüdür (dubla-gui onu kendi penceresinde açar).
 
-Yeni dil dosyası eklenince bu testler o dili de kendiliğinden denetler. GUI testi görünür pencere açmaz.
+Yeni dil dosyası eklenince bu testler o dili de kendiliğinden denetler.
 """
 
 from __future__ import annotations
@@ -78,11 +78,12 @@ def test_asama_durum_ve_dil_adlari_tam():
 
 
 def _kodda_gecen_anahtarlar() -> set[str]:
-    metin = "\n".join((PAKET / ad).read_text(encoding="utf-8") for ad in ("gui.py", "gui_isler.py"))
+    metin = "\n".join((PAKET / ad).read_text(encoding="utf-8") for ad in ("web.py", "kurulum_denetimi.py"))
     metin += (STATIK / "app.js").read_text(encoding="utf-8")
     anahtarlar = set(re.findall(r"""\bt\(\s*["']([a-z_]+\.[a-z0-9_.]+)["']""", metin))
-    anahtarlar |= set(re.findall(r"""\byaz\([^,]+,\s*["']([a-z_]+\.[a-z0-9_.]+)["']""", metin))
-    anahtarlar |= set(re.findall(r"""(isler\.sutun_[a-z]+)""", metin))
+    anahtarlar |= set(re.findall(r"""\b(?:yaz|baslikYaz)\([^,]+,\s*["']([a-z_]+\.[a-z0-9_.]+)["']""", metin))
+    html = (STATIK / "index.html").read_text(encoding="utf-8")
+    anahtarlar |= set(re.findall(r'data-t(?:-ipucu|-baslik)?="([a-z_]+\.[a-z0-9_.]+)"', html))
     return anahtarlar
 
 
@@ -92,7 +93,7 @@ def test_koddaki_her_anahtar_sozlukte():
     for kod in DILLER:
         s = arayuz_dili.tam_sozluk(kod)
         assert sorted(anahtarlar - set(s)) == [], kod
-    for durum in ("hazir", "calisiyor", "bitti", "hata", "durduruldu"):  # t(f"ilerleme.{durum}")
+    for durum in ("calisiyor", "bitti", "hata", "durduruldu"):  # yaz(.., "ilerleme." + d.durum)
         assert f"ilerleme.{durum}" in arayuz_dili.sozluk("en")
 
 
@@ -126,7 +127,8 @@ class _Sayfa(HTMLParser):
         anahtar = next((a for _, a in reversed(self.yigin) if a), None)
         if anahtar:
             self.eslesme.setdefault(anahtar, []).append(yazi)
-        elif yazi not in ("DubWorld", "__SURUM__", "Türkçe dublajla"):  # ad, sürüm; düğmeyi app.js yazar
+        elif yazi not in ("DubWorld", "__SURUM__", "Türkçe dublajla") and re.search(r"[^\W\d_]", yazi):
+            # ad, sürüm, düğmeyi app.js yazar; harfsiz yazı (0:00 / 0:00, 1.25×) çevrilmez
             self.cevrilmemis.append(yazi)
 
 
@@ -174,60 +176,3 @@ def test_donanim_etiketi_arayuz_dilinde():
     turbo = kayit.motor("crisperwhisper_turbo_ct2")
     assert donanim.motor_etiketi(turbo, "cpu", 0) == "CPU'da çalışmaz (NVIDIA GPU gerekir)"
     assert donanim.motor_etiketi(turbo, "cpu", 0, "en") == "doesn't run on CPU (needs an NVIDIA GPU)"
-
-
-@pytest.fixture
-def uygulama(monkeypatch):
-    tk = pytest.importorskip("tkinter")
-    try:
-        kok = tk.Tk()
-    except tk.TclError:
-        pytest.skip("ekran yok (Tk açılamadı)")
-    kok.withdraw()  # görünür pencere yok
-    from tkinter import ttk
-
-    from dublaj_hatti import gui, gui_isler
-    from dublaj_hatti.bolum_00_omurga.runtime import donanim
-
-    class _SahteYurutucu:
-        def __init__(self, *a, **k):
-            from types import SimpleNamespace
-
-            self.durum = SimpleNamespace(durum="bos", sonuc={}, ozet=lambda: {"durum": "bos"})
-
-        def calisiyor(self):
-            return False
-
-        def durdur(self):
-            pass
-
-    class SahteIsler:
-        def __init__(self, ust, *a, **k):
-            self.cerceve = ttk.Frame(ust)
-
-        def yenile(self):
-            pass
-
-    monkeypatch.setattr(donanim, "gpu_bilgisi_hafif", lambda: (False, 0))
-    monkeypatch.setattr(gui, "IsYurutucu", _SahteYurutucu)
-    monkeypatch.setattr(gui_isler, "IslerSekmesi", SahteIsler)
-    monkeypatch.setattr(gui, "kurulum_eksikleri", lambda: [])
-    u = gui.Uygulama(kok)
-    yield u
-    kok.destroy()
-
-
-def test_gui_dil_degisince_degisiklikler_korunur(uygulama, tmp_path):
-    u = uygulama
-    assert u.dublajla_dugme.cget("text") == "Türkçe dublajla"
-    alan = next(a for a in u.alanlar if a.alan["anahtar"] == "genel.hedef_dil")
-    alan.degisken.set(alan._gorunen("de"))
-    u.video = tmp_path / "v.mp4"
-    yeni = u.dili_degistir("en")
-    assert arayuz_dili.secili() == "en" and yeni.yurutucu is u.yurutucu
-    assert yeni.dublajla_dugme.cget("text") == "Dub into German"
-    assert yeni.dil_degisken.get() == "German (Deutsch)"
-    assert yeni.degisiklikler()["genel.hedef_dil"] == "de" and yeni.video == u.video
-    assert str(yeni.dublajla_dugme.cget("state")) == "normal"
-    aciklama = next(a for a in yeni.alanlar if a.alan["anahtar"] == "ses.motor").alan["aciklama"]
-    assert aciklama.startswith("Voice engine")

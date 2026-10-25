@@ -273,7 +273,7 @@ scripts\kur.ps1                 installer (steps above); scripts\modeller.json =
 runtime_assets\                 Python, uv, models, FFmpeg, optional engines (created by the installer)
 cikti\                          outputs and the job database (default output folder)
 ayarlar\                        personal settings (kullanici.toml) and license records; not in git
-src\dublaj_hatti\               the package (commands dubla, dubla-gui, dubla-web)
+src\dublaj_hatti\               the package (commands dubla, dubla-gui = web UI in its own window, dubla-web)
 docs\                           getting-started / baslarken (users), installation / kurulum (full reference)
 ```
 

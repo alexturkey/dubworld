@@ -48,9 +48,9 @@ def test_gpu_tekerlegi_calismiyorsa_not_cpu_seciminde_yok(capsys):
 def test_arayuz_denetimi_ayni_olcutu_kullanir(monkeypatch):
     import pytest
 
-    pytest.importorskip("tkinter")
-    from dublaj_hatti import gui, kayit
+    from dublaj_hatti import kayit
+    from dublaj_hatti.kurulum_denetimi import kurulum_eksikleri
 
     monkeypatch.setattr(kayit, "durum", lambda grup: {})
-    eksik = gui.kurulum_eksikleri()
+    eksik = kurulum_eksikleri()
     assert {"faster_whisper_ctc", "yerel", "supertonic", "konusmaci_ayrimi"} <= set(eksik)

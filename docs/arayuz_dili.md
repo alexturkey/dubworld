@@ -2,7 +2,7 @@
 
 [Türkçe](#türkçe) · Code: `src/dublaj_hatti/arayuz_dili.py`, texts: `src/dublaj_hatti/arayuz_dilleri/<code>.json`.
 
-The desktop window and the web page are in English and Turkish. Pick the language at the top right. The choice
+The interface (`dubla-gui` opens it in its own window, `dubla-web` in the browser) is in English and Turkish. Pick the language at the top right. The choice
 changes every screen text, the setting descriptions, stage and status names, and the target language names
 ("German (Deutsch)", "Dub into German"). The job log, deep error messages and the command line stay in Turkish for
 now.
@@ -11,12 +11,11 @@ now.
 
 | Where | Order |
 |---|---|
-| Desktop | setting `genel.arayuz_dili` (`auto`, `tr`, `en`); `auto` = the computer's language if there is a file for it, otherwise English |
-| Web | the choice made on the page (kept in this browser) > the setting > the browser's languages > the computer's language > English |
+| Interface | the choice made on the page (kept in that window or browser) > the setting `genel.arayuz_dili` (`auto`, `tr`, `en`) > the browser's languages > the computer's language > English |
 
 A missing text falls back to English, then Turkish, then the key itself, so a half-finished language file never
-shows an empty button. Switching the language on the desktop keeps your Advanced changes, the chosen video and the
-link; it is blocked while a job is running.
+shows an empty button. Switching the language changes the page in place: the chosen video, your Settings changes
+and a running job stay as they are.
 
 ## Adding a language
 
@@ -32,7 +31,7 @@ No code change is needed: the language list and the `genel.arayuz_dili` choices 
 
 ## Türkçe
 
-Masaüstü pencere ve web sayfası İngilizce ve Türkçedir. Dil sağ üstten seçilir. Seçim ekrandaki bütün yazıları,
+Arayüz (`dubla-gui` kendi penceresinde, `dubla-web` tarayıcıda açar) İngilizce ve Türkçedir. Dil sağ üstten seçilir. Seçim ekrandaki bütün yazıları,
 ayar açıklamalarını, aşama ve durum adlarını ve hedef dil adlarını ("Almanca (Deutsch)", "Almanca dublajla")
 değiştirir. İş günlüğü, derin hata iletileri ve komut satırı şimdilik Türkçe kalır.
 
@@ -40,12 +39,11 @@ değiştirir. İş günlüğü, derin hata iletileri ve komut satırı şimdilik
 
 | Nerede | Sıra |
 |---|---|
-| Masaüstü | `genel.arayuz_dili` ayarı (`auto`, `tr`, `en`); `auto` = bilgisayarın dili için dosya varsa o, yoksa İngilizce |
-| Web | sayfada yapılan seçim (bu tarayıcıda saklanır) > ayar > tarayıcının dilleri > bilgisayarın dili > İngilizce |
+| Arayüz | sayfada yapılan seçim (o pencerede ya da tarayıcıda saklanır) > `genel.arayuz_dili` ayarı (`auto`, `tr`, `en`) > tarayıcının dilleri > bilgisayarın dili > İngilizce |
 
 Eksik bir yazı önce İngilizceye, sonra Türkçeye, en son anahtarın kendisine düşer; yarım kalmış bir dil dosyası boş
-düğme göstermez. Masaüstünde dil değişince Gelişmiş'teki değişiklikler, seçilen video ve bağlantı korunur; iş
-sürerken dil değiştirilemez.
+düğme göstermez. Dil değişince sayfa yerinde değişir: seçilen video, Ayarlar'daki değişiklikler ve süren iş
+olduğu gibi kalır.
 
 ### Dil ekleme
 

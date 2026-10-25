@@ -4,56 +4,145 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="dublaj-belirtec" content="__BELIRTEC__">
+<meta name="color-scheme" content="light dark">
 <title>DubWorld</title>
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-<!-- Yazılar arayuz_dilleri/<dil>.json sözlüğünden gelir (app.js dilUygula): data-t = metin, data-t-ipucu = placeholder.
-     Buradaki Türkçe metin sözlük gelmeden önce görünen yedektir ve tr.json ile aynı olmalı (test denetler). -->
-<header>
-  <h1>DubWorld <small>__SURUM__</small></h1>
-  <nav>
-    <button class="sekme etkin" data-sekme="onerilen" data-t="sekme.onerilen">Önerilen akış</button>
-    <button class="sekme" data-sekme="gelismis" data-t="sekme.gelismis">Gelişmiş</button>
-    <button class="sekme" data-sekme="isler" data-t="sekme.isler">İşler</button>
+<!-- Yazılar arayuz_dilleri/<dil>.json sözlüğünden gelir (app.js dilUygula): data-t = metin, data-t-ipucu = placeholder,
+     data-t-baslik = ipucu balonu + ekran okuyucu adı. Buradaki Türkçe metin sözlük gelmeden önce görünen yedektir ve
+     tr.json ile aynı olmalı (test denetler). Simgeler satır içi SVG (dış kaynak yok, temanın yazı rengini alır). -->
+<svg class="simge-kaynak" aria-hidden="true">
+  <symbol id="s-dublaj" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></symbol>
+  <symbol id="s-ayar" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="s-isler" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></symbol>
+  <symbol id="s-dil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></symbol>
+  <symbol id="s-ay" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="s-gunes" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="s-yardim" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01"/></symbol>
+  <symbol id="s-oynat" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" class="dolu"/></symbol>
+  <symbol id="s-duraklat" viewBox="0 0 24 24"><path d="M8 5h3v14H8zM13 5h3v14h-3z" class="dolu"/></symbol>
+  <symbol id="s-geri" viewBox="0 0 24 24"><path d="M11 7 6 12l5 5M18 7l-5 5 5 5"/></symbol>
+  <symbol id="s-ileri" viewBox="0 0 24 24"><path d="m13 7 5 5-5 5M6 7l5 5-5 5"/></symbol>
+  <symbol id="s-ses" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+  <symbol id="s-sessiz" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="m16 10 4 4M20 10l-4 4"/></symbol>
+  <symbol id="s-altyazi" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14h4M13 14h4M7 11h10"/></symbol>
+  <symbol id="s-tam" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></symbol>
+  <symbol id="s-yukle" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="s-kapat" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+</svg>
+
+<header class="ust">
+  <div class="marka">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8"/>
+      <path d="M9 18v-4M13 21V11M17 19v-6M21 22V10M25 17v-2"/></svg>
+    <span class="ad">DubWorld</span> <small>__SURUM__</small>
+  </div>
+  <nav class="sekmeler">
+    <button class="sekme etkin" data-sekme="onerilen"><svg><use href="#s-dublaj"/></svg><span data-t="sekme.onerilen">Dublaj</span></button>
+    <button class="sekme" data-sekme="gelismis" aria-expanded="false"><svg><use href="#s-ayar"/></svg><span data-t="sekme.gelismis">Ayarlar</span></button>
+    <button class="sekme" data-sekme="isler"><svg><use href="#s-isler"/></svg><span data-t="sekme.isler">İşler</span></button>
   </nav>
-  <label class="arayuz-dili"><span data-t="arayuz.dil">Arayüz dili</span>
-    <select id="arayuz-dili"></select></label>
+  <div class="araclar">
+    <label class="arayuz-dili"><svg aria-hidden="true"><use href="#s-dil"/></svg>
+      <span class="gizli-etiket" data-t="arayuz.dil">Arayüz dili</span><select id="arayuz-dili"></select></label>
+    <button id="tema" class="simge-dugme" data-t-baslik="ust.tema_koyu" title="Gece moduna geç" aria-label="Gece moduna geç">
+      <svg class="ay"><use href="#s-ay"/></svg><svg class="gunes"><use href="#s-gunes"/></svg></button>
+    <button id="yardim-ac" class="simge-dugme" data-t-baslik="ust.yardim" title="Yardım" aria-label="Yardım">
+      <svg><use href="#s-yardim"/></svg></button>
+  </div>
 </header>
 
+<p id="kurulum-uyari" class="uyari" hidden></p>
+
 <main>
-  <section id="onerilen" class="panel etkin">
-    <h2 data-t="adim.video">1. Videonu seç</h2>
-    <label class="dosya-alani" id="dosya-alani">
-      <input type="file" id="dosya" accept=".mp4,.mkv,.mov,.webm,.avi,.m4v">
-      <span id="dosya-yazi" data-t="web.dosya_birak">Videoyu buraya bırak ya da tıklayıp seç (mp4, mkv, mov, webm, avi)</span>
-    </label>
-    <div class="cubuk ince" id="yukleme-cubugu" hidden><div></div></div>
-    <input type="url" id="baglanti" maxlength="2048" autocomplete="off" data-t-ipucu="web.baglanti_ipucu"
-           placeholder="ya da https bağlantısı yapıştır (isteğe bağlı: yt-dlp / gallery-dl kurulu olmalı; yalnız hakkınız olan içerik)">
-
-    <h2 data-t="adim.dil">2. Dublaj dili</h2>
-    <!-- Gelişmiş'teki genel.hedef_dil ile aynı ayar (app.js onerilenDiliEsitle); ayrı kaynak yok -->
-    <div class="satir">
-      <label for="hedef-dil" class="gizli-etiket" data-t="adim.dil">2. Dublaj dili</label>
-      <select id="hedef-dil" class="dil-secici"></select>
+  <section id="onerilen" class="panel etkin duzen">
+    <div class="sahne">
+      <h2 class="sahne-baslik" data-t="adim.video">1. Videonu seç</h2>
+      <div class="oynatici" id="oynatici">
+        <label class="bos-durum" id="dosya-alani">
+          <input type="file" id="dosya" accept=".mp4,.mkv,.mov,.webm,.avi,.m4v">
+          <svg aria-hidden="true"><use href="#s-yukle"/></svg>
+          <strong data-t="oynatici.bos">Videonu buraya bırak</strong>
+          <span data-t="oynatici.bos_alt">ya da tıklayıp seç · mp4, mkv, mov, webm, avi</span>
+        </label>
+        <video id="video" playsinline preload="metadata" hidden></video>
+        <div class="kontroller" id="kontroller" hidden>
+          <div class="zaman-cizgisi" id="zaman-cizgisi">
+            <div class="isaretler" id="isaretler" aria-hidden="true"></div>
+            <input type="range" id="konum" min="0" max="1000" value="0" data-t-baslik="oynatici.zaman" aria-label="Zaman çizgisi">
+            <div class="balon" id="balon" hidden></div>
+          </div>
+          <div class="dugme-satiri">
+            <button id="oynat" class="simge-dugme buyuk" data-t-baslik="oynatici.oynat" title="Oynat" aria-label="Oynat">
+              <svg class="oynat-simge"><use href="#s-oynat"/></svg><svg class="duraklat-simge"><use href="#s-duraklat"/></svg></button>
+            <button id="geri" class="simge-dugme" data-t-baslik="oynatici.geri" title="5 saniye geri" aria-label="5 saniye geri"><svg><use href="#s-geri"/></svg></button>
+            <button id="ileri" class="simge-dugme" data-t-baslik="oynatici.ileri" title="5 saniye ileri" aria-label="5 saniye ileri"><svg><use href="#s-ileri"/></svg></button>
+            <span class="sure" id="sure">0:00 / 0:00</span>
+            <span class="bosluk"></span>
+            <div class="surum" id="surum" role="group" data-t-baslik="oynatici.surum" aria-label="Hangi ses" hidden>
+              <button id="surum-orijinal" data-t="oynatici.orijinal">Orijinal</button>
+              <button id="surum-dublaj" class="secili" data-t="oynatici.dublajli">Dublajlı</button>
+            </div>
+            <button id="sessiz" class="simge-dugme" data-t-baslik="oynatici.sessiz" title="Sesi kapat" aria-label="Sesi kapat">
+              <svg class="ses-simge"><use href="#s-ses"/></svg><svg class="sessiz-simge"><use href="#s-sessiz"/></svg></button>
+            <input type="range" id="ses" class="ses-kaydirici" min="0" max="1" step="0.05" value="1" data-t-baslik="oynatici.ses" aria-label="Ses düzeyi">
+            <select id="hiz" data-t-baslik="oynatici.hiz" aria-label="Oynatma hızı">
+              <option value="0.75">0.75×</option><option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
+            <button id="altyazi" class="simge-dugme" data-t-baslik="oynatici.altyazi" title="Altyazı aç / kapa" aria-label="Altyazı aç / kapa" hidden><svg><use href="#s-altyazi"/></svg></button>
+            <button id="tam-ekran" class="simge-dugme" data-t-baslik="oynatici.tam_ekran" title="Tam ekran" aria-label="Tam ekran"><svg><use href="#s-tam"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="cubuk ince" id="yukleme-cubugu" hidden><div></div></div>
+      <div class="video-alti">
+        <span id="dosya-yazi" class="not"></span>
+        <button id="baska-video" class="metin-dugme" data-t="oynatici.baska" hidden>Başka video seç</button>
+      </div>
+      <input type="url" id="baglanti" maxlength="2048" autocomplete="off" data-t-ipucu="web.baglanti_ipucu"
+             placeholder="ya da https bağlantısı yapıştır (isteğe bağlı: yt-dlp / gallery-dl kurulu olmalı; yalnız hakkınız olan içerik)">
     </div>
 
-    <h2 data-t="adim.baslat">3. Başlat</h2>
-    <div class="satir">
-      <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
-      <button id="transkript" disabled data-t="dugme.transkript">Yalnız altyazı / metin çıkar</button>
-    </div>
-    <p class="not" data-t="onerilen.not1">Önerilen akış önerilen varsayılanlarla çalışır: konuşmayı yazıya döker, kelime zamanlarını hizalar, konuşmacıları ayırıp her birine kadın/erkek sesine uygun bir ses verir, çevirir, seslendirir ve altyazıyı ekler.</p>
-    <p class="not" data-t="onerilen.not2">Ayarların hepsi "Gelişmiş" sekmesindedir; orada değiştirdiğiniz her şey buradaki düğmeler için de geçerlidir. Birlikte çalışmayan seçimler başlatırken açık hata mesajıyla durdurulur (docs/tarifler/kombinasyonlar.md).</p>
-    <p class="not" data-t="onerilen.not3">Başka bir dile dublaj: yukarıdaki "Dublaj dili" listesinden seçin (Gelişmiş sekmesindeki genel.hedef_dil ile aynı ayardır). Türkçe dışındaki diller ve İngilizce dışındaki kaynak videolar için bir LLM çeviri arka ucu gerekir (Codex, Claude Code ya da kendi API anahtarınız; docs/baslarken.md).</p>
-    <p class="not" data-t="onerilen.not4">Yalnız hakkınız olan ya da izinli içerik kullanın. Çıktıya "yapay zekâ ile dublajlandı" meta etiketi eklenir.</p>
-  </section>
+    <div class="yan">
+      <div class="kart">
+        <h2 data-t="adim.dil">2. Dublaj dili</h2>
+        <!-- Ayarlar'daki genel.hedef_dil ile aynı ayar (app.js onerilenDiliEsitle); ayrı kaynak yok -->
+        <label for="hedef-dil" class="gizli-etiket" data-t="adim.dil">2. Dublaj dili</label>
+        <select id="hedef-dil" class="dil-secici"></select>
+        <h2 data-t="adim.baslat">3. Başlat</h2>
+        <div class="satir">
+          <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
+          <button id="transkript" disabled data-t="dugme.transkript">Yalnız altyazı / metin çıkar</button>
+        </div>
+      </div>
 
-  <section id="gelismis" class="panel">
-    <p class="not" data-t="gelismis.not">Değiştirdiğiniz ayarlar işaretlenir ve yalnız bu oturumda geçerlidir. Kalıcı yapmak için aynı anahtarları ayarlar/kullanici.toml dosyasına yazın.</p>
-    <div class="satir"><button id="sifirla" data-t="dugme.varsayilan">Varsayılana dön</button></div>
-    <div id="form"></div>
+      <div class="kart" id="ilerleme" hidden>
+        <div class="ilerleme-ust">
+          <h2 id="ilerleme-baslik" data-t="ilerleme.calisiyor">İş sürüyor</h2>
+          <span id="ilerleme-yuzde" class="buyuk-yuzde"></span>
+        </div>
+        <ol id="duraklar" class="duraklar"></ol>
+        <div id="ilerleme-cerceve" class="cubuk kalin" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+             aria-valuenow="0"><div id="ilerleme-cubugu"></div></div>
+        <p class="saat-satiri"><span id="kronometre" class="kronometre"></span> <span id="kalan" class="not"></span>
+          <span id="ilerleme-yazi" class="not"></span></p>
+        <h3 data-t="ilerleme.ne_oluyor">Şimdi ne oluyor?</h3>
+        <ol id="anlati" class="anlati" role="status" aria-live="polite"></ol>
+        <div class="satir">
+          <button id="durdur" data-t="dugme.durdur">Durdur</button>
+          <button id="gunluk-ac" data-t="dugme.gunluk_goster">Teknik günlüğü göster</button>
+        </div>
+        <pre id="gunluk" hidden></pre>
+      </div>
+
+      <div class="kart" id="sonuc" hidden>
+        <h2 data-t="web.sonuc">Sonuç</h2>
+        <ul id="sonuc-dosyalari" class="dosya-listesi"></ul>
+        <div class="satir"><button id="klasor-ac" data-t="dugme.cikti_klasoru">Çıktı klasörünü aç</button></div>
+      </div>
+      <p id="hata" class="hata" hidden></p>
+    </div>
   </section>
 
   <section id="isler" class="panel">
@@ -66,45 +155,51 @@
     <div id="sorunlu-liste" class="is-listesi"></div>
     <h2 data-t="isler.gecmis">Geçmiş</h2>
     <div id="is-listesi" class="is-listesi"></div>
-    <div id="is-secenek" hidden>
+    <div id="is-secenek" class="kart" hidden>
       <h2 id="is-secenek-baslik"></h2>
       <div class="satir">
         <label><span data-t="isler.ilk_asama">Yeniden çalışacak ilk aşama</span> <select id="is-asama"></select></label>
-        <label class="kutu"><input type="checkbox" id="is-gelismis"> <span data-t="isler.gelismis_ile_web">Gelişmiş sekmesindeki değişikliklerle</span></label>
+        <label class="kutu"><input type="checkbox" id="is-gelismis"> <span data-t="isler.gelismis_ile_web">Ayarlar'da değiştirdiklerimle</span></label>
       </div>
       <div class="satir"><button id="is-yeniden" class="ana" data-t="isler.yeniden_web">Bu aşamadan yeni işe kopyalayarak çalıştır</button>
         <button id="is-secenek-kapat" data-t="isler.kapat">Kapat</button></div>
     </div>
   </section>
-
-  <section id="ilerleme" hidden>
-    <div class="ilerleme-ust">
-      <h2 id="ilerleme-baslik" data-t="ilerleme.calisiyor">İş sürüyor</h2>
-      <span id="ilerleme-yuzde" class="buyuk-yuzde"></span>
-    </div>
-    <ol id="duraklar" class="duraklar"></ol>
-    <div id="ilerleme-cerceve" class="cubuk kalin" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-         aria-valuenow="0"><div id="ilerleme-cubugu"></div></div>
-    <p class="saat-satiri"><span id="kronometre" class="kronometre"></span> <span id="kalan" class="not"></span>
-      <span id="ilerleme-yazi" class="not"></span></p>
-    <h3 data-t="ilerleme.ne_oluyor">Şimdi ne oluyor?</h3>
-    <ol id="anlati" class="anlati" role="status" aria-live="polite"></ol>
-    <div class="satir">
-      <button id="durdur" data-t="dugme.durdur">Durdur</button>
-      <button id="gunluk-ac" data-t="dugme.gunluk_goster">Teknik günlüğü göster</button>
-    </div>
-    <pre id="gunluk" hidden></pre>
-  </section>
-
-  <section id="sonuc" hidden>
-    <h2 data-t="web.sonuc">Sonuç</h2>
-    <video id="onizleme" controls preload="metadata" hidden></video>
-    <ul id="sonuc-dosyalari"></ul>
-    <div class="satir"><button id="klasor-ac" data-t="dugme.cikti_klasoru">Çıktı klasörünü aç</button></div>
-  </section>
-
-  <p id="hata" class="hata" hidden></p>
 </main>
+
+<!-- Ayarlar: sağdan açılan çekmece; video ekranı arkada açık kalır -->
+<aside id="gelismis" class="cekmece" hidden aria-labelledby="ayarlar-baslik">
+  <div class="cekmece-ust">
+    <h2 id="ayarlar-baslik" data-t="sekme.gelismis">Ayarlar</h2>
+    <button id="ayarlar-kapat" class="simge-dugme" data-t-baslik="pencere.kapat" title="Kapat" aria-label="Kapat"><svg><use href="#s-kapat"/></svg></button>
+  </div>
+  <input type="search" id="ayar-ara" data-t-ipucu="ayarlar.ara" placeholder="Ayarlarda ara…" aria-label="Ayarlarda ara…">
+  <p class="not" data-t="gelismis.not">Değiştirdiğiniz ayarlar işaretlenir ve yalnız bu oturumda geçerlidir. Kalıcı yapmak için aynı anahtarları ayarlar/kullanici.toml dosyasına yazın.</p>
+  <div class="satir"><button id="sifirla" data-t="dugme.varsayilan">Varsayılana dön</button></div>
+  <p id="ayar-sonuc-yok" class="not" data-t="ayarlar.sonuc_yok" hidden>Aramaya uyan ayar yok.</p>
+  <div id="form"></div>
+</aside>
+<div id="perde" class="perde" hidden></div>
+
+<dialog id="yardim" aria-labelledby="yardim-baslik">
+  <div class="cekmece-ust">
+    <h2 id="yardim-baslik" data-t="yardim.baslik">Nasıl kullanılır?</h2>
+    <button id="yardim-kapat" class="simge-dugme" data-t-baslik="pencere.kapat" title="Kapat" aria-label="Kapat"><svg><use href="#s-kapat"/></svg></button>
+  </div>
+  <p data-t="yardim.adimlar">Videonu seç, dublaj dilini seç, düğmeye bas. İş bitince yeni video burada oynar; "Orijinal" ile "Dublajlı" arasında tek tıkla geçebilirsin.</p>
+  <p class="not" data-t="onerilen.not1">Dublaj düğmesi önerilen varsayılanlarla çalışır: konuşmayı yazıya döker, kelime zamanlarını hizalar, konuşmacıları ayırıp her birine kadın/erkek sesine uygun bir ses verir, çevirir, seslendirir ve altyazıyı ekler.</p>
+  <p class="not" data-t="onerilen.not2">Bütün ayarlar üst çubuktaki "Ayarlar" bölümündedir; orada değiştirdiğiniz her şey buradaki düğmeler için de geçerlidir. Birlikte çalışmayan seçimler başlatırken açık hata mesajıyla durdurulur (docs/tarifler/kombinasyonlar.md).</p>
+  <p class="not" data-t="onerilen.not3">Başka bir dile dublaj: "Dublaj dili" listesinden seçin (Ayarlar'daki genel.hedef_dil ile aynı ayardır). Türkçe dışındaki diller ve İngilizce dışındaki kaynak videolar için bir LLM çeviri arka ucu gerekir (Codex, Claude Code ya da kendi API anahtarınız; docs/baslarken.md).</p>
+  <p class="not" data-t="onerilen.not4">Yalnız hakkınız olan ya da izinli içerik kullanın. Çıktıya "yapay zekâ ile dublajlandı" meta etiketi eklenir.</p>
+  <h3 data-t="yardim.kisayollar">Klavye kısayolları</h3>
+  <ul class="kisayollar">
+    <li data-t="kisayol.oynat">Boşluk: oynat / duraklat</li>
+    <li data-t="kisayol.sar">← →: 5 saniye geri / ileri</li>
+    <li data-t="kisayol.ses">↑ ↓: sesi aç / kıs, M: sessiz</li>
+    <li data-t="kisayol.ekran">F: tam ekran, C: altyazı aç / kapa</li>
+    <li data-t="kisayol.kapat">Esc: açık pencereyi kapat</li>
+  </ul>
+</dialog>
 <script src="/app.js"></script>
 </body>
 </html>

@@ -208,9 +208,8 @@ for the rest (acceptance test: 7.38 s source, 9.27 s dub, +25.6 %, `Sure Farki` 
 **The install is finished** when step 3 says `READY` and step 4 produced the video. Then:
 
 1. Open the desktop app for the user: `Start-Process .venv\Scripts\dubla-gui.exe` (next time they double-click
-   `arayuz.cmd`). Known limit: in the acceptance test the app did not close within 4 s on a window close message
-   (WM_CLOSE; cause not measured). If you opened it only for a check and must close it, end its process tree
-   (`taskkill /PID <pid> /T`) instead of waiting.
+   `arayuz.cmd`). It opens the web UI in an Edge (or Chrome) app window with its own profile; when that window is closed the
+   program stops by itself about 25 s later. If you opened it only for a check, close the window.
 2. Tell them in plain words: where it is installed, GPU or CPU, how to start it (`arayuz.cmd`), where results go
    (the `cikti` folder) and that `docs/getting-started.md` (Turkish: `docs/baslarken.md`) explains the rest.
 3. Translation: the default `ceviri.arka_uc = auto` uses the Codex CLI or the Claude Code CLI when one of them is
@@ -272,7 +271,7 @@ scripts\kur.ps1                 installer (steps above); scripts\modeller.json =
 runtime_assets\                 Python, uv, models, FFmpeg, optional engines (created by the installer)
 cikti\                          outputs and the job database (default output folder)
 ayarlar\                        personal settings (kullanici.toml) and license records; not in git
-src\dublaj_hatti\               the package (commands dubla, dubla-gui, dubla-web)
+src\dublaj_hatti\               the package (commands dubla, dubla-gui = web UI in its own window, dubla-web)
 docs\                           getting-started / baslarken (users), installation / kurulum (full reference)
 ```
 

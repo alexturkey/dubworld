@@ -7,7 +7,7 @@ Importlar paket adiyladir, ornegin `from dublaj_hatti.bolum_00_omurga.core.dubbe
 
 ```text
 src/dublaj_hatti/
-  cli.py, gui.py, web.py        dubla, dubla-gui, dubla-web girisleri; asama_komutlari.py tek asama komutlari
+  cli.py, masaustu.py, web.py   dubla, dubla-gui (web arayuzu kendi penceresinde), dubla-web girisleri; asama_komutlari.py tek asama komutlari
   api.py                        Python API (asama islevleri)
   yapilandirma.py, varsayilan.toml  ayar katmanlari ve "Onerilen akis" varsayilanlari
   kayit.py, lisans_onayi.py     motor kaydi (lisans, donanim) ve tek lisans kapisi

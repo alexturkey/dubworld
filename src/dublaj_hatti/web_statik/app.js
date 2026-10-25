@@ -46,8 +46,17 @@ function yaz(oge, anahtar, degerler) {
 function dilUygula() {
   document.documentElement.lang = DIL;
   document.querySelectorAll("[data-t]").forEach((o) => { o.textContent = t(o.dataset.t, JSON.parse(o.dataset.tDeger || "{}")); });
-  document.querySelectorAll("[data-t-ipucu]").forEach((o) => { o.placeholder = t(o.dataset.tIpucu); });
+  document.querySelectorAll("[data-t-ipucu]").forEach((o) => {
+    o.placeholder = t(o.dataset.tIpucu);
+    if (o.hasAttribute("aria-label")) o.setAttribute("aria-label", t(o.dataset.tIpucu));
+  });
+  document.querySelectorAll("[data-t-baslik]").forEach((o) => {
+    const metin = t(o.dataset.tBaslik);
+    if (o.tagName === "BUTTON" || o.hasAttribute("title")) o.title = metin;
+    o.setAttribute("aria-label", metin);
+  });
 }
+function baslikYaz(oge, anahtar) { oge.dataset.tBaslik = anahtar; const m = t(anahtar); oge.title = m; oge.setAttribute("aria-label", m); }
 function yerelDil() { try { return localStorage.getItem(YEREL_DIL) || ""; } catch (_) { return ""; } }
 function yerelDilYaz(kod) { try { localStorage.setItem(YEREL_DIL, kod); } catch (_) { /* gizli pencere: yalnız bu sayfa */ } }
 async function dilYukle(secim) {
@@ -59,6 +68,7 @@ async function dilYukle(secim) {
   secici.replaceChildren(...v.diller.map((d) => { const o = document.createElement("option"); o.value = d.kod; o.textContent = d.ad; return o; }));
   secici.value = DIL;
   dilUygula();
+  temaDugmesi();
 }
 async function formYukle(oncekiDegisiklik) {
   const v = await api("/api/ayarlar?dil=" + encodeURIComponent(DIL));
@@ -85,10 +95,51 @@ $("arayuz-dili").addEventListener("change", async (e) => {
 function dosyaAdresi(yol) { return "/dosya?yol=" + encodeURIComponent(yol); }
 
 // --- sekmeler ---------------------------------------------------------------------------------------
+function cekmece(acik) {
+  $("gelismis").hidden = !acik; $("perde").hidden = !acik;
+  document.querySelector('.sekme[data-sekme="gelismis"]').setAttribute("aria-expanded", String(acik));
+  if (acik) $("ayar-ara").focus();
+}
+function sayfaAc(ad) {
+  document.querySelectorAll(".sekme").forEach((x) => { if (x.dataset.sekme !== "gelismis") x.classList.toggle("etkin", x.dataset.sekme === ad); });
+  document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("etkin", p.id === ad));
+}
 document.querySelectorAll(".sekme").forEach((d) => d.addEventListener("click", () => {
-  document.querySelectorAll(".sekme").forEach((x) => x.classList.toggle("etkin", x === d));
-  document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("etkin", p.id === d.dataset.sekme));
+  if (d.dataset.sekme === "gelismis") cekmece($("gelismis").hidden); else { cekmece(false); sayfaAc(d.dataset.sekme); }
 }));
+$("ayarlar-kapat").addEventListener("click", () => cekmece(false));
+$("perde").addEventListener("click", () => cekmece(false));
+$("ayar-ara").addEventListener("input", (e) => {  // anahtar, açıklama ya da bölüm adında arar
+  const aranan = e.target.value.trim().toLocaleLowerCase(DIL);
+  let gorunen = 0;
+  document.querySelectorAll("#form fieldset").forEach((fs) => {
+    let bolumde = 0;
+    fs.querySelectorAll(".alan").forEach((a) => {
+      const uygun = !aranan || a.textContent.toLocaleLowerCase(DIL).includes(aranan)
+        || fs.querySelector("legend").textContent.toLocaleLowerCase(DIL).includes(aranan);
+      a.hidden = !uygun; if (uygun) bolumde++;
+    });
+    fs.hidden = !bolumde; gorunen += bolumde;
+  });
+  $("ayar-sonuc-yok").hidden = gorunen > 0;
+});
+
+// --- tema: bilgisayarın ayarı ya da elle seçim (bu tarayıcıda hatırlanır) -------------------------------
+const YEREL_TEMA = "dubworld.tema";
+const koyuMu = () => (document.documentElement.dataset.tema || (matchMedia("(prefers-color-scheme: dark)").matches ? "koyu" : "acik")) === "koyu";
+function temaDugmesi() { baslikYaz($("tema"), koyuMu() ? "ust.tema_acik" : "ust.tema_koyu"); }
+try { const k = localStorage.getItem(YEREL_TEMA); if (k === "acik" || k === "koyu") document.documentElement.dataset.tema = k; } catch (_) { /* yok */ }
+$("tema").addEventListener("click", () => {
+  const yeni = koyuMu() ? "acik" : "koyu";
+  document.documentElement.dataset.tema = yeni;
+  try { localStorage.setItem(YEREL_TEMA, yeni); } catch (_) { /* gizli pencere */ }
+  temaDugmesi();
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", temaDugmesi);
+
+// --- yardım penceresi ------------------------------------------------------------------------------------
+$("yardim-ac").addEventListener("click", () => $("yardim").showModal());
+$("yardim-kapat").addEventListener("click", () => $("yardim").close());
 
 // --- Gelişmiş: şemadan üretilen form ------------------------------------------------------------------
 function alanCiz(alan) {
@@ -229,6 +280,7 @@ $("sifirla").addEventListener("click", formCiz);
 function dosyaYukle(dosya) {
   hataGoster("");
   yuklenen = null;
+  oynaticiYukle({ orijinal: URL.createObjectURL(dosya) });
   $("dublajla").disabled = $("transkript").disabled = true;
   yaz($("dosya-yazi"), "web.yukleniyor", { ad: dosya.name });
   const cubuk = $("yukleme-cubugu");
@@ -246,6 +298,7 @@ function dosyaYukle(dosya) {
     yuklenen = veri.kimlik;
     baglanti = ""; $("baglanti").value = "";
     yaz($("dosya-yazi"), "web.yuklendi", { ad: dosya.name, mb: (dosya.size / 1048576).toFixed(1) });
+    cubuk.hidden = true;
     $("dublajla").disabled = $("transkript").disabled = false;
   };
   istek.onerror = () => hataGoster(t("web.yukleme_koptu"));
@@ -257,6 +310,7 @@ $("baglanti").addEventListener("input", (e) => {
   $("dublajla").disabled = $("transkript").disabled = !(yuklenen || baglantiHazir());
 });
 $("dosya").addEventListener("change", (e) => { if (e.target.files[0]) dosyaYukle(e.target.files[0]); });
+$("baska-video").addEventListener("click", () => $("dosya").click());
 const alan = $("dosya-alani");
 alan.addEventListener("dragover", (e) => { e.preventDefault(); alan.classList.add("uzerinde"); });
 alan.addEventListener("dragleave", () => alan.classList.remove("uzerinde"));
@@ -279,7 +333,10 @@ async function baslat(isTuru) {
       await api("/api/baslat", Object.assign({}, govde, { lisans_onay: true }));
     }
     $("sonuc").hidden = true;
+    gosterilenSonuc = "";
     izle();
+    $("ilerleme").hidden = false;
+    $("ilerleme").scrollIntoView({ block: "nearest", behavior: hareketAz() ? "auto" : "smooth" });
   } catch (e) { hataGoster(e.message); }
 }
 $("dublajla").addEventListener("click", () => baslat("dublaj"));
@@ -375,14 +432,19 @@ function durumCiz(d) {
   gunluk.textContent = (d.gunluk || []).join("\n");
   if (altta) gunluk.scrollTop = gunluk.scrollHeight;
   if (d.durum === "hata") hataGoster(d.hata);
-  if (d.durum === "bitti") sonucCiz(d.sonuc || {}, d.ciktilar || []);
+  if (d.durum === "bitti") sonucCiz(d.sonuc || {}, d.ciktilar || [], d.orijinal);
 }
 
-function sonucCiz(sonuc, ciktilar) {
+let gosterilenSonuc = "";
+function sonucCiz(sonuc, ciktilar, kaynak) {
   $("sonuc").hidden = false;
   const video = sonuc.dubbed_video || sonuc.output_video;
-  const oynatici = $("onizleme");
-  if (video) { oynatici.src = dosyaAdresi(video); oynatici.hidden = false; } else { oynatici.hidden = true; }
+  const srt = sonuc.srt_path || (ciktilar.find((c) => /\.srt$/i.test(c.yol)) || {}).yol;
+  if (video && gosterilenSonuc !== video) {  // her yoklamada yeniden yüklenmesin
+    gosterilenSonuc = video;
+    const orijinal = oynatici.orijinal || (kaynak ? dosyaAdresi(kaynak) : "");
+    oynaticiYukle({ orijinal, dublaj: dosyaAdresi(video), srt: srt ? dosyaAdresi(srt) : "" });
+  }
   const liste = $("sonuc-dosyalari");
   const yollar = new Set(Object.entries(sonuc).filter(([k]) => k !== "run_dir").map(([, v]) => v));
   ciktilar.forEach((c) => yollar.add(c.yol));
@@ -456,7 +518,11 @@ function isSatiri(o, sorunlu) {
   const devamVar = !sorunlu || (o.devam_secenekleri || []).length > 0;
   if (sorunluMu && o.komut === "dubla" && devamVar) dugmeler.append(dugme(t("isler.devam"), () => devamEt({ is: o.is })));
   if ((sorunluMu || o.durum === "completed") && o.komut === "dubla") dugmeler.append(dugme(t("isler.asamadan_dugme"), () => secenekAc(o.is)));
-  if (o.video) dugmeler.append(dugme(t("dugme.videoyu_ac"), () => window.open(dosyaAdresi(o.video), "_blank", "noopener")));
+  if (o.video) dugmeler.append(dugme(t("dugme.videoyu_ac"), () => {
+    sayfaAc("onerilen");
+    oynaticiYukle({ orijinal: o.orijinal ? dosyaAdresi(o.orijinal) : "", dublaj: dosyaAdresi(o.video),
+      srt: o.srt ? dosyaAdresi(o.srt) : "" });
+  }));
   if (o.klasor) dugmeler.append(dugme(t("isler.klasor"), () => api("/api/klasor_ac", { yol: o.klasor }).catch((e) => hataGoster(e.message))));
   if (o.durum === "queued" || o.durum === "deferred")
     dugmeler.append(dugme(t("isler.iptal"), () => api("/api/is_iptal", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
@@ -485,6 +551,144 @@ $("isler-yenile").addEventListener("click", islerYukle);
 $("arsiv-goster").addEventListener("change", islerYukle);
 document.querySelector('.sekme[data-sekme="isler"]').addEventListener("click", islerYukle);
 
+// --- oynatıcı: kendi kontrolleri, orijinal / dublajlı geçişi, altyazı, cümle işaretli zaman çizgisi ----------
+const video = $("video");
+const oynatici = { orijinal: "", dublaj: "", cumleler: [], izAdresi: "" };
+function srtCoz(metin) {  // SRT → [{bas, son, yazi}] (saniye)
+  const sn = (z) => { const [s, d, r] = z.replace(",", ".").split(":"); return (+s) * 3600 + (+d) * 60 + parseFloat(r); };
+  return metin.replace(/\r/g, "").split(/\n\s*\n/).map((blok) => {
+    const satirlar = blok.trim().split("\n");
+    const i = satirlar.findIndex((x) => x.includes("-->"));
+    if (i < 0) return null;
+    const [a, b] = satirlar[i].split("-->").map((x) => x.trim().split(" ")[0]);
+    return { bas: sn(a), son: sn(b), yazi: satirlar.slice(i + 1).join(" ") };
+  }).filter(Boolean);
+}
+function vttYap(cumleler) {
+  const z = (x) => new Date(x * 1000).toISOString().slice(11, 23);
+  return "WEBVTT\n\n" + cumleler.map((c) => `${z(c.bas)} --> ${z(c.son)}\n${c.yazi}`).join("\n\n") + "\n";
+}
+function surumSec(ad) {
+  const adres = ad === "orijinal" ? oynatici.orijinal : oynatici.dublaj;
+  if (!adres) return;
+  const an = video.currentTime, oynuyor = !video.paused;
+  video.src = adres;
+  video.addEventListener("loadedmetadata", () => { video.currentTime = Math.min(an, video.duration || an); if (oynuyor) video.play(); }, { once: true });
+  $("surum-orijinal").classList.toggle("secili", ad === "orijinal");
+  $("surum-dublaj").classList.toggle("secili", ad === "dublaj");
+  $("surum-orijinal").setAttribute("aria-pressed", String(ad === "orijinal"));
+  $("surum-dublaj").setAttribute("aria-pressed", String(ad === "dublaj"));
+}
+async function oynaticiYukle(v) {
+  if (v.orijinal !== undefined) oynatici.orijinal = v.orijinal;
+  oynatici.dublaj = v.dublaj || "";
+  oynatici.cumleler = [];
+  video.querySelectorAll("track").forEach((x) => x.remove());
+  if (oynatici.izAdresi) { URL.revokeObjectURL(oynatici.izAdresi); oynatici.izAdresi = ""; }
+  $("dosya-alani").hidden = true; video.hidden = false; $("kontroller").hidden = false; $("baska-video").hidden = false;
+  $("surum").hidden = !(oynatici.orijinal && oynatici.dublaj);
+  video.src = oynatici.dublaj || oynatici.orijinal;
+  surumSec(oynatici.dublaj ? "dublaj" : "orijinal");
+  $("altyazi").hidden = true;
+  if (v.srt) {
+    try {
+      const yanit = await fetch(v.srt);
+      oynatici.cumleler = srtCoz(await yanit.text());
+      oynatici.izAdresi = URL.createObjectURL(new Blob([vttYap(oynatici.cumleler)], { type: "text/vtt" }));
+      const iz = document.createElement("track");
+      iz.kind = "subtitles"; iz.src = oynatici.izAdresi; iz.srclang = DIL; iz.default = true;
+      video.appendChild(iz);
+      $("altyazi").hidden = false;
+      $("oynatici").classList.add("altyazi-acik");
+    } catch (_) { /* altyazı yoksa video yine oynar */ }
+  }
+  isaretleriCiz();
+}
+function isaretleriCiz() {
+  const uzunluk = video.duration;
+  $("isaretler").replaceChildren(...(uzunluk ? oynatici.cumleler.map((c) => {
+    const o = document.createElement("span"); o.style.left = (100 * c.bas / uzunluk) + "%"; return o; }) : []));
+}
+function sureCiz() {
+  const u = video.duration || 0;
+  $("sure").textContent = saatYaz(video.currentTime) + " / " + saatYaz(u);
+  if (!konumTutuluyor) $("konum").value = u ? Math.round(1000 * video.currentTime / u) : 0;
+}
+let konumTutuluyor = false;
+video.addEventListener("loadedmetadata", () => { sureCiz(); isaretleriCiz(); });
+video.addEventListener("timeupdate", sureCiz);
+video.addEventListener("play", () => { $("oynatici").classList.add("oynatiyor"); baslikYaz($("oynat"), "oynatici.duraklat"); });
+video.addEventListener("pause", () => { $("oynatici").classList.remove("oynatiyor"); baslikYaz($("oynat"), "oynatici.oynat"); });
+video.addEventListener("volumechange", () => {
+  $("oynatici").classList.toggle("sessizde", video.muted || video.volume === 0);
+  baslikYaz($("sessiz"), video.muted ? "oynatici.sesi_ac" : "oynatici.sessiz");
+  $("ses").value = video.muted ? 0 : video.volume;
+});
+video.addEventListener("error", () => { if (video.src) hataGoster(t("oynatici.hazir_degil")); });
+video.addEventListener("click", () => (video.paused ? video.play() : video.pause()));
+$("oynat").addEventListener("click", () => (video.paused ? video.play() : video.pause()));
+$("geri").addEventListener("click", () => { video.currentTime = Math.max(0, video.currentTime - 5); });
+$("ileri").addEventListener("click", () => { video.currentTime = Math.min(video.duration || 0, video.currentTime + 5); });
+$("sessiz").addEventListener("click", () => { video.muted = !video.muted; });
+$("ses").addEventListener("input", (e) => { video.volume = +e.target.value; video.muted = +e.target.value === 0; });
+$("hiz").addEventListener("change", (e) => { video.playbackRate = +e.target.value; });
+$("surum-orijinal").addEventListener("click", () => surumSec("orijinal"));
+$("surum-dublaj").addEventListener("click", () => surumSec("dublaj"));
+$("altyazi").addEventListener("click", () => {
+  const iz = video.textTracks[0];
+  if (!iz) return;
+  iz.mode = iz.mode === "showing" ? "hidden" : "showing";
+  $("oynatici").classList.toggle("altyazi-acik", iz.mode === "showing");
+});
+$("tam-ekran").addEventListener("click", () => (document.fullscreenElement ? document.exitFullscreen() : $("oynatici").requestFullscreen()));
+const konum = $("konum");
+konum.addEventListener("pointerdown", () => { konumTutuluyor = true; });
+konum.addEventListener("change", () => { konumTutuluyor = false; });
+konum.addEventListener("input", () => { if (video.duration) video.currentTime = video.duration * konum.value / 1000; });
+konum.addEventListener("mousemove", (e) => {  // üstüne gelince o andaki cümle
+  const kutu = konum.getBoundingClientRect();
+  const oran = Math.min(1, Math.max(0, (e.clientX - kutu.left) / kutu.width));
+  const an = oran * (video.duration || 0);
+  const c = oynatici.cumleler.find((x) => an >= x.bas && an <= x.son);
+  const balon = $("balon");
+  balon.hidden = !video.duration;
+  balon.textContent = saatYaz(an) + (c ? " · " + c.yazi : "");
+  balon.style.left = (oran * 100) + "%";
+});
+konum.addEventListener("mouseleave", () => { $("balon").hidden = true; });
+
+// Klavye: yazı alanındayken çalışmaz; Esc açık çekmeceyi kapatır (yardım penceresini tarayıcı kapatır).
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("gelismis").hidden) { cekmece(false); return; }
+  const hedef = e.target;
+  if (e.ctrlKey || e.altKey || e.metaKey || /^(INPUT|SELECT|TEXTAREA)$/.test(hedef.tagName) && hedef.type !== "range") return;
+  if (video.hidden || !$("onerilen").classList.contains("etkin") || !$("gelismis").hidden) return;
+  const k = e.key.toLowerCase();
+  const islem = {
+    " ": () => (video.paused ? video.play() : video.pause()), "k": () => (video.paused ? video.play() : video.pause()),
+    "arrowleft": () => { video.currentTime = Math.max(0, video.currentTime - 5); },
+    "arrowright": () => { video.currentTime = Math.min(video.duration || 0, video.currentTime + 5); },
+    "arrowup": () => { video.muted = false; video.volume = Math.min(1, video.volume + 0.1); },
+    "arrowdown": () => { video.volume = Math.max(0, video.volume - 0.1); },
+    "m": () => { video.muted = !video.muted; }, "f": () => $("tam-ekran").click(), "c": () => $("altyazi").click(),
+  }[k];
+  if (islem && !(hedef.tagName === "BUTTON" && k === " ")) { e.preventDefault(); islem(); }
+});
+
+// Kurulum eksikse sayfanın üstünde açık uyarı (dubla kontrol ile aynı ölçüt).
+async function kurulumDenetle() {
+  try {
+    const v = await api("/api/kurulum");
+    const uyari = $("kurulum-uyari");
+    if (v.eksik && v.eksik.length) yaz(uyari, "kurulum.eksik", { eksik: v.eksik.join(", ") });
+    uyari.hidden = !(v.eksik && v.eksik.length);
+  } catch (_) { /* denetim sayfayı hiçbir zaman düşürmez */ }
+}
+
 // Açılış: önce dil (sözlük gelmezse sayfadaki Türkçe yedek kalır), sonra o dilde ayar formu.
-dilYukle(yerelDil()).catch(() => {}).then(() => { izle(); return formYukle(); }).catch((e) => hataGoster(e.message));
+// Masaüstü penceresi (dubla-gui) kapandı mı: sayfa açık oldukça sunucu nabız görür. İş sürerken kapatmadan önce sorulur.
+setInterval(() => { api("/api/nabiz").catch(() => {}); }, 10000);
+window.addEventListener("beforeunload", (e) => { if (sonDurum && sonDurum.durum === "calisiyor") { e.preventDefault(); e.returnValue = ""; } });
+temaDugmesi();
+dilYukle(yerelDil()).catch(() => {}).then(() => { izle(); kurulumDenetle(); return formYukle(); }).catch((e) => hataGoster(e.message));
 

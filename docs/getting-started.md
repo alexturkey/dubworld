@@ -31,7 +31,7 @@ words, **what kind of setup you want**: quick, recommended for your computer, or
 does, how much disk space and time it needs and what its license allows. It also asks whether you accept the terms
 of use of the voice the program speaks with. In short they say: do not imitate real people, do not deceive, and
 tell your viewers that the voice is computer-made. If you agree, answer "yes". Then it downloads everything, tests
-it on a small sample video and opens the program window. The program's window is in Turkish for now.
+it on a small sample video and opens the program window (in English or Turkish, as you choose).
 
 The download is about 13 GB (9.5 GB without an NVIDIA card); measured first installs took about 38 minutes (without an NVIDIA card) and about 44 minutes (with one; most of it
 was the model download). A faster connection is quicker.
@@ -48,34 +48,37 @@ was the model download). A faster connection is quicker.
 
 ## Your first dub
 
-1. In the program folder double-click **`arayuz.cmd`**. The program window opens. The window is in Turkish; the
-   word list below translates every button.
-2. Stay on the first tab, **Önerilen akış** (recommended flow). Click **Video seç…** and choose your video.
-3. Under **Dublaj dili** (dubbing language) pick the language. Every language is written in its own words
-   (Türkçe, English, Deutsch, Français, 日本語 …); Türkçe is selected unless you change it. The big button takes the
-   language's name: **Türkçe dublajla**, **English dublajla**, **Deutsch dublajla** …
-4. Click that button (**Türkçe dublajla** = dub into Turkish). The first time a window asks you to accept the voice's terms of
-   use (see above); click **Yes** if you agree.
-5. Wait. The bar at the bottom shows how far it is. On a computer without an NVIDIA graphics card it is slower.
-6. When it says **Bitti** (done), click **Videoyu aç** (open video) to watch it, or **Çıktı klasörünü aç** (open the
-   output folder). Results are kept in the `cikti` folder inside the program folder.
+1. In the program folder double-click **`arayuz.cmd`**. The program opens in its own window. Its screens are in
+   English and Turkish: pick one at the top right (next to the globe). The moon / sun button switches between night
+   and day colours; the **?** button shows a short help and the keyboard shortcuts.
+2. Stay on the first tab, **Dub**. Drop your video onto the big box, or click the box and choose the video. It plays
+   right there, before anything is uploaded.
+3. Under **Choose the language** pick the dubbing language. Every language also shows its own name
+   (Türkçe, English, Deutsch, Français, 日本語 …); Turkish is selected unless you change it. The big button takes the
+   language's name: **Dub into Turkish**, **Dub into German** …
+4. Click that button. The first time, a small window asks you to accept the voice's terms of use (see above); click
+   **OK** if you agree.
+5. Wait. The road with six stops shows where the job is, the clock shows how long it has been running, and
+   **What's happening** says in plain words what the program is doing now. On a computer without an NVIDIA graphics
+   card it is slower.
+6. When it says **Done**, the new video plays in the same player. **Original** / **Dubbed** switches between the two
+   at the same moment; the small marks on the timeline are the sentences, and the subtitle button shows the text.
+   **Open output folder** shows the files. Results are kept in the `cikti` folder inside the program folder.
 
-If the window shows a red line **Kurulum tamamlanmamış** (installation not finished), double-click `kur.cmd` again,
-then reopen the program.
+If the window shows a red line **Setup is not finished**, double-click `kur.cmd` again, then reopen the program.
+Closing the window closes the program; if a job is running you are asked first, and the job can be continued later
+from **Jobs**.
 
-Button words: *Video seç…* = choose video · *ya da bağlantı* = or a link · *Dublaj dili* = dubbing language ·
-*Türkçe dublajla* / *English dublajla* = dub into Turkish / English ·
-*Yalnız altyazı / metin çıkar* = subtitles or text only · *Gelişmiş* = advanced settings · *İşler* = jobs (history,
-continue a stopped job) · *Durdur* = stop · *Videoyu aç* = open video · *Çıktı klasörünü aç* = open output folder ·
-*Günlüğü göster* = show the log (technical details).
+Other buttons: *Only subtitles / text* = no new voice, only the text · *Settings* = every setting, with a search
+box · *Jobs* = history, continue a stopped job · *Stop* · *Show technical log* = the technical details.
 
 ## Choose another language
 
-The program dubs into **Turkish** unless you change it. Pick another language in the **Dublaj dili** list on the
-first tab; the button changes with it (for example **Deutsch dublajla**). The list and the `genel.hedef_dil` row on
-the **Gelişmiş** tab are the same setting: change one and the other follows. The list shows only the languages the
-selected voice engine can speak; a language marked *denenmedi* (not tested) works but has not been checked by ear.
-The web page (`web.cmd`) has the same list.
+The program dubs into **Turkish** unless you change it. Pick another language in the **Choose the language** list on
+the first tab; the button changes with it (for example **Dub into German**). The list and the `genel.hedef_dil` row
+in **Settings** are the same setting: change one and the other follows. The list shows only the languages the
+selected voice engine can speak; a language marked *not tested* works but has not been checked by ear.
+`web.cmd` opens the same page in your usual browser.
 
 The translator that comes with the program works only **from English into Turkish**, without internet. For any
 other pair the program needs an online translator: the Codex or Claude Code assistant (used automatically when one
@@ -103,11 +106,11 @@ the dubbing program".
 | **KURULUM DURDU / INSTALL STOPPED** in the install window | double-click `kur.cmd` again; it continues where it stopped | "The installation stopped with this message: … Please fix it." |
 | "running scripts is disabled on this system" | use `kur.cmd`, not the files in the `scripts` folder | "Install it with the AGENTS.md steps." |
 | The install says there is not enough disk space | free some space (about 22 GB, 14 GB without an NVIDIA card) or put the folder on another drive | "Move the dubbing program to drive D: and finish the installation." |
-| The program window shows a red **Kurulum tamamlanmamış** line | double-click `kur.cmd` again, then reopen the window | "Check the dubbing program's installation and fix what is missing." |
+| The program window shows a red **Setup is not finished** line | double-click `kur.cmd` again, then reopen the window | "Check the dubbing program's installation and fix what is missing." |
 | Dubbing is very slow | normal without an NVIDIA graphics card; with one, the card may not be in use (often an old driver) | "Check whether the dubbing program uses my graphics card." |
 | A window asks about a **license** | read it; it is the voice's terms of use. Accept only if you agree | – |
 | Error about translation or language | the built-in translator does only English → Turkish; see "Choose another language" | "Set up translation from Spanish into Turkish for the dubbing program." |
-| **İş başarısız** (job failed) | open the **İşler** tab; a stopped job can be continued there. Click *Günlüğü göster* and copy the last lines | "My dub failed; here is the log: … Please fix it." |
+| The job shows **Failed** | open the **Jobs** tab; a stopped job can be continued there. Click *Show technical log* and copy the last lines | "My dub failed; here is the log: … Please fix it." |
 | You want to remove the program | delete the program folder; nothing else was changed on the computer | – |
 
 ## Please use it responsibly

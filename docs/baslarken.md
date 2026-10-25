@@ -31,8 +31,8 @@ sözcüklerle **nasıl bir kurulum istediğinizi** sorar: hızlı, bilgisayarın
 ne yaptığını, ne kadar disk yeri ve zaman istediğini, lisansının neye izin verdiğini söyler. Programın konuştuğu
 sesin kullanım şartlarını kabul edip etmediğinizi de sorar. Kısaca şunu söyler: gerçek kişileri taklit etmeyin,
 kimseyi kandırmayın, izleyicinize sesin bilgisayar yapımı olduğunu söyleyin. Kabul ediyorsanız "evet" deyin.
-Sonra gerekenleri indirir, küçük bir örnek videoyla dener ve program penceresini açar. Program penceresi şimdilik
-Türkçedir.
+Sonra gerekenleri indirir, küçük bir örnek videoyla dener ve program penceresini açar (Türkçe ya da
+İngilizce, siz seçersiniz).
 
 İndirme yaklaşık 13 GB'tır (NVIDIA kartı yoksa 9,5 GB); ölçülen ilk kurulumlar yaklaşık 38 dakika (NVIDIA kartı yokken) ve yaklaşık 44 dakika (kartla; çoğu model
 indirmesiydi) sürdü. Hızlı bağlantıda daha kısa sürer.
@@ -50,27 +50,32 @@ indirmesiydi) sürdü. Hızlı bağlantıda daha kısa sürer.
 
 ## İlk dublajınız
 
-1. Program klasöründe **`arayuz.cmd`** dosyasına çift tıklayın. Program penceresi açılır.
-2. İlk sekmede, **Önerilen akış**'ta kalın. **Video seç…** düğmesine tıklayıp videonuzu seçin.
-3. **Dublaj dili** listesinden dili seçin. Her dil kendi dilinde yazar (Türkçe, English, Deutsch, Français, 日本語 …);
-   siz değiştirmedikçe Türkçe seçilidir. Büyük düğme dilin adını alır: **Türkçe dublajla**, **English dublajla**,
-   **Deutsch dublajla** …
-4. O düğmeye tıklayın. İlk seferde bir pencere sesin kullanım şartlarını kabul etmenizi ister
-   (yukarıya bakın); kabul ediyorsanız **Evet**'e tıklayın.
-5. Bekleyin. Alttaki çubuk ne kadar ilerlediğini gösterir. NVIDIA ekran kartı olmayan bilgisayarda daha yavaştır.
-6. **Bitti** yazınca izlemek için **Videoyu aç**'a ya da **Çıktı klasörünü aç**'a tıklayın. Sonuçlar program
-   klasörünün içindeki `cikti` klasöründe durur.
+1. Program klasöründe **`arayuz.cmd`** dosyasına çift tıklayın. Program kendi penceresinde açılır. Ekran Türkçe ve
+   İngilizcedir: dili sağ üstten (dünya simgesinin yanından) seçin. Ay / güneş düğmesi gece ve gündüz renkleri
+   arasında geçer; **?** düğmesi kısa yardımı ve klavye kısayollarını gösterir.
+2. İlk sekmede, **Dublaj**'da kalın. Videonuzu büyük kutuya sürükleyip bırakın ya da kutuya tıklayıp seçin. Video
+   hiçbir yere yüklenmeden orada oynar.
+3. **Dublaj dili** listesinden dili seçin. Her dilin yanında kendi adı da yazar (Türkçe, English, Deutsch, Français,
+   日本語 …); siz değiştirmedikçe Türkçe seçilidir. Büyük düğme dilin adını alır: **Türkçe dublajla**, **Almanca
+   dublajla** …
+4. O düğmeye tıklayın. İlk seferde küçük bir pencere sesin kullanım şartlarını kabul etmenizi ister
+   (yukarıya bakın); kabul ediyorsanız **Tamam**'a tıklayın.
+5. Bekleyin. Altı duraklı yol işin nerede olduğunu, kronometre ne kadar sürdüğünü, **Şimdi ne oluyor?** panosu
+   programın o an ne yaptığını düz sözlerle gösterir. NVIDIA ekran kartı olmayan bilgisayarda daha yavaştır.
+6. **Bitti** yazınca yeni video aynı oynatıcıda oynar. **Orijinal** / **Dublajlı** düğmesi ikisi arasında aynı anda
+   geçer; zaman çizgisindeki küçük işaretler cümlelerdir, altyazı düğmesi yazıyı gösterir. **Çıktı klasörünü aç**
+   dosyaları gösterir. Sonuçlar program klasörünün içindeki `cikti` klasöründe durur.
 
 Pencerede kırmızı **Kurulum tamamlanmamış** satırı görürseniz `kur.cmd`'ye yeniden çift tıklayın, sonra programı
-yeniden açın.
+yeniden açın. Pencereyi kapatınca program kapanır; süren iş varsa önce sorulur, iş sonra **İşler**'den sürdürülür.
 
 ## Başka bir dil seçmek
 
 Siz değiştirmedikçe program **Türkçeye** dublaj yapar. Başka bir dili ilk sekmedeki **Dublaj dili** listesinden
-seçin; düğmenin adı da değişir (örneğin **Deutsch dublajla**). Bu liste ile **Gelişmiş** sekmesindeki
+seçin; düğmenin adı da değişir (örneğin **Deutsch dublajla**). Bu liste ile **Ayarlar**'daki
 `genel.hedef_dil` satırı aynı ayardır: birini değiştirince öteki de değişir. Listede yalnız seçili ses motorunun
-konuşabildiği diller görünür; *denenmedi* işaretli dil çalışır ama kulakla denetlenmemiştir. Web sayfasında
-(`web.cmd`) aynı liste vardır.
+konuşabildiği diller görünür; *denenmedi* işaretli dil çalışır ama kulakla denetlenmemiştir. `web.cmd`
+aynı sayfayı her zamanki tarayıcınızda açar.
 
 Programla gelen çevirmen yalnız **İngilizceden Türkçeye** ve internetsiz çevirir. Başka her dil çifti için çevrimiçi
 bir çevirmen gerekir: Codex ya da Claude Code asistanı (biri kurulu ve oturumu açıksa kendiliğinden kullanılır) ya da
@@ -101,7 +106,7 @@ söylemek, örneğin: "dublaj programında Almancaya çeviriyi kur".
 | Dublaj çok yavaş | NVIDIA ekran kartı yoksa normaldir; varsa kart kullanılmıyor olabilir (çoğunlukla eski sürücü) | "Dublaj programı ekran kartımı kullanıyor mu, bak." |
 | Bir pencere **lisans** onayı istiyor | okuyun; sesin kullanım şartlarıdır. Yalnız kabul ediyorsanız onaylayın | – |
 | Çeviri ya da dil hatası | programla gelen çevirmen yalnız İngilizce → Türkçe çevirir; "Başka bir dil seçmek" bölümüne bakın | "Dublaj programında İspanyolcadan Türkçeye çeviriyi kur." |
-| **İş başarısız** | **İşler** sekmesini açın; duran iş oradan sürdürülebilir. *Günlüğü göster*'e tıklayıp son satırları kopyalayın | "Dublajım başarısız oldu, günlük şu: … Düzeltir misin?" |
+| İş **Hata** gösteriyor | **İşler** sekmesini açın; duran iş oradan sürdürülebilir. *Teknik günlüğü göster*'e tıklayıp son satırları kopyalayın | "Dublajım başarısız oldu, günlük şu: … Düzeltir misin?" |
 | Programı kaldırmak istiyorsunuz | program klasörünü silin; bilgisayarda başka hiçbir şey değiştirilmedi | – |
 
 ## Lütfen sorumlu kullanın

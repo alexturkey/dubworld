@@ -70,7 +70,7 @@ Türkçe özet en altta. / Turkish summary at the end.
      card alone. Details: [docs/engineering/low_vram.md](../../../docs/engineering/low_vram.md).
    - GPU-only engines (`crisperwhisper_*`, `voxcpm2`) stop with a clear error on a CPU machine; they are never swapped
      silently.
-6. **Interfaces:** `.venv\Scripts\dubla-gui.exe` (desktop, no console) and `.venv\Scripts\dubla-web.exe`
+6. **Interfaces:** `.venv\Scripts\dubla-gui.exe` (the web UI in its own app window, no console) and `.venv\Scripts\dubla-web.exe`
    (local web UI on 127.0.0.1 only; `--port 7861 --tarayici-acma`). Shortcuts: `arayuz.cmd`, `web.cmd`.
 
 ## Common errors

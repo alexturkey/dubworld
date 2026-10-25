@@ -649,4 +649,6 @@ def is_ozeti(is_kaydi: dict[str, Any]) -> dict[str, Any]:
         "deneme": is_kaydi["resume_attempt_count"],
         "arsiv": bool(is_kaydi["archived"]),
         "video": sonuc.get("dubbed_video") or sonuc.get("output_video") or "",
+        "srt": sonuc.get("srt_path") or "",
+        "kaynak_yolu": str(is_kaydi["source"] or ""),
     }

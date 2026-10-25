@@ -8,7 +8,7 @@ A setting can be changed in three ways; all three use the same key:
 |---|---|
 | Command line | `dubla video.mp4 --ayar ses_temizligi.kip=preserve_background` (several `--ayar` may be given) |
 | Settings file | `dubla video.mp4 --ayarlar tarifim.toml` or permanently: `ayarlar/kullanici.toml` (not tracked by git) |
-| Interface | `dubla-gui` and `dubla-web` → **Gelişmiş** (Advanced) tab: every key under the same name, with its description |
+| Interface | `dubla-gui` / `dubla-web` → **Settings** drawer (with search): every key under the same name, with its description |
 
 To see the effective settings and warnings: `dubla ayarlar` (warnings are written to stderr as `uyarı:`).
 
@@ -44,7 +44,7 @@ dubla transkript video.mp4 --bicim srt      # srt | plain | timestamped | paragr
 ```
 
 In the interface: the "Yalnız altyazı / metin çıkar" (Extract subtitles / text only) button; the format is
-`genel.transkript_bicimi` in the Advanced tab. In this job type the translation and speech rules are not checked.
+`genel.transkript_bicimi` in Settings. In this job type the translation and speech rules are not checked.
 
 ### 3. Translation only
 
@@ -159,7 +159,7 @@ Bütün ayarlar tek dosyadadır: `src/dublaj_hatti/varsayilan.toml` (açıklamal
 |---|---|
 | Komut satırı | `dubla video.mp4 --ayar ses_temizligi.kip=preserve_background` (birden çok `--ayar` verilebilir) |
 | Ayar dosyası | `dubla video.mp4 --ayarlar tarifim.toml` ya da kalıcı: `ayarlar/kullanici.toml` (git'e girmez) |
-| Arayüz | `dubla-gui` ve `dubla-web` → **Gelişmiş** sekmesi: her anahtar aynı adla, açıklamasıyla |
+| Arayüz | `dubla-gui` / `dubla-web` → **Ayarlar** çekmecesi (aramalı): her anahtar aynı adla, açıklamasıyla |
 
 Geçerli ayarları ve uyarıları görmek: `dubla ayarlar` (uyarılar stderr'e `uyarı:` diye yazılır).
 

@@ -61,7 +61,8 @@ dubla video.mp4 --ayar genel.hedef_dil=de    # other target language: needs an L
 dubla video.mp4 --ayar ses.motor=voxcpm2     # Turkish voice design engine (NVIDIA GPU, separate install)
 ```
 
-Desktop: `dubla-gui` → **Önerilen akış** tab (one click). Web: `dubla-web` (127.0.0.1 only).
+Interface: `dubla-gui` (own window) or `dubla-web` (browser; both 127.0.0.1 only) → **Dub** (Dublaj) tab: drop
+the video, pick the language, one click; the result plays in place (Original / Dubbed, subtitles).
 
 ## Common errors
 

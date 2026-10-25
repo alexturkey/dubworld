@@ -26,6 +26,7 @@ import mimetypes
 import secrets
 import sys
 import threading
+import time
 import uuid
 import webbrowser
 from http import HTTPStatus
@@ -90,6 +91,7 @@ class Uygulama:
         self.yukleme_siniri = yukleme_siniri_mb * 1024 * 1024
         self.yukleme_klasoru = cikti_koku() / "_yuklemeler"
         self.yuklenenler: dict[str, Path] = {}
+        self.son_nabiz = time.time()  # sayfanın son yoklaması (masaüstü penceresi kapandı mı: masaustu.py)
 
     def izinli_kokler(self) -> list[Path]:
         return [cikti_koku(), self.yukleme_klasoru]
@@ -112,7 +114,7 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("Content-Security-Policy",
-                         "default-src 'self'; media-src 'self'; img-src 'self' data:; frame-ancestors 'none'; "
+                         "default-src 'self'; media-src 'self' blob:; img-src 'self' data:; frame-ancestors 'none'; "
                          "base-uri 'none'; form-action 'self'")
         for anahtar, deger in (ek or {}).items():
             self.send_header(anahtar, deger)
@@ -188,7 +190,10 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
         if not self._cerez_dogru():
             self._gonder(HTTPStatus.FORBIDDEN, b"oturum yok")
             return
-        if adres.path == "/api/ayarlar":
+        self.uygulama.son_nabiz = time.time()
+        if adres.path == "/api/nabiz":
+            self._json(HTTPStatus.OK, {})
+        elif adres.path == "/api/ayarlar":
             dil = _istenen_dil(parse_qs(adres.query))
             self._json(HTTPStatus.OK, {"form": ayar_formu(dil or "tr"), "surum": __version__})
         elif adres.path == "/api/arayuz_dili":
@@ -202,10 +207,23 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 "dil": dil, "yon": arayuz_dili.yon(dil), "sozluk": arayuz_dili.tam_sozluk(dil),
                 "diller": [{"kod": k, "ad": arayuz_dili.kendi_adi(k)} for k in arayuz_dili.mevcut_diller()]})
         elif adres.path == "/api/durum":
-            self._json(HTTPStatus.OK, self.uygulama.yurutucu.durum.ozet())
+            ozet = self.uygulama.yurutucu.durum.ozet()
+            ozet["orijinal"] = self._oynatilir(str(ozet.get("kaynak") or ""))
+            self._json(HTTPStatus.OK, ozet)
         elif adres.path == "/api/isler":
             hepsi = parse_qs(adres.query).get("hepsi", ["0"])[0] == "1"
-            self._json(HTTPStatus.OK, {"isler": self.uygulama.yurutucu.isler(100, arsiv_dahil=hepsi)})
+            isler = self.uygulama.yurutucu.isler(100, arsiv_dahil=hepsi)
+            for o in isler:  # oynatıcıda "Orijinal": yalnız bu sunucunun sunabildiği kaynak (yüklenen dosya)
+                o["orijinal"] = self._oynatilir(str(o.get("kaynak_yolu") or ""))
+            self._json(HTTPStatus.OK, {"isler": isler})
+        elif adres.path == "/api/kurulum":
+            from dublaj_hatti.kurulum_denetimi import kurulum_eksikleri
+
+            try:
+                eksik = kurulum_eksikleri()
+            except Exception as hata:  # denetim arayüzü hiçbir zaman düşürmez
+                eksik = [arayuz_dili.t("kurulum.denetlenemedi", None, hata=hata)]
+            self._json(HTTPStatus.OK, {"eksik": eksik})
         elif adres.path == "/api/sorunlu":
             self._json(HTTPStatus.OK, {"isler": self.uygulama.yurutucu.sorunlu(10)})
         elif adres.path == "/api/is":
@@ -218,6 +236,13 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
             self._dosya_sun(unquote(parse_qs(adres.query).get("yol", [""])[0]))
         else:
             self._gonder(HTTPStatus.NOT_FOUND, b"yok")
+
+    def _oynatilir(self, ham: str) -> str:
+        """Yerel ve izinli köklerden birinde olan dosya yolu (oynatıcı onu `/dosya` ile açabilir), yoksa boş."""
+        if not ham or "://" in ham:
+            return ""
+        yol = Path(ham)
+        return ham if yol.is_file() and any(_icinde_mi(yol, k) for k in self.uygulama.izinli_kokler()) else ""
 
     def _dosya_sun(self, ham: str) -> None:
         yol = Path(ham)

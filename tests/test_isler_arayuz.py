@@ -1,8 +1,7 @@
-"""İşler sekmesi: web API (/api/isler, /api/sorunlu, /api/is, /api/devam, arşiv) ve masaüstü sekmesi.
+"""İşler: web API (/api/isler, /api/sorunlu, /api/is, /api/devam, arşiv), nabız ve kurulum uçları.
 
 Kaynak projedeki gui_management_dialogs_test karşılığı. Web sunucusu 127.0.0.1'de boş portta çalışır, tarayıcı
-açılmaz; masaüstü sekmesi görünmez Tk kökünde (withdraw + ekran dışı) kurulur, pencere ekrana gelmez.
-Kuyruk işleyici kapalıdır: hiçbir iş alt süreci başlatılmaz.
+açılmaz. Kuyruk işleyici kapalıdır: hiçbir iş alt süreci başlatılmaz.
 """
 
 from __future__ import annotations
@@ -80,47 +79,26 @@ def test_web_sorunlu_liste_devam_ve_arsiv(sunucu):
     assert bitti in [o["is"] for o in veri["isler"]]
 
 
-def test_masaustu_isler_sekmesi(tmp_path, monkeypatch):
-    tk = pytest.importorskip("tkinter")
-    from tkinter import ttk
+def test_web_nabiz_kurulum_ve_oynatilabilir_kaynak(sunucu, tmp_path, monkeypatch):
+    iste, api, depo = sunucu
+    uygulama = web.Isleyici.uygulama
+    uygulama.son_nabiz = 0.0
+    assert iste("GET", "/api/nabiz")[0] == 403  # oturumsuz nabız sayılmaz
+    assert uygulama.son_nabiz == 0.0
+    assert iste("GET", "/api/nabiz", basliklar=api)[0] == 200 and uygulama.son_nabiz > 0
+    from dublaj_hatti import kayit
 
-    from dublaj_hatti import gui_isler
-
-    try:
-        kok = tk.Tk()
-    except tk.TclError:
-        pytest.skip("Tk kurulamadı (ekransız ortam)")
-    kok.withdraw()
-    kok.geometry("10x10+-20000+-20000")
-    try:
-        depo = IsDeposu(varsayilan_depo_yolu(tmp_path / "cikti"), tmp_path / "cikti")
-        hata = _is_olustur(depo, "failed")
-        bitti = _is_olustur(depo, "completed", son_sira=17)
-        yurutucu = IsYurutucu(arayuz="gui", depo=depo, kuyruk_isle=False)
-        sekme = gui_isler.IslerSekmesi(ttk.Notebook(kok), yurutucu, lambda: {"altyazi.mod": "word"})
-        sekme.yenile()
-        assert set(sekme.agac.get_children()) == {str(hata), str(bitti)}
-        sekme.agac.selection_set(str(hata))
-        sekme._secim_degisti()
-        assert str(sekme.devam_dugme["state"]) == "normal"
-        assert "Çeviri" in sekme.ayrinti["text"]
-        sekme.devam_et()
-        assert depo.getir(hata)["status"] == "queued"
-        sekme.agac.selection_set(str(bitti))
-        sekme._secim_degisti()
-        assert str(sekme.devam_dugme["state"]) == "disabled" and str(sekme.yeniden_dugme["state"]) == "normal"
-        sekme.asama.set("Çeviri")
-        sekme.gelismis.set(True)
-        sekme.yeniden_calistir()
-        cocuk = max(int(i) for i in sekme.agac.get_children())
-        assert depo.getir(cocuk)["source_job_id"] == bitti
-        assert json.loads(depo.getir(cocuk)["settings_json"])["altyazi.mod"] == "word"
-        sekme.agac.selection_set(str(bitti))
-        monkeypatch.setattr(gui_isler.messagebox, "askyesno", lambda *a, **k: True)
-        sekme.arsivle()
-        assert str(bitti) not in sekme.agac.get_children()
-        sekme.arsiv.set(True)
-        sekme.yenile()
-        assert str(bitti) in sekme.agac.get_children()
-    finally:
-        kok.destroy()
+    monkeypatch.setattr(kayit, "durum", lambda grup: {})
+    kod, veri = iste("GET", "/api/kurulum", basliklar=api)
+    assert kod == 200 and "supertonic" in veri["eksik"]
+    bitti = _is_olustur(depo, "completed", son_sira=17)
+    kod, veri = iste("GET", "/api/isler", basliklar=api)
+    satir = next(o for o in veri["isler"] if o["is"] == bitti)
+    assert "srt" in satir and satir["orijinal"] == ""  # izinli kök dışındaki kaynak oynatıcıya verilmez
+    yuklenen = uygulama.yukleme_klasoru / "v.mp4"
+    yuklenen.parent.mkdir(parents=True, exist_ok=True)
+    yuklenen.write_bytes(b"0")
+    baglanti = "https://example.invalid/v.mp4"
+    handler = web.Isleyici.__new__(web.Isleyici)
+    assert handler._oynatilir(str(yuklenen)) == str(yuklenen)
+    assert handler._oynatilir(baglanti) == "" and handler._oynatilir(str(tmp_path.parent / "x.mp4")) == ""

@@ -80,7 +80,7 @@ Disk space per profile:
    default steps and keeps the window open at the end.
 3. Wait for the last line `KURULUM_OK`. A first install downloads ≈ 13 GB (GPU profile) or ≈ 9.5 GB (CPU profile); later
    runs skip every file whose sha256 is already correct.
-4. Start: double-click `arayuz.cmd` (desktop interface); local web interface `web.cmd`; command line
+4. Start: double-click `arayuz.cmd` (the interface in its own window); local web interface `web.cmd`; command line
    `.venv\Scripts\dubla.exe <video.mp4>`. If the install stops, the window shows `KURULUM DURDU / INSTALL STOPPED`
    and what to do; run `kur.cmd` again (section 12).
 

@@ -1,6 +1,6 @@
 ---
 name: gelismis-ayarlar-ve-kombinasyonlar
-description: "Change any pipeline setting (CLI --ayar, a .toml file, or the Advanced tab), build a custom recipe, and understand which choices work together and which are rejected. Use when the user says 'change the voice', 'keep background music', 'word-by-word subtitles', 'smaller file', 'better quality', 'mixed-language video', 'ayar', 'gelişmiş', 'kombinasyon', 'neden hata verdi', 'which settings work together', or a run stops with 'ayar hatası'."
+description: "Change any pipeline setting (CLI --ayar, a .toml file, or the Settings drawer of the interface), build a custom recipe, and understand which choices work together and which are rejected. Use when the user says 'change the voice', 'keep background music', 'word-by-word subtitles', 'smaller file', 'better quality', 'mixed-language video', 'ayar', 'gelişmiş', 'kombinasyon', 'neden hata verdi', 'which settings work together', or a run stops with 'ayar hatası'."
 ---
 
 # Advanced settings and combinations / Gelişmiş ayarlar ve kombinasyonlar
@@ -16,7 +16,7 @@ stopped with `ayar hatası` (setting error) / `uyarı` (warning).
 
 - One source of truth: `src/dublaj_hatti/varsayilan.toml` (52 keys, each commented). Do not edit it.
 - Layers (top wins): `--ayar section.key=value` → `--ayarlar file.toml` → `ayarlar/kullanici.toml` (git-ignored) →
-  `DUBLAJ_AYARLAR` file → defaults. The desktop and web **Gelişmiş** (Advanced) tab shows the same keys.
+  `DUBLAJ_AYARLAR` file → defaults. The interface's **Settings** (Ayarlar) drawer shows the same keys, with a search box.
 - Validation: `yapilandirma.uyumluluk_denetle()` checks the combination when settings load. **Error** = the job does
   not start and says what to change. **Warning** = logged, the job runs, the choice has no effect.
 

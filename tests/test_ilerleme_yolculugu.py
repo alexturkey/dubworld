@@ -1,6 +1,5 @@
 """İlerleme ekranı (duraklı yol, "şimdi ne oluyor" panosu, kalan süre): her aşama bir durakta ve her dilde
-cümlesi var, durak durumları ve kalan süre doğru, web ve masaüstü aynı veriyi kendi dilinde çizer.
-GUI testi görünür pencere açmaz."""
+cümlesi var, durak durumları ve kalan süre doğru, web arayüzü aynı veriyi kendi dilinde çizer."""
 
 from __future__ import annotations
 
@@ -77,34 +76,3 @@ def test_web_ilerleme_bolumu_erisilebilir():
     assert ".cubuk.canli > div" in hareket and "animation: none" in hareket
     js = (STATIK / "app.js").read_text(encoding="utf-8")
     assert '"anlati." + s.anahtar' in js and '"durak." + o.id' in js
-
-
-def test_masaustu_pano_arayuz_dilinde(monkeypatch):
-    tk = pytest.importorskip("tkinter")
-    try:
-        kok = tk.Tk()
-    except tk.TclError:
-        pytest.skip("ekran yok (Tk açılamadı)")
-    kok.withdraw()
-    from tkinter import ttk
-
-    from dublaj_hatti import gui_ilerleme
-
-    monkeypatch.setattr(arayuz_dili, "_secili", "en")
-    try:
-        cerceve = ttk.Frame(kok)
-        pano = gui_ilerleme.IlerlemePanosu(cerceve)
-        kimlikler = [a for a, _, _ in PIPELINE_STAGES["segment_sync"]]
-        d = {"durum": "calisiyor", "yuzde": 40, "gecen_sn": 125.0, "kalan_sn": 190, "bekleme": "", "is": 7,
-             "duraklar": yolculuk.duraklar(kimlikler, "dubla", kimlikler[:7], "ceviri", "calisiyor"),
-             "anlati": [{"sn": 0.0, "anahtar": "basla"}, {"sn": 3.0, "anahtar": "hazirdi", "asama": "ceviri"},
-                        {"sn": 80.0, "anahtar": "basladi.ceviri"}]}
-        pano.guncelle(d, "Working")
-        metin = pano.pano.get("1.0", "end")
-        assert "Translating the sentences…" in metin and "Translation: already done last time" in metin
-        assert pano.kronometre.cget("text") == "⏱ 2:05" and pano.kalan.cget("text") == "about 3 min left"
-        assert pano.yuzde.cget("text") == "40%" and pano.ek.cget("text") == "job #7"
-        pano.adim()  # animasyon adımı hata vermez
-        assert gui_ilerleme.saat_yaz(3725) == "1:02:05"
-    finally:
-        kok.destroy()

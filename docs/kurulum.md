@@ -24,7 +24,7 @@ https://github.com/alexturkey/DubWorld adresindeki video dublaj programını bu 
 Asistan [../AGENTS.tr.md](../AGENTS.tr.md)'deki akışı izler: makineyi ölçer (GPU ve VRAM, işlemci, RAM, disk), düz
 dille kısa bir kurulum görüşmesi yapar (her parçanın ne işe yaradığı, disk ve süre bedeli, lisansı; hazır kurulumlar:
 hızlı, bu makine için önerilen, tam), seçimi ve lisans onayını `ayarlar/` altına kaydeder, uygun `kur.ps1` adımlarını
-çalıştırır, `dubla kontrol`'ü denetler (son satır `HAZIR / READY`), örnek dublaj yapar ve masaüstü arayüzünü açar. Kullanıcı için sade rehber: [baslarken.md](baslarken.md).
+çalıştırır, `dubla kontrol`'ü denetler (son satır `HAZIR / READY`), örnek dublaj yapar ve arayüzü kendi penceresinde açar. Kullanıcı için sade rehber: [baslarken.md](baslarken.md).
 
 ## 1. Sistem gereksinimleri
 
@@ -79,7 +79,7 @@ Profillere göre disk alanı:
    `scripts\kur.ps1`'i çağırır ve sonda pencereyi açık tutar.
 3. Son satır `KURULUM_OK` olana kadar bekleyin. İlk kurulum ≈ 13 GB (GPU profili) ya da ≈ 9,5 GB (işlemci profili) indirir; sonraki
    çalıştırmalar sha256'sı doğru olan her dosyayı atlar.
-4. Başlatma: `arayuz.cmd`'ye çift tıklayın (masaüstü arayüzü); yerel web arayüzü `web.cmd`; komut satırı
+4. Başlatma: `arayuz.cmd`'ye çift tıklayın (arayüz kendi penceresinde); yerel web arayüzü `web.cmd`; komut satırı
    `.venv\Scripts\dubla.exe <video.mp4>`. Kurulum durursa pencerede `KURULUM DURDU / INSTALL STOPPED` ve ne
    yapılacağı yazar; `kur.cmd`'yi yeniden çalıştırın (bölüm 12).
 

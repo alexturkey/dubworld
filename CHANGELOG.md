@@ -9,12 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Friendlier progress screen (desktop and web): six familiar stops (video, sound, writing down, translation, new
+- Modern interface: the chosen video plays right away in a built-in player (timeline with sentence marks, volume,
+  speed, subtitles, full screen, keyboard shortcuts); a finished dub plays in the same place with an Original /
+  Dubbed switch that keeps the moment. Day and night colours (follows the computer, switch at the top right; calm,
+  readable contrast checked by tests), familiar icons, large touch targets, a Settings drawer with search and a short
+  help window. In a half-screen window the running job and the result move up so they stay in view.
+- Friendlier progress screen: six familiar stops (video, sound, writing down, translation, new
   voice, putting together), a moving striped bar, a ticking stopwatch, a rough "about N min left" once enough of the
   job is done, and a "What's happening" panel with short plain sentences in the interface language; the technical log
   stays behind a button. A finished job shows a small celebration. Animations stop when the system asks for reduced
   motion.
-- Interface language: the desktop window and the web page are in English and Turkish, picked at the top right
+- Interface language: the interface is in English and Turkish, picked at the top right
   (`genel.arayuz_dili = auto | tr | en`; `auto` follows the computer, otherwise English). Texts live in
   `src/dublaj_hatti/arayuz_dilleri/<code>.json`, so a new language is one new file; tests check every file on their
   own (`docs/arayuz_dili.md`).
@@ -40,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- One interface: `dubla-gui` (and `arayuz.cmd`) now opens the web interface in its own app window (Microsoft Edge,
+  else Chrome or Chromium, with a separate profile; else the default browser) and stops by itself after the window
+  is closed. The old Tk desktop window is removed. Tabs are now **Dub**, **Settings** and **Jobs**.
 - Target language names are shown in the interface language with their own name next to them ("German
   (Deutsch)", "Dub into German"); the job log, deep error messages and the command line stay in Turkish.
 - CI: `actions/checkout` 7 and `actions/setup-python` 7.

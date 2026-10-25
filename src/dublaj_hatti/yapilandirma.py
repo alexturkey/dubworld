@@ -437,7 +437,7 @@ def _voxcpm2_sesleri_denetle(ayar: dict[str, Any], sesler: dict, dil: str, hata:
 
 
 def form_ek_bilgisi(dil: str | None = None) -> dict[str, dict[str, Any]]:
-    """Gelişmiş sekmesine şemanın yanında giden ek bilgi (arayüzler otomatik üretir; motor gizlenmez).
+    """Ayarlar çekmecesine şemanın yanında giden ek bilgi (arayüzler otomatik üretir; motor gizlenmez).
 
     - "etiketler": seçenek → donanım etiketi ("CPU'da yavaş", "CPU'da çalışmaz", "VRAM yetmez ...", "bulut ...");
       GPU bilgisi torch yüklenmeden `nvidia-smi` ile alınır (kesin karar iş başlarken).

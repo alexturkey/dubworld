@@ -6,7 +6,7 @@
 #   2. --ayarlar <dosya.toml>   (komut satırında verilen dosya)
 #   3. ayarlar/kullanici.toml   (repo kökünde; git'e girmez)
 #   4. bu dosya
-# Arayüzler (dubla-gui, dubla-web) aynı anahtarları "Gelişmiş" sekmesinde gösterir.
+# Arayüz (dubla-gui, dubla-web) aynı anahtarları "Ayarlar" çekmecesinde gösterir.
 #
 # Gerekçe: her varsayılan, GPU'suz bir bilgisayarda da çalışan, lisansı açık kaynak dağıtıma uygun ve kelime
 # zamanlaması en tutarlı seçimdir. Birbiriyle uyumsuz seçimler yüklenirken açık hata verir; hazır tarifler ve

@@ -85,7 +85,7 @@ tts-xtts = ["coqui-tts>=0.27.5"]               # code MPL-2.0; XTTS v2 weights C
 # Cover images: your own Codex CLI login (docs/motorlar/kapak_gorseli.md).
 
 # --- Interfaces ------------------------------------------------------------------------------
-# Desktop (tkinter) and web (http.server) interfaces use only the standard library.
+# The interface (web, http.server; dubla-gui opens it in its own browser app window) uses only the standard library.
 telegram = ["python-telegram-bot>=22.8"]       # optional remote control bot (LGPL-3.0-only, used as a library)
 
 # --- Development -----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ dubla-telegram = "dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.bot:main"
 
 [project.gui-scripts]
 # no console window on Windows
-dubla-gui = "dublaj_hatti.gui:main"
+dubla-gui = "dublaj_hatti.masaustu:main"
 
 [project.urls]
 Homepage = "https://github.com/alexturkey/DubWorld"

@@ -3,8 +3,8 @@
 [Türkçe](#türkçe) · Every dubbing and transcript job is stored as a **job record**.
 
 No job that is interrupted, fails or finishes is ever lost; the same job can be managed from the command line, the
-desktop interface (`dubla-gui`), the web interface (`dubla-web`) or the Telegram bot (`dubla-telegram`). All four
-see the same records.
+interface (`dubla-gui` in its own window, `dubla-web` in the browser) or the Telegram bot (`dubla-telegram`). All
+of them see the same records.
 
 ## Where it is stored
 
@@ -72,29 +72,21 @@ also works: the job of the folder is found and resumed in place.
 
 Exit codes: `0` finished, `1` error, `2` invalid usage, `75` resource busy (job deferred), `130` stopped by the user.
 
-## Desktop interface (`dubla-gui`)
+## Interface (`dubla-gui`, `dubla-web`)
 
-1. Open the **İşler** (Jobs) tab. The list shows recent jobs: number, state, source, last finished or interrupted
-   stage, time.
-2. The **Yalnız sorunlu** (Failed only) box shows only failed and interrupted jobs; **Arşivi de göster** (Show
-   archive too) adds the hidden ones.
-3. Select a job:
-   - **Devam et** (Resume): continues a failed or interrupted job from where it stopped.
-   - Pick a stage in the **Aşamadan** (From stage) list and **Yeni işe kopyalayıp çalıştır** (Copy into a new job and
-     run): again from that stage. If **Gelişmiş ayarlarla** (With advanced settings) is checked, the settings changed
-     in the Advanced tab are applied as well.
-   - **Klasörü aç** (Open folder): the job's output folder.
-   - **Sil (kaydı arşivle)** (Delete, archive the record): asks for confirmation; only hides the record from the
-     list, no file is deleted.
-4. Progress is shown in the main tab; if the GPU is busy with another job it shows "kaynak bekleniyor" (waiting for
-   the resource) and starts when its turn comes.
+There is one interface. `dubla-gui` (double-click `arayuz.cmd`) opens it in its own app window; `dubla-web`
+(`web.cmd`) opens the same page in your browser. It listens only on `127.0.0.1` and is protected by a session token
+(another computer or tab cannot access it).
 
-## Web interface (`dubla-web`)
-
-The web interface opens only on `127.0.0.1` and is protected by a session token (another computer or tab cannot
-access it). The **İşler** (Jobs) tab is the same as on the desktop: failed jobs on top, all jobs below, and for each
-job **Devam et** (Resume), stage selection with **Yeniden çalıştır** (Re-run) (optionally with the changes in the
-Advanced tab) and **Arşivle** (Archive).
+1. Open the **Jobs** tab: jobs with problems on top, the history below; **Show archived too** adds the hidden ones.
+2. For each job:
+   - **Continue**: continues a failed or stopped job from where it stopped.
+   - **From a stage…**: pick a stage and **Copy to a new job and run from this stage**. If **With what I changed in
+     Settings** is checked, the changes in the Settings drawer are applied as well.
+   - **Play video** (finished job): plays the result in the **Dub** tab, with Original / Dubbed and the subtitles.
+   - **Open folder**, **Archive** (only hides the record from the list, no file is deleted), **Cancel**.
+3. Progress is shown in the **Dub** tab; if the GPU is busy with another job it says so and starts when its turn
+   comes.
 
 Endpoints for calling from your own tool (the same session cookie and the `X-Dublaj-Belirtec` header are required):
 
@@ -141,8 +133,8 @@ the stage where they stopped. The same on the command line: `dubla isler --kurta
 ## Türkçe
 
 Her dublaj ve transkript işi bir **iş kaydı** olarak saklanır. Kesilen, hata alan ya da biten hiçbir iş kaybolmaz;
-aynı işi komut satırından, masaüstü arayüzünden (`dubla-gui`), web arayüzünden (`dubla-web`) ya da Telegram
-botundan (`dubla-telegram`) yönetirsiniz. Dördü aynı kayıtları görür.
+aynı işi komut satırından, arayüzden (`dubla-gui` kendi penceresinde, `dubla-web` tarayıcıda) ya da Telegram
+botundan (`dubla-telegram`) yönetirsiniz. Hepsi aynı kayıtları görür.
 
 ### Nerede saklanır
 
@@ -208,23 +200,20 @@ de çalışır: klasörün işi bulunur ve yerinde devam edilir.
 
 Çıkış kodları: `0` bitti, `1` hata, `2` geçersiz kullanım, `75` kaynak meşgul (iş ertelendi), `130` kullanıcı durdurdu.
 
-### Masaüstü arayüzü (`dubla-gui`)
+### Arayüz (`dubla-gui`, `dubla-web`)
 
-1. **İşler** sekmesini açın. Liste son işleri gösterir: numara, durum, kaynak, son biten ya da kesildiği aşama, zaman.
-2. **Yalnız sorunlu** kutusu yalnız hata alan ve kesilen işleri gösterir; **Arşivi de göster** gizlenenleri ekler.
-3. Bir iş seçin:
+Tek arayüz vardır. `dubla-gui` (`arayuz.cmd`'ye çift tıklama) onu kendi uygulama penceresinde, `dubla-web`
+(`web.cmd`) aynı sayfayı tarayıcıda açar. Yalnız `127.0.0.1`'de dinler ve oturum belirteciyle korunur (başka
+bilgisayar ya da sekme erişemez).
+
+1. **İşler** sekmesini açın: sorunlu işler üstte, geçmiş altta; **Arşivi de göster** gizlenenleri ekler.
+2. Her işte:
    - **Devam et**: hata alan ya da kesilen işi kaldığı yerden sürdürür.
-   - **Aşamadan** listesinden bir aşama seçip **Yeni işe kopyalayıp çalıştır**: o aşamadan yeniden. **Gelişmiş
-     ayarlarla** işaretliyse Gelişmiş sekmesinde değiştirdiğiniz ayarlar da uygulanır.
-   - **Klasörü aç**: işin çıktı klasörü.
-   - **Sil (kaydı arşivle)**: onay sorar; yalnız kaydı listeden gizler, dosya silinmez.
-4. İlerleme ana sekmede görünür; GPU başka bir işteyse "kaynak bekleniyor" yazar ve sırası gelince başlar.
-
-### Web arayüzü (`dubla-web`)
-
-Web arayüzü yalnız `127.0.0.1`'de açılır ve oturum belirteciyle korunur (başka bilgisayar ya da sekme erişemez).
-**İşler** sekmesi masaüstündekiyle aynıdır: sorunlu işler üstte, tüm işler altta, her işte **Devam et**,
-aşama seçip **Yeniden çalıştır** (isterseniz Gelişmiş sekmesindeki değişikliklerle), **Arşivle**.
+   - **Aşamadan…**: bir aşama seçip **Bu aşamadan yeni işe kopyalayarak çalıştır**. **Ayarlar'da
+     değiştirdiklerimle** işaretliyse Ayarlar çekmecesindeki değişiklikler de uygulanır.
+   - **Videoyu aç** (biten iş): sonucu **Dublaj** sekmesinde oynatır; Orijinal / Dublajlı ve altyazıyla.
+   - **Klasörü aç**, **Arşivle** (yalnız kaydı listeden gizler, dosya silinmez), **İptal**.
+3. İlerleme **Dublaj** sekmesinde görünür; GPU başka bir işteyse bunu yazar ve sırası gelince başlar.
 
 Kendi aracınızdan çağırmak için uç noktalar (aynı oturum çerezi ve `X-Dublaj-Belirtec` başlığı gerekir):
 

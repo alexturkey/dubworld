@@ -1,7 +1,8 @@
 # Bolum 80: Arayuz ve Teslim
 
 Bu bolum, hatti uzaktan suren isteğe bagli arayuzleri tasir. Ana arayuzler paket kokundedir:
-`dublaj_hatti/cli.py` (`dubla`), `gui.py` (`dubla-gui`, tkinter), `web.py` (`dubla-web`, yalniz 127.0.0.1);
+`dublaj_hatti/cli.py` (`dubla`), `web.py` (`dubla-web`, yalniz 127.0.0.1; tek arayuz, `web_statik/`), `masaustu.py`
+(`dubla-gui`: ayni web arayuzunu Edge/Chrome uygulama penceresinde acar);
 ucu de ayni is yurutucuyu (`is_yurutucu.py`) ve ayar katmanini (`yapilandirma.py`) kullanir.
 
 ```text

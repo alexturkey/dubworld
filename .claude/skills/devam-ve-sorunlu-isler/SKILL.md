@@ -42,7 +42,7 @@ from a later stage with different settings (no need to transcribe again).
    `--asama` takes the stage id (`ceviri`), its Turkish name or its number; `dubla sorunlu` lists them.
    Old form still works: `dubla video.mp4 --devam <job folder>`.
 3. After a crash or power loss: `dubla isler --kurtar` marks jobs whose process is gone as `failed`, then step 2.
-   The desktop and web UIs do this automatically when they open (**İşler** tab → **Devam et**).
+   The interface does this when it opens (**Jobs** / İşler tab → **Continue** / Devam et).
 4. Housekeeping: `dubla isler --soyagaci 9` (lineage), `--arsivle 7` / `--arsivden-cikar 7`, `--iptal 7`,
    `--bayat-iptal 720` (cancel jobs idle for 720 minutes whose process is dead).
 5. GPU queue: one GPU job at a time machine-wide; others wait up to `DUBLAJ_KILIT_BEKLEME_SN` (default 6 hours), then
