@@ -5,6 +5,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -68,12 +69,36 @@ def surec_agacini_kapat(proc: subprocess.Popen) -> None:
     if os.name == "nt":
         subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], capture_output=True,
                        creationflags=NO_WINDOW_FLAGS, check=False)
-    else:
+        return
+    # POSIX: agacli_calistir alt sureci kendi oturum/surec grubunda baslatir (start_new_session); proc.kill()
+    # yalniz grubun basini oldurur, torunlar (CLI'nin arac surecleri) init'e devredilip acik kalir. Grubun
+    # tamami once SIGTERM, kisa beklemeden sonra SIGKILL alir. Grup bizimkiyle ayniysa (cagiran
+    # start_new_session=False verdiyse) kendimizi oldurmemek icin yalniz proc.kill().
+    try:
+        pgid = os.getpgid(proc.pid)
+    except ProcessLookupError:
+        return
+    if pgid == os.getpgrp():
         proc.kill()
+        return
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+    except ProcessLookupError:
+        return
+    try:
+        proc.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        os.killpg(pgid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
 
 
 def agacli_calistir(command: list[str], *, input_text: str, timeout: int, **kwargs: Any) -> subprocess.CompletedProcess:
     """subprocess.run(capture_output=True, text=True) eşdeğeri; zaman aşımında süreç ağacını kapatır."""
+    if os.name != "nt":
+        kwargs.setdefault("start_new_session", True)
     proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             text=True, encoding="utf-8", errors="replace", **kwargs)
     try:

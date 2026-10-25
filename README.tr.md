@@ -114,6 +114,11 @@ Her kardeş repo kendi lisansını, kurulumunu ve sorun kaydını taşır; sabit
   Ücretli ya da müşteri işinden önce [THIRD_PARTY.md](THIRD_PARTY.md) **Commercial?** sütununa bakın.
   fr / de / es / it kaynak ses için kelime zamanı modelleri (CC BY-NC 4.0) de ticari değildir ve ilk kullanımda onay ister.
 
+## Yardım ve destek
+
+Soru, fikir ve sonuçlar: [Discussions](https://github.com/alexturkey/dubworld/discussions). Kurulum sorunu: [kurulum formu](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml); hata: [hata raporu](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+(işletim sistemi, GPU, komut ve son satırlarını ekleyin). Güvenlik açıkları: SECURITY.md, herkese açık issue değil.
+
 ## Lisans ve emek
 
 Kod: Apache-2.0 (LICENSE). Üçüncü taraf bileşenler ve lisansları: THIRD_PARTY.md. Sorumlu kullanım: ETHICS.md.

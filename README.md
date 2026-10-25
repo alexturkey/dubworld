@@ -114,6 +114,11 @@ Each sibling keeps its own license, install and issues; pinned commits make the 
   **Commercial?** column of [THIRD_PARTY.md](THIRD_PARTY.md) before any paid or client work.
   The word-timing models for fr / de / es / it source audio (CC BY-NC 4.0) are non-commercial too and ask for consent on first use.
 
+## Help and support
+
+Questions, ideas and results: [Discussions](https://github.com/alexturkey/dubworld/discussions). Install problems: [install issue](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml); bugs: [bug report](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+(add your OS, GPU, the command and its last lines). Security issues: SECURITY.md, not public issues.
+
 ## License and credits
 
 Code: Apache-2.0 (LICENSE). Third-party components and their licenses: THIRD_PARTY.md. Responsible use: ETHICS.md.

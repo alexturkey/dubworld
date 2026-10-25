@@ -118,6 +118,11 @@ Chaque dépôt frère garde sa propre licence, son installation et ses tickets ;
   défaut). Consultez la colonne **Commercial?** de [THIRD_PARTY.md](THIRD_PARTY.md) avant tout travail rémunéré ou pour un client.
   Les modèles d'horodatage des mots pour l'audio source fr / de / es / it (CC BY-NC 4.0) sont aussi non commerciaux et demandent un accord à la première utilisation.
 
+## Aide et support
+
+Questions, idées et résultats : [Discussions](https://github.com/alexturkey/dubworld/discussions). Problèmes d'installation : [issue d'installation](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml) ; bogues : [rapport de bogue](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+(indiquez système, GPU, la commande et ses dernières lignes). Failles de sécurité : SECURITY.md, pas d'issue publique.
+
 ## Licence et remerciements
 
 Code : Apache-2.0 (LICENSE). Composants tiers et leurs licences : THIRD_PARTY.md. Utilisation responsable : ETHICS.md.
@@ -128,4 +133,4 @@ Confidentialité (ce qui reste en local, ce qu'un service cloud reçoit) : PRIVA
 > This translation may lag; English is authoritative. Cette traduction peut être en retard ; la version anglaise fait
 > foi. Source : README.md (marque de synchronisation ci-dessous). Traduction automatique (Claude) ; les PR de correction sont bienvenues.
 
-<!-- i18n-source: README.md sha256:f2fa696c207c -->
+<!-- i18n-source: README.md sha256:6829b755ca26 -->

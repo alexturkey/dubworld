@@ -10,8 +10,11 @@ import importlib.util
 import json
 from pathlib import Path
 
-import numpy as np
 import pytest
+
+# numpy is not installed in the CPU smoke CI (and the package under test imports it at module level):
+# skip this module there instead of failing at collection. Must stay above the dublaj_hatti imports.
+np = pytest.importorskip("numpy")
 
 from dublaj_hatti import kayit
 from dublaj_hatti.bolum_50_seslendirme.ema_lightning_tts import api, ayarlar, kosucu
