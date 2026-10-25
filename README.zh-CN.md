@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · 简体中文 · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md)
+[English](README.md) · [Türkçe](README.tr.md) · 简体中文 · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md)
 
 > DubWorld 在你自己的电脑上把视频配音成另一种语言：带词级时间戳的语音转文字、翻译、与原视频同步的合成语音（语音最多加速 1.25 倍，其余由画面重新调整时长）、字幕和新视频。默认目标语言为土耳其语；其他语言取决于语音引擎（[docs/diller.md](docs/diller.md)）。
 
@@ -121,4 +121,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:c7531e7aa8a8 -->
+<!-- i18n-source: README.md sha256:2e512198d98b -->

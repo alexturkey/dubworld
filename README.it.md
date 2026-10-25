@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · Italiano · [한국어](README.ko.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · Italiano · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md)
 
 > DubWorld doppia un video in un'altra lingua direttamente sul tuo computer, senza caricarlo su nessun servizio: trascrive il parlato con i tempi di ogni parola, lo traduce, lo fa leggere a una voce sintetica che resta a tempo con il video originale (il parlato accelera al massimo di 1,25×, il resto lo recupera l'immagine con un leggero rallentamento o accelerazione), aggiunge i sottotitoli e consegna un video nuovo. La lingua predefinita è il turco; l'italiano e le altre lingue dipendono dal motore vocale scelto ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Domande, idee e risultati: [Discussioni](https://github.com/alexturkey/dubworld/
 Codice: Apache-2.0 (LICENSE). Componenti di terze parti e relative licenze: THIRD_PARTY.md. Uso responsabile: ETHICS.md.
 Privacy (cosa resta sul tuo computer e cosa riceve un backend cloud): PRIVACY.md. Segnalazioni di sicurezza: SECURITY.md. Modifiche: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:c7531e7aa8a8 -->
+<!-- i18n-source: README.md sha256:2e512198d98b -->
