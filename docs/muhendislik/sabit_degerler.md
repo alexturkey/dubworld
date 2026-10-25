@@ -194,6 +194,30 @@ derlemesinde resmî kaynak `e3e9dd8e…` commit'inde (`yerel_sunucu.py:63`), tab
 Etiket başka bir imaja taşınabilir, özet taşınamaz. Güncelleme: yeni dizin özetini okuyun
 (`docker buildx imagetools inspect debian:bookworm-slim`), iki satırı değiştirin, `--kaynaktan` ile yeniden derleyin.
 
+### Üst paketin sınırladığı paketler
+
+Bazı geçişli bağımlılıklar bizim değil, onları çeken paketin koyduğu üst sınırla kilitlidir. Daha yeni sürüme geçmek
+o üst paketin sınırı gevşemeden kurulumu bozar; bu yüzden Dependabot yalnız sınırın üstündeki sürümleri yok sayar
+(`.github/dependabot.yml`), sınırın altındaki yamalar önerilmeye devam eder.
+
+| Paket | Kilit | Sınırı koyan | Nerede | Kontrol |
+|---|---|---|---|---|
+| `coqui-tts-trainer` | 0.3.x | `coqui-tts` 0.27.5: `coqui-tts-trainer<0.4.0` | `requirements/ek_tts_xtts.txt`, XTTS venv kilitleri | `pip check` |
+| `antlr4-python3-runtime` | 4.9.3 | `omegaconf` 2.3: `antlr4-python3-runtime==4.9.*` | `requirements/gpu.txt`, `cpu.txt`, Demucs ekleri | `pip check` |
+
+Daha yeni sürümü denemek isteyen için yol, bozmadan:
+
+1. Önce üst paketin yeni sürümünün sınırı kaldırıp kaldırmadığına PyPI'de bakın (`coqui-tts`, `omegaconf`). Sınır
+   kalktıysa doğru yol üst paketi yükseltmektir; alt paket onunla birlikte gelir.
+2. Denemeyi ayrı bir sanal ortamda yapın, kurulu ortama dokunmayın:
+   `uv venv deneme && uv pip install -p deneme -r requirements/<kilit>.txt` ardından yalnız denenecek paketi
+   `uv pip install -p deneme "<paket>==<sürüm>"` ile değiştirin.
+3. `uv pip check -p deneme` çakışma bildirirse sürüm o üst paketle çalışmaz; burada durun.
+4. Çakışma yoksa `pytest -m "not gpu and not slow"` ve ilgili motorla kısa bir dublaj; çıktı süresi ve ses önceki
+   sürümle karşılaştırılır.
+5. Sonuç temizse bir issue ya da PR açın: kilit dosyası `requirements/*.in` üzerinden yeniden üretilir (`scripts/kilitle.ps1`),
+   bu tablo ve `.github/dependabot.yml` yok sayma satırı birlikte güncellenir.
+
 ## Koruma testi
 
 `tests/test_sabit_degerler.py` yukarıdaki kritik değerleri kaynaktan okur (içe aktarma yok, model yok); biri değişirse bu

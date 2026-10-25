@@ -15,6 +15,11 @@ updates:
       - dependency-name: "torch"
       - dependency-name: "torchaudio"
       - dependency-name: "ctranslate2"
+      # Upper-bounded by an upstream pin; a bump breaks the install (docs/engineering/pinned-values.md, "Upstream-capped packages").
+      - dependency-name: "coqui-tts-trainer"
+        versions: [">=0.4.0"]  # coqui-tts 0.27.5 requires coqui-tts-trainer<0.4.0
+      - dependency-name: "antlr4-python3-runtime"
+        versions: [">=4.10"]  # omegaconf 2.3 requires antlr4-python3-runtime==4.9.*
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

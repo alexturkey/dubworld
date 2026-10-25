@@ -194,6 +194,30 @@ both `FROM` lines of `scripts/telegram_bot_api.Dockerfile`; read from the Docker
 can be moved to a different image; a digest cannot. To update: read the new index digest
 (`docker buildx imagetools inspect debian:bookworm-slim`), replace both lines, rebuild with `--kaynaktan`.
 
+### Upstream-capped packages
+
+Some transitive dependencies are pinned by an upper bound set by the package that pulls them in, not by us. Moving to a
+newer version breaks the install until that upstream bound is relaxed, so Dependabot ignores only the versions above the
+bound (`.github/dependabot.yml`); patch releases below it are still proposed.
+
+| Package | Pin | Bound set by | Where | Check |
+|---|---|---|---|---|
+| `coqui-tts-trainer` | 0.3.x | `coqui-tts` 0.27.5: `coqui-tts-trainer<0.4.0` | `requirements/ek_tts_xtts.txt`, XTTS venv locks | `pip check` |
+| `antlr4-python3-runtime` | 4.9.3 | `omegaconf` 2.3: `antlr4-python3-runtime==4.9.*` | `requirements/gpu.txt`, `cpu.txt`, Demucs extras | `pip check` |
+
+How to try a newer version without breaking anything:
+
+1. First check on PyPI whether a newer release of the upstream package (`coqui-tts`, `omegaconf`) removed the bound. If it
+   did, the right move is to upgrade the upstream package; the dependency follows.
+2. Test in a separate virtual environment and leave the installed one untouched:
+   `uv venv trial && uv pip install -p trial -r requirements/<lock>.txt`, then swap only the package under test with
+   `uv pip install -p trial "<package>==<version>"`.
+3. If `uv pip check -p trial` reports a conflict, that version does not work with the upstream package; stop here.
+4. If there is no conflict, run `pytest -m "not gpu and not slow"` and a short dub with the affected engine; compare output
+   duration and audio with the previous version.
+5. If the result is clean, open an issue or PR: the lock is regenerated from `requirements/*.in` (`scripts/kilitle.ps1`),
+   and this table and the `.github/dependabot.yml` ignore entry are updated together.
+
 ## Guard test
 
 `tests/test_sabit_degerler.py` reads the critical values above from the source (no imports, no models) and fails with a
