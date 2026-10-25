@@ -210,7 +210,7 @@ Başka repo kullanan adımların ön koşulları:
   kilidi numpy 2.5.2'yi sabitler, bu sürüm Python ≥ 3.12 ister (PyPI `Requires-Python`); Ubuntu 22.04 Python 3.10 ile geldiği için çalışma
   ortamına uygun değildir. `scripts/crisper_kur.py` indirmeden önce WSL'i ve dağıtımın `python3` sürümünü denetler, uymuyorsa
   açık mesajla durur. Dağıtım adı `--dagitim` ile verilir (varsayılan `Ubuntu`).
-- `voxcpm2` ve `crisper`: repo adresi yer tutucuları doldurulmamışsa `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`
+- `voxcpm2` ve `crisper`: kardeş repo adresleri betikte hazırdır; çatal (fork) kullanmak için `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`
   ayarlanır (README "Aile"). Commit `kur.ps1` içinde sabittir; hangi adres verilirse verilsin o commit kurulur.
 - `voxcpm2`: git ve NVIDIA GPU ister. Kardeş kurulum betiği `py -3`, `python` ya da `python3` arar (64 bit, 3.10+);
   `kur.ps1` yalnız bu adım için kendi Python 3.11.14'ünü `PATH` başına koyar, sistem Python'u gerekmez.
@@ -338,7 +338,7 @@ Bütün satırlar geliştirme sırasında kaydedilmiş gerçek hatalardan gelir 
 | 8 | Video kodlama: `Driver does not support the required nvenc API version` / NVENC yok | sürücünün NVENC API'si FFmpeg 9.0.2'nin istediğinden eski ya da GPU'da NVENC yok | kendiliğinden: tek deneme kodlaması, ardından gerekçesi günlüğe yazılarak libx264. Zorlamak için `DUBLAJ_VIDEO_KODLAYICI=x264` (ya da `nvenc`, `auto`); sürücü güncellemesi NVENC'i geri açar |
 | 9 | `Requested float16 compute type, but the target device or backend do not support efficient float16 computation` | Pascal'da hızlı fp16 yok; CTranslate2 orada `float32`, `int8`, `int8_float32` sunar | `transkripsiyon.hesap_tipi = auto` bırakılır (int8 / fp32 seçilir); `float16` zorlanmaz |
 | 10 | İndirmede `sha256 tutmadı` | yarım kalan indirme, araya giren vekil sunucu ya da uzak dosya değişmiş | aynı adım yeniden çalıştırılır (yarım dosya silinir); sürerse sabit kaynak değişmiştir: bildirilir, hash asla elle değiştirilmez |
-| 11 | `Kardeş repo adresi ayarlı değil` | kardeş reponun adres yer tutucusu doldurulmamış | `DUBLAJ_TTS_REPO_URL` ya da `DUBLAJ_STT_REPO_URL` ayarlanır (README "Aile") |
+| 11 | `Kardeş repo adresi ayarlı değil` | `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL` `https://` ile başlamayan bir değere ayarlı | değişken düzeltilir ya da silinir (hazır adresler README "Aile") |
 | 12 | `crisper`: `wsl.exe yok` ya da WSL ortamı numpy / Python sürümünde düşüyor | WSL2 yok ya da dağıtımın Python'u 3.12'den eski | `wsl --install -d Ubuntu` (Ubuntu 24.04); başka dağıtım `scripts/crisper_kur.py --dagitim <ad>` ile verilir |
 | 13 | `voxcpm2`: `64-bit Python 3.10+ bulunamadı` | reponun kendi Python'u kurulu değil (adım onu kendisi `PATH`'e koyar) | `scripts\kur.ps1 -Adim uv,python,voxcpm2` |
 | 14 | `Önce taban kurulum: -Adim paketler` | isteğe bağlı adım ana ortamdan önce çalıştırılmış | önce varsayılan kurulum |

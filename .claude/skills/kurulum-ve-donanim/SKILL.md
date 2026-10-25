@@ -62,7 +62,7 @@ Türkçe özet en altta. / Turkish summary at the end.
    Valid optional steps: `demucs`, `youtube`, `parakeet`, `speechmatics`, `crisper`, `voxcpm2`, `akilli-kare`,
    `galeri`, `telegram`, `tts-xtts`. `crisper` and `tts-xtts` carry **non-commercial** weights and refuse to run
    without `-TicariOlmayanKabul`; tell the user before passing it. `voxcpm2` and `crisper` clone a sister repository
-   at a fixed commit; if its URL placeholder is not filled, set `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`.
+   at a fixed commit (URLs built in; for a fork set `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`).
 5. **Pick engines that fit the hardware** with [docs/donanim.md](../../../docs/donanim.md):
    - No NVIDIA GPU: `--ayar genel.cihaz=cpu` (or leave `auto`). STT `faster-whisper` int8, TTS `supertonic`,
      `ses_temizligi.kip=original`. English sources on CPU: `parakeet_cpu_align` or `whisper_cpp_cpu_align`.

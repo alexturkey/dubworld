@@ -214,8 +214,8 @@ Prerequisites of the steps that use other repositories:
   numpy 2.5.2, which needs Python ≥ 3.12 (PyPI `Requires-Python`); Ubuntu 22.04 ships Python 3.10 and is therefore not suitable for the
   runtime environment. `scripts/crisper_kur.py` checks WSL and the distribution's `python3` version before any download
   and stops with a clear message. The distribution name is passed with `--dagitim` (default `Ubuntu`).
-- `voxcpm2` and `crisper`: if the repository URL placeholders are not filled, set `DUBLAJ_TTS_REPO_URL` /
-  `DUBLAJ_STT_REPO_URL` (README "Family"). The commit is fixed in `kur.ps1`; any URL is checked out at that commit.
+- `voxcpm2` and `crisper`: the sister repository URLs are built in (README "Family"); to use a fork, set
+  `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`. The commit is fixed in `kur.ps1`; any URL is checked out at that commit.
 - `voxcpm2`: needs git and an NVIDIA GPU. The sister installer looks for `py -3`, `python` or `python3` (64-bit, 3.10+);
   `kur.ps1` puts its own Python 3.11.14 first on `PATH` for this step only, so no system Python is needed.
 
@@ -343,7 +343,7 @@ All entries come from real failures recorded during development (engineering pag
 | 8 | Video encoding: `Driver does not support the required nvenc API version` / NVENC unavailable | the driver's NVENC API is older than the one FFmpeg 9.0.2 requests, or the GPU has no NVENC | automatic: one trial encode, then libx264 with the reason in the log. Force with `DUBLAJ_VIDEO_KODLAYICI=x264` (or `nvenc`, `auto`); updating the driver re-enables NVENC |
 | 9 | `Requested float16 compute type, but the target device or backend do not support efficient float16 computation` | Pascal has no fast fp16; CTranslate2 offers `float32`, `int8`, `int8_float32` there | leave `transkripsiyon.hesap_tipi = auto` (int8 / fp32 are chosen); do not force `float16` |
 | 10 | `sha256 tutmadı` (hash mismatch) during download | interrupted download, proxy rewriting, or the remote file changed | re-run the same step (the partial file is deleted); if it persists the pinned source changed: report it, never edit the hash |
-| 11 | `Kardeş repo adresi ayarlı değil` | URL placeholder of a sister repository is not filled | set `DUBLAJ_TTS_REPO_URL` or `DUBLAJ_STT_REPO_URL` (README "Family") |
+| 11 | `Kardeş repo adresi ayarlı değil` | `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL` is set to something that is not an `https://` URL | fix or unset the variable (the built-in URLs are in README "Family") |
 | 12 | `crisper`: `wsl.exe yok`, or the WSL environment fails on numpy / Python version | WSL2 is missing, or the distribution's Python is older than 3.12 | `wsl --install -d Ubuntu` (Ubuntu 24.04); pass another distribution with `scripts/crisper_kur.py --dagitim <name>` |
 | 13 | `voxcpm2`: `64-bit Python 3.10+ bulunamadı` | the repository's own Python is missing (the step puts it on `PATH` itself) | `scripts\kur.ps1 -Adim uv,python,voxcpm2` |
 | 14 | `Önce taban kurulum: -Adim paketler` | an optional step was run before the main environment exists | run the default install first |

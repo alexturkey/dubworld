@@ -65,7 +65,7 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 - CI 只测试 CPU；GPU 路径在一张 4 GB Pascal 显卡上手动运行。较新的显卡（RTX 50）、Linux 和 macOS 未测试；安装的 GPU 库包含从 Pascal 到 RTX 50 的内核，Maxwell 使用 CPU 配置（[GPU runtime matrix](docs/installation.md#1-system-requirements)）。
 - 离线翻译器只支持英语到土耳其语；其他语言对需要 Codex / Claude Code CLI 或 API 后端。
 - 英语和土耳其语以外源语言的词级时间：日语和中文用 `scripts/kur.ps1 -Adim hizalama-diller`，其他语言需用 `DUBLAJ_CEVRIMICI=1` 运行一次。
-- 未做端到端测试：XTTS-v2 实际安装、RVC、连接真实服务的 Telegram 机器人、CrisperWhisper 引擎；Moonshine 为实验性。
+- 未做端到端测试：XTTS-v2 实际安装、RVC、连接真实服务的 Telegram 机器人、CrisperWhisper 2 Medium；Moonshine 为实验性。CrisperWhisper 2.0 Turbo（引擎 13）已在 GTX 1050 Ti 4 GB 上用真实音频测试（tr、en、ja；显存约 1.4 GB）。
 
 ## 构建模块
 

@@ -70,7 +70,7 @@ Máquina de referencia: GPU Pascal de 4 GB, Windows 10; método y todas las fila
 - La CI solo prueba la CPU; la ruta GPU se ejecutó a mano en una tarjeta Pascal de 4 GB. No se probaron tarjetas nuevas (RTX 50), Linux ni macOS; las bibliotecas GPU instaladas incluyen kernels de Pascal a RTX 50 y Maxwell usa el perfil CPU ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - El traductor sin conexión solo traduce de inglés a turco; otros pares necesitan Codex / Claude Code CLI o un backend por API.
 - Tiempo por palabra para idiomas de origen distintos de inglés y turco: japonés y chino con `scripts/kur.ps1 -Adim hizalama-diller`, el resto tras una ejecución con `DUBLAJ_CEVRIMICI=1`.
-- Sin probar de extremo a extremo: instalación real de XTTS-v2, RVC, el bot de Telegram contra el servicio real, motores CrisperWhisper; Moonshine es experimental.
+- Sin probar de extremo a extremo: instalación real de XTTS-v2, RVC, el bot de Telegram contra el servicio real, CrisperWhisper 2 Medium; Moonshine es experimental. CrisperWhisper 2.0 Turbo (motor 13) está probado con audio real en una GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB de VRAM).
 
 ## Bloques de construcción
 

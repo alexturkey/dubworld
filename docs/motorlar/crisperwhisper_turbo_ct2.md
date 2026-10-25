@@ -9,7 +9,7 @@
 | License | weights: **nyra health Non-Commercial Research License**; code MIT |
 | Commercial use | **no** (outputs may not train commercial models) |
 | Source | https://huggingface.co/nyralabs/CrisperWhisper2.0_turbo |
-| Install | `scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul` (uses the sister STT repository's installer at a fixed commit; set `DUBLAJ_STT_REPO_URL` if the placeholder is empty); conversion needs ~4.5 GB free RAM |
+| Install | `scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul` (uses the sister STT repository's installer at a fixed commit; for a fork set `DUBLAJ_STT_REPO_URL`); conversion needs ~4.5 GB free RAM |
 | Hardware | NVIDIA GPU + WSL2 Ubuntu; ~1.4 GB VRAM (measured); **no CPU path** |
 | Languages | Whisper languages; tested on real audio: tr, en, ja |
 | Default | chosen by `transkripsiyon.motor = auto` when installed |
@@ -54,7 +54,7 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 | Lisans | ağırlıklar: **nyra health Non-Commercial Research License** (ticari olmayan araştırma lisansı); kod MIT |
 | Ticari kullanım | **hayır** (çıktılar ticari modelleri eğitmek için kullanılamaz) |
 | Kaynak | https://huggingface.co/nyralabs/CrisperWhisper2.0_turbo |
-| Kurulum | `scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul` (kardeş STT reposunun kurulum betiğini sabit bir commit'te kullanır; yer tutucu boşsa `DUBLAJ_STT_REPO_URL` ayarlayın); dönüştürme için ~4.5 GB boş RAM gerekir |
+| Kurulum | `scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul` (kardeş STT reposunun kurulum betiğini sabit bir commit'te kullanır; çatal (fork) için `DUBLAJ_STT_REPO_URL` ayarlanır); dönüştürme için ~4.5 GB boş RAM gerekir |
 | Donanım | NVIDIA GPU + WSL2 Ubuntu; ~1.4 GB VRAM (ölçüldü); **CPU yolu yok** |
 | Diller | Whisper dilleri; gerçek seste denendi: tr, en, ja |
 | Varsayılan | kuruluysa `transkripsiyon.motor = auto` bunu seçer |

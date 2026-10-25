@@ -69,7 +69,7 @@ Başvuru makinesi: 4 GB Pascal GPU, Windows 10; yöntem ve bütün satırlar [do
 - CI yalnız işlemciyi sınar; GPU yolu tek bir 4 GB Pascal kartta elle koşuldu. Yeni kartlar (RTX 50), Linux ve macOS denenmedi; kurulan GPU kitaplıkları Pascal'dan RTX 50'ye kadar çekirdek taşır, Maxwell işlemci profilini kullanır ([GPU çalışma matrisi](docs/kurulum.md#1-sistem-gereksinimleri)).
 - Çevrimdışı çevirmen yalnız İngilizceden Türkçeye çevirir; diğer dil çiftleri Codex / Claude Code CLI ya da bir API arka ucu ister.
 - İngilizce ve Türkçe dışındaki kaynak dillerde kelime zamanı: Japonca ve Çince `scripts/kur.ps1 -Adim hizalama-diller` ile, diğerleri bir kez `DUBLAJ_CEVRIMICI=1` ile çalıştırınca.
-- Uçtan uca denenmedi: XTTS-v2 gerçek kurulumu, RVC, gerçek hizmete bağlı Telegram botu, CrisperWhisper motorları; Moonshine deneyseldir.
+- Uçtan uca denenmedi: XTTS-v2 gerçek kurulumu, RVC, gerçek hizmete bağlı Telegram botu, CrisperWhisper 2 Medium; Moonshine deneyseldir. CrisperWhisper 2.0 Turbo (13. motor) GTX 1050 Ti 4 GB'ta gerçek seste denendi (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Yapı taşları
 
