@@ -9,7 +9,7 @@
 | License | Apache-2.0 (code and weights) |
 | Commercial use | yes |
 | Source | https://github.com/OpenBMB/VoxCPM ; installer: sister repository at a fixed commit |
-| Install | `scripts/kur.ps1 -Adim voxcpm2` (set `DUBLAJ_TTS_REPO_URL` if the placeholder is empty) |
+| Install | `scripts/kur.ps1 -Adim voxcpm2` (sister repository URL built in; for a fork set `DUBLAJ_TTS_REPO_URL`) |
 | Hardware | NVIDIA GPU, 2.6–3.0 GB VRAM (Q8_0 GGUF + 4 GB patch, measured), ~2 s compute per 1 s audio; CPU disabled (48.5 s audio took 535 s) |
 | Languages | tested: tr, en, fr, de, es, ru, zh, ja; others allowed with a warning |
 | Default | off |
@@ -53,7 +53,7 @@
 | Lisans | Apache-2.0 (kod ve ağırlıklar) |
 | Ticari kullanım | evet |
 | Kaynak | https://github.com/OpenBMB/VoxCPM ; kurucu: sabit commit'teki kardeş repo |
-| Kurulum | `scripts/kur.ps1 -Adim voxcpm2` (yer tutucu boşsa `DUBLAJ_TTS_REPO_URL` ayarlayın) |
+| Kurulum | `scripts/kur.ps1 -Adim voxcpm2` (kardeş repo adresi hazırdır; çatal (fork) için `DUBLAJ_TTS_REPO_URL` ayarlanır) |
 | Donanım | NVIDIA GPU, 2.6–3.0 GB VRAM (Q8_0 GGUF + 4 GB yaması, ölçüldü), 1 sn ses için ~2 sn hesap; işlemci kapalı (48.5 sn ses 535 sn sürdü) |
 | Diller | denendi: tr, en, fr, de, es, ru, zh, ja; diğerlerine uyarıyla izin verilir |
 | Varsayılan | kapalı |
