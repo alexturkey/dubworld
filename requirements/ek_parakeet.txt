@@ -65,7 +65,7 @@ sherpa-onnx==1.13.8 \
     --hash=sha256:eeb763b89be9b9742186b1ec2bdebb09939b511b4e1099e0a79158799aeb35e1 \
     --hash=sha256:ef218d6545a9dcc2aff7043f39026c7d78d6cf46a3876d450d508feebffc00a9 \
     --hash=sha256:f7a1c974361383f35cd0a440db8361bca25a556106d15d12496bf3446642560f
-    # via -r requirements/ek_parakeet.in
+    # via -r ek_parakeet.in
 sherpa-onnx-core==1.13.8 \
     --hash=sha256:19d2a6a649d3680a06c63a1a7d9121ec29f0a24552febc2c9c795739fccb901d \
     --hash=sha256:2d875f5de5856e30f54917222463ddac9fcdfd4191c188b6f0e7f7c04482afa4 \

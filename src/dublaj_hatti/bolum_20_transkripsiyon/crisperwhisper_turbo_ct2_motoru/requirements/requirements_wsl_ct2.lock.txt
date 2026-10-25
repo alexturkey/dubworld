@@ -1,11 +1,11 @@
 anyio==4.14.2
-certifi==2026.7.22
+certifi==2026.10.23
 cffi==2.1.1
 click==8.5.0
 coloredlogs==15.0.1
 crisperwhisper==2.0.1
 ctranslate2-crisperwhisper==4.7.1.post3
-filelock==3.32.4
+filelock==4.2.4
 flatbuffers==25.12.19
 fsspec==2026.7.0
 h11==0.16.0
@@ -21,11 +21,11 @@ nvidia-cublas-cu12==12.9.2.10
 nvidia-cuda-nvrtc-cu12==12.9.86
 onnxruntime==1.23.2
 packaging==26.3
-pip==24.0
+pip==26.2.2
 protobuf==7.36.0
 pycparser==3.0
 PyYAML==6.0.3
-setuptools==84.0.0
+setuptools==84.1.0
 soundfile==0.14.0
 soxr==1.1.0
 sympy==1.14.0

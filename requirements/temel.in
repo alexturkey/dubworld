@@ -6,7 +6,7 @@ whisperx==3.8.6
 transformers==4.57.6
 sentencepiece==0.2.2
 onnxruntime==1.31.0
-onnx==1.21.0
+onnx==1.22.0
 soundfile==0.14.0
 numpy==2.4.6
 scipy==1.17.1
