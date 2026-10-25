@@ -30,7 +30,7 @@ klasörünün içine kurulur (`.venv`, `runtime_assets/`); her indirme sabit ve 
 profiliyle 22 GB, yalnız işlemciyle 14 GB; kurulum sonrası ölçülen kullanım ≈ 14,6 GB (GPU, sabit bağlı dosyalar bir kez sayıldı; dosya gezgini ≈ 22 GB gösterir). Doğrulama: `.venv\Scripts\dubla.exe kontrol`.
 
 Gereksinimler, adım sırası, Python ortamları haritası, isteğe bağlı motorlar, çevrimdışı kullanım, güncelleme,
-kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macOS henüz denenmedi. [Topluluk bildirimi](https://x.com/MihenkAIdotcom/status/2114345171571925363) (bizim tarafımızdan doğrulanmadı): bir ekip yalnız seslendirme aşamasını Apple M4 Mac'te, yalnız işlemciyle kullanarak bir ürün tanıtımını İngilizce, Türkçe ve Arapça seslendirdi; dil başına yaklaşık bir dakika.
+kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macOS henüz denenmedi. Örnek: [Apple M4 Mac'te, yalnız işlemciyle İngilizce, Türkçe ve Arapça seslendirilmiş ürün tanıtımı](https://x.com/MihenkAIdotcom/status/2114345171571925363).
 
 ## Kullanım
 

@@ -31,7 +31,7 @@ Todo se instala dentro de la carpeta del repositorio (`.venv`, `runtime_assets/`
 se verifica con sha256. Disco libre para empezar: 22 GB con el perfil GPU, 14 GB solo CPU; uso medido tras la instalación ≈ 14,6 GB (GPU, archivos con enlaces duros contados una vez; el explorador muestra ≈ 22 GB). Comprobación: `.venv\Scripts\dubla.exe kontrol`.
 
 Requisitos, orden de los pasos, mapa de entornos de Python, motores opcionales, uso sin conexión, actualización,
-desinstalación y errores frecuentes (en inglés): **[docs/installation.md](docs/installation.md)**. Linux y macOS aún no se han probado. [Informe de la comunidad](https://x.com/MihenkAIdotcom/status/2114345171571925363) (no verificado por nosotros): un equipo usó solo la etapa de voz en un Mac Apple M4, solo CPU, para narrar un recorrido de producto en inglés, turco y árabe, alrededor de un minuto por idioma.
+desinstalación y errores frecuentes (en inglés): **[docs/installation.md](docs/installation.md)**. Linux y macOS aún no se han probado. Ejemplo: [recorrido de producto narrado en inglés, turco y árabe en un Mac Apple M4, solo CPU](https://x.com/MihenkAIdotcom/status/2114345171571925363).
 
 ## Uso
 
