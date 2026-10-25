@@ -106,6 +106,11 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
   [THIRD_PARTY.md](THIRD_PARTY.md) 的 **Commercial?** 一栏。
   fr / de / es / it 源音频的词级时间模型（CC BY-NC 4.0）同样仅限非商业使用，首次使用时会请求同意。
 
+## 帮助与支持
+
+问题、想法和结果：[Discussions](https://github.com/alexturkey/dubworld/discussions)。安装问题：[安装 issue](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml)；缺陷：[缺陷报告](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+（请附上操作系统、GPU、命令及最后几行输出）。安全问题请按 SECURITY.md 报告，不要发公开 issue。
+
 ## 许可证与致谢
 
 代码：Apache-2.0（LICENSE）。第三方组件及其许可证：THIRD_PARTY.md。负责任地使用：ETHICS.md。
@@ -116,4 +121,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:f2fa696c207c -->
+<!-- i18n-source: README.md sha256:6829b755ca26 -->
