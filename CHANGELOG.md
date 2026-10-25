@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Friendlier progress screen (desktop and web): six familiar stops (video, sound, writing down, translation, new
+  voice, putting together), a moving striped bar, a ticking stopwatch, a rough "about N min left" once enough of the
+  job is done, and a "What's happening" panel with short plain sentences in the interface language; the technical log
+  stays behind a button. A finished job shows a small celebration. Animations stop when the system asks for reduced
+  motion.
 - Interface language: the desktop window and the web page are in English and Turkish, picked at the top right
   (`genel.arayuz_dili = auto | tr | en`; `auto` follows the computer, otherwise English). Texts live in
   `src/dublaj_hatti/arayuz_dilleri/<code>.json`, so a new language is one new file; tests check every file on their

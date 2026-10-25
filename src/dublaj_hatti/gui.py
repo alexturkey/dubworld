@@ -21,6 +21,7 @@ from typing import Any
 
 from dublaj_hatti import __version__, arayuz_dili, kayit
 from dublaj_hatti.arayuz_dili import t
+from dublaj_hatti.gui_ilerleme import ADIM_MS, IlerlemePanosu
 from dublaj_hatti.is_yurutucu import IsYurutucu, ayar_formu, cikti_klasoru_ac
 from dublaj_hatti.yapilandirma import AyarHatasi, ayarlari_yukle
 
@@ -33,11 +34,6 @@ def onerilen_aciklama() -> str:
 
 def durum_yazisi(durum: str) -> str:
     return t(f"ilerleme.{durum}") if durum != "bos" else ""
-
-
-def asama_adi(kimlik: str, yedek: str = "") -> str:
-    """Aşama adı arayüz dilinde (sözlükte yoksa hattın verdiği ad)."""
-    return t(f"asama.{kimlik}") if kimlik and arayuz_dili.var_mi(f"asama.{kimlik}", "tr") else (yedek or kimlik)
 
 
 def kurulum_eksikleri() -> list[str]:
@@ -132,6 +128,7 @@ class Uygulama:
         self.baglanti: str | None = None  # https bağlantısı (isteğe bağlı yt-dlp / gallery-dl)
         self.alanlar: list[AyarAlani] = []
         self._zamanlayicilar: list[str] = []  # dil değişince pencere yeniden kurulur; eski döngüler durdurulur
+        self._yuvalar: dict[int, str] = {}
         kok.title(f"DubWorld {__version__}")
         kok.minsize(820, 600)
         kok.protocol("WM_DELETE_WINDOW", self.kapat)
@@ -150,8 +147,13 @@ class Uygulama:
         self._ilerleme_alani(kok)
         self._sonra(1000, self._yokla)
 
-    def _sonra(self, ms: int, islev: Any) -> None:
-        self._zamanlayicilar = [*self._zamanlayicilar[-8:], self.kok.after(ms, islev)]  # son birkaçı yeter
+    def _sonra(self, ms: int, islev: Any, yer: int | None = None) -> None:
+        """Zamanlayıcı; `yer` verilirse o sabit yuvada tutulur (sık dönen animasyon ötekileri listeden itmesin)."""
+        kimlik = self.kok.after(ms, islev)
+        if yer is not None:
+            self._yuvalar[yer] = kimlik
+        else:
+            self._zamanlayicilar = [*self._zamanlayicilar[-8:], kimlik]  # son birkaçı yeter
 
     # --- arayüz dili ---------------------------------------------------------------------------------
     def _dil_satiri(self, kok: tk.Tk) -> None:
@@ -184,7 +186,7 @@ class Uygulama:
             degisen = {a.alan["anahtar"]: a.deger() for a in self.alanlar if a.alan["tur"] not in ("tam_sayi", "ondalik")
                        and a.degisti_mi()}
         video, baglanti = self.video, self.baglanti
-        for zaman in self._zamanlayicilar:
+        for zaman in [*self._zamanlayicilar, *self._yuvalar.values()]:
             try:
                 self.kok.after_cancel(zaman)
             except tk.TclError:
@@ -329,11 +331,10 @@ class Uygulama:
 
     def _ilerleme_alani(self, kok: tk.Tk) -> None:
         cerceve = ttk.Frame(kok, padding=(10, 4, 10, 10))
-        cerceve.pack(fill="x")
-        self.durum_yazi = ttk.Label(cerceve, text=t("ilerleme.hazir"), font=("Segoe UI", 10, "bold"))
-        self.durum_yazi.pack(anchor="w")
-        self.cubuk = ttk.Progressbar(cerceve, maximum=100)
-        self.cubuk.pack(fill="x", pady=4)
+        sekmeler = next(c for c in kok.pack_slaves() if isinstance(c, ttk.Notebook))
+        cerceve.pack(fill="x", side="bottom", before=sekmeler)  # pencere küçülünce sekme daralır, pano hep görünür
+        self.pano = IlerlemePanosu(cerceve)
+        self._sonra(ADIM_MS, self._canlandir, yer=0)
         dugmeler = ttk.Frame(cerceve)
         dugmeler.pack(fill="x")
         self.durdur_dugme = ttk.Button(dugmeler, text=t("dugme.durdur"), command=self.yurutucu.durdur, state="disabled")
@@ -461,15 +462,8 @@ class Uygulama:
 
     def _yokla(self) -> None:
         d = self.yurutucu.durum.ozet()
+        self.pano.guncelle(d, durum_yazisi(d["durum"]))
         if d["durum"] != "bos":
-            dakika, saniye = divmod(int(d["gecen_sn"]), 60)
-            parcalar = [durum_yazisi(d["durum"]), t("ilerleme.yuzde", None, yuzde=d["yuzde"]),
-                        d["bekleme"] or asama_adi(d.get("asama", ""), d["asama_adi"]) or t("ilerleme.hazirlaniyor"),
-                        t("ilerleme.sure", None, dk=dakika, sn=saniye)]
-            if d["is"]:
-                parcalar.append(t("ilerleme.is_no", None, no=d["is"]))
-            self.durum_yazi.configure(text=" · ".join(parcalar))
-            self.cubuk.configure(value=d["yuzde"])
             self.gunluk.configure(state="normal")
             self.gunluk.delete("1.0", "end")
             self.gunluk.insert("end", "\n".join(d["gunluk"]))
@@ -482,6 +476,10 @@ class Uygulama:
                 self._hata_gosterildi = False
         self._dugmeleri_ayarla()
         self._sonra(1000, self._yokla)
+
+    def _canlandir(self) -> None:
+        self.pano.adim()
+        self._sonra(ADIM_MS, self._canlandir, yer=0)
 
     def kapat(self) -> None:
         if self.yurutucu.calisiyor() and not messagebox.askyesno(

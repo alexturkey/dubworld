@@ -78,13 +78,20 @@
   </section>
 
   <section id="ilerleme" hidden>
-    <h2 id="ilerleme-baslik" data-t="ilerleme.calisiyor">İş sürüyor</h2>
-    <div class="cubuk"><div id="ilerleme-cubugu"></div></div>
-    <p id="ilerleme-yazi" class="not"></p>
-    <ol id="asamalar"></ol>
+    <div class="ilerleme-ust">
+      <h2 id="ilerleme-baslik" data-t="ilerleme.calisiyor">İş sürüyor</h2>
+      <span id="ilerleme-yuzde" class="buyuk-yuzde"></span>
+    </div>
+    <ol id="duraklar" class="duraklar"></ol>
+    <div id="ilerleme-cerceve" class="cubuk kalin" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+         aria-valuenow="0"><div id="ilerleme-cubugu"></div></div>
+    <p class="saat-satiri"><span id="kronometre" class="kronometre"></span> <span id="kalan" class="not"></span>
+      <span id="ilerleme-yazi" class="not"></span></p>
+    <h3 data-t="ilerleme.ne_oluyor">Şimdi ne oluyor?</h3>
+    <ol id="anlati" class="anlati" role="status" aria-live="polite"></ol>
     <div class="satir">
       <button id="durdur" data-t="dugme.durdur">Durdur</button>
-      <button id="gunluk-ac" data-t="dugme.gunluk_goster">Günlüğü göster</button>
+      <button id="gunluk-ac" data-t="dugme.gunluk_goster">Teknik günlüğü göster</button>
     </div>
     <pre id="gunluk" hidden></pre>
   </section>

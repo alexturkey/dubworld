@@ -23,6 +23,7 @@ from dublaj_hatti import arayuz_dili
 from dublaj_hatti.bolum_00_omurga.core.asama_sozlesmesi import PIPELINE_STAGES
 from dublaj_hatti.is_yonetimi.asamalar import ASAMA_ADLARI
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, IsHatasi, is_ozeti
+from dublaj_hatti.is_yonetimi.yolculuk import Anlati, duraklar, kalan_sn
 from dublaj_hatti.yapilandirma import SEMA, ayarlari_yukle, esleme_metni, form_ek_bilgisi
 
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
@@ -86,8 +87,10 @@ class IsDurumu:
     hata: str = ""
     secimler: dict[str, Any] = field(default_factory=dict)
     kip: str = "segment_sync"
+    komut: str = "dubla"  # dubla | transkript
     ciktilar: list[dict[str, str]] = field(default_factory=list)
     gunluk: deque = field(default_factory=lambda: deque(maxlen=400))
+    anlati: Anlati = field(default_factory=lambda: Anlati(0.0))
 
     def ozet(self) -> dict[str, Any]:
         gecen = (self.bitis or time.time()) - self.baslangic if self.baslangic else 0.0
@@ -102,6 +105,8 @@ class IsDurumu:
             "asamalar": [{"id": a[0], "ad": ASAMA_ADLARI.get(a[0], a[0]),
                           "durum": "bitti" if a[0] in self.tamamlanan else ("suruyor" if a[0] == self.asama else "bekliyor")}
                          for a in asamalar],
+            "duraklar": duraklar([a[0] for a in asamalar], self.komut, self.tamamlanan, self.asama, self.durum),
+            "anlati": self.anlati.liste(), "komut": self.komut, "kalan_sn": kalan_sn(yuzde, gecen, self.durum),
             "yuzde": yuzde, "ciktilar": self.ciktilar,
             "gecen_sn": round(gecen, 1), "sonuc": self.sonuc, "hata": self.hata, "secimler": self.secimler,
             "gunluk": list(self.gunluk)[-80:],
@@ -203,8 +208,11 @@ class IsYurutucu:
     def _alt_sureci_baslat(self, kayit: dict[str, Any]) -> None:
         job_id = int(kayit["job_id"])
         argumanlar = [sys.executable, "-m", "dublaj_hatti.cli", "is-calistir", str(job_id), "--olaylar-json"]
-        self.durum = IsDurumu(durum="calisiyor", kaynak=str(kayit["source"]), baslangic=time.time(),
-                              kip=str(kayit["dubbing_mode"] or "segment_sync"), is_no=job_id)
+        baslangic = time.time()
+        self.durum = IsDurumu(durum="calisiyor", kaynak=str(kayit["source"]), baslangic=baslangic,
+                              kip=str(kayit["dubbing_mode"] or "segment_sync"), is_no=job_id,
+                              komut=str(kayit["command"] or "dubla"), anlati=Anlati(baslangic))
+        self.durum.anlati.ekle("basla")
         self._surec = subprocess.Popen(
             argumanlar, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL,
             text=True, encoding="utf-8", errors="replace", creationflags=NO_WINDOW,
@@ -220,6 +228,7 @@ class IsYurutucu:
             except json.JSONDecodeError:
                 continue
             tur = olay.get("event")
+            durum.anlati.olaydan(olay)
             if tur == "basladi":
                 durum.secimler = olay.get("secimler", {})
             elif tur == "kaynak_bekleniyor":
@@ -241,6 +250,7 @@ class IsYurutucu:
         durum.bitis = time.time()
         if durum.durum != "durduruldu":
             durum.durum = "bitti" if kod == 0 else "hata"
+            durum.anlati.ekle(("bitti_" + durum.komut) if kod == 0 else "hata")
             if kod != 0 and not durum.hata:
                 durum.hata = f"çıkış kodu {kod}; ayrıntı günlükte"
             kayit = self.depo.getir(durum.is_no)
@@ -259,6 +269,7 @@ class IsYurutucu:
         with self._kilit:
             if self.calisiyor() and self._surec is not None:
                 self.durum.durum = "durduruldu"
+                self.durum.anlati.ekle("durduruldu")
                 self._surec.terminate()
                 try:
                     self._surec.wait(timeout=15)

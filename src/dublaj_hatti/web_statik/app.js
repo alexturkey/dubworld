@@ -291,9 +291,40 @@ $("gunluk-ac").addEventListener("click", () => {
 });
 $("klasor-ac").addEventListener("click", () => api("/api/klasor_ac", { yol: $("klasor-ac").dataset.yol || "" }).catch((e) => hataGoster(e.message)));
 
-function sureYaz(sn) { return t("ilerleme.sure", { dk: Math.floor(sn / 60), sn: Math.floor(sn % 60) }); }
+function saatYaz(sn) {  // kronometre: 3:07, 1:02:45 (her dilde aynı)
+  sn = Math.max(0, Math.floor(sn));
+  const s = Math.floor(sn / 3600), d = Math.floor(sn / 60) % 60, n = String(sn % 60).padStart(2, "0");
+  return s ? `${s}:${String(d).padStart(2, "0")}:${n}` : `${d}:${n}`;
+}
+function kalanYaz(sn) {
+  if (sn == null) return "";
+  return sn < 60 ? t("ilerleme.kalan_az") : t("ilerleme.kalan", { dk: Math.round(sn / 60) });
+}
+let saatTaban = null;  // {sn, an}: sunucunun söylediği geçen süre + o an; kronometre arada saniye saniye akar
+let saatSayaci = null;
+function kronometreCiz() {
+  if (!saatTaban) return;
+  $("kronometre").textContent = "⏱ " + saatYaz(saatTaban.sn + (saatTaban.akiyor ? (Date.now() - saatTaban.an) / 1000 : 0));
+}
+const hareketAz = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function konfeti() {
+  if (hareketAz()) return;
+  const simgeler = ["🎉", "✨", "🎊", "⭐", "🎈"];
+  for (let i = 0; i < 28; i++) {
+    const o = document.createElement("span");
+    o.className = "konfeti"; o.setAttribute("aria-hidden", "true");
+    o.textContent = simgeler[i % simgeler.length];
+    o.style.left = Math.random() * 100 + "vw"; o.style.animationDelay = Math.random() * 0.6 + "s";
+    document.body.appendChild(o);
+    setTimeout(() => o.remove(), 3200);
+  }
+}
+function anlatiYaz(s) {
+  return t("anlati." + s.anahtar, s.asama ? { asama: cevir("asama", s.asama, s.asama) } : {});
+}
 
 function durumCiz(d) {
+  const oncekiDurum = sonDurum && sonDurum.durum;
   sonDurum = d;
   const calisiyor = d.durum === "calisiyor";
   $("ilerleme").hidden = d.durum === "bos";
@@ -301,12 +332,44 @@ function durumCiz(d) {
   $("dublajla").disabled = $("transkript").disabled = calisiyor || !(yuklenen || baglantiHazir());
   if (d.durum !== "bos") yaz($("ilerleme-baslik"), "ilerleme." + d.durum);
   $("ilerleme-cubugu").style.width = d.yuzde + "%";
-  const parcalar = [t("ilerleme.yuzde", { yuzde: d.yuzde }),
-    d.bekleme || cevir("asama", d.asama, d.asama_adi) || t("ilerleme.hazirlaniyor"), sureYaz(d.gecen_sn)];
+  $("ilerleme").classList.toggle("bitti", d.durum === "bitti");
+  $("ilerleme-yuzde").textContent = (d.durum === "bitti" ? "🎉 " : "") + t("ilerleme.yuzde", { yuzde: d.yuzde });
+  const cerceve = $("ilerleme-cerceve");
+  cerceve.setAttribute("aria-valuenow", d.yuzde);
+  cerceve.setAttribute("aria-label", t("ilerleme.cubuk_adi"));
+  cerceve.classList.toggle("canli", calisiyor);
+  cerceve.classList.toggle("tamam", d.durum === "bitti");
+  saatTaban = { sn: d.gecen_sn || 0, an: Date.now(), akiyor: calisiyor };
+  kronometreCiz();
+  if (calisiyor && !saatSayaci) saatSayaci = setInterval(kronometreCiz, 1000);
+  if (!calisiyor && saatSayaci) { clearInterval(saatSayaci); saatSayaci = null; }
+  $("kalan").textContent = kalanYaz(d.kalan_sn);
+  const parcalar = [];
+  if (d.bekleme) parcalar.push(d.bekleme);
   if (d.is) parcalar.push(t("ilerleme.is_no", { no: d.is }));
   $("ilerleme-yazi").textContent = parcalar.join(" · ");
-  const liste = $("asamalar");
-  liste.replaceChildren(...(d.asamalar || []).map((a) => { const li = document.createElement("li"); li.textContent = cevir("asama", a.id, a.ad); li.className = a.durum; return li; }));
+  $("duraklar").replaceChildren(...(d.duraklar || []).map((o) => {
+    const li = document.createElement("li");
+    li.className = o.durum;
+    const simge = document.createElement("span");
+    simge.className = "simge"; simge.setAttribute("aria-hidden", "true");
+    simge.textContent = o.durum === "bitti" ? "✓" : o.simge;
+    const ad = document.createElement("span");
+    ad.className = "ad"; ad.textContent = t("durak." + o.id);
+    li.append(simge, ad);
+    return li;
+  }));
+  const pano = $("anlati");
+  const panoAltta = pano.scrollTop + pano.clientHeight >= pano.scrollHeight - 4;
+  pano.replaceChildren(...(d.anlati || []).map((s) => {
+    const li = document.createElement("li");
+    const zaman = document.createElement("time");
+    zaman.textContent = saatYaz(s.sn);
+    li.append(zaman, anlatiYaz(s));
+    return li;
+  }));
+  if (panoAltta) pano.scrollTop = pano.scrollHeight;
+  if (oncekiDurum === "calisiyor" && d.durum === "bitti") konfeti();
   const gunluk = $("gunluk");
   const altta = gunluk.scrollTop + gunluk.clientHeight >= gunluk.scrollHeight - 4;
   gunluk.textContent = (d.gunluk || []).join("\n");
