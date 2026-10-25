@@ -39,6 +39,17 @@ Tasarım sınırları:
   `pkg_resources` ister), `datasets` 3.1 ve onun sınırladığı `fsspec` (3D-Speaker/`modelscope`), `transformers` 4.57
   (5.x büyük sürüm). Pillow ve onnx kayıtları güvenilmeyen görüntü/model dosyası açmayla ilgilidir; bu hat yalnız
   SHA-256 ile sabitlenmiş modelleri yükler. Kilit yenileme: `scripts/kilitle.ps1`, ardından tam duman testi.
+- **Açık Dependabot uyarıları (`transformers`, `torch`):** ana bağımlılık dosyalarında `transformers` 4.57.6'ya
+  sabit; hem `transformers` hem `torch` için açık uyarılar var. Pratik risk düşük: model ağırlıkları sabittir ve
+  commit/SHA-256 ile sabitlenir (hizalama modelleri artık commit ile; konuşma tanıma ve ses üretimi ağırlıkları
+  `scripts/modeller.json`'da), çalışma anı varsayılan olarak çevrimdışıdır (`DUBLAJ_CEVRIMICI=1` verilmedikçe
+  `HF_HUB_OFFLINE`), uyarıların dayandığı yollar (güvenilmeyen model dosyası yükleme, uzak özel üretim kodu,
+  güvenilmeyen girdiyle `save_pretrained`, LightGlue, `Trainer`) DubWorld'de kullanıcı girdisiyle çalışmaz.
+  Şimdi güncellenmemesinin nedeni: her `transformers` 5.x `huggingface-hub >= 1.3` ister, son kararlı `whisperx`
+  (3.8.6) ise `huggingface-hub < 1.0` ister; `whisperx` 3.8.7rc1 bu sınırı kaldırıyor ama ön sürümdür. Yeniden
+  denenecek an: `whisperx` 3.8.7 kararlı (ya da sonrası) çıkınca. İsteğe bağlı XTTS motorunun ayrı ortamı
+  `transformers` 4.57.6'da kalır (`coqui-tts` ister); oradaki uyarılar gözden geçirildi, tolere edilebilir risk
+  olarak kabul edildi.
 
 **EN**
 
@@ -79,3 +90,14 @@ Design limits:
   `pkg_resources`), `datasets` 3.1 and the `fsspec` it caps (3D-Speaker/`modelscope`), `transformers` 4.57 (5.x is a
   major release). The Pillow and onnx advisories concern opening untrusted image/model files; this pipeline loads only
   SHA-256-pinned models. Lock refresh: `scripts/kilitle.ps1`, then a full smoke test.
+- **Open Dependabot alerts (`transformers`, `torch`):** `transformers` is pinned to 4.57.6 in the main dependency
+  files, and there are open alerts on both `transformers` and `torch`. Practical risk is low: model weights are fixed
+  and pinned by commit/SHA-256 (alignment models are now pinned by commit; speech-recognition and TTS weights are
+  pinned in `scripts/modeller.json`), the runtime is offline by default (`HF_HUB_OFFLINE` unless
+  `DUBLAJ_CEVRIMICI=1`), and the code paths the alerts rely on (loading untrusted checkpoints, remote custom
+  generation code, `save_pretrained` on untrusted input, LightGlue, `Trainer`) are not run by DubWorld on user input.
+  Why it is not updated now: every `transformers` 5.x needs `huggingface-hub >= 1.3`, while the latest stable
+  `whisperx` (3.8.6) requires `huggingface-hub < 1.0`; `whisperx` 3.8.7rc1 lifts that cap but is a prerelease. It
+  will be retried when `whisperx` 3.8.7 final (or later) is released. The optional XTTS engine's separate
+  environment stays on `transformers` 4.57.6 (`coqui-tts` needs it); those alerts were reviewed and accepted as
+  tolerable risk.

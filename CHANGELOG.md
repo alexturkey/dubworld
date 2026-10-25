@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Word alignment models from Hugging Face are loaded from a fixed commit (37 models), never from whatever the model
   page holds today; a changed or hijacked model page can no longer slip in new files. The weights are the same ones
   earlier downloads got, so word times do not change.
+- Open Dependabot alerts on `transformers` and `torch` are explained in `SECURITY.md` (low practical risk; the update
+  waits for a stable `whisperx` that allows `huggingface-hub` 1.x).
 - `onnx` 1.22.0.
 - CrisperWhisper WSL runtime lock: `certifi` 2026.10.23, `filelock` 4.2.4, `pip` 26.2.2, `setuptools` 84.1.0.
 
