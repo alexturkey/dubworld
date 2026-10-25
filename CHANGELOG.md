@@ -39,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README (all 8 languages): first macOS example (product tour voiced in English, Turkish and Arabic on an Apple M4, CPU only).
 - VoxCPM2: with the default single voice, a non-Turkish target language now reads with that language's ready narrator
   (`hazir/anlatici_<lang>`) instead of the Turkish default voice; a voice you set is never changed.
-- Recommended NVIDIA 4–5 GB setup includes VoxCPM2. Sister repository pinned at `93e8b42` (example prompts).
+- Recommended NVIDIA 4–5 GB setup includes VoxCPM2. Sister repository pinned at `2d74db1` (example prompts; engine
+  scratch files, about 3 MB of log per dubbed line, are deleted after each successful run).
 
 ### Fixed
 

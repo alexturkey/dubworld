@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[4]
 # Kardes repo (README "Family"; kaynak kod bu repoya kopyalanmaz, bu adaptor onu ayri sanal ortamda calistirir).
 # Adres yayinda doldurulur (yer tutucu), catal icin DUBLAJ_TTS_REPO_URL; kurulum betigi bu commit'i dogrular.
 VOXCPM2_REPO_URL = os.environ.get("DUBLAJ_TTS_REPO_URL", "").strip() or "https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi"
-VOXCPM2_COMMIT = "93e8b426738905437e1b621c6b359630b59e292b"
+VOXCPM2_COMMIT = "2d74db1640675cb81965588c670ced4ebf05c32d"
 VOXCPM2_ROOT_ENV = "DUBLAJ_VOXCPM2_ROOT"
 VOXCPM2_PYTHON_ENV = "DUBLAJ_VOXCPM2_PYTHON"
 VOXCPM2_VARSAYILAN_SES = "hazir/haber_spikeri"
