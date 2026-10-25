@@ -116,6 +116,11 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
   выключены). Перед платной или клиентской работой проверьте столбец **Commercial?** в [THIRD_PARTY.md](THIRD_PARTY.md).
   Модели меток времени слов для исходного аудио fr / de / es / it (CC BY-NC 4.0) тоже некоммерческие и запрашивают согласие при первом использовании.
 
+## Помощь и поддержка
+
+Вопросы, идеи и результаты: [Discussions](https://github.com/alexturkey/dubworld/discussions). Проблемы установки: [issue об установке](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml); ошибки: [отчёт об ошибке](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+(укажите ОС, GPU, команду и последние строки вывода). Уязвимости: SECURITY.md, а не публичные issue.
+
 ## Лицензия и благодарности
 
 Код: Apache-2.0 (LICENSE). Сторонние компоненты и их лицензии: THIRD_PARTY.md. Ответственное использование: ETHICS.md.
@@ -126,4 +131,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. Этот перевод может отставать; основной является английская
 > версия. Источник: README.md (метка синхронизации ниже). Машинный перевод (Claude); PR с исправлениями приветствуются.
 
-<!-- i18n-source: README.md sha256:f2fa696c207c -->
+<!-- i18n-source: README.md sha256:6829b755ca26 -->

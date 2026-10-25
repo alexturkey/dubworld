@@ -95,6 +95,7 @@ class _SahteWhisperx:
 
 
 def test_ctc_iscisi_onaysiz_modeli_yuklemez():
+    pytest.importorskip("numpy")  # worker imports numpy at module level; not installed in the CPU smoke CI
     isci = importlib.import_module("dublaj_hatti.bolum_30_hizalama_ve_segment.ctc_kelime_hizalama.worker")
     sahte = _SahteWhisperx()
     with pytest.raises(lisans_onayi.LisansOnayiGerekli):
