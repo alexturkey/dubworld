@@ -63,6 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `dubla ayir` (and `api.ayir`) no longer stops with "Demucs output missing" after a successful separation: the
+  speech and background tracks are now taken from Demucs's own output folder.
 - Tests that need numpy are skipped when numpy is not installed (plain CPU CI).
 - On Linux and macOS a translation bridge timeout now stops the whole process group (no orphan child process).
 

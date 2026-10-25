@@ -236,9 +236,11 @@ def ayir(medya: str | Path, hedef_klasor: str | Path, cihaz: str | None = None,
     hedef = Path(hedef_klasor)
     with _calisma_klasoru(hedef, "ayir") as is_klasoru:
         kaynak = ses_cikar(medya, is_klasoru / "demucs_source.wav", ornekleme=44100, kanal=2)
-        vokal = Path(clean_audio_with_demucs(str(kaynak), str(is_klasoru), prefer_device=ayar["genel.cihaz"],
-                                             logger=logger, prepare_asr_ready=False))
-        arka = vokal.with_name("no_vocals.wav")
+        clean_audio_with_demucs(str(kaynak), str(is_klasoru), prefer_device=ayar["genel.cihaz"],
+                                logger=logger, prepare_asr_ready=False)
+        # Dönüş değeri ASR'ye hazır kopyadır (clean_source.wav); iki stem Demucs'un kendi klasöründe durur.
+        stemler = is_klasoru / "demucs" / "htdemucs" / kaynak.stem
+        vokal, arka = stemler / "vocals.wav", stemler / "no_vocals.wav"
         if not vokal.is_file() or not arka.is_file():
             raise AsamaHatasi("Demucs çıktısı eksik (vocals.wav / no_vocals.wav)")
         sonuc = {"vokal": hedef / "vocals.wav", "arka_plan": hedef / "background.wav"}
