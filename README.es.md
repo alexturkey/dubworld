@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · Español · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · Español · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md)
 
 > DubWorld dobla un vídeo a otro idioma en tu propio ordenador: transcripción con marcas de tiempo por palabra, traducción, voz sintética al ritmo del vídeo original (el habla se acelera como mucho 1,25×, el resto lo absorbe la imagen), subtítulos y un vídeo nuevo. Turco por defecto; otros idiomas según el motor de voz ([docs/diller.md](docs/diller.md)).
 
@@ -130,4 +130,4 @@ Privacidad (qué se queda en local, qué recibe un servicio en la nube): PRIVACY
 > This translation may lag; English is authoritative. Esta traducción puede ir con retraso; la versión inglesa es la que
 > vale. Fuente: README.md (marca de sincronización abajo). Traducción automática (Claude); se agradecen PR de corrección.
 
-<!-- i18n-source: README.md sha256:6829b755ca26 -->
+<!-- i18n-source: README.md sha256:eeea12ca2c23 -->

@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · Türkçe · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md)
+[English](README.md) · Türkçe · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md)
 
 > DubWorld bir videoyu kendi bilgisayarınızda başka bir dile dublajlar: kelime zamanlı yazıya dökme, çeviri, özgün videoyla adım adım giden yapay ses (konuşma en çok 1,25 kat hızlanır, kalanı için görüntü yeniden zamanlanır), altyazı ve yeni video. Varsayılan dil Türkçe; diğer diller ses motoruna göre ([docs/diller.md](docs/diller.md)).
 
@@ -123,3 +123,5 @@ Soru, fikir ve sonuçlar: [Discussions](https://github.com/alexturkey/dubworld/d
 
 Kod: Apache-2.0 (LICENSE). Üçüncü taraf bileşenler ve lisansları: THIRD_PARTY.md. Sorumlu kullanım: ETHICS.md.
 Gizlilik (ne yerelde kalır, bulut arka ucu ne alır): PRIVACY.md. Güvenlik bildirimi: SECURITY.md. Değişiklikler: CHANGELOG.md.
+
+<!-- i18n-source: README.md sha256:eeea12ca2c23 -->
