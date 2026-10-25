@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · Polski · [Nederlands](README.nl.md) · [Українська](README.uk.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · Polski · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Svenska](README.sv.md)
 
 > DubWorld dubbinguje Twoje filmy na inny język bezpośrednio na Twoim komputerze, bez wysyłania ich do jakiejkolwiek usługi w sieci: zamienia mowę na tekst razem z czasem każdego słowa, tłumaczy go, a potem czyta go sztucznym głosem (AI), który trzyma się oryginalnego obrazu (mowa jest przyspieszana najwyżej 1,25 raza, resztę różnicy wyrównuje delikatna zmiana tempa wideo), dodaje napisy i tworzy nowy film. Domyślnym językiem jest turecki; polski i inne języki zależą od wybranego silnika głosu ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Pytania, pomysły i Twoje wyniki: [forum dyskusji](https://github.com/alexturkey
 Kod: Apache-2.0 (LICENSE). Składniki zewnętrzne i ich licencje: THIRD_PARTY.md. Odpowiedzialne używanie: ETHICS.md.
 Prywatność (co zostaje na Twoim komputerze, co dostaje backend w chmurze): PRIVACY.md. Zgłaszanie luk: SECURITY.md. Zmiany: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:9622edb95c84 -->
+<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->

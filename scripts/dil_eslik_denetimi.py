@@ -76,7 +76,7 @@ TEK_DOSYA_KALIPLARI = (
     "docs/beceriler/README.md",
 )
 SATIR_ICI = ("docs/README.md",)
-README_DILLERI = ("ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt-BR", "ru", "uk", "vi", "zh-CN")
+README_DILLERI = ("ar", "cs", "de", "el", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt-BR", "ru", "sv", "uk", "vi", "zh-CN")
 MUAF: dict[str, str] = {
     "CHANGELOG.md": "sürüm notları İngilizce tutulur / release notes are kept in English",
     "CLAUDE.md": "AGENTS.md'ye yönlendiren üç satır / three-line pointer to AGENTS.md",
