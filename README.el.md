@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · Ελληνικά · [Čeština](README.cs.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · Ελληνικά · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > Το DubWorld μεταγλωττίζει τα βίντεό σας σε άλλη γλώσσα κατευθείαν στον δικό σας υπολογιστή, χωρίς να τα ανεβάζει σε καμία online υπηρεσία: μετατρέπει την ομιλία σε κείμενο μαζί με τον χρόνο κάθε λέξης, τη μεταφράζει και την εκφωνεί με μια τεχνητή (AI) φωνή που μένει συγχρονισμένη με το αρχικό βίντεο (η ομιλία επιταχύνεται το πολύ 1,25 φορές, την υπόλοιπη διαφορά την απορροφά μια ήπια αλλαγή στον ρυθμό του βίντεο), προσθέτει υπότιτλους και φτιάχνει νέο βίντεο. Προεπιλεγμένη γλώσσα είναι τα τουρκικά· τα ελληνικά και οι άλλες γλώσσες εξαρτώνται από τη μηχανή φωνής που επιλέγετε ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 Κώδικας: Apache-2.0 (LICENSE). Εξωτερικά εξαρτήματα και οι άδειές τους: THIRD_PARTY.md. Υπεύθυνη χρήση: ETHICS.md.
 Ιδιωτικότητα (τι μένει στον υπολογιστή σας, τι λαμβάνει ένα cloud backend): PRIVACY.md. Αναφορές ασφάλειας: SECURITY.md. Αλλαγές: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->
+<!-- i18n-source: README.md sha256:48bbf9594411 -->

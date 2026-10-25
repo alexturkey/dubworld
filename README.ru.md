@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · Русский · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · Русский · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld озвучивает видео на другом языке прямо на вашем компьютере: распознавание речи с метками времени слов, перевод, синтетический голос в такт исходному видео (речь ускоряется не более чем в 1,25 раза, остальное выравнивается по видео), субтитры и новое видео. По умолчанию турецкий; другие языки зависят от движка озвучки ([docs/diller.md](docs/diller.md)).
 
@@ -131,4 +131,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. Этот перевод может отставать; основной является английская
 > версия. Источник: README.md (метка синхронизации ниже). Машинный перевод (Claude); PR с исправлениями приветствуются.
 
-<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->
+<!-- i18n-source: README.md sha256:48bbf9594411 -->

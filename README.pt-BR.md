@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · Português (BR) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · Português (BR) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > O DubWorld dubla um vídeo para outro idioma no seu próprio computador, sem mandar nada para a nuvem: transcreve a fala com o tempo de cada palavra, traduz, gera uma voz sintética que acompanha o vídeo original (a fala acelera no máximo 1,25× e a imagem é reajustada para cobrir o resto), cria as legendas e entrega um vídeo novo. O padrão é turco; português e outros idiomas dependem do motor de voz escolhido ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Dúvidas, ideias e resultados: [Discussões](https://github.com/alexturkey/dubwo
 Código: Apache-2.0 (LICENSE). Componentes de terceiros e suas licenças: THIRD_PARTY.md. Uso responsável: ETHICS.md.
 Privacidade (o que fica no seu computador e o que um backend na nuvem recebe): PRIVACY.md. Relatos de segurança: SECURITY.md. Mudanças: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->
+<!-- i18n-source: README.md sha256:48bbf9594411 -->

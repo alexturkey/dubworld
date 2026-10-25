@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · Svenska
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · Svenska
 
 > DubWorld dubbar dina videor till ett annat språk direkt på din egen dator, utan att ladda upp dem till någon onlinetjänst: tal blir text med tiden för varje ord, texten översätts och läses upp av en konstgjord (AI-)röst som håller takten med originalet (talet snabbas upp högst 1,25 gånger, resten av skillnaden tas upp av en lätt ändring av videons tempo), undertexter läggs till och en ny video skapas. Standardspråket är turkiska; svenska och andra språk beror på vilken röstmotor du väljer ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Frågor, idéer och dina resultat: [diskussionsforum](https://github.com/alextur
 Kod: Apache-2.0 (LICENSE). Externa delar och deras licenser: THIRD_PARTY.md. Ansvarsfull användning: ETHICS.md.
 Integritet (vad som stannar på din dator, vad en molnbackend får): PRIVACY.md. Säkerhetsrapporter: SECURITY.md. Ändringar: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->
+<!-- i18n-source: README.md sha256:48bbf9594411 -->

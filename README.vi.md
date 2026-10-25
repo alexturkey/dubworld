@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · Tiếng Việt · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · Tiếng Việt · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld lồng tiếng video của bạn sang ngôn ngữ khác ngay trên máy tính của bạn, không cần tải lên bất kỳ dịch vụ trực tuyến nào: chuyển lời nói thành văn bản kèm thời điểm của từng từ, dịch, rồi cho một giọng đọc nhân tạo (AI) đọc lại sao cho khớp với video gốc (lời nói được đọc nhanh hơn tối đa 1,25 lần, phần chênh lệch còn lại được bù bằng cách điều chỉnh nhẹ tốc độ video), thêm phụ đề và xuất ra một video mới. Ngôn ngữ mặc định là tiếng Thổ Nhĩ Kỳ; tiếng Việt và các ngôn ngữ khác phụ thuộc vào công cụ giọng nói được chọn ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Câu hỏi, ý tưởng và kết quả của bạn: [diễn đàn thảo luận
 Mã nguồn: Apache-2.0 (LICENSE). Thành phần bên thứ ba và giấy phép: THIRD_PARTY.md. Sử dụng có trách nhiệm: ETHICS.md.
 Quyền riêng tư (thứ gì ở lại trên máy bạn, backend đám mây nhận được gì): PRIVACY.md. Báo cáo bảo mật: SECURITY.md. Thay đổi: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:e7af61f0f7b6 -->
+<!-- i18n-source: README.md sha256:48bbf9594411 -->
