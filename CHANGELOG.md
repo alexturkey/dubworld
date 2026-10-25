@@ -13,6 +13,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and weights, one synthetic voice): GPU path and a CPU path through ONNX files exported locally from the pinned
   weights; `ses.ema_cihaz = auto | cuda | cpu` with CPU fallback when the GPU is missing or busy; segment and
   `full_text` modes; shown by `dubla kontrol` (ADR 0019).
+- README (all 8 languages): "Help and support" section with the Discussions link.
+- Engineering docs: "Upstream-capped packages" in `docs/engineering/pinned-values.md` with a safe way to try a newer
+  version without breaking the install.
+
+### Changed
+
+- CI: `actions/checkout` 7 and `actions/setup-python` 7.
+- Optional English STT extra: `sherpa-onnx` 1.13.8.
+- Dependabot ignores versions above an upstream cap (`coqui-tts-trainer >= 0.4.0`, `antlr4-python3-runtime >= 4.10`).
+- Docs: CrisperWhisper 2.0 Turbo (engine 13) is listed as tested on real audio; CrisperWhisper 2 Medium stays untested.
+  The sister repository URLs are built into `kur.ps1`; `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL` are only for forks.
+
+### Fixed
+
+- Tests that need numpy are skipped when numpy is not installed (plain CPU CI).
+- On Linux and macOS a translation bridge timeout now stops the whole process group (no orphan child process).
+
+### Security
+
+- `onnx` 1.22.0.
+- CrisperWhisper WSL runtime lock: `certifi` 2026.10.23, `filelock` 4.2.4, `pip` 26.2.2, `setuptools` 84.1.0.
 
 ## [0.1.0] - YYYY-MM-DD (release date is written on release day)
 
