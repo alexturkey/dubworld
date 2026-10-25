@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · Français · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · Français · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld double une vidéo dans une autre langue sur votre propre ordinateur : transcription avec horodatage des mots, traduction, voix de synthèse au rythme de la vidéo d'origine (parole accélérée au plus de 1,25×, l'image absorbe le reste), sous-titres et nouvelle vidéo. Turc par défaut ; autres langues selon le moteur de voix ([docs/diller.md](docs/diller.md)).
 
@@ -133,4 +133,4 @@ Confidentialité (ce qui reste en local, ce qu'un service cloud reçoit) : PRIVA
 > This translation may lag; English is authoritative. Cette traduction peut être en retard ; la version anglaise fait
 > foi. Source : README.md (marque de synchronisation ci-dessous). Traduction automatique (Claude) ; les PR de correction sont bienvenues.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->

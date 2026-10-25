@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · Bahasa Indonesia · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · Bahasa Indonesia · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld men-dubbing video Anda ke bahasa lain langsung di komputer Anda sendiri, tanpa mengunggahnya ke layanan online mana pun: ucapan diubah menjadi teks lengkap dengan waktu setiap kata, diterjemahkan, lalu dibacakan oleh suara buatan (AI) yang tetap selaras dengan video aslinya (ucapan dipercepat paling banyak 1,25 kali, sisa selisihnya diserap dengan sedikit mengubah tempo video), diberi subtitle, dan jadilah video baru. Bahasa bawaannya Turki; bahasa Indonesia dan bahasa lain bergantung pada mesin suara yang dipilih ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Pertanyaan, ide, dan hasil Anda: [forum diskusi](https://github.com/alexturkey/d
 Kode: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lisensinya: THIRD_PARTY.md. Penggunaan yang bertanggung jawab: ETHICS.md.
 Privasi (apa yang tetap di komputer Anda, apa yang diterima backend cloud): PRIVACY.md. Laporan keamanan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->

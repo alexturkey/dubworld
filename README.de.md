@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · Deutsch · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · Deutsch · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld synchronisiert ein Video auf dem eigenen Computer in eine andere Sprache: Spracherkennung mit Wort-Zeitstempeln, Übersetzung, synthetische Stimme im Takt des Originalvideos (Sprache höchstens 1,25× beschleunigt, den Rest gleicht das Bild aus), Untertitel und ein neues Video. Standard ist Türkisch; weitere Sprachen je nach Sprachausgabe-Engine ([docs/diller.md](docs/diller.md)).
 
@@ -133,4 +133,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->

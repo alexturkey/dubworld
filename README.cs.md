@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · Čeština · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · Čeština · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld nadabuje vaše videa do jiného jazyka přímo na vašem počítači, bez nahrávání na jakoukoli online službu: převede řeč na text včetně času každého slova, přeloží ho a nechá ho přečíst umělým (AI) hlasem, který drží krok s původním videem (řeč se zrychlí nejvýš 1,25krát, zbytek rozdílu vyrovná jemná změna tempa videa), přidá titulky a vytvoří nové video. Výchozím jazykem je turečtina; čeština a další jazyky závisí na zvoleném hlasovém enginu ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Dotazy, nápady a vaše výsledky: [diskusní fórum](https://github.com/alextur
 Kód: Apache-2.0 (LICENSE). Součásti třetích stran a jejich licence: THIRD_PARTY.md. Odpovědné používání: ETHICS.md.
 Soukromí (co zůstává na vašem počítači, co dostane cloudový backend): PRIVACY.md. Hlášení zranitelností: SECURITY.md. Změny: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->

@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · Українська · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · Українська · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld озвучує ваші відео іншою мовою просто на вашому комп'ютері, без завантаження на будь-який онлайн-сервіс: перетворює мовлення на текст із часом кожного слова, перекладає його, а потім озвучує штучним (ШІ) голосом, який іде в такт з оригіналом (мовлення пришвидшується щонайбільше в 1,25 раза, решту різниці вирівнює легка зміна темпу відео), додає субтитри й створює нове відео. Мова за замовчуванням — турецька; українська та інші мови залежать від обраного голосового рушія ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 Код: Apache-2.0 (LICENSE). Сторонні компоненти та їхні ліцензії: THIRD_PARTY.md. Відповідальне використання: ETHICS.md.
 Приватність (що лишається на вашому комп'ютері, що отримує хмарний бекенд): PRIVACY.md. Повідомлення про вразливості: SECURITY.md. Зміни: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->

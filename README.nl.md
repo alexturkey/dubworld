@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · Nederlands · [Українська](README.uk.md) · [فارسی](README.fa.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · Nederlands · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
 
 > DubWorld dubt je video's naar een andere taal, gewoon op je eigen computer, zonder ze naar een online dienst te uploaden: het zet spraak om in tekst met de tijd van elk woord, vertaalt die en laat een kunstmatige (AI-)stem hem uitspreken die gelijk blijft lopen met het origineel (spraak wordt hooguit 1,25 keer versneld, de rest van het verschil vangt een lichte tempowijziging van de video op), voegt ondertitels toe en maakt er een nieuwe video van. De standaardtaal is Turks; Nederlands en andere talen hangen af van de gekozen stemengine ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Vragen, ideeën en je resultaten: [discussieforum](https://github.com/alexturkey
 Code: Apache-2.0 (LICENSE). Externe onderdelen en hun licenties: THIRD_PARTY.md. Verantwoord gebruik: ETHICS.md.
 Privacy (wat op je computer blijft, wat een cloudbackend ontvangt): PRIVACY.md. Beveiligingsmeldingen: SECURITY.md. Wijzigingen: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:48bbf9594411 -->
+<!-- i18n-source: README.md sha256:2750a34df58c -->
