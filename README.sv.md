@@ -34,7 +34,7 @@ vanliga fel (på engelska): **[docs/installation.md](docs/installation.md)**. Li
 
 ## Användning
 
-Skrivbordsapp: dubbelklicka på `arayuz.cmd` (lokal webbapp: `web.cmd`, bara på 127.0.0.1). Appens gränssnitt är än så länge på turkiska. Från kommandoraden:
+Skrivbordsapp: dubbelklicka på `arayuz.cmd` (lokal webbapp: `web.cmd`, bara på 127.0.0.1). Appen finns på engelska och turkiska: välj uppe till höger (på en dator med ett annat språk öppnas den på engelska). Från kommandoraden:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Frågor, idéer och dina resultat: [diskussionsforum](https://github.com/alextur
 Kod: Apache-2.0 (LICENSE). Externa delar och deras licenser: THIRD_PARTY.md. Ansvarsfull användning: ETHICS.md.
 Integritet (vad som stannar på din dator, vad en molnbackend får): PRIVACY.md. Säkerhetsrapporter: SECURITY.md. Ändringar: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

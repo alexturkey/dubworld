@@ -1,4 +1,5 @@
-"""Önerilen sekmesinde hedef dil seçicisi: dil adı kendi dilinde, düğme "<Dil> dublajla", Gelişmiş ile tek ayar.
+"""Önerilen sekmesinde hedef dil seçicisi: dil adı arayüz dilinde (yanında dilin kendi adı), düğme tam cümle
+("Almanca dublajla", "Dub into German"), Gelişmiş ile tek ayar.
 
 GUI testi görünür pencere açmaz (Tk kökü hemen gizlenir, mainloop yok); ekran yoksa atlanır.
 """
@@ -19,7 +20,7 @@ def test_her_hedef_dilin_kendi_adi_var():
     assert eksik == []
     assert kayit.dil_kendi_adi("de") == "Deutsch" and kayit.dil_kendi_adi("ja") == "日本語"
     assert kayit.dublajla_etiketi("tr") == "Türkçe dublajla"
-    assert kayit.dublajla_etiketi("fr") == "Français dublajla"
+    assert kayit.dublajla_etiketi("fr") == "Fransızca dublajla"
     assert kayit.dil_kendi_adi("xx") == "xx"
 
 
@@ -41,7 +42,7 @@ def test_web_onerilen_sekmesinde_dil_secici():
     # tek kaynak: Önerilen seçici Gelişmiş alanını (a_genel.hedef_dil) değiştirip onun change olayını tetikler
     assert 'const DIL_ANAHTARI = "genel.hedef_dil"' in js
     assert 'kaynak.dispatchEvent(new Event("change"))' in js
-    assert '" dublajla"' in js and "dil_adlari" in js
+    assert '"dugme.dublajla"' in js and "dil_adlari" in js
 
 
 class _SahteYurutucu:
@@ -67,6 +68,9 @@ class _SahteYurutucu:
 
 @pytest.fixture
 def uygulama(monkeypatch):
+    from dublaj_hatti import arayuz_dili
+
+    monkeypatch.setattr(arayuz_dili, "_secili", "tr")
     tk = pytest.importorskip("tkinter")
     try:
         kok = tk.Tk()
@@ -102,15 +106,15 @@ def test_gui_onerilen_dil_secici_gelismis_ile_tek_ayar(uygulama):
     u = uygulama
     dil = _alan(u, "genel.hedef_dil")
     assert u.dil_degisken.get() == "Türkçe" and u.dublajla_dugme.cget("text") == "Türkçe dublajla"
-    assert "Deutsch" in u.dil_kutu.cget("values")
+    assert "Almanca (Deutsch)" in u.dil_kutu.cget("values")
     # Önerilen'de seç → Gelişmiş alanı değişir, düğme yeniden adlanır, iş bu ayarla başlar
-    u.dil_degisken.set("Deutsch")
+    u.dil_degisken.set("Almanca (Deutsch)")
     u._onerilen_dil_secildi()
-    assert dil.deger() == "de" and u.dublajla_dugme.cget("text") == "Deutsch dublajla"
+    assert dil.deger() == "de" and u.dublajla_dugme.cget("text") == "Almanca dublajla"
     assert u.degisiklikler()["genel.hedef_dil"] == "de"
     # Gelişmiş'te değiştir → Önerilen eşitlenir
     dil.degisken.set(dil._gorunen("fr"))
-    assert u.dil_degisken.get() == "Français" and u.dublajla_dugme.cget("text") == "Français dublajla"
+    assert u.dil_degisken.get() == "Fransızca (Français)" and u.dublajla_dugme.cget("text") == "Fransızca dublajla"
     # Varsayılana dön → Türkçe
     u.sifirla()
     assert u.dil_degisken.get() == "Türkçe" and "genel.hedef_dil" not in u.degisiklikler()
@@ -121,7 +125,7 @@ def test_gui_dil_listesi_ses_motoruna_gore_suzulur(uygulama):
     motor = _alan(u, "ses.motor")
     motor.degisken.set(motor._gorunen("xtts"))
     degerler = list(u.dil_kutu.cget("values"))
-    assert "Suomi" not in degerler and "Italiano" in degerler  # fi Supertonic'te var, XTTS'te yok
+    assert "Fince (Suomi)" not in degerler and "İtalyanca (Italiano)" in degerler  # fi Supertonic'te var, XTTS'te yok
     motor.degisken.set(motor._gorunen("voxcpm2"))
     degerler = list(u.dil_kutu.cget("values"))
     assert "Türkçe" in degerler and any("denenmedi" in d for d in degerler)
@@ -133,7 +137,7 @@ def test_gui_baslat_secilen_dille_gider(uygulama, tmp_path, monkeypatch):
     u = uygulama
     monkeypatch.setattr(u, "_lisans_onayi", lambda ayarlar: True)
     u.video = tmp_path / "v.mp4"
-    u.dil_degisken.set("Español")
+    u.dil_degisken.set("İspanyolca (Español)")
     u._onerilen_dil_secildi()
     u.baslat("dublaj")
     assert isinstance(u.yurutucu, gui.IsYurutucu)

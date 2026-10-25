@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Interface language: the desktop window and the web page are in English and Turkish, picked at the top right
+  (`genel.arayuz_dili = auto | tr | en`; `auto` follows the computer, otherwise English). Texts live in
+  `src/dublaj_hatti/arayuz_dilleri/<code>.json`, so a new language is one new file; tests check every file on their
+  own (`docs/arayuz_dili.md`).
 - Optional Turkish TTS engine EMA Lightning (`ses.motor = ema_lightning`, `kur.ps1 -Adim tts-ema`; Apache-2.0 code
   and weights, one synthetic voice): GPU path and a CPU path through ONNX files exported locally from the pinned
   weights; `ses.ema_cihaz = auto | cuda | cpu` with CPU fallback when the GPU is missing or busy; segment and
@@ -31,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Target language names are shown in the interface language with their own name next to them ("German
+  (Deutsch)", "Dub into German"); the job log, deep error messages and the command line stay in Turkish.
 - CI: `actions/checkout` 7 and `actions/setup-python` 7.
 - Optional English STT extra: `sherpa-onnx` 1.13.8.
 - Dependabot ignores versions above an upstream cap (`coqui-tts-trainer >= 0.4.0`, `antlr4-python3-runtime >= 4.10`).

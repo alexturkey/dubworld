@@ -35,7 +35,7 @@ video { width: 100%; max-height: 420px; background: #000; border-radius: 8px; }
 .alan .aciklama { grid-column: 2; font-size: 12px; color: var(--soluk); }
 .alan.degisti label { color: var(--ana); font-weight: 600; }
 .alan input[type=text], .alan input[type=number], .alan select { font: inherit; padding: 4px 6px; max-width: 360px; }
-fieldset { border: none; padding: 0; margin: 12px 0; } legend { font-weight: 600; text-transform: capitalize; }
+fieldset { border: none; padding: 0; margin: 12px 0; } legend { font-weight: 600; }
 @media (max-width: 640px) { .alan { grid-template-columns: 1fr; } .alan .aciklama { grid-column: 1; } #asamalar { columns: 1; } }
 .is-listesi .is { display: grid; grid-template-columns: 60px 110px 1fr auto; gap: 4px 12px; align-items: center;
   padding: 8px 0; border-bottom: 1px solid #8882; font-size: 14px; }
@@ -50,3 +50,7 @@ label.kutu { display: inline-flex; gap: 6px; align-items: center; }
 /* Önerilen sekmesi: dublaj dili (büyük, okunaklı; etiket ekran okuyucu için) */
 .dil-secici { font: inherit; font-size: 17px; padding: 6px 10px; min-width: 220px; }
 .gizli-etiket { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Arayüz dili (sağ üst): büyük, okunaklı; yazı ve yön sözlükten (app.js dilUygula) */
+.arayuz-dili { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; color: var(--soluk); }
+.arayuz-dili select { font: inherit; font-size: 15px; padding: 5px 8px; }
+header { flex-wrap: wrap; gap: 10px; }

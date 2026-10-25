@@ -36,7 +36,7 @@ Windows 10/11 x64؛ نیازی نیست Python، CUDA یا ffmpeg از قبل ن
 
 ## نحوه‌ی استفاده
 
-برنامه‌ی دسکتاپ: دوبار کلیک روی `arayuz.cmd` (برنامه‌ی وب محلی: `web.cmd`، فقط روی 127.0.0.1). رابط برنامه فعلاً ترکی است. از خط فرمان:
+برنامه‌ی دسکتاپ: دوبار کلیک روی `arayuz.cmd` (برنامه‌ی وب محلی: `web.cmd`، فقط روی 127.0.0.1). رابط برنامه به انگلیسی و ترکی است: زبان را از بالا سمت راست انتخاب کنید (اگر رایانه به زبان دیگری باشد، به انگلیسی باز می‌شود). از خط فرمان:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

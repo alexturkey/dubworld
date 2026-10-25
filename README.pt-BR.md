@@ -34,7 +34,7 @@ erros comuns (em inglês): **[docs/installation.md](docs/installation.md)**. Lin
 
 ## Como usar
 
-App de desktop: dois cliques em `arayuz.cmd` (app web local: `web.cmd`, só em 127.0.0.1). Por enquanto a interface do app está em turco. Pela linha de comando:
+App de desktop: dois cliques em `arayuz.cmd` (app web local: `web.cmd`, só em 127.0.0.1). O app está em inglês e em turco: escolha no canto superior direito (em um computador em outro idioma, ele abre em inglês). Pela linha de comando:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Dúvidas, ideias e resultados: [Discussões](https://github.com/alexturkey/dubwo
 Código: Apache-2.0 (LICENSE). Componentes de terceiros e suas licenças: THIRD_PARTY.md. Uso responsável: ETHICS.md.
 Privacidade (o que fica no seu computador e o que um backend na nuvem recebe): PRIVACY.md. Relatos de segurança: SECURITY.md. Mudanças: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

@@ -180,9 +180,11 @@ def dil_kendi_adi(kod: str) -> str:
     return DIL_KENDI_ADLARI.get(kod, kod)
 
 
-def dublajla_etiketi(kod: str) -> str:
-    """Önerilen sekmesindeki ana düğmenin yazısı: "<Dil> dublajla" (ör. "Türkçe dublajla", "Deutsch dublajla")."""
-    return f"{dil_kendi_adi(kod)} dublajla"
+def dublajla_etiketi(kod: str, arayuz: str | None = None) -> str:
+    """Önerilen sekmesindeki ana düğmenin yazısı, arayüz dilinde tam cümle ("Almanca dublajla", "Dub into German")."""
+    from dublaj_hatti import arayuz_dili
+
+    return arayuz_dili.t("dugme.dublajla", arayuz, hedef=arayuz_dili.dil_adi(kod, arayuz))
 # VoxCPM2 hazır sesleri (kardeş repo hazir_sesler/, sabit commit; açıklamalar docs/sesler.md)
 VOXCPM2_HAZIR_SESLER = (
     "haber_spikeri", "cekici_spiker", "belgesel_hanim", "gizemli_bilge", "tok_anlatici", "yasli_bilge",

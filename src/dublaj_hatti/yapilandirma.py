@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from dublaj_hatti import kayit
+from dublaj_hatti import arayuz_dili, kayit
 
 PAKET_KOKU = Path(__file__).resolve().parent
 PROJE_KOKU = PAKET_KOKU.parents[1]
@@ -100,6 +100,7 @@ SEMA: dict[str, Any] = {
     "genel.cikti_klasoru": str,
     "genel.onbellek_klasoru": str,
     "genel.gunluk_seviyesi": ["DEBUG", "INFO", "WARNING", "ERROR"],
+    "genel.arayuz_dili": ["auto", *arayuz_dili.mevcut_diller()],  # yeni dil = arayuz_dilleri/<dil>.json
     "transkripsiyon.motor": STT_MOTORLARI,
     "transkripsiyon.model": str,
     "transkripsiyon.hesap_tipi": ["auto", "float16", "int8", "int8_float16", "int8_float32", "float32"],
@@ -435,7 +436,7 @@ def _voxcpm2_sesleri_denetle(ayar: dict[str, Any], sesler: dict, dil: str, hata:
               "ses.voxcpm2_kadin_sesleri listesine yazın", "ses.voxcpm2_kadin_sesleri")
 
 
-def form_ek_bilgisi() -> dict[str, dict[str, Any]]:
+def form_ek_bilgisi(dil: str | None = None) -> dict[str, dict[str, Any]]:
     """Gelişmiş sekmesine şemanın yanında giden ek bilgi (arayüzler otomatik üretir; motor gizlenmez).
 
     - "etiketler": seçenek → donanım etiketi ("CPU'da yavaş", "CPU'da çalışmaz", "VRAM yetmez ...", "bulut ...");
@@ -443,16 +444,17 @@ def form_ek_bilgisi() -> dict[str, dict[str, Any]]:
     - "suzgec": genel.hedef_dil listesinin ses.motor'a göre süzülmesi (kayit.tts_dil_suzgeci).
     - "ses_secenekleri": ses.konusmaci_sesleri için seçili TTS'in sesleri (konuşmacı başına ses).
     """
+    from dublaj_hatti.arayuz_dili import t
     from dublaj_hatti.bolum_00_omurga.runtime.donanim import gpu_bilgisi_hafif, motor_etiketi
 
     gpu_var, vram = gpu_bilgisi_hafif()
     cihaz = "cuda" if gpu_var else "cpu"
     ek: dict[str, dict[str, Any]] = {}
     for anahtar, tur in (("transkripsiyon.motor", "stt"), ("ceviri.arka_uc", "ceviri"), ("ses.motor", "tts")):
-        etiketler = {m.ad: motor_etiketi(m, cihaz, vram) for m in kayit.motorlar(tur)}
+        etiketler = {m.ad: motor_etiketi(m, cihaz, vram, dil) for m in kayit.motorlar(tur)}
         for m in kayit.motorlar(tur):  # deneysel motor gizlenmez, etiketlenir
             if m.deneysel:
-                etiketler[m.ad] = "; ".join(e for e in ("deneysel", etiketler[m.ad]) if e)
+                etiketler[m.ad] = "; ".join(e for e in (t("etiket.deneysel", dil), etiketler[m.ad]) if e)
         ek[anahtar] = {"etiketler": {k: v for k, v in etiketler.items() if v}}
     # dil_adlari: Önerilen sekmesindeki hedef dil seçicisi aynı ayarı gösterir, adı dilin kendi dilinde (kayit)
     ek["genel.hedef_dil"] = {"suzgec": {"anahtar": "ses.motor", "degerler": kayit.tts_dil_suzgeci()},

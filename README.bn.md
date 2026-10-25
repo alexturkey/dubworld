@@ -34,7 +34,7 @@ sha256 দিয়ে যাচাই করা হয়। শুরু ক�
 
 ## ব্যবহারের নিয়ম
 
-ডেস্কটপ অ্যাপ: `arayuz.cmd`-এ ডাবল-ক্লিক (লোকাল ওয়েব অ্যাপ: `web.cmd`, শুধু 127.0.0.1-এ)। অ্যাপের ইন্টারফেস আপাতত তুর্কিতে। কমান্ড লাইন থেকে:
+ডেস্কটপ অ্যাপ: `arayuz.cmd`-এ ডাবল-ক্লিক (লোকাল ওয়েব অ্যাপ: `web.cmd`, শুধু 127.0.0.1-এ)। অ্যাপের ইন্টারফেস ইংরেজি ও তুর্কিতে: ওপরে ডান দিক থেকে ভাষা বেছে নিন (কম্পিউটার অন্য ভাষায় থাকলে অ্যাপ ইংরেজিতে খোলে)। কমান্ড লাইন থেকে:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 কোড: Apache-2.0 (LICENSE)। বাইরের অংশ ও তাদের লাইসেন্স: THIRD_PARTY.md। দায়িত্বশীল ব্যবহার: ETHICS.md।
 গোপনীয়তা (কী আপনার কম্পিউটারে থাকে, ক্লাউড ব্যাকএন্ড কী পায়): PRIVACY.md। নিরাপত্তা রিপোর্ট: SECURITY.md। পরিবর্তন: CHANGELOG.md।
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

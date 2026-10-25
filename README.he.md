@@ -36,7 +36,7 @@ Windows 10/11 x64; לא צריך Python, CUDA או ffmpeg מותקנים מרא�
 
 ## איך משתמשים
 
-אפליקציה לשולחן העבודה: לחיצה כפולה על `arayuz.cmd` (אפליקציית ווב מקומית: `web.cmd`, רק על 127.0.0.1). הממשק כרגע בטורקית. משורת הפקודה:
+אפליקציה לשולחן העבודה: לחיצה כפולה על `arayuz.cmd` (אפליקציית ווב מקומית: `web.cmd`, רק על 127.0.0.1). הממשק זמין באנגלית ובטורקית: בוחרים שפה בפינה הימנית העליונה (אם המחשב בשפה אחרת, הוא נפתח באנגלית). משורת הפקודה:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

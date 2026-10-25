@@ -30,7 +30,7 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 
 ## 用法
 
-桌面应用：双击 `arayuz.cmd`（本地网页应用：`web.cmd`，仅 127.0.0.1）。程序界面目前为土耳其语。命令行：
+桌面应用：双击 `arayuz.cmd`（本地网页应用：`web.cmd`，仅 127.0.0.1）。程序界面有英语和土耳其语，可在右上角切换（电脑为其他语言时以英语打开）。命令行：
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -121,4 +121,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

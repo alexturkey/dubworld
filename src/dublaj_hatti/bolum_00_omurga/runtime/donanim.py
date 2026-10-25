@@ -108,24 +108,27 @@ def cihaz_gerekcesi(secim: str, cihaz: str) -> str:
             "seslendirme Supertonic)")
 
 
-def motor_etiketi(motor: object, cihaz: str, toplam_vram_mb: int) -> str:
+def motor_etiketi(motor: object, cihaz: str, toplam_vram_mb: int, dil: str | None = None) -> str:
     """Motor listesinde gösterilecek donanım etiketi; uygunsa boş. Motor gizlenmez, yalnız etiketlenir.
 
     `motor` bir `kayit.Motor` (cihaz, cpu, vram_mb alanları). docs/donanim.md "Arayüz etiketleri".
+    Yazı arayüz dilindedir (`dil`; yoksa seçili arayüz dili, komut satırında Türkçe).
     """
+    from dublaj_hatti.arayuz_dili import t
+
     tur = str(getattr(motor, "cihaz", ""))
     cpu = str(getattr(motor, "cpu", ""))
     gerek = int(getattr(motor, "vram_mb", 0) or 0)
     if tur == "bulut":
-        return "bulut: ağ + kendi anahtarınız"
+        return t("etiket.bulut", dil)
     if cihaz != "cuda":
         if tur == "gpu" or cpu == "çalışmaz":
-            return "CPU'da çalışmaz (NVIDIA GPU gerekir)"
+            return t("etiket.cpu_calismaz", dil)
         if cpu == "yavaş":
-            return "CPU'da yavaş"
+            return t("etiket.cpu_yavas", dil)
         return ""
     if gerek and toplam_vram_mb and gerek > toplam_vram_mb * 0.95:
-        return f"VRAM yetmez (~{gerek} MB gerekir, {toplam_vram_mb} MB var)"
+        return t("etiket.vram_yetmez", dil, gerek=gerek, var=toplam_vram_mb)
     return ""
 
 

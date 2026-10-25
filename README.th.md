@@ -33,7 +33,7 @@ Windows 10/11 x64; ไม่ต้องมี Python, CUDA หรือ ffmpeg 
 
 ## วิธีใช้
 
-แอปเดสก์ท็อป: ดับเบิลคลิก `arayuz.cmd` (เว็บแอปในเครื่อง: `web.cmd` เฉพาะ 127.0.0.1) หน้าตาแอปตอนนี้เป็นภาษาตุรกี จากบรรทัดคำสั่ง:
+แอปเดสก์ท็อป: ดับเบิลคลิก `arayuz.cmd` (เว็บแอปในเครื่อง: `web.cmd` เฉพาะ 127.0.0.1) หน้าตาแอปมีภาษาอังกฤษและภาษาตุรกี เลือกได้ที่มุมขวาบน (ถ้าเครื่องใช้ภาษาอื่น แอปจะเปิดเป็นภาษาอังกฤษ) จากบรรทัดคำสั่ง:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -123,4 +123,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 โค้ด: Apache-2.0 (LICENSE) ส่วนประกอบภายนอกและสัญญาอนุญาต: THIRD_PARTY.md การใช้งานอย่างรับผิดชอบ: ETHICS.md
 ความเป็นส่วนตัว (อะไรอยู่ในเครื่องคุณ แบ็กเอนด์คลาวด์ได้รับอะไร): PRIVACY.md รายงานความปลอดภัย: SECURITY.md การเปลี่ยนแปลง: CHANGELOG.md
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

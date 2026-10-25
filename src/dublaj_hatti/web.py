@@ -11,6 +11,9 @@ Güvenlik (yerel sunucu da saldırı yüzeyidir):
   * dosya sunumu yalnız çıktı klasörü ve yükleme klasörü içinden (yol kaçışı engelli)
   * aynı anda tek iş; iş ayrı süreçte, pencere açmadan çalışır
   * dış kaynak (CDN, yazı tipi, analiz) yok; Content-Security-Policy default-src 'self'
+
+Arayüz dili: sayfa sözlüğü `/api/arayuz_dili` ile alır (seçim sırası: sayfada seçilen > genel.arayuz_dili >
+tarayıcının dili > bilgisayarın dili > İngilizce); ayar formu `/api/ayarlar?dil=..` ile o dilde gelir.
 """
 
 from __future__ import annotations
@@ -31,7 +34,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
-from dublaj_hatti import __version__
+from dublaj_hatti import __version__, arayuz_dili
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, varsayilan_depo_yolu
 from dublaj_hatti.is_yurutucu import IsYurutucu, arayuz_ayari_denetle, ayar_formu, cikti_klasoru_ac
 from dublaj_hatti.yapilandirma import SEMA, AyarHatasi, ayarlari_yukle
@@ -56,6 +59,26 @@ def _icinde_mi(yol: Path, kok: Path) -> bool:
         return True
     except ValueError:
         return False
+
+
+def arayuz_dili_sec(secim: str, tarayici: str, ayar: str | None) -> str:
+    """Sayfanın dili: sayfada seçilen > genel.arayuz_dili > tarayıcı dilleri (sırayla) > bilgisayarın dili > en."""
+    mevcut = arayuz_dili.mevcut_diller()
+    secim, ayar = secim.strip().lower(), str(ayar or "auto").strip().lower()
+    if secim in mevcut:
+        return secim
+    if ayar in mevcut:
+        return ayar
+    for parca in tarayici.split(","):
+        kod = parca.strip().split(";")[0].split("-")[0].lower()
+        if kod in mevcut:
+            return kod
+    return arayuz_dili.cozumle("auto")
+
+
+def _istenen_dil(sorgu: dict[str, list[str]]) -> str | None:
+    dil = sorgu.get("dil", [""])[0]
+    return dil if dil in arayuz_dili.mevcut_diller() else None
 
 
 class Uygulama:
@@ -151,7 +174,8 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                     "Set-Cookie": f"{CEREZ}={self.uygulama.belirtec}; HttpOnly; SameSite=Strict; Path=/"})
                 return
             if not self._cerez_dogru():
-                self._gonder(HTTPStatus.FORBIDDEN, "Oturum yok: dubla-web komutunun yazdığı adresi açın.".encode())
+                self._gonder(HTTPStatus.FORBIDDEN, ("Oturum yok: dubla-web komutunun yazdığı adresi açın.\n"
+                                                    "No session: open the address printed by dubla-web.").encode())
                 return
             html = (STATIK / "index.html").read_text(encoding="utf-8")
             html = html.replace("__BELIRTEC__", self.uygulama.belirtec).replace("__SURUM__", __version__)
@@ -165,7 +189,18 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
             self._gonder(HTTPStatus.FORBIDDEN, b"oturum yok")
             return
         if adres.path == "/api/ayarlar":
-            self._json(HTTPStatus.OK, {"form": ayar_formu(), "surum": __version__})
+            dil = _istenen_dil(parse_qs(adres.query))
+            self._json(HTTPStatus.OK, {"form": ayar_formu(dil or "tr"), "surum": __version__})
+        elif adres.path == "/api/arayuz_dili":
+            sorgu = parse_qs(adres.query)
+            try:
+                ayar = ayarlari_yukle().get("genel.arayuz_dili")
+            except (AyarHatasi, OSError, ValueError):
+                ayar = "auto"
+            dil = arayuz_dili_sec(sorgu.get("secim", [""])[0], sorgu.get("tarayici", [""])[0], ayar)
+            self._json(HTTPStatus.OK, {
+                "dil": dil, "yon": arayuz_dili.yon(dil), "sozluk": arayuz_dili.tam_sozluk(dil),
+                "diller": [{"kod": k, "ad": arayuz_dili.kendi_adi(k)} for k in arayuz_dili.mevcut_diller()]})
         elif adres.path == "/api/durum":
             self._json(HTTPStatus.OK, self.uygulama.yurutucu.durum.ozet())
         elif adres.path == "/api/isler":

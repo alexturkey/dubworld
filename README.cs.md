@@ -34,7 +34,7 @@ Požadavky, pořadí kroků, mapa prostředí Pythonu, volitelné enginy, práce
 
 ## Použití
 
-Desktopová aplikace: dvojklik na `arayuz.cmd` (lokální webová aplikace: `web.cmd`, jen na 127.0.0.1). Rozhraní aplikace je zatím v turečtině. Z příkazové řádky:
+Desktopová aplikace: dvojklik na `arayuz.cmd` (lokální webová aplikace: `web.cmd`, jen na 127.0.0.1). Rozhraní aplikace je v angličtině a turečtině: jazyk zvolíte vpravo nahoře (na počítači v jiném jazyce se otevře anglicky). Z příkazové řádky:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Dotazy, nápady a vaše výsledky: [diskusní fórum](https://github.com/alextur
 Kód: Apache-2.0 (LICENSE). Součásti třetích stran a jejich licence: THIRD_PARTY.md. Odpovědné používání: ETHICS.md.
 Soukromí (co zůstává na vašem počítači, co dostane cloudový backend): PRIVACY.md. Hlášení zranitelností: SECURITY.md. Změny: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

@@ -35,7 +35,7 @@ desinstalación y errores frecuentes (en inglés): **[docs/installation.md](docs
 
 ## Uso
 
-Aplicación de escritorio: doble clic en `arayuz.cmd` (aplicación web local: `web.cmd`, solo 127.0.0.1). Por ahora la interfaz de la aplicación está en turco. Desde la línea de comandos:
+Aplicación de escritorio: doble clic en `arayuz.cmd` (aplicación web local: `web.cmd`, solo 127.0.0.1). La aplicación está en inglés y en turco: elige el idioma arriba a la derecha (si tu equipo está en otro idioma, se abre en inglés). Desde la línea de comandos:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -130,4 +130,4 @@ Privacidad (qué se queda en local, qué recibe un servicio en la nube): PRIVACY
 > This translation may lag; English is authoritative. Esta traducción puede ir con retraso; la versión inglesa es la que
 > vale. Fuente: README.md (marca de sincronización abajo). Traducción automática (Claude); se agradecen PR de corrección.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

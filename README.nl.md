@@ -34,7 +34,7 @@ veelvoorkomende fouten (in het Engels): **[docs/installation.md](docs/installati
 
 ## Gebruik
 
-Desktopapp: dubbelklik op `arayuz.cmd` (lokale webapp: `web.cmd`, alleen op 127.0.0.1). De interface van de app is voorlopig in het Turks. Vanaf de opdrachtregel:
+Desktopapp: dubbelklik op `arayuz.cmd` (lokale webapp: `web.cmd`, alleen op 127.0.0.1). De app is er in het Engels en het Turks: kies rechtsboven (op een computer in een andere taal opent hij in het Engels). Vanaf de opdrachtregel:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Vragen, ideeën en je resultaten: [discussieforum](https://github.com/alexturkey
 Code: Apache-2.0 (LICENSE). Externe onderdelen en hun licenties: THIRD_PARTY.md. Verantwoord gebruik: ETHICS.md.
 Privacy (wat op je computer blijft, wat een cloudbackend ontvangt): PRIVACY.md. Beveiligingsmeldingen: SECURITY.md. Wijzigingen: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

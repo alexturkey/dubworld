@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from dublaj_hatti import arayuz_dili
 from dublaj_hatti.bolum_00_omurga.core.asama_sozlesmesi import PIPELINE_STAGES
 from dublaj_hatti.is_yonetimi.asamalar import ASAMA_ADLARI
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, IsHatasi, is_ozeti
@@ -26,12 +27,14 @@ from dublaj_hatti.yapilandirma import SEMA, ayarlari_yukle, esleme_metni, form_e
 
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
 BOSTA_YOKLAMA_SN = 2.0  # kuyruk boşken bekleme; yeni iş eklenince olayla hemen uyanır (boşta ~%0 işlemci)
-__all__ = ["ARAYUZ_DISI_AYARLAR", "ASAMA_ADLARI", "IsDurumu", "IsYurutucu", "arayuz_ayari_denetle", "ayar_degisiklikleri",
+__all__ = ["ARAYUZ_DISI_AYARLAR", "ASAMA_ADLARI", "FORM_DISI_AYARLAR", "IsDurumu", "IsYurutucu", "arayuz_ayari_denetle", "ayar_degisiklikleri",
            "ayar_formu", "cikti_klasoru_ac"]
 # Arayüzden (masaüstü, web, Telegram) değiştirilemeyen ayarlar: yürütülecek yerel programın yolu. Web belirteci ya da
 # bot erişimi olan biri bunları değiştirebilseydi istediği programı çalıştırırdı (SECURITY.md: web belirteci = yerel
 # komut yürütme yetkisi). Değer yalnız ayar dosyasından (ayarlar/kullanici.toml) ya da ortam değişkeninden gelir.
 ARAYUZ_DISI_AYARLAR = frozenset({"ceviri.codex.cli_yolu", "ceviri.claude.cli_yolu"})
+# Gelişmiş formunda gösterilmez: arayüzün kendi dil kutusu var (bu oturum); kalıcı değer kullanici.toml'da
+FORM_DISI_AYARLAR = frozenset({"genel.arayuz_dili"})
 
 
 def arayuz_ayari_denetle(anahtar: str) -> None:
@@ -303,23 +306,34 @@ def ayar_aciklamalari() -> dict[str, str]:
     return cikti
 
 
-def ayar_formu() -> list[dict[str, Any]]:
-    """Arayüzlerin Gelişmiş sekmesi: anahtar, bölüm, tür, seçenekler, geçerli değer, açıklama (SEMA sırası)."""
+def ayar_formu(dil: str | None = None) -> list[dict[str, Any]]:
+    """Arayüzlerin Gelişmiş sekmesi: anahtar, bölüm, tür, seçenekler, geçerli değer, açıklama (SEMA sırası).
+
+    Açıklama arayüz dilindedir (`dil`; yoksa seçili arayüz dili): Türkçenin tek kaynağı `varsayilan.toml`
+    yorumlarıdır, öbür diller `arayuz_dilleri/<dil>.json` içindeki `ayar.<anahtar>` (eksikse İngilizce, o da yoksa Türkçe).
+    """
+    dil = dil or arayuz_dili.secili()
     gecerli = ayarlari_yukle()
     aciklama = ayar_aciklamalari()
-    ek = form_ek_bilgisi()  # donanım etiketleri, hedef dil süzgeci, konuşmacı başına ses seçenekleri (yapilandirma)
+    ek = form_ek_bilgisi(dil)  # donanım etiketleri, hedef dil süzgeci, konuşmacı başına ses seçenekleri (yapilandirma)
     form = []
     for anahtar, kural in SEMA.items():
-        if anahtar in ARAYUZ_DISI_AYARLAR:
+        if anahtar in ARAYUZ_DISI_AYARLAR or anahtar in FORM_DISI_AYARLAR:
             continue
         deger = gecerli.get(anahtar)
         if kural is dict:  # "esleme": metin kutusu "SPEAKER_00:M2, SPEAKER_01:F1"
             tur, secenekler, deger = "esleme", [], esleme_metni(deger or {})
-            aciklama.setdefault(anahtar, "Konuşmacı başına ses (tahmini ezer): SPEAKER_00:M2, SPEAKER_01:F1")
         elif isinstance(kural, list):
             tur, secenekler = "secim", list(kural)
         else:
             tur, secenekler = {bool: "evet_hayir", int: "tam_sayi", float: "ondalik"}.get(kural, "metin"), []
         form.append({"anahtar": anahtar, "bolum": anahtar.split(".")[0], "tur": tur, "secenekler": secenekler,
-                     "deger": deger, "aciklama": aciklama.get(anahtar, ""), **ek.get(anahtar, {})})
+                     "deger": deger, "aciklama": _aciklama(anahtar, dil, aciklama), **ek.get(anahtar, {})})
     return form
+
+
+def _aciklama(anahtar: str, dil: str, toml_yorumlari: dict[str, str]) -> str:
+    sozluk_aciklamasi = arayuz_dili.sozluk(dil).get(f"ayar.{anahtar}")
+    if dil == "tr":
+        return toml_yorumlari.get(anahtar) or sozluk_aciklamasi or ""
+    return sozluk_aciklamasi or arayuz_dili.sozluk("en").get(f"ayar.{anahtar}") or toml_yorumlari.get(anahtar, "")

@@ -34,7 +34,7 @@ erori frecvente (în engleză): **[docs/installation.md](docs/installation.md)**
 
 ## Utilizare
 
-Aplicația desktop: dublu clic pe `arayuz.cmd` (aplicație web locală: `web.cmd`, doar pe 127.0.0.1). Interfața aplicației e deocamdată în turcă. Din linia de comandă:
+Aplicația desktop: dublu clic pe `arayuz.cmd` (aplicație web locală: `web.cmd`, doar pe 127.0.0.1). Interfața aplicației e în engleză și turcă: alegi limba din dreapta sus (pe un calculator în altă limbă se deschide în engleză). Din linia de comandă:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Fiecare depozit-soră are licența, instalarea și issue-urile lui; datorită co
 Cod: Apache-2.0 (LICENSE). Componente externe și licențele lor: THIRD_PARTY.md. Folosire responsabilă: ETHICS.md.
 Confidențialitate (ce rămâne pe calculatorul dumneavoastră, ce primește un backend din cloud): PRIVACY.md. Raportări de securitate: SECURITY.md. Schimbări: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

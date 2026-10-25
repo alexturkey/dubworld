@@ -34,7 +34,7 @@ tez-tez rast gəlinən xətalar (ingiliscə): **[docs/installation.md](docs/inst
 
 ## İstifadə
 
-Masaüstü tətbiq: `arayuz.cmd` faylına iki dəfə klik (yerli veb tətbiq: `web.cmd`, yalnız 127.0.0.1-də). Tətbiqin interfeysi hələlik türkcədir. Əmr sətrindən:
+Masaüstü tətbiq: `arayuz.cmd` faylına iki dəfə klik (yerli veb tətbiq: `web.cmd`, yalnız 127.0.0.1-də). Tətbiqin interfeysi ingilis və türk dillərindədir: dili sağ yuxarı küncdən seçin (kompüter başqa dildədirsə, ingiliscə açılır). Əmr sətrindən:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Suallar, fikirlər və nəticələriniz: [müzakirə forumu](https://github.com/
 Kod: Apache-2.0 (LICENSE). Xarici hissələr və onların lisenziyaları: THIRD_PARTY.md. Məsuliyyətli istifadə: ETHICS.md.
 Məxfilik (kompüterinizdə nə qalır, bulud arxa ucu nə alır): PRIVACY.md. Təhlükəsizlik bildirişləri: SECURITY.md. Dəyişikliklər: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

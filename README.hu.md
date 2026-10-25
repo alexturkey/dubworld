@@ -34,7 +34,7 @@ gyakori hibák (angolul): **[docs/installation.md](docs/installation.md)**. Linu
 
 ## Használat
 
-Asztali alkalmazás: dupla kattintás az `arayuz.cmd` fájlra (helyi webalkalmazás: `web.cmd`, csak a 127.0.0.1 címen). Az alkalmazás felülete egyelőre török nyelvű. Parancssorból:
+Asztali alkalmazás: dupla kattintás az `arayuz.cmd` fájlra (helyi webalkalmazás: `web.cmd`, csak a 127.0.0.1 címen). Az alkalmazás felülete angol és török nyelvű: a nyelvet a jobb felső sarokban választhatod (más nyelvű gépen angolul indul). Parancssorból:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Kérdések, ötletek és az eredményeid: [beszélgetőfórum](https://github.co
 Kód: Apache-2.0 (LICENSE). Külső összetevők és licenceik: THIRD_PARTY.md. Felelős használat: ETHICS.md.
 Adatvédelem (mi marad a gépeden, mit kap egy felhős háttérrendszer): PRIVACY.md. Biztonsági bejelentések: SECURITY.md. Változások: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

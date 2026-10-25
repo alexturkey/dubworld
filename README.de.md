@@ -36,7 +36,7 @@ Linux und macOS sind noch nicht getestet. Beispiel: [Produkttour auf Englisch, T
 
 ## Verwendung
 
-Desktop-App: Doppelklick auf `arayuz.cmd` (lokale Web-App: `web.cmd`, nur 127.0.0.1). Die Oberfläche der App ist vorerst auf Türkisch. Über die Kommandozeile:
+Desktop-App: Doppelklick auf `arayuz.cmd` (lokale Web-App: `web.cmd`, nur 127.0.0.1). Die App gibt es auf Englisch und Türkisch: oben rechts umschalten (auf einem Computer in einer anderen Sprache startet sie auf Englisch). Über die Kommandozeile:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -133,4 +133,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

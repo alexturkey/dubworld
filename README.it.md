@@ -34,7 +34,7 @@ disinstallazione ed errori frequenti (in inglese): **[docs/installation.md](docs
 
 ## Come si usa
 
-App desktop: doppio clic su `arayuz.cmd` (app web locale: `web.cmd`, solo su 127.0.0.1). Per ora l'interfaccia dell'app è in turco. Da riga di comando:
+App desktop: doppio clic su `arayuz.cmd` (app web locale: `web.cmd`, solo su 127.0.0.1). L'app è in inglese e in turco: scegli la lingua in alto a destra (su un computer in un'altra lingua si apre in inglese). Da riga di comando:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Domande, idee e risultati: [Discussioni](https://github.com/alexturkey/dubworld/
 Codice: Apache-2.0 (LICENSE). Componenti di terze parti e relative licenze: THIRD_PARTY.md. Uso responsabile: ETHICS.md.
 Privacy (cosa resta sul tuo computer e cosa riceve un backend cloud): PRIVACY.md. Segnalazioni di sicurezza: SECURITY.md. Modifiche: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

@@ -34,7 +34,7 @@ ralat biasa (dalam bahasa Inggeris): **[docs/installation.md](docs/installation.
 
 ## Cara guna
 
-Aplikasi desktop: klik dua kali `arayuz.cmd` (aplikasi web tempatan: `web.cmd`, hanya pada 127.0.0.1). Antara muka aplikasi buat masa ini dalam bahasa Turki. Dari baris arahan:
+Aplikasi desktop: klik dua kali `arayuz.cmd` (aplikasi web tempatan: `web.cmd`, hanya pada 127.0.0.1). Antara muka aplikasi dalam bahasa Inggeris dan Turki: pilih di penjuru kanan atas (jika komputer menggunakan bahasa lain, aplikasi dibuka dalam bahasa Inggeris). Dari baris arahan:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Soalan, idea dan hasil anda: [forum perbincangan](https://github.com/alexturkey/
 Kod: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lesennya: THIRD_PARTY.md. Penggunaan bertanggungjawab: ETHICS.md.
 Privasi (apa yang kekal di komputer anda, apa yang diterima bahagian belakang awan): PRIVACY.md. Laporan keselamatan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

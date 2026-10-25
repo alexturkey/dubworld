@@ -31,6 +31,9 @@ cikti_klasoru = ""
 onbellek_klasoru = ""
 # Günlük ayrıntısı: "INFO" | "DEBUG" | "WARNING"
 gunluk_seviyesi = "INFO"
+# Masaüstü ve web arayüzünün dili: "auto" (bilgisayarın dili sözlüklerde varsa o, yoksa İngilizce) ya da dil kodu
+# ("tr", "en"). Arayüzdeki dil kutusu bu oturum için değiştirir; kalıcı yapmak için buraya yazın (docs/arayuz_dili.md).
+arayuz_dili = "auto"
 
 [transkripsiyon]
 # Motor: "auto" = CrisperWhisper Turbo CT2 kuruluysa o (en iyi Türkçe/İngilizce kelime zamanı, ticari olmayan

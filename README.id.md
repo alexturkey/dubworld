@@ -34,7 +34,7 @@ galat yang sering muncul (dalam bahasa Inggris): **[docs/installation.md](docs/i
 
 ## Cara pakai
 
-Aplikasi desktop: klik dua kali `arayuz.cmd` (aplikasi web lokal: `web.cmd`, hanya di 127.0.0.1). Antarmuka aplikasi saat ini berbahasa Turki. Dari baris perintah:
+Aplikasi desktop: klik dua kali `arayuz.cmd` (aplikasi web lokal: `web.cmd`, hanya di 127.0.0.1). Antarmuka aplikasi tersedia dalam bahasa Inggris dan Turki: pilih di kanan atas (jika komputer memakai bahasa lain, aplikasi terbuka dalam bahasa Inggris). Dari baris perintah:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Pertanyaan, ide, dan hasil Anda: [forum diskusi](https://github.com/alexturkey/d
 Kode: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lisensinya: THIRD_PARTY.md. Penggunaan yang bertanggung jawab: ETHICS.md.
 Privasi (apa yang tetap di komputer Anda, apa yang diterima backend cloud): PRIVACY.md. Laporan keamanan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

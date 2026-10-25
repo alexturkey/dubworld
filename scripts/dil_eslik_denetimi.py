@@ -69,6 +69,7 @@ TEK_DOSYA_KALIPLARI = (
     "docs/motorlar/*.md",
     "docs/tarifler/*.md",
     "docs/diller.md",
+    "docs/arayuz_dili.md",
     "docs/donanim.md",
     "docs/sesler.md",
     "docs/mimari.md",

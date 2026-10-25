@@ -34,7 +34,7 @@ sha256 से जाँचा जाता है। शुरू करने �
 
 ## इस्तेमाल कैसे करें
 
-डेस्कटॉप ऐप: `arayuz.cmd` पर डबल-क्लिक (लोकल वेब ऐप: `web.cmd`, सिर्फ़ 127.0.0.1 पर)। अभी ऐप का इंटरफ़ेस तुर्की में है। कमांड लाइन से:
+डेस्कटॉप ऐप: `arayuz.cmd` पर डबल-क्लिक (लोकल वेब ऐप: `web.cmd`, सिर्फ़ 127.0.0.1 पर)। ऐप का इंटरफ़ेस अंग्रेज़ी और तुर्की में है: ऊपर दाईं ओर से भाषा चुनें (कंप्यूटर किसी और भाषा में हो तो ऐप अंग्रेज़ी में खुलता है)। कमांड लाइन से:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 कोड: Apache-2.0 (LICENSE)। बाहरी हिस्से और उनके लाइसेंस: THIRD_PARTY.md। ज़िम्मेदारी से इस्तेमाल: ETHICS.md।
 निजता (क्या आपके कंप्यूटर पर रहता है, क्लाउड बैकएंड को क्या मिलता है): PRIVACY.md। सुरक्षा रिपोर्ट: SECURITY.md। बदलाव: CHANGELOG.md।
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

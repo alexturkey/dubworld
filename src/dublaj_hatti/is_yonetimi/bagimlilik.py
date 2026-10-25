@@ -19,7 +19,7 @@ from dublaj_hatti.is_yonetimi.asamalar import asamalar
 
 # Sonucu değiştirmeyen (yalnız çalıştırma biçimi) ayarlar: değişince hiçbir aşama yeniden çalışmaz.
 ETKISIZ = frozenset({
-    "genel.cihaz", "genel.cikti_klasoru", "genel.onbellek_klasoru", "genel.gunluk_seviyesi",
+    "genel.cihaz", "genel.cikti_klasoru", "genel.onbellek_klasoru", "genel.gunluk_seviyesi", "genel.arayuz_dili",
     "ileri.tts_deneme", "ileri.tts_deneme_bekleme_sn",
     "genel.transkript_bicimi",  # yalnız transkript işinin dosya biçimi; dublaj aşamalarına girmez
     "ses.xtts_lisans_onayi", "ses.rvc_riza_onayi",  # yalnız izin kapısı; çıktıyı değiştirmez

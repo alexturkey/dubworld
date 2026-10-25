@@ -34,7 +34,7 @@ sha256으로 검증됩니다. 시작에 필요한 여유 공간: GPU 프로필 2
 
 ## 사용법
 
-데스크톱 앱: `arayuz.cmd` 더블클릭(로컬 웹 앱: `web.cmd`, 127.0.0.1에서만 열림). 앱 화면은 현재 튀르키예어로만 되어 있습니다. 명령줄에서는 이렇게 씁니다.
+데스크톱 앱: `arayuz.cmd` 더블클릭(로컬 웹 앱: `web.cmd`, 127.0.0.1에서만 열림). 앱 화면은 영어와 튀르키예어로 되어 있고 오른쪽 위에서 바꿀 수 있습니다(컴퓨터가 다른 언어면 영어로 열립니다). 명령줄에서는 이렇게 씁니다.
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 코드: Apache-2.0(LICENSE). 외부 구성 요소와 라이선스: THIRD_PARTY.md. 책임 있는 사용: ETHICS.md.
 개인정보(내 컴퓨터에 남는 것, 클라우드 백엔드로 가는 것): PRIVACY.md. 보안 신고: SECURITY.md. 변경 이력: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

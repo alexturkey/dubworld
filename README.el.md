@@ -34,7 +34,7 @@ Windows 10/11 x64· δεν χρειάζεται προεγκατεστημένο
 
 ## Χρήση
 
-Εφαρμογή επιφάνειας εργασίας: διπλό κλικ στο `arayuz.cmd` (τοπική εφαρμογή web: `web.cmd`, μόνο στο 127.0.0.1). Η διεπαφή της εφαρμογής είναι προς το παρόν στα τουρκικά. Από τη γραμμή εντολών:
+Εφαρμογή επιφάνειας εργασίας: διπλό κλικ στο `arayuz.cmd` (τοπική εφαρμογή web: `web.cmd`, μόνο στο 127.0.0.1). Η διεπαφή της εφαρμογής είναι στα αγγλικά και στα τουρκικά: επιλέξτε πάνω δεξιά (σε υπολογιστή με άλλη γλώσσα ανοίγει στα αγγλικά). Από τη γραμμή εντολών:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 Κώδικας: Apache-2.0 (LICENSE). Εξωτερικά εξαρτήματα και οι άδειές τους: THIRD_PARTY.md. Υπεύθυνη χρήση: ETHICS.md.
 Ιδιωτικότητα (τι μένει στον υπολογιστή σας, τι λαμβάνει ένα cloud backend): PRIVACY.md. Αναφορές ασφάλειας: SECURITY.md. Αλλαγές: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

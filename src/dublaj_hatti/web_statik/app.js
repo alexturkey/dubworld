@@ -24,6 +24,64 @@ async function api(yol, govde) {
 }
 
 function hataGoster(metin) { const h = $("hata"); h.textContent = metin || ""; h.hidden = !metin; }
+
+// --- arayüz dili: sözlük sunucudan (arayuz_dilleri/<dil>.json); sayfadaki seçim bu tarayıcıda hatırlanır ----------
+let SOZLUK = {};
+let DIL = "tr";
+let sonDurum = null;
+const YEREL_DIL = "dubworld.arayuz_dili";
+function t(anahtar, degerler) {
+  const metin = SOZLUK[anahtar];
+  if (metin === undefined) return anahtar;
+  return degerler ? metin.replace(/\{(\w+)\}/g, (m, k) => (k in degerler ? String(degerler[k]) : m)) : metin;
+}
+// Kimlikten arayüz dilindeki ad (durum, aşama, komut); sözlükte yoksa sunucunun verdiği ad.
+function cevir(onek, kimlik, yedek) { const a = onek + "." + kimlik; return kimlik && a in SOZLUK ? SOZLUK[a] : (yedek || kimlik || ""); }
+// Değişen yazılar da dil değişince yeniden yazılsın diye anahtar ve değerleri öğede tutulur.
+function yaz(oge, anahtar, degerler) {
+  oge.dataset.t = anahtar;
+  oge.dataset.tDeger = JSON.stringify(degerler || {});
+  oge.textContent = t(anahtar, degerler);
+}
+function dilUygula() {
+  document.documentElement.lang = DIL;
+  document.querySelectorAll("[data-t]").forEach((o) => { o.textContent = t(o.dataset.t, JSON.parse(o.dataset.tDeger || "{}")); });
+  document.querySelectorAll("[data-t-ipucu]").forEach((o) => { o.placeholder = t(o.dataset.tIpucu); });
+}
+function yerelDil() { try { return localStorage.getItem(YEREL_DIL) || ""; } catch (_) { return ""; } }
+function yerelDilYaz(kod) { try { localStorage.setItem(YEREL_DIL, kod); } catch (_) { /* gizli pencere: yalnız bu sayfa */ } }
+async function dilYukle(secim) {
+  const tarayici = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""]).join(",");
+  const v = await api("/api/arayuz_dili?secim=" + encodeURIComponent(secim || "") + "&tarayici=" + encodeURIComponent(tarayici));
+  SOZLUK = v.sozluk; DIL = v.dil;
+  document.documentElement.dir = v.yon || "ltr";
+  const secici = $("arayuz-dili");
+  secici.replaceChildren(...v.diller.map((d) => { const o = document.createElement("option"); o.value = d.kod; o.textContent = d.ad; return o; }));
+  secici.value = DIL;
+  dilUygula();
+}
+async function formYukle(oncekiDegisiklik) {
+  const v = await api("/api/ayarlar?dil=" + encodeURIComponent(DIL));
+  form = v.form;
+  formCiz();
+  // dil değişince Gelişmiş'te yapılan değişiklikler korunur (form sırasıyla: ses.motor önce, süzülen dil sonra)
+  form.filter((a) => oncekiDegisiklik && a.anahtar in oncekiDegisiklik).forEach((a) => {
+    const g = $("a_" + a.anahtar);
+    if (!g) return;
+    if (g.type === "checkbox") g.checked = !!oncekiDegisiklik[a.anahtar]; else g.value = oncekiDegisiklik[a.anahtar];
+    g.dispatchEvent(new Event("change"));
+  });
+}
+$("arayuz-dili").addEventListener("change", async (e) => {
+  const onceki = Object.assign({}, degisiklik);
+  try {
+    yerelDilYaz(e.target.value);
+    await dilYukle(e.target.value);
+    await formYukle(onceki);
+    islerYukle();
+    if (sonDurum) durumCiz(sonDurum);
+  } catch (hata) { hataGoster(hata.message); }
+});
 function dosyaAdresi(yol) { return "/dosya?yol=" + encodeURIComponent(yol); }
 
 // --- sekmeler ---------------------------------------------------------------------------------------
@@ -64,7 +122,7 @@ function alanCiz(alan) {
   aciklama.className = "aciklama";
   aciklama.textContent = alan.aciklama;
   if (alan.ses_secenekleri) {  // konuşmacı başına ses: seçili motorun sesleri (docs/sesler.md)
-    aciklama.textContent += " · Sesler: " + Object.entries(alan.ses_secenekleri)
+    aciklama.textContent += " · " + t("ayar.sesler") + ": " + Object.entries(alan.ses_secenekleri)
       .filter(([, v]) => v.length).map(([tts, v]) => tts + ": " + v.join(", ")).join("; ");
   }
   kutu.append(etiket, girdi, aciklama);
@@ -93,8 +151,9 @@ function suzgecleriBagla() {
       if (!v) return;
       const onceki = hedef.value;
       const etiketler = {};
-      v.denenmemis.forEach((d) => { etiketler[d] = "denenmedi (uyarı)"; });
+      v.denenmemis.forEach((d) => { etiketler[d] = t("ayar.denenmedi_uyari"); });
       secenekleriYaz(hedef, v.izinli, etiketler);
+      Array.from(hedef.options).forEach((o) => { if (v.denenmemis.includes(o.value)) o.dataset.denenmedi = "1"; });
       hedef.value = v.izinli.includes(onceki) ? onceki : v.izinli[0];
       if (hedef.value !== onceki) hedef.dispatchEvent(new Event("change"));
     };
@@ -104,11 +163,17 @@ function suzgecleriBagla() {
 }
 
 // Önerilen sekmesindeki "Dublaj dili" = Gelişmiş'teki genel.hedef_dil (tek kaynak: o alanın değeri ve süzülmüş
-// seçenekleri). Ad dilin kendi dilinde (sunucu: dil_adlari); ana düğme "<Dil> dublajla".
+// seçenekleri). Ad arayüz dilinde, farklıysa yanında dilin kendi adı (sunucu: dil_adlari): "German (Deutsch)";
+// ana düğme sözlükteki tam cümle: "Dub into German", "Almanca dublajla".
 const DIL_ANAHTARI = "genel.hedef_dil";
-function dilAdi(kod) {
+function kendiAdi(kod) {
   const alan = form.find((a) => a.anahtar === DIL_ANAHTARI);
   return (alan && alan.dil_adlari && alan.dil_adlari[kod]) || kod;
+}
+function dilAdi(kod) { return SOZLUK["dil." + kod] || kendiAdi(kod); }
+function dilSecenegi(kod) {
+  const ad = dilAdi(kod), kendi = kendiAdi(kod);
+  return ad === kendi ? ad : t("dil.iki_ad", { ad, kendi });
 }
 function onerilenDiliEsitle() {
   const kaynak = $("a_" + DIL_ANAHTARI);
@@ -119,11 +184,11 @@ function onerilenDiliEsitle() {
   Array.from(kaynak.options).forEach((o) => {
     const yeni = document.createElement("option");
     yeni.value = o.value;
-    yeni.textContent = dilAdi(o.value) + (o.textContent.includes("denenmedi") ? "  ·  denenmedi" : "");
+    yeni.textContent = dilSecenegi(o.value) + (o.dataset.denenmedi ? "  ·  " + t("dil.denenmedi") : "");
     secici.appendChild(yeni);
   });
   secici.value = kaynak.value;
-  $("dublajla").textContent = dilAdi(kaynak.value) + " dublajla";
+  yaz($("dublajla"), "dugme.dublajla", { hedef: dilAdi(kaynak.value) });
 }
 $("hedef-dil").addEventListener("change", (e) => {
   const kaynak = $("a_" + DIL_ANAHTARI);
@@ -141,7 +206,7 @@ function formCiz() {
     if (!bolumler[alan.bolum]) {
       const fs = document.createElement("fieldset");
       const lg = document.createElement("legend");
-      lg.textContent = alan.bolum.replace("_", " ");
+      lg.textContent = cevir("bolum", alan.bolum, alan.bolum.replace("_", " "));
       fs.appendChild(lg);
       kok.appendChild(fs);
       bolumler[alan.bolum] = fs;
@@ -165,7 +230,7 @@ function dosyaYukle(dosya) {
   hataGoster("");
   yuklenen = null;
   $("dublajla").disabled = $("transkript").disabled = true;
-  $("dosya-yazi").textContent = dosya.name + " yükleniyor…";
+  yaz($("dosya-yazi"), "web.yukleniyor", { ad: dosya.name });
   const cubuk = $("yukleme-cubugu");
   cubuk.hidden = false;
   const istek = new XMLHttpRequest();
@@ -177,13 +242,13 @@ function dosyaYukle(dosya) {
   istek.onload = () => {
     let veri = {};
     try { veri = JSON.parse(istek.responseText); } catch (_) { /* boş */ }
-    if (istek.status !== 200) { hataGoster(veri.hata || "yükleme başarısız"); $("dosya-yazi").textContent = "Tekrar seçin"; return; }
+    if (istek.status !== 200) { hataGoster(veri.hata || t("web.yukleme_basarisiz")); yaz($("dosya-yazi"), "web.tekrar_sec"); return; }
     yuklenen = veri.kimlik;
     baglanti = ""; $("baglanti").value = "";
-    $("dosya-yazi").textContent = dosya.name + " hazır (" + (dosya.size / 1048576).toFixed(1) + " MB)";
+    yaz($("dosya-yazi"), "web.yuklendi", { ad: dosya.name, mb: (dosya.size / 1048576).toFixed(1) });
     $("dublajla").disabled = $("transkript").disabled = false;
   };
-  istek.onerror = () => hataGoster("yükleme bağlantısı koptu");
+  istek.onerror = () => hataGoster(t("web.yukleme_koptu"));
   istek.send(dosya);
 }
 function baglantiHazir() { return /^https:\/\/\S+$/i.test(baglanti); }
@@ -220,22 +285,28 @@ async function baslat(isTuru) {
 $("dublajla").addEventListener("click", () => baslat("dublaj"));
 $("transkript").addEventListener("click", () => baslat("transkript"));
 $("durdur").addEventListener("click", () => api("/api/durdur", {}).catch((e) => hataGoster(e.message)));
-$("gunluk-ac").addEventListener("click", () => { $("gunluk").hidden = !$("gunluk").hidden; });
+$("gunluk-ac").addEventListener("click", () => {
+  $("gunluk").hidden = !$("gunluk").hidden;
+  yaz($("gunluk-ac"), $("gunluk").hidden ? "dugme.gunluk_goster" : "dugme.gunluk_gizle");
+});
 $("klasor-ac").addEventListener("click", () => api("/api/klasor_ac", { yol: $("klasor-ac").dataset.yol || "" }).catch((e) => hataGoster(e.message)));
 
-function sureYaz(sn) { const d = Math.floor(sn / 60), s = Math.floor(sn % 60); return d + " dk " + s + " sn"; }
+function sureYaz(sn) { return t("ilerleme.sure", { dk: Math.floor(sn / 60), sn: Math.floor(sn % 60) }); }
 
 function durumCiz(d) {
+  sonDurum = d;
   const calisiyor = d.durum === "calisiyor";
   $("ilerleme").hidden = d.durum === "bos";
   $("durdur").disabled = !calisiyor;
   $("dublajla").disabled = $("transkript").disabled = calisiyor || !(yuklenen || baglantiHazir());
-  $("ilerleme-baslik").textContent = { calisiyor: "İş sürüyor", bitti: "Bitti", hata: "Hata", durduruldu: "Durduruldu" }[d.durum] || "";
+  if (d.durum !== "bos") yaz($("ilerleme-baslik"), "ilerleme." + d.durum);
   $("ilerleme-cubugu").style.width = d.yuzde + "%";
-  $("ilerleme-yazi").textContent = (d.is ? "İş #" + d.is + " · " : "") + "%" + d.yuzde + " · " +
-    (d.bekleme || d.asama_adi || "hazırlanıyor") + " · " + sureYaz(d.gecen_sn);
+  const parcalar = [t("ilerleme.yuzde", { yuzde: d.yuzde }),
+    d.bekleme || cevir("asama", d.asama, d.asama_adi) || t("ilerleme.hazirlaniyor"), sureYaz(d.gecen_sn)];
+  if (d.is) parcalar.push(t("ilerleme.is_no", { no: d.is }));
+  $("ilerleme-yazi").textContent = parcalar.join(" · ");
   const liste = $("asamalar");
-  liste.replaceChildren(...(d.asamalar || []).map((a) => { const li = document.createElement("li"); li.textContent = a.ad; li.className = a.durum; return li; }));
+  liste.replaceChildren(...(d.asamalar || []).map((a) => { const li = document.createElement("li"); li.textContent = cevir("asama", a.id, a.ad); li.className = a.durum; return li; }));
   const gunluk = $("gunluk");
   const altta = gunluk.scrollTop + gunluk.clientHeight >= gunluk.scrollHeight - 4;
   gunluk.textContent = (d.gunluk || []).join("\n");
@@ -297,10 +368,10 @@ async function secenekAc(no) {
     const v = await api("/api/is?no=" + no);
     const sec = $("is-asama");
     sec.replaceChildren(...(v.yeniden_calistir || []).map((s) => {
-      const o = document.createElement("option"); o.value = s.restart_stage_id; o.textContent = s.ad; return o; }));
-    if (!sec.options.length) { hataGoster("İş #" + no + ": korunabilecek checkpoint yok; baştan çalıştırın."); return; }
+      const o = document.createElement("option"); o.value = s.restart_stage_id; o.textContent = cevir("asama", s.restart_stage_id, s.ad); return o; }));
+    if (!sec.options.length) { hataGoster(t("isler.checkpoint_yok_is", { no })); return; }
     sec.selectedIndex = sec.options.length - 1;
-    $("is-secenek-baslik").textContent = "İş #" + no + " · " + v.kaynak_adi;
+    yaz($("is-secenek-baslik"), "isler.baslik_kisa", { no, kaynak: v.kaynak_adi });
     $("is-yeniden").dataset.no = no;
     $("is-secenek").hidden = false;
   } catch (e) { hataGoster(e.message); }
@@ -314,25 +385,25 @@ function isSatiri(o, sorunlu) {
   const kutu = document.createElement("div");
   kutu.className = "is";
   const no = document.createElement("strong"); no.textContent = "#" + o.is;
-  const durum = document.createElement("span"); durum.className = "durum-" + o.durum; durum.textContent = o.durum_adi;
+  const durum = document.createElement("span"); durum.className = "durum-" + o.durum; durum.textContent = cevir("durum", o.durum, o.durum_adi);
   const ad = document.createElement("span");
-  ad.textContent = o.kaynak_adi + " · " + o.komut + (o.ebeveyn ? " (← #" + o.ebeveyn + ")" : "");
+  ad.textContent = o.kaynak_adi + " · " + cevir("komut", o.komut, o.komut) + (o.ebeveyn ? " (← #" + o.ebeveyn + ")" : "");
   const dugmeler = document.createElement("span"); dugmeler.className = "dugmeler";
   const sorunluMu = o.durum === "failed" || o.durum === "cancelled";
   const devamVar = !sorunlu || (o.devam_secenekleri || []).length > 0;
-  if (sorunluMu && o.komut === "dubla" && devamVar) dugmeler.append(dugme("Devam et", () => devamEt({ is: o.is })));
-  if ((sorunluMu || o.durum === "completed") && o.komut === "dubla") dugmeler.append(dugme("Aşamadan…", () => secenekAc(o.is)));
-  if (o.video) dugmeler.append(dugme("Videoyu aç", () => window.open(dosyaAdresi(o.video), "_blank", "noopener")));
-  if (o.klasor) dugmeler.append(dugme("Klasörü aç", () => api("/api/klasor_ac", { yol: o.klasor }).catch((e) => hataGoster(e.message))));
+  if (sorunluMu && o.komut === "dubla" && devamVar) dugmeler.append(dugme(t("isler.devam"), () => devamEt({ is: o.is })));
+  if ((sorunluMu || o.durum === "completed") && o.komut === "dubla") dugmeler.append(dugme(t("isler.asamadan_dugme"), () => secenekAc(o.is)));
+  if (o.video) dugmeler.append(dugme(t("dugme.videoyu_ac"), () => window.open(dosyaAdresi(o.video), "_blank", "noopener")));
+  if (o.klasor) dugmeler.append(dugme(t("isler.klasor"), () => api("/api/klasor_ac", { yol: o.klasor }).catch((e) => hataGoster(e.message))));
   if (o.durum === "queued" || o.durum === "deferred")
-    dugmeler.append(dugme("İptal", () => api("/api/is_iptal", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
+    dugmeler.append(dugme(t("isler.iptal"), () => api("/api/is_iptal", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
   if (!["queued", "deferred", "preparing", "processing"].includes(o.durum) && !o.arsiv)
-    dugmeler.append(dugme("Arşivle", () => api("/api/is_arsivle", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
+    dugmeler.append(dugme(t("isler.arsivle"), () => api("/api/is_arsivle", { is: o.is }).then(islerYukle).catch((e) => hataGoster(e.message))));
   const ayrinti = document.createElement("div"); ayrinti.className = "ayrinti";
   const parcalar = [];
-  if (o.son_asama_adi) parcalar.push("son aşama: " + o.son_asama_adi);
-  if (sorunluMu) parcalar.push("kesildiği yer: " + (o.basarisiz_asama_adi || "-") + (o.hata ? " · " + o.hata : ""));
-  if (sorunlu && !devamVar) parcalar.push("korunabilecek checkpoint yok");
+  if (o.son_asama_adi) parcalar.push(t("isler.son_asama", { ad: cevir("asama", o.son_asama, o.son_asama_adi) }));
+  if (sorunluMu) parcalar.push(t("isler.kesildigi_yer", { ad: cevir("asama", o.basarisiz_asama, o.basarisiz_asama_adi) || "-" }) + (o.hata ? " · " + o.hata : ""));
+  if (sorunlu && !devamVar) parcalar.push(t("isler.checkpoint_yok_kisa"));
   if (o.bitti || o.eklendi) parcalar.push((o.bitti || o.eklendi));
   ayrinti.textContent = parcalar.join(" · ");
   kutu.append(no, durum, ad, dugmeler, ayrinti);
@@ -343,14 +414,14 @@ async function islerYukle() {
   try {
     const [s, h] = await Promise.all([api("/api/sorunlu"), api("/api/isler" + ($("arsiv-goster").checked ? "?hepsi=1" : ""))]);
     const bos = (metin) => { const p = document.createElement("p"); p.className = "not"; p.textContent = metin; return p; };
-    $("sorunlu-liste").replaceChildren(...(s.isler.length ? s.isler.map((o) => isSatiri(o, true)) : [bos("Sorunlu iş yok.")]));
-    $("is-listesi").replaceChildren(...(h.isler.length ? h.isler.map((o) => isSatiri(o, false)) : [bos("Henüz iş yok.")]));
+    $("sorunlu-liste").replaceChildren(...(s.isler.length ? s.isler.map((o) => isSatiri(o, true)) : [bos(t("isler.sorunlu_yok"))]));
+    $("is-listesi").replaceChildren(...(h.isler.length ? h.isler.map((o) => isSatiri(o, false)) : [bos(t("isler.is_yok"))]));
   } catch (e) { hataGoster(e.message); }
 }
 $("isler-yenile").addEventListener("click", islerYukle);
 $("arsiv-goster").addEventListener("change", islerYukle);
 document.querySelector('.sekme[data-sekme="isler"]').addEventListener("click", islerYukle);
 
-api("/api/ayarlar").then((v) => { form = v.form; formCiz(); }).catch((e) => hataGoster(e.message));
-izle();
+// Açılış: önce dil (sözlük gelmezse sayfadaki Türkçe yedek kalır), sonra o dilde ayar formu.
+dilYukle(yerelDil()).catch(() => {}).then(() => { izle(); return formYukle(); }).catch((e) => hataGoster(e.message));
 

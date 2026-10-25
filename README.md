@@ -34,7 +34,7 @@ common errors: **[docs/installation.md](docs/installation.md)**. Linux and macOS
 
 ## Usage
 
-Desktop app: double-click `arayuz.cmd` (local web app: `web.cmd`, 127.0.0.1 only). The app's interface is in Turkish for now. From the command line:
+Desktop app: double-click `arayuz.cmd` (local web app: `web.cmd`, 127.0.0.1 only). The app's screens are in English and Turkish: pick one at the top right (on a computer in another language it opens in English). From the command line:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub

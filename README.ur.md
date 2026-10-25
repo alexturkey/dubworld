@@ -36,7 +36,7 @@ sha256 سے جانچا جاتا ہے۔ شروع کرنے کے لیے خالی ج
 
 ## استعمال کا طریقہ
 
-ڈیسک ٹاپ ایپ: `arayuz.cmd` پر ڈبل کلک (لوکل ویب ایپ: `web.cmd`، صرف 127.0.0.1 پر)۔ ایپ کا انٹرفیس فی الحال ترکی میں ہے۔ کمانڈ لائن سے:
+ڈیسک ٹاپ ایپ: `arayuz.cmd` پر ڈبل کلک (لوکل ویب ایپ: `web.cmd`، صرف 127.0.0.1 پر)۔ ایپ کا انٹرفیس انگریزی اور ترکی میں ہے: زبان اوپر دائیں کونے سے چنیں (کمپیوٹر کسی اور زبان میں ہو تو ایپ انگریزی میں کھلتی ہے)۔ کمانڈ لائن سے:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

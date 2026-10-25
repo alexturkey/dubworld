@@ -34,7 +34,7 @@ lỗi thường gặp (bằng tiếng Anh): **[docs/installation.md](docs/instal
 
 ## Cách sử dụng
 
-Ứng dụng máy tính: nhấp đúp `arayuz.cmd` (ứng dụng web cục bộ: `web.cmd`, chỉ trên 127.0.0.1). Giao diện ứng dụng hiện bằng tiếng Thổ Nhĩ Kỳ. Từ dòng lệnh:
+Ứng dụng máy tính: nhấp đúp `arayuz.cmd` (ứng dụng web cục bộ: `web.cmd`, chỉ trên 127.0.0.1). Giao diện ứng dụng có tiếng Anh và tiếng Thổ Nhĩ Kỳ: chọn ở góc trên bên phải (nếu máy tính dùng ngôn ngữ khác, ứng dụng mở bằng tiếng Anh). Từ dòng lệnh:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Câu hỏi, ý tưởng và kết quả của bạn: [diễn đàn thảo luận
 Mã nguồn: Apache-2.0 (LICENSE). Thành phần bên thứ ba và giấy phép: THIRD_PARTY.md. Sử dụng có trách nhiệm: ETHICS.md.
 Quyền riêng tư (thứ gì ở lại trên máy bạn, backend đám mây nhận được gì): PRIVACY.md. Báo cáo bảo mật: SECURITY.md. Thay đổi: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

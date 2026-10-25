@@ -34,7 +34,7 @@ kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macO
 
 ## Kullanım
 
-Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Uygulamanın arayüzü şimdilik Türkçedir. Komut satırından:
+Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Uygulamanın ekranları Türkçe ve İngilizce: sağ üstten seçin (bilgisayar başka bir dildeyse İngilizce açılır). Komut satırından:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Soru, fikir ve sonuçlar: [Discussions](https://github.com/alexturkey/dubworld/d
 Kod: Apache-2.0 (LICENSE). Üçüncü taraf bileşenler ve lisansları: THIRD_PARTY.md. Sorumlu kullanım: ETHICS.md.
 Gizlilik (ne yerelde kalır, bulut arka ucu ne alır): PRIVACY.md. Güvenlik bildirimi: SECURITY.md. Değişiklikler: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

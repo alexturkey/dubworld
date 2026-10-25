@@ -35,7 +35,7 @@ sha256. المساحة الحرة اللازمة للبدء: 22 GB مع ملف �
 
 ## الاستخدام
 
-تطبيق سطح المكتب: انقر نقراً مزدوجاً على `arayuz.cmd` (تطبيق الويب المحلي: `web.cmd`، على 127.0.0.1 فقط). واجهة التطبيق بالتركية حالياً، ويمكنك اختيار العربية لغةً للدبلجة (`--ayar genel.hedef_dil=ar`؛ تحتاج الترجمة إلى العربية إلى Codex أو Claude Code). من سطر الأوامر:
+تطبيق سطح المكتب: انقر نقراً مزدوجاً على `arayuz.cmd` (تطبيق الويب المحلي: `web.cmd`، على 127.0.0.1 فقط). واجهة التطبيق بالإنجليزية والتركية وتختار اللغة من أعلى اليمين (وتُفتح بالإنجليزية إذا كان الحاسوب بلغة أخرى)، ويمكنك اختيار العربية لغةً للدبلجة (`--ayar genel.hedef_dil=ar`؛ تحتاج الترجمة إلى العربية إلى Codex أو Claude Code). من سطر الأوامر:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -127,4 +127,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

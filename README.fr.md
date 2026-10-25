@@ -36,7 +36,7 @@ ne sont pas encore testés. Exemple : [visite de produit narrée en anglais, tur
 
 ## Utilisation
 
-Application de bureau : double-cliquez sur `arayuz.cmd` (application web locale : `web.cmd`, 127.0.0.1 uniquement). L'interface de l'application est en turc pour l'instant. En ligne de commande :
+Application de bureau : double-cliquez sur `arayuz.cmd` (application web locale : `web.cmd`, 127.0.0.1 uniquement). L'application est en anglais et en turc : choisissez en haut à droite (sur un ordinateur dans une autre langue, elle s'ouvre en anglais). En ligne de commande :
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -133,4 +133,4 @@ Confidentialité (ce qui reste en local, ce qu'un service cloud reçoit) : PRIVA
 > This translation may lag; English is authoritative. Cette traduction peut être en retard ; la version anglaise fait
 > foi. Source : README.md (marque de synchronisation ci-dessous). Traduction automatique (Claude) ; les PR de correction sont bienvenues.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->

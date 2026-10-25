@@ -34,7 +34,7 @@ częste błędy (po angielsku): **[docs/installation.md](docs/installation.md)**
 
 ## Jak używać
 
-Aplikacja okienkowa: dwuklik na `arayuz.cmd` (lokalna aplikacja webowa: `web.cmd`, tylko na 127.0.0.1). Interfejs aplikacji jest na razie po turecku. Z wiersza poleceń:
+Aplikacja okienkowa: dwuklik na `arayuz.cmd` (lokalna aplikacja webowa: `web.cmd`, tylko na 127.0.0.1). Interfejs aplikacji jest po angielsku i po turecku: język wybierzesz w prawym górnym rogu (gdy system jest w innym języku, aplikacja otworzy się po angielsku). Z wiersza poleceń:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -124,4 +124,4 @@ Pytania, pomysły i Twoje wyniki: [forum dyskusji](https://github.com/alexturkey
 Kod: Apache-2.0 (LICENSE). Składniki zewnętrzne i ich licencje: THIRD_PARTY.md. Odpowiedzialne używanie: ETHICS.md.
 Prywatność (co zostaje na Twoim komputerze, co dostaje backend w chmurze): PRIVACY.md. Zgłaszanie luk: SECURITY.md. Zmiany: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
+<!-- i18n-source: README.md sha256:bb424df69aff -->
