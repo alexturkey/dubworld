@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · العربية
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · العربية · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md)
 
 <div dir="rtl">
 
@@ -35,7 +35,7 @@ sha256. المساحة الحرة اللازمة للبدء: 22 GB مع ملف �
 
 ## الاستخدام
 
-تطبيق سطح المكتب: انقر نقراً مزدوجاً على `arayuz.cmd` (تطبيق الويب المحلي: `web.cmd`، على 127.0.0.1 فقط). واجهة التطبيق بالتركية حالياً، ويمكنك اختيار العربية لغةً للدبلجة (`--ayar genel.hedef_dil=ar`). من سطر الأوامر:
+تطبيق سطح المكتب: انقر نقراً مزدوجاً على `arayuz.cmd` (تطبيق الويب المحلي: `web.cmd`، على 127.0.0.1 فقط). واجهة التطبيق بالتركية حالياً، ويمكنك اختيار العربية لغةً للدبلجة (`--ayar genel.hedef_dil=ar`؛ تحتاج الترجمة إلى العربية إلى Codex أو Claude Code). من سطر الأوامر:
 
 ```powershell
 .venv\Scripts\dubla.exe talk.mp4                            # recommended flow, Turkish dub
@@ -127,4 +127,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:eeea12ca2c23 -->
+<!-- i18n-source: README.md sha256:c7531e7aa8a8 -->
