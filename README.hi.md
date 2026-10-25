@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · हिन्दी · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · हिन्दी · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md)
 
 > DubWorld आपके वीडियो को आपके अपने कंप्यूटर पर, किसी ऑनलाइन सेवा पर अपलोड किए बिना, दूसरी भाषा में डब करता है: बोली को हर शब्द के समय के साथ टेक्स्ट में बदलता है, उसका अनुवाद करता है, फिर एक कृत्रिम (AI) आवाज़ से बुलवाता है जो मूल वीडियो के साथ तालमेल में रहती है (बोली ज़्यादा से ज़्यादा 1.25 गुना तेज़ होती है, बाकी अंतर वीडियो की रफ़्तार हल्का-सा बदलकर पूरा होता है), सबटाइटल जोड़ता है और एक नया वीडियो तैयार करता है। डिफ़ॉल्ट भाषा तुर्की है; हिंदी और दूसरी भाषाएँ चुने गए आवाज़ इंजन पर निर्भर करती हैं ([docs/diller.md](docs/diller.md))।
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 कोड: Apache-2.0 (LICENSE)। बाहरी हिस्से और उनके लाइसेंस: THIRD_PARTY.md। ज़िम्मेदारी से इस्तेमाल: ETHICS.md।
 निजता (क्या आपके कंप्यूटर पर रहता है, क्लाउड बैकएंड को क्या मिलता है): PRIVACY.md। सुरक्षा रिपोर्ट: SECURITY.md। बदलाव: CHANGELOG.md।
 
-<!-- i18n-source: README.md sha256:2e512198d98b -->
+<!-- i18n-source: README.md sha256:9622edb95c84 -->
