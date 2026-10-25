@@ -79,16 +79,7 @@ def align_candidate_batch(job: dict) -> dict:
         custom_align_model = ""
         if alignment_input:
             custom_align_model = get_custom_align_model_name(language)
-            if custom_align_model:
-                model_a, metadata = whisperx.load_align_model(
-                    language_code=language,
-                    device=device,
-                    model_name=custom_align_model,
-                    model_dir=str(Path(cache_dir) / "hub"),
-                )
-            else:
-                _ctc_lisans_denetle(language)
-                model_a, metadata = whisperx.load_align_model(language_code=language, device=device)
+            model_a, metadata = _hizalama_modelini_yukle(whisperx, language, device, cache_dir)
             apply_wildcard_token_index_patch(whisperx, torch)
             aligned = whisperx.align(
                 alignment_input,
@@ -139,14 +130,14 @@ def align_candidate_batch(job: dict) -> dict:
         }
 
 
-def _ctc_lisans_denetle(dil: str) -> None:
-    """Ticari olmayan WhisperX varsayılan CTC modeli (fr/de/es/it) lisans onayı olmadan yüklenmez (kapalı kalır)."""
+def _hizalama_modelini_yukle(whisperx, dil: str, device: str, cache_dir):
+    """CTC hizalama modeli tek kapıdan: lisans onayı (fr/de/es/it) ve sabit sürümlü yerel klasör (ctc_model_durumu)."""
     kok = str(Path(__file__).resolve().parents[3])
     if kok not in sys.path:
         sys.path.insert(0, kok)
-    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import ctc_lisans_denetle
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import hizalama_modelini_yukle
 
-    ctc_lisans_denetle(dil)
+    return hizalama_modelini_yukle(whisperx, dil, device, cache_dir)
 
 
 def main() -> int:

@@ -99,25 +99,19 @@ def aligned_payload(result: dict) -> tuple[list[dict], list[dict], list[list[flo
     return words, segments, speech_spans
 
 
-def _ctc_lisans_denetle(dil: str) -> None:
-    """Ticari olmayan WhisperX varsayılan CTC modeli (fr/de/es/it) lisans onayı olmadan yüklenmez (kapalı kalır)."""
+def _hizalama_modelini_yukle(whisperx, dil: str, device: str, cache_dir):
+    """CTC hizalama modeli tek kapıdan: lisans onayı (fr/de/es/it) ve sabit sürümlü yerel klasör (ctc_model_durumu)."""
     kok = str(Path(__file__).resolve().parents[3])
     if kok not in sys.path:
         sys.path.insert(0, kok)
-    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import ctc_lisans_denetle
+    from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import hizalama_modelini_yukle
 
-    ctc_lisans_denetle(dil)
+    return hizalama_modelini_yukle(whisperx, dil, device, cache_dir)
 
 
 def load_alignment_model(whisperx, language: str, device: str, cache_dir: str):
     custom_model = ALIGN_MODEL_BY_LANGUAGE.get(language, "")
-    if custom_model:
-        model, metadata = whisperx.load_align_model(
-            language_code=language, device=device, model_name=custom_model, model_dir=str(Path(cache_dir) / "hub")
-        )
-    else:
-        _ctc_lisans_denetle(language)
-        model, metadata = whisperx.load_align_model(language_code=language, device=device)
+    model, metadata = _hizalama_modelini_yukle(whisperx, language, device, cache_dir)
     return model, metadata, custom_model
 
 

@@ -66,7 +66,8 @@ def _sahte_onbellek(tmp_path: Path, en: bool, tr: bool) -> Path:
         yol.parent.mkdir(parents=True)
         yol.write_bytes(b"x")
     if tr:
-        snap = hf / "hub" / "models--mpoyraz--wav2vec2-xls-r-300m-cv7-turkish" / "snapshots" / "abc"
+        ad = md.SABIT_CTC_MODELLERI["tr"][1]
+        snap = hf / "hub" / ("models--" + ad.replace("/", "--")) / "snapshots" / md.HF_CTC_SURUMLERI[ad]
         snap.mkdir(parents=True)
         (snap / "pytorch_model.bin").write_bytes(b"x")
     return hf

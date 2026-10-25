@@ -71,7 +71,8 @@ def test_istege_bagli_dil_eksikse_adimi_soyler(tmp_path, monkeypatch):
     with pytest.raises(md.CtcModeliEksikHatasi) as hata:
         md.ctc_modeli_gerekli("ja", hf)
     assert "hizalama-diller" in str(hata.value)
-    snap = hf / "hub" / ("models--" + md.ISTEGE_BAGLI_CTC_MODELLERI["zh"][1].replace("/", "--")) / "snapshots" / "c"
+    ad = md.ISTEGE_BAGLI_CTC_MODELLERI["zh"][1]
+    snap = hf / "hub" / ("models--" + ad.replace("/", "--")) / "snapshots" / md.HF_CTC_SURUMLERI[ad]
     snap.mkdir(parents=True)
     (snap / "pytorch_model.bin").write_bytes(b"x")
     assert md.ctc_modeli_gerekli("zh-CN", hf)["kurulu"] is True

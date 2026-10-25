@@ -105,17 +105,13 @@ def test_ctc_iscisi_onaysiz_modeli_yuklemez():
     assert sahte.cagrilar == [{"language_code": "en", "device": "cpu"}]
 
 
-def test_her_varsayilan_model_yuklemesi_kapidan_gecer():
-    """Statik: model_name'siz her whisperx load_align_model çağrısından hemen önce _ctc_lisans_denetle var."""
-    bulunan = 0
-    for yol in SRC.rglob("*.py"):
-        satirlar = yol.read_text(encoding="utf-8").splitlines()
-        for i, satir in enumerate(satirlar):
-            if not re.search(r"\.load_align_model\(", satir):
-                continue
-            cagri = " ".join(satirlar[i:i + 6])
-            if "model_name=" in cagri.split(")")[0]:
-                continue
-            bulunan += 1
-            assert "_ctc_lisans_denetle(" in satirlar[i - 1], f"{yol.relative_to(SRC)}:{i + 1}"
-    assert bulunan >= 5
+def test_her_model_yuklemesi_tek_kapidan_gecer():
+    """Statik: whisperx load_align_model yalnız ctc_model_durumu.hizalama_modelini_yukle içinde çağrılır (lisans +
+    sabit sürüm); her hizalama işçisi o kapıyı kullanır."""
+    kapi = SRC / "bolum_00_omurga" / "runtime" / "ctc_model_durumu.py"
+    disarida = [f"{yol.relative_to(SRC)}:{i + 1}" for yol in SRC.rglob("*.py") if yol != kapi
+                for i, satir in enumerate(yol.read_text(encoding="utf-8").splitlines())
+                if re.search(r"\.load_align_model\(", satir)]
+    assert disarida == []
+    kullanan = [yol for yol in SRC.rglob("*.py") if "_hizalama_modelini_yukle(whisperx" in yol.read_text(encoding="utf-8")]
+    assert len(kullanan) >= 4
