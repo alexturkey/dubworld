@@ -26,7 +26,7 @@ Windows 10/11 x64；事先无需安装 Python、CUDA 或 ffmpeg。双击 **`kur.
 22 GB，仅 CPU 14 GB；安装后实测占用约 14.6 GB（GPU，硬链接文件只计一次；文件管理器显示约 22 GB）。检查：`.venv\Scripts\dubla.exe kontrol`。
 
 系统要求、步骤顺序、Python 环境图、可选引擎、离线使用、更新、卸载和常见错误（英文）：
-**[docs/installation.md](docs/installation.md)**。Linux 和 macOS 尚未测试。社区反馈（我们未验证）：有团队仅使用语音合成阶段，在 Apple M4 Mac 上仅用 CPU 为产品导览配音（英语、土耳其语、阿拉伯语），每种语言约一分钟。
+**[docs/installation.md](docs/installation.md)**。Linux 和 macOS 尚未测试。[社区反馈](https://x.com/MihenkAIdotcom/status/2114345171571925363)（我们未验证）：有团队仅使用语音合成阶段，在 Apple M4 Mac 上仅用 CPU 为产品导览配音（英语、土耳其语、阿拉伯语），每种语言约一分钟。
 
 ## 用法
 

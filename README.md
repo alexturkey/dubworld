@@ -30,7 +30,7 @@ Everything goes inside the repository folder (`.venv`, `runtime_assets/`); every
 sha256-verified. Free disk to start: 22 GB with the GPU profile, 14 GB CPU only; measured use after install ≈ 14.6 GB (GPU, hard-linked files counted once; a file explorer shows ≈ 22 GB). Check with `.venv\Scripts\dubla.exe kontrol`.
 
 Requirements, step order, the map of Python environments, optional engines, offline use, update, uninstall and
-common errors: **[docs/installation.md](docs/installation.md)**. Linux and macOS are not tested yet. Community report (not verified by us): a team used the voice stage alone on an Apple M4 Mac, CPU only, to narrate a product tour in English, Turkish and Arabic, about a minute per language.
+common errors: **[docs/installation.md](docs/installation.md)**. Linux and macOS are not tested yet. [Community report](https://x.com/MihenkAIdotcom/status/2114345171571925363) (not verified by us): a team used the voice stage alone on an Apple M4 Mac, CPU only, to narrate a product tour in English, Turkish and Arabic, about a minute per language.
 
 ## Usage
 

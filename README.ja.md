@@ -28,7 +28,7 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 開始に必要な空きディスク：GPU プロファイルで 22 GB、CPU のみで 14 GB。インストール後の実測使用量は約 14.6 GB（GPU、ハードリンクのファイルは一度だけ数える。エクスプローラーでは約 22 GB と表示）。確認：`.venv\Scripts\dubla.exe kontrol`。
 
 要件、手順の順序、Python 環境の一覧、オプションのエンジン、オフライン利用、更新、アンインストール、よくあるエラー（英語）：
-**[docs/installation.md](docs/installation.md)**。Linux と macOS はまだテストされていません。コミュニティからの報告（当方では未確認）：あるチームが音声合成ステージのみを Apple M4 Mac の CPU だけで使い、製品ツアーを英語・トルコ語・アラビア語でナレーションしました（1 言語あたり約 1 分）。
+**[docs/installation.md](docs/installation.md)**。Linux と macOS はまだテストされていません。[コミュニティからの報告](https://x.com/MihenkAIdotcom/status/2114345171571925363)（当方では未確認）：あるチームが音声合成ステージのみを Apple M4 Mac の CPU だけで使い、製品ツアーを英語・トルコ語・アラビア語でナレーションしました（1 言語あたり約 1 分）。
 
 ## 使い方
 

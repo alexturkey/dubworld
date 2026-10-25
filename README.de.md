@@ -32,7 +32,7 @@ geprüft. Freier Speicherplatz zum Start: 22 GB mit GPU-Profil, 14 GB nur CPU; g
 
 Voraussetzungen, Reihenfolge der Schritte, Übersicht der Python-Umgebungen, optionale Engines, Offline-Nutzung,
 Aktualisierung, Deinstallation und häufige Fehler (auf Englisch): **[docs/installation.md](docs/installation.md)**.
-Linux und macOS sind noch nicht getestet. Bericht aus der Community (von uns nicht überprüft): Ein Team hat nur die Sprachausgabe-Stufe auf einem Apple M4 Mac, nur mit CPU, genutzt, um eine Produkttour auf Englisch, Türkisch und Arabisch zu vertonen, etwa eine Minute pro Sprache.
+Linux und macOS sind noch nicht getestet. [Bericht aus der Community](https://x.com/MihenkAIdotcom/status/2114345171571925363) (von uns nicht überprüft): Ein Team hat nur die Sprachausgabe-Stufe auf einem Apple M4 Mac, nur mit CPU, genutzt, um eine Produkttour auf Englisch, Türkisch und Arabisch zu vertonen, etwa eine Minute pro Sprache.
 
 ## Verwendung
 
