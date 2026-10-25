@@ -110,6 +110,11 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
   [THIRD_PARTY.md](THIRD_PARTY.md) の **Commercial?** 列を確認してください。
   fr / de / es / it の元音声用の単語タイミングモデル（CC BY-NC 4.0）も非商用で、初回使用時に同意を求めます。
 
+## ヘルプとサポート
+
+質問・アイデア・結果: [Discussions](https://github.com/alexturkey/dubworld/discussions)。インストールの問題: [インストール issue](https://github.com/alexturkey/dubworld/issues/new?template=kurulum-sorunu.yml)、バグ: [バグ報告](https://github.com/alexturkey/dubworld/issues/new?template=hata-raporu.yml)
+（OS、GPU、コマンドと最後の出力行を添えてください）。セキュリティの問題は公開 issue ではなく SECURITY.md へ。
+
 ## ライセンスとクレジット
 
 コード：Apache-2.0（LICENSE）。サードパーティーのコンポーネントとライセンス：THIRD_PARTY.md。責任ある利用：ETHICS.md。
@@ -120,4 +125,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:f2fa696c207c -->
+<!-- i18n-source: README.md sha256:6829b755ca26 -->
