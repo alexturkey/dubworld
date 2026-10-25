@@ -101,6 +101,7 @@ SEMA: dict[str, Any] = {
     "genel.onbellek_klasoru": str,
     "genel.gunluk_seviyesi": ["DEBUG", "INFO", "WARNING", "ERROR"],
     "genel.arayuz_dili": ["auto", *arayuz_dili.mevcut_diller()],  # yeni dil = arayuz_dilleri/<dil>.json
+    "genel.gozden_gecir": bool,
     "transkripsiyon.motor": STT_MOTORLARI,
     "transkripsiyon.model": str,
     "transkripsiyon.hesap_tipi": ["auto", "float16", "int8", "int8_float16", "int8_float32", "float32"],
@@ -234,6 +235,13 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
     dublaj = ayar["genel.is_turu"] == "dublaj"
 
     # --- dublaj kipi ---------------------------------------------------------------------------------------
+    if ayar.get("genel.gozden_gecir"):
+        if not dublaj:
+            uyari("genel.gozden_gecir yalnız dublaj işinde durur; transkript işinde yok sayılır", "genel.gozden_gecir",
+                  "genel.is_turu")
+        elif kip == "full_text":
+            hata("genel.gozden_gecir satır satır çalışır ve yalnız segment_sync kipinde vardır; full_text çevirisi tek "
+                 "metindir", "genel.gozden_gecir", "genel.dublaj_kipi")
     if kip == "full_text" and dublaj:
         if tts not in TAM_METIN_TTS:
             hata("full_text kipi yalnız Supertonic ya da EMA Lightning ile seslendirir; ses.motor=supertonic ya da "
@@ -857,6 +865,7 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
         rvc_index_yolu=str(ayar["ses.rvc_index"] or "").strip(),
         rvc_perde=int(ayar["ses.rvc_perde"]),
         rvc_riza_onayi=bool(ayar["ses.rvc_riza_onayi"]),
+        gozden_gecir=bool(ayar["genel.gozden_gecir"]) and dublaj and dublaj_kipi == "segment_sync",
     )
     cozum = Cozum(cihaz, hesap_tipi, stt, ceviri["translator_engine"], ceviri["llm_backend"], ceviri["kaynak"],
                   gerekceler)

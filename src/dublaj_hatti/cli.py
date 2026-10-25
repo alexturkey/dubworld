@@ -12,7 +12,8 @@
 Her aşama tek başına (asama_komutlari.py; Python'dan aynısı: dublaj_hatti.api; dosya biçimleri: docs/mimari.md):
     dubla indir URL · ses-cikar · ayir · yaziya-dok · hizala · cevir · seslendir · altyazi · birlestir
 
-Çıkış kodları: 0 başarı, 1 iş hatası, 2 kullanım/ayar hatası, 75 kaynak (GPU) meşgul, 130 durduruldu.
+Çıkış kodları: 0 başarı, 1 iş hatası, 2 kullanım/ayar hatası, 75 kaynak (GPU) meşgul, 76 gözden geçirme bekliyor,
+130 durduruldu.
 `--olaylar-json`: her aşama olayı stdout'a tek satır JSON yazılır (arayüzler bunu okur); günlük stderr'e gider.
 """
 
@@ -375,7 +376,10 @@ def main(argv: list[str] | None = None) -> int:
                               ifadeler=list(args.ayar), transkript_bicimi=bicim)
     logger.info("iş #%s (iş deposu: %s)", job_id, depo.db_yolu)
     kod = isi_calistir(depo, job_id, yaz)
-    if kod == 130:
+    if kod == 76:
+        print(f"iş #{job_id} çeviriden sonra gözden geçirmeni bekliyor (hata değil); metni web arayüzünde düzelt, "
+              f"sonra: dubla devam {job_id}", file=sys.stderr)
+    elif kod == 130:
         print(f"durduruldu; sürdürmek için: dubla devam {job_id}", file=sys.stderr)
     elif kod == 1:
         print(f"iş #{job_id} başarısız; ayrıntı: dubla sorunlu · sürdürmek için: dubla devam {job_id}", file=sys.stderr)

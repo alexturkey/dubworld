@@ -28,6 +28,7 @@ in WAL mode; the command line, the desktop and the web interface can read and wr
 | `completed` | finished |
 | `failed` | failed or was interrupted; can be resumed |
 | `cancelled` | stopped by the user, or a stale job was cancelled; can be resumed |
+| `inceleme_bekliyor` | `genel.gozden_gecir` is on: the job stopped right after the translation, before the voice is made. Not an error: fix the lines (`GET`/`POST /api/duzenle`), then continue with `POST /api/devam` (the voicing starts; translation is not repeated) |
 
 **Archive** is a separate flag: an archived job is hidden from the list; its file and folder are not deleted and it
 can be restored.
@@ -98,6 +99,9 @@ Endpoints for calling from your own tool (the same session cookie and the `X-Dub
 | `POST /api/devam` `{"is": 7, "asama": "ceviri", "yeni_is": true, "ayarlar": {"altyazi.mod": "word"}}` | resume / re-run |
 | `POST /api/is_arsivle` `{"is": 7}` | archive |
 | `POST /api/is_iptal` `{"is": 7}` | cancel |
+| `GET /api/duzenle?is=7` | lines of a job waiting for review: `{no, bas, son, orijinal, ceviri, sure_sn}` |
+| `POST /api/duzenle` `{"is": 7, "satirlar": [{"no": 3, "ceviri": "..."}]}` | save line edits (only while `inceleme_bekliyor`) |
+| `POST /api/cevir_satir` `{"is": 7, "no": 3, "metin": "..."}` | translate one line with the job's translator (does not save) |
 
 An invalid setting returns `400`; a job that is not found or cannot be resumed returns `409`.
 
@@ -158,6 +162,7 @@ komut satırı, masaüstü ve web aynı anda okuyup yazabilir.
 | `completed` | bitti |
 | `failed` | hata aldı ya da yarıda kesildi; devam ettirilebilir |
 | `cancelled` | kullanıcı durdurdu ya da bayat iş iptal edildi; devam ettirilebilir |
+| `inceleme_bekliyor` | `genel.gozden_gecir` açık: iş çeviriden hemen sonra, ses üretilmeden durdu. Hata değil: satırları düzeltin (`GET`/`POST /api/duzenle`), sonra `POST /api/devam` ile sürdürün (seslendirme başlar; çeviri tekrarlanmaz) |
 
 **Arşiv** ayrı bir işarettir: arşivlenen iş listeden gizlenir; dosyası ve klasörü silinmez, geri alınabilir.
 
@@ -225,6 +230,9 @@ Kendi aracınızdan çağırmak için uç noktalar (aynı oturum çerezi ve `X-D
 | `POST /api/devam` `{"is": 7, "asama": "ceviri", "yeni_is": true, "ayarlar": {"altyazi.mod": "word"}}` | devam / yeniden çalıştırma |
 | `POST /api/is_arsivle` `{"is": 7}` | arşivle |
 | `POST /api/is_iptal` `{"is": 7}` | iptal |
+| `GET /api/duzenle?is=7` | gözden geçirme bekleyen işin satırları: `{no, bas, son, orijinal, ceviri, sure_sn}` |
+| `POST /api/duzenle` `{"is": 7, "satirlar": [{"no": 3, "ceviri": "..."}]}` | satır düzeltmelerini kaydet (yalnız `inceleme_bekliyor` iken) |
+| `POST /api/cevir_satir` `{"is": 7, "no": 3, "metin": "..."}` | tek satırı işin çevirmeniyle çevir (kaydetmez) |
 
 Geçersiz ayar `400`, bulunamayan ya da devam edilemeyen iş `409` döner.
 

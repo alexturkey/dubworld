@@ -36,11 +36,13 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
 from dublaj_hatti import __version__, arayuz_dili
+from dublaj_hatti.is_yonetimi import inceleme
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, varsayilan_depo_yolu
 from dublaj_hatti.is_yurutucu import IsYurutucu, arayuz_ayari_denetle, ayar_formu, cikti_klasoru_ac
 from dublaj_hatti.yapilandirma import SEMA, AyarHatasi, ayarlari_yukle
 
 JSON_SINIRI = 64 * 1024
+DUZENLE_JSON_SINIRI = 1024 * 1024  # satır düzeltmeleri (en çok 2000 karakterlik çok satır) için
 VIDEO_UZANTILARI = {".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"}
 STATIK = Path(__file__).with_name("web_statik")
 CEREZ = "dublaj_oturum"
@@ -60,6 +62,12 @@ def _icinde_mi(yol: Path, kok: Path) -> bool:
         return True
     except ValueError:
         return False
+
+
+def _tam_sayi(deger: Any) -> int:
+    if isinstance(deger, bool) or not isinstance(deger, (int, str)):
+        raise ValueError("is sayı olmalı")
+    return int(deger)
 
 
 def arayuz_dili_sec(secim: str, tarayici: str, ayar: str | None) -> str:
@@ -148,11 +156,11 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
         return koken is None or koken.lower() in {f"http://127.0.0.1:{self.uygulama.port}",
                                                    f"http://localhost:{self.uygulama.port}"}
 
-    def _json_govde(self) -> dict[str, Any]:
+    def _json_govde(self, sinir: int = JSON_SINIRI) -> dict[str, Any]:
         if not (self.headers.get("Content-Type") or "").lower().startswith("application/json"):
             raise ValueError("Content-Type application/json olmalı")
         uzunluk = int(self.headers.get("Content-Length") or 0)
-        if uzunluk > JSON_SINIRI:
+        if uzunluk > sinir:
             raise ValueError("istek çok büyük")
         veri = json.loads(self.rfile.read(uzunluk) or b"{}")
         if not isinstance(veri, dict):
@@ -232,6 +240,14 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 self._json(HTTPStatus.OK, self.uygulama.yurutucu.secenekler(no))
             except (ValueError, RuntimeError) as hata:
                 self._json(HTTPStatus.NOT_FOUND, {"hata": str(hata)})
+        elif adres.path == "/api/duzenle":
+            try:
+                no = int(parse_qs(adres.query).get("is", [""])[0])
+                self._json(HTTPStatus.OK, inceleme.satirlari_oku(self.uygulama.yurutucu.depo, no))
+            except ValueError:
+                self._json(HTTPStatus.BAD_REQUEST, {"hata": "is sayı olmalı", "anahtar": "is_gecersiz"})
+            except inceleme.InceleHatasi as hata:
+                self._json(hata.kod, {"hata": str(hata), "anahtar": hata.anahtar})
         elif adres.path == "/dosya":
             self._dosya_sun(unquote(parse_qs(adres.query).get("yol", [""])[0]))
         else:
@@ -312,6 +328,14 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 if not tamam:
                     raise RuntimeError("yapılamadı: iş yok ya da etkin")
                 self._json(HTTPStatus.OK, {"tamam": True})
+            elif yol == "/api/duzenle":
+                veri = self._json_govde(DUZENLE_JSON_SINIRI)
+                self._json(HTTPStatus.OK, inceleme.satirlari_kaydet(
+                    self.uygulama.yurutucu.depo, _tam_sayi(veri.get("is")), veri.get("satirlar")))
+            elif yol == "/api/cevir_satir":
+                veri = self._json_govde()
+                self._json(HTTPStatus.OK, inceleme.satiri_cevir(
+                    self.uygulama.yurutucu.depo, _tam_sayi(veri.get("is")), veri.get("no"), veri.get("metin")))
             elif yol == "/api/klasor_ac":
                 veri = self._json_govde()
                 hedef = Path(str(veri.get("yol") or cikti_koku()))
@@ -321,6 +345,8 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 self._json(HTTPStatus.OK, {"tamam": True})
             else:
                 self._json(HTTPStatus.NOT_FOUND, {"hata": "yok"})
+        except inceleme.InceleHatasi as hata:
+            self._json(hata.kod, {"hata": str(hata), "anahtar": hata.anahtar})
         except (ValueError, AyarHatasi, json.JSONDecodeError) as hata:
             self.close_connection = True  # okunmamış gövde kalmış olabilir
             self._json(HTTPStatus.BAD_REQUEST, {"hata": str(hata)})

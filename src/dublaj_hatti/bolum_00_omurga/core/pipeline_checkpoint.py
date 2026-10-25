@@ -45,6 +45,17 @@ class PipelineCheckpointLockedError(PipelineCheckpointError):
     pass
 
 
+class GozdenGecirmeBekleniyor(Exception):  # noqa: N818 - hata değil, temiz durma işareti
+    """Hata DEĞİL: aşama bitti ve checkpoint'i yazıldı; `genel.gozden_gecir` gereği hat burada temiz durur.
+
+    İş "inceleme_bekliyor" olur (is_yonetimi); kullanıcı metni düzeltip aynı işi sonraki aşamadan sürdürür."""
+
+    def __init__(self, stage_id: str, result_path: str = "") -> None:
+        super().__init__(f"{stage_id} bitti; gözden geçirme bekleniyor")
+        self.stage_id = stage_id
+        self.result_path = result_path
+
+
 def canonical_json_hash(value: Any) -> str:
     encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
@@ -584,6 +595,56 @@ def _validate_artifact_record(run_dir: Path, record: dict[str, Any]) -> bool:
 
 def _process_is_alive(pid: int) -> bool:
     return process_is_alive(pid)
+
+
+def ciktiyi_guncelle(run_dir: str | Path, stage_id: str, artifact_path: str | Path, icerik: bytes) -> None:
+    """Tamamlanmış bir aşamanın çıktısını bilerek (kullanıcı düzeltmesi) değiştirir ve kayıtlı özetini yeniler.
+
+    Doğrulamayı gevşetmez: `can_restore` aynı sıkılıkla çalışır, yalnız kayıtlı özet yeni dosyaya göre yazılır.
+    Aşamanın girdi özeti (`input_hash`) ve diğer aşamalar değişmez. Yalnız `artifact_path` aşamanın kayıtlı
+    çıktısıysa, aşama tamamlanmışsa ve iş çalışmıyorsa (kilit tutan canlı süreç yok) yapılır. Dosya geçici
+    dosya + `os.replace` ile yazılır; durum dosyası da atomik kaydedilir.
+    """
+    kok = Path(run_dir).resolve()
+    hedef = Path(artifact_path)
+    hedef = hedef.resolve() if hedef.is_absolute() else (kok / hedef).resolve()
+    try:
+        goreli = hedef.relative_to(kok).as_posix()
+    except ValueError as exc:
+        raise PipelineCheckpointError("Checkpoint artefakti run_dir disinda olamaz") from exc
+    kilit = kok / ".pipeline_execution.lock"
+    if kilit.exists():
+        try:
+            pid = int(_read_json(kilit).get("pid") or 0)
+        except PipelineCheckpointError:
+            pid = 0
+        if pid and _process_is_alive(pid):
+            raise PipelineCheckpointLockedError(f"Pipeline calisiyor (pid={pid}); cikti simdi degistirilemez")
+    durum_yolu = kok / "pipeline_state.json"
+    durum = _read_json(durum_yolu)
+    asama = (durum.get("stages") or {}).get(stage_id)
+    if not isinstance(asama, dict) or asama.get("status") != "completed":
+        raise PipelineCheckpointError(f"Tamamlanmis asama bulunamadi: {stage_id}")
+    kayit = next((k for k in asama.get("artifacts", []) if k.get("path") == goreli), None)
+    if kayit is None:
+        raise PipelineCheckpointError(f"{goreli} {stage_id} asamasinin kayitli ciktisi degil")
+    gecici = hedef.with_name(f".{hedef.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        with open(gecici, "wb") as akis:
+            akis.write(icerik)
+            akis.flush()
+            os.fsync(akis.fileno())
+        yeni = _file_digest(gecici)  # os.replace değiştirme zamanını korur: kayıtlı mtime yerleşmiş dosyayla eşleşir
+        yeni["path"] = goreli
+        os.replace(gecici, hedef)
+    finally:
+        if gecici.exists():
+            gecici.unlink()
+    kayit.clear()
+    kayit.update(yeni)
+    asama["edited_at"] = _utc_timestamp()
+    durum["updated_at"] = _utc_timestamp()
+    _atomic_write_json(durum_yolu, durum)
 
 
 class PipelineCheckpointStore:

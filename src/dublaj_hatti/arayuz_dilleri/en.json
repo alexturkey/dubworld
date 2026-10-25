@@ -87,6 +87,7 @@
   "ilerleme.bitti": "Done",
   "ilerleme.hata": "Failed",
   "ilerleme.durduruldu": "Stopped",
+  "ilerleme.inceleme_bekliyor": "Waiting for your review",
   "ilerleme.yuzde": "{yuzde}%",
   "ilerleme.is_no": "job #{no}",
   "ilerleme.ne_oluyor": "What's happening",
@@ -126,6 +127,7 @@
   "anlati.bitti_transkript": "All done! Your text file is ready 🎉",
   "anlati.hata": "Something went wrong 😕 The details are in the technical log.",
   "anlati.durduruldu": "Stopped. You can carry on from here later.",
+  "anlati.inceleme_bekliyor": "Translation is ready. Check the lines, then continue with the voicing.",
   "dugme.durdur": "Stop",
   "dugme.videoyu_ac": "Play video",
   "dugme.cikti_klasoru": "Open output folder",
@@ -183,6 +185,7 @@
   "durum.completed": "done",
   "durum.failed": "failed",
   "durum.cancelled": "cancelled / stopped",
+  "durum.inceleme_bekliyor": "waiting for your review",
 
   "asama.video_indirme_veya_kopyalama": "Source video",
   "asama.kaynak_ses_cikarma": "Taking out the audio",
@@ -247,6 +250,7 @@
   "ayar.genel.cikti_klasoru": "Output folder. If empty: the \"cikti/\" folder in the repository.",
   "ayar.genel.onbellek_klasoru": "Model cache folder. If empty: \"runtime_assets/model_cache\".",
   "ayar.genel.gunluk_seviyesi": "How much the log shows: \"INFO\" | \"DEBUG\" | \"WARNING\"",
+  "ayar.genel.gozden_gecir": "Review before voicing: if on, the job stops right after the translation, before the voice is made (state \"inceleme_bekliyor\", not an error). Fix the lines in the web screen, then continue with the voicing. Only in segment_sync mode.",
 
   "ayar.transkripsiyon.motor": "Engine. \"auto\" = CrisperWhisper Turbo CT2 if it is installed (best Turkish/English word timing, non-commercial license), otherwise faster-whisper. Choices: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2, crisperwhisper2_medium, moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align, speechmatics (cloud, your own key), elevenlabs_scribe_v2 (cloud, your own key), youtube_translate (only with a YouTube link: the text comes from the video's subtitles + CTC; pip install .[youtube]). English only: moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align. NVIDIA GPU only: crisperwhisper_turbo_ct2, crisperwhisper2_medium. Hardware table: docs/donanim.md",
   "ayar.transkripsiyon.model": "Model for faster-whisper / whisperx: large-v3-turbo | large-v3 | medium | small (many languages) | distil-large-v3 | distil-large-v3.5 (English only). Other engines have a fixed model and ignore this.",

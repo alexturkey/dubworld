@@ -4,8 +4,9 @@ Kaynak projede bu mantık Telegram botunun içindeydi; burada arayüzden bağım
 arayüz ve web arayüzü aynı depoyu kullanır (aynı anda birden çok süreç: WAL kipi + `BEGIN IMMEDIATE`).
 
 Durumlar: queued (kuyrukta), deferred (ertelendi), preparing (devam kopyası hazırlanıyor), processing
-(işleniyor), completed (bitti), failed (hata), cancelled (iptal / yarıda kesildi). `archived=1` iş listeden
-gizlenir; iş klasörü ve çıktılar silinmez.
+(işleniyor), completed (bitti), failed (hata), cancelled (iptal / yarıda kesildi), inceleme_bekliyor
+(`genel.gozden_gecir`: çeviri bitti, seslendirme başlamadı; hata değil, kullanıcı metni düzeltip sürdürür).
+`archived=1` iş listeden gizlenir; iş klasörü ve çıktılar silinmez.
 
 Devam iki biçimdedir:
   * yerinde devam: hata almış/kesilmiş iş aynı klasörde, aynı iş numarasıyla kaldığı aşamadan sürer;
@@ -43,10 +44,11 @@ DEPO_ENV = "DUBLAJ_IS_DEPOSU"
 DEPO_DOSYA_ADI = "isler.sqlite3"
 AKTIF = ("queued", "deferred", "preparing", "processing")
 SORUNLU = ("failed", "cancelled")
-DEVAM_EDILEBILIR = ("failed", "cancelled", "completed")
+INCELEME = "inceleme_bekliyor"
+DEVAM_EDILEBILIR = ("failed", "cancelled", "completed", INCELEME)
 DURUM_ADLARI = {
     "queued": "kuyrukta", "deferred": "ertelendi", "preparing": "hazırlanıyor", "processing": "işleniyor",
-    "completed": "bitti", "failed": "hata", "cancelled": "iptal / kesildi",
+    "completed": "bitti", "failed": "hata", "cancelled": "iptal / kesildi", INCELEME: "gözden geçirme bekliyor",
 }
 
 _SEMA = """
@@ -274,6 +276,23 @@ class IsDeposu:
         self._soyagaci_esitle(job_id)
         return degisti
 
+    def inceleme_bekle(self, job_id: int) -> bool:
+        """Çeviri bitti, hat seslendirmeden önce temiz durdu: iş hata değil, `inceleme_bekliyor` olur."""
+        with self._baglan(yazma=True) as db:
+            imlec = db.execute(
+                """UPDATE jobs SET status=?, completed_at=CURRENT_TIMESTAMP, error_message=NULL, retry_after_at=NULL,
+                          pid=0 WHERE job_id=? AND status='processing'""", (INCELEME, int(job_id)))
+            degisti = imlec.rowcount == 1
+        self._soyagaci_esitle(job_id)
+        return degisti
+
+    def aktif_devam_var(self, job_id: int) -> bool:
+        """Bu işten kopyalanıp açılmış, henüz bitmemiş bir devam işi var mı."""
+        with self._baglan() as db:
+            return bool(db.execute(
+                f"SELECT COUNT(*) FROM jobs WHERE source_job_id=? AND status IN ({','.join('?' for _ in AKTIF)})",  # noqa: S608 - yalnız '?' yer tutucuları birleştirilir
+                (int(job_id), *AKTIF)).fetchone()[0])
+
     def ertele(self, job_id: int, saniye: int, hata: str, tur: str = "temporary") -> bool:
         with self._baglan(yazma=True) as db:
             imlec = db.execute(
@@ -445,7 +464,7 @@ class IsDeposu:
             imlec = db.execute(
                 """UPDATE jobs SET status='queued', pipeline_status='resume_queued', error_message=NULL,
                           completed_at=NULL, retry_after_at=NULL, queued_at=CURRENT_TIMESTAMP, pid=0
-                   WHERE job_id=? AND status IN ('failed','cancelled')""", (int(job_id),))
+                   WHERE job_id=? AND status IN ('failed','cancelled','inceleme_bekliyor')""", (int(job_id),))
             if imlec.rowcount != 1:
                 raise IsHatasi("iş durumu değişti; yeniden deneyin")
         return int(job_id)

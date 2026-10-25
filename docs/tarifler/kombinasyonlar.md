@@ -103,6 +103,8 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 
 | Choice | With | Result | Reason / what to do |
 |---|---|---|---|
+| `genel.gozden_gecir=true` | `genel.dublaj_kipi=full_text` | error | review before voicing works line by line and exists only in `segment_sync` mode |
+| `genel.gozden_gecir=true` | `genel.is_turu=transkript` | warning | a transcript job has no voicing step to stop before; ignored |
 | `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | error | full-text mode reads with one Supertonic voice or with EMA Lightning |
 | `genel.dublaj_kipi=full_text` | `ceviri.arka_uc` local or API | error | full-text translation is Codex / Claude Code only |
 | `ses.motor=supertonic` | `genel.hedef_dil` outside Supertonic (e.g. `zh`) | error | Supertonic reads 31 languages; choose `voxcpm2` |
@@ -252,6 +254,8 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 
 | Seçim | Şunla | Sonuç | Neden / ne yapmalı |
 |---|---|---|---|
+| `genel.gozden_gecir=true` | `genel.dublaj_kipi=full_text` | hata | seslendirmeden önce gözden geçirme satır satır çalışır, yalnız `segment_sync` kipinde vardır |
+| `genel.gozden_gecir=true` | `genel.is_turu=transkript` | uyarı | transkript işinde durulacak seslendirme yok; yok sayılır |
 | `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` | hata | tam metin kipi tek Supertonic sesiyle ya da EMA Lightning ile okur |
 | `genel.dublaj_kipi=full_text` | `ceviri.arka_uc` yerel ya da API | hata | tam metin çevirisi yalnız Codex / Claude Code |
 | `ses.motor=supertonic` | `genel.hedef_dil` Supertonic dışı (ör. `zh`) | hata | Supertonic 31 dil okur; `voxcpm2` seçin |

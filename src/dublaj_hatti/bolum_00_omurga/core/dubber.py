@@ -50,7 +50,11 @@ from dublaj_hatti.bolum_40_ceviri.gorunum_adlari import (
     ceviri_orkestratoru_gorunum_adi,
 )
 from dublaj_hatti.bolum_00_omurga.core.source_subtitle_preview import write_source_subtitle_preview
-from dublaj_hatti.bolum_00_omurga.core.pipeline_checkpoint import PipelineCheckpointStore, canonical_json_hash
+from dublaj_hatti.bolum_00_omurga.core.pipeline_checkpoint import (
+    GozdenGecirmeBekleniyor,
+    PipelineCheckpointStore,
+    canonical_json_hash,
+)
 from dublaj_hatti.bolum_00_omurga.core.pipeline_selection_contract import segment_translation_checkpoint_inputs
 from dublaj_hatti.bolum_10_kaynak_edinme.adim_20_kaynak_alma.source_video import prepare_source_video
 from dublaj_hatti.bolum_10_kaynak_edinme.adim_30_video_bilgisi.video_metadata import log_video_metadata
@@ -733,6 +737,7 @@ class DubConfig:
     rvc_perde: int = 0
     rvc_riza_onayi: bool = False  # model sesinin sahibinden rıza alındı beyanı (zorunlu)
     xtts_referans_ses: str = ""  # XTTS v2 için kullanıcının kendi (rızalı) referans sesi
+    gozden_gecir: bool = False  # true: çeviri bitince seslendirmeden önce dur (GozdenGecirmeBekleniyor; hata değil)
 
 
 def _last_stderr_line(stderr: str | None) -> str:
@@ -5184,6 +5189,7 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
             supertonic_flow_mode=cfg.supertonic_flow_mode,
         )
         translator = _create_segment_translator(cfg, request_metadata, src_lang)
+        translation_ran = False
         if checkpoint_store.can_restore("ceviri", 9, 2, translation_inputs):
             translation_payload = checkpoint_store.stage_payload("ceviri")
             translation_result_path = _checkpoint_absolute_path(run_dir, translation_payload["result_path"])
@@ -5200,6 +5206,7 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
                 translator.last_video_usage_report = video_usage_report
             logger.info("Checkpoint kullanildi: ceviri")
         else:
+            translation_ran = True
             checkpoint_store.begin_stage("ceviri", 9, 2, translation_inputs)
             try:
                 def translate_segments_operation(route):
@@ -5240,6 +5247,12 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
             except Exception as exc:
                 checkpoint_store.fail_stage("ceviri", exc)
                 raise
+
+        if translation_ran and getattr(cfg, "gozden_gecir", False):
+            # Çeviri bu çalıştırmada yapıldı ve checkpoint'i yazıldı: seslendirmeden önce temiz dur (hata değil).
+            # Devamda çeviri geri yüklenir (düzeltilmiş metin), bu yüzden tekrar durmaz.
+            logger.info("Gozden gecirme icin duruldu: ceviri bitti, seslendirme baslamadi")
+            raise GozdenGecirmeBekleniyor("ceviri", translation_result_path)
 
         voice_routing_inputs = {
             "translation_result_path": _checkpoint_relative_path(run_dir, translation_result_path),
@@ -5765,6 +5778,9 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
         )
         checkpoint_store.mark_pipeline_completed()
         return meta
+
+    except GozdenGecirmeBekleniyor:
+        raise
 
     except Exception as exc:
         active_stage = str(checkpoint_store.state.get("active_stage") or "")

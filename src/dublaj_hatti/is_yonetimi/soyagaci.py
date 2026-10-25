@@ -68,6 +68,9 @@ def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
             temporary_path.unlink()
 
 
+_EBEVEYN_DURUMLARI = {"failed", "completed", "inceleme_bekliyor"}  # devam kopyasının açıldığı andaki kaynak iş durumu
+
+
 def _relationship(row: dict[str, Any]) -> str:
     source_job_id = row.get("source_job_id")
     if source_job_id in (None, "", 0, "0"):
@@ -77,7 +80,9 @@ def _relationship(row: dict[str, Any]) -> str:
         return "resumed_from_failed"
     if source_status == "completed":
         return "rerun_from_completed"
-    raise JobLineageError("Child resume_source_status failed veya completed olmali")
+    if source_status == "inceleme_bekliyor":
+        return "resumed_from_review"
+    raise JobLineageError("Child resume_source_status failed, completed veya inceleme_bekliyor olmali")
 
 
 def _row_dict(row: sqlite3.Row | tuple[Any, ...] | dict[str, Any], columns: list[str]) -> dict[str, Any]:
@@ -169,7 +174,7 @@ def build_job_lineage(
             parent_status = str(row.get("resume_source_status") or "") or str(parent.get("status") or "")
             parent_manifest_sha256 = str(row.get("resume_source_manifest_digest") or "")
             parent_run_dir = str(parent.get("run_dir") or "").strip()
-            if parent_status not in {"failed", "completed"}:
+            if parent_status not in _EBEVEYN_DURUMLARI:
                 raise JobLineageError("Parent status-at-creation gecersiz")
             if not parent_manifest_sha256:
                 raise JobLineageError("Parent manifest digest DB kaydinda yok")
@@ -237,14 +242,14 @@ def validate_job_lineage(payload: dict[str, Any]) -> None:
         if actual_parent != expected_parent or item_generation is None or int(item_generation) != index:
             raise JobLineageError("Lineage ancestry parent/generation gecersiz")
         if index > 0:
-            if item.get("parent_status_at_creation") not in {"failed", "completed"}:
+            if item.get("parent_status_at_creation") not in _EBEVEYN_DURUMLARI:
                 raise JobLineageError("Lineage ancestry parent status gecersiz")
             if not str(item.get("parent_pipeline_status_at_creation") or ""):
                 raise JobLineageError("Lineage ancestry parent pipeline status bos")
             if not str(item.get("parent_manifest_sha256") or ""):
                 raise JobLineageError("Lineage ancestry parent digest bos")
     relationship = str(payload.get("relationship") or "")
-    if relationship not in {"fresh", "resumed_from_failed", "rerun_from_completed"}:
+    if relationship not in {"fresh", "resumed_from_failed", "rerun_from_completed", "resumed_from_review"}:
         raise JobLineageError("Lineage relationship gecersiz")
     evidence = payload.get("evidence")
     if not isinstance(evidence, dict):
@@ -257,7 +262,7 @@ def validate_job_lineage(payload: dict[str, Any]) -> None:
             raise JobLineageError("Child lineage parent_job_id gecersiz")
         if not str(evidence.get("parent_manifest_sha256") or ""):
             raise JobLineageError("Child lineage parent digest bos")
-        if payload.get("parent_status_at_creation") not in {"failed", "completed"}:
+        if payload.get("parent_status_at_creation") not in _EBEVEYN_DURUMLARI:
             raise JobLineageError("Child lineage parent status bos veya gecersiz")
         if not str(payload.get("parent_pipeline_status_at_creation") or ""):
             raise JobLineageError("Child lineage parent pipeline status bos")

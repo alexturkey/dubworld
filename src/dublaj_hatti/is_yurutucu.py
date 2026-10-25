@@ -22,7 +22,8 @@ from typing import Any
 from dublaj_hatti import arayuz_dili
 from dublaj_hatti.bolum_00_omurga.core.asama_sozlesmesi import PIPELINE_STAGES
 from dublaj_hatti.is_yonetimi.asamalar import ASAMA_ADLARI
-from dublaj_hatti.is_yonetimi.depo import IsDeposu, IsHatasi, is_ozeti
+from dublaj_hatti.is_yonetimi.calistirici import CIKIS_INCELEME
+from dublaj_hatti.is_yonetimi.depo import INCELEME, IsDeposu, IsHatasi, is_ozeti
 from dublaj_hatti.is_yonetimi.yolculuk import Anlati, duraklar, kalan_sn
 from dublaj_hatti.yapilandirma import SEMA, ayarlari_yukle, esleme_metni, form_ek_bilgisi
 
@@ -75,7 +76,7 @@ def ayar_degisiklikleri(yeni: dict[str, Any]) -> list[str]:
 
 @dataclass
 class IsDurumu:
-    durum: str = "bos"  # bos | calisiyor | bitti | hata | durduruldu
+    durum: str = "bos"  # bos | calisiyor | bitti | hata | durduruldu | inceleme_bekliyor
     kaynak: str = ""
     is_no: int = 0
     bekleme: str = ""  # "gpu meşgul: ..." (makine geneli kaynak kilidi)
@@ -89,6 +90,7 @@ class IsDurumu:
     kip: str = "segment_sync"
     komut: str = "dubla"  # dubla | transkript
     ciktilar: list[dict[str, str]] = field(default_factory=list)
+    inceleme: bool = False  # alt süreç "inceleme_bekliyor" olayı verdi
     gunluk: deque = field(default_factory=lambda: deque(maxlen=400))
     anlati: Anlati = field(default_factory=lambda: Anlati(0.0))
 
@@ -162,12 +164,25 @@ class IsYurutucu:
 
         # Aynı değeri tekrar veren ayar değişiklik sayılmaz: iş yerinde sürer (gereksiz kopya açılmaz).
         degisen = degisiklikleri_coz(is_ayari(kayit), list(ayar_ifadeleri)) if ayar_ifadeleri else {}
-        if yeni_is or asama or degisen or kayit["status"] == "completed":
+        if kayit["status"] == INCELEME and not yeni_is and not degisen and self._inceleme_yerinde(kayit, asama):
+            hedef = self.depo.yerinde_devam(job_id)  # düzeltilmiş çeviri aynı klasörde geri yüklenir, seslendirmeden sürer
+        elif yeni_is or asama or degisen or kayit["status"] == "completed":
             hedef = self.depo.devam_iste(job_id, list(ayar_ifadeleri or []), asama, arayuz=self.arayuz)
         else:
             hedef = self.depo.yerinde_devam(job_id)
         self._uyandir.set()
         return hedef
+
+    @staticmethod
+    def _inceleme_yerinde(kayit: dict[str, Any], asama: str | None) -> bool:
+        """Gözden geçirmeden sürdürme: aşama verilmediyse ya da çeviriden SONRAKİ bir aşamaysa (seslendirme) iş
+        yerinde sürer; çeviriyi (ya da öncesini) yeniden çalıştırmak isteyen yeni işe kopyalanır."""
+        if not asama:
+            return True
+        from dublaj_hatti.is_yonetimi.asamalar import asama_coz
+
+        kip = str(kayit.get("dubbing_mode") or "segment_sync")
+        return asama_coz(kip, asama)[1] > asama_coz(kip, "ceviri")[1]
 
     # ---- liste / yönetim ---------------------------------------------------------------------------------
     def isler(self, limit: int = 50, arsiv_dahil: bool = False) -> list[dict[str, Any]]:
@@ -242,13 +257,18 @@ class IsYurutucu:
             elif tur in ("stage_completed", "stage_restored", "stage_skipped"):
                 if olay.get("stage_id") and olay["stage_id"] not in durum.tamamlanan:
                     durum.tamamlanan.append(olay["stage_id"])
+            elif tur == "inceleme_bekliyor":
+                durum.inceleme = True
             elif tur == "bitti":
                 durum.sonuc = {k: v for k, v in olay.items() if k != "event"}
             elif tur == "hata":
                 durum.hata = str(olay.get("mesaj", ""))
         kod = surec.wait()
         durum.bitis = time.time()
-        if durum.durum != "durduruldu":
+        if durum.durum != "durduruldu" and kod == CIKIS_INCELEME and durum.inceleme:
+            durum.durum = "inceleme_bekliyor"  # hata değil: çeviri bitti, kullanıcı satırları gözden geçirecek
+            durum.anlati.ekle("inceleme_bekliyor")
+        elif durum.durum != "durduruldu":
             durum.durum = "bitti" if kod == 0 else "hata"
             durum.anlati.ekle(("bitti_" + durum.komut) if kod == 0 else "hata")
             if kod != 0 and not durum.hata:

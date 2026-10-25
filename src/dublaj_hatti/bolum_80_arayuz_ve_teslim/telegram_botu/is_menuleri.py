@@ -15,7 +15,8 @@ ONEK = "j:"
 LISTELER = {"s": "Sorunlu işler (son 10)", "b": "Biten işler (son 15)", "l": "Son işler"}
 LISTE_SINIRI = {"s": 10, "b": 15, "l": 10}
 IS_EYLEMLERI = frozenset("vdyarRxzZ")
-DURUM_ETIKETI = {"kuyrukta": "sırada", "calisiyor": "çalışıyor", "bitti": "bitti", "hata": "hata", "iptal": "iptal"}
+DURUM_ETIKETI = {"kuyrukta": "sırada", "calisiyor": "çalışıyor", "bitti": "bitti", "hata": "hata", "iptal": "iptal",
+                 "inceleme_bekliyor": "gözden geçirme bekliyor"}
 
 
 def is_menusu_mu(veri: str | None) -> bool:

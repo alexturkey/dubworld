@@ -577,6 +577,7 @@ def dubla(kaynak: str, hedef_klasor: str | Path | None = None, ayarlar: dict[str
     _lisans(secili_motorlar(ayar), lisans_onay)
     _hazirla(ayar)
     cfg = _cfg(ayar)
+    cfg.gozden_gecir = False  # bu çağrı tek seferliktir: gözden geçirme durağı iş deposu olan arayüzlerin özelliği
     from dublaj_hatti.bolum_00_omurga.core.dubber import full_dub_pipeline
     from dublaj_hatti.bolum_00_omurga.runtime.output_paths import get_output_root
 

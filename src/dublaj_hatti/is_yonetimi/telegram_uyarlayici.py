@@ -20,7 +20,7 @@ from dublaj_hatti.is_yonetimi.depo import IsHatasi, _json, is_ozeti
 # Depo durumu → botun kullandığı durum adı (bot "calisiyor"/"kuyrukta" iken izlemeyi sürdürür).
 BOT_DURUMU = {
     "queued": "kuyrukta", "deferred": "kuyrukta", "preparing": "kuyrukta", "processing": "calisiyor",
-    "completed": "bitti", "failed": "hata", "cancelled": "iptal",
+    "completed": "bitti", "failed": "hata", "cancelled": "iptal", "inceleme_bekliyor": "inceleme_bekliyor",
 }
 CIKTI_ANAHTARLARI = ("dubbed_video", "output_video", "srt_path", "transcript_path")
 
@@ -99,11 +99,11 @@ class TelegramArkaUcu:
         devam = self.depo.devam_secenekleri(kayit)
         return {
             **self._ozet(kayit),
-            "yerinde_devam": kayit["status"] in ("failed", "cancelled") and bool(devam),
+            "yerinde_devam": kayit["status"] in ("failed", "cancelled", "inceleme_bekliyor") and bool(devam),
             "yeniden": [{"sira": s["restart_stage_order"], "ad": s["ad"]}
                         for s in self.depo.yeniden_calistirma_secenekleri(kayit)],
             "iptal_edilebilir": kayit["status"] in ("queued", "deferred", "preparing", "processing"),
-            "arsivlenebilir": kayit["status"] in ("completed", "failed", "cancelled") and not kayit["archived"],
+            "arsivlenebilir": kayit["status"] in ("completed", "failed", "cancelled", "inceleme_bekliyor") and not kayit["archived"],
         }
 
     def devam(self, is_id: str, asama: str | int | None = None, yeni_is: bool = False,

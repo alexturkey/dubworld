@@ -91,6 +91,7 @@
   "ilerleme.bitti": "Bitti",
   "ilerleme.hata": "Hata",
   "ilerleme.durduruldu": "Durduruldu",
+  "ilerleme.inceleme_bekliyor": "Gözden geçirmeni bekliyor",
   "ilerleme.yuzde": "%{yuzde}",
   "ilerleme.is_no": "iş #{no}",
   "ilerleme.ne_oluyor": "Şimdi ne oluyor?",
@@ -130,6 +131,7 @@
   "anlati.bitti_transkript": "Bitti! Yazı dosyan hazır 🎉",
   "anlati.hata": "Bir sorun çıktı 😕 Ayrıntısı teknik günlükte.",
   "anlati.durduruldu": "Durdurdun. Sonra kaldığı yerden sürdürebilirsin.",
+  "anlati.inceleme_bekliyor": "Çeviri hazır. Satırlara bak, sonra seslendirmeye devam et.",
   "dugme.durdur": "Durdur",
   "dugme.videoyu_ac": "Videoyu aç",
   "dugme.cikti_klasoru": "Çıktı klasörünü aç",
@@ -187,6 +189,7 @@
   "durum.completed": "bitti",
   "durum.failed": "hata",
   "durum.cancelled": "iptal / kesildi",
+  "durum.inceleme_bekliyor": "gözden geçirme bekliyor",
 
   "asama.video_indirme_veya_kopyalama": "Kaynak video",
   "asama.kaynak_ses_cikarma": "Ses çıkarma",

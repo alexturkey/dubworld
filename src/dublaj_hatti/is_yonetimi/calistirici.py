@@ -18,6 +18,7 @@ from dublaj_hatti.is_yonetimi.depo import IsDeposu, IsHatasi, _json, varsayilan_
 logger = logging.getLogger("dublaj_hatti")
 KILIT_BEKLEME_SN = float(os.environ.get("DUBLAJ_KILIT_BEKLEME_SN", "21600"))  # 6 saat
 CIKIS_KAYNAK_MESGUL = 75
+CIKIS_INCELEME = 76  # genel.gozden_gecir: çeviriden sonra temiz durdu (hata değil)
 
 
 def cikti_koku(ayar: dict[str, Any] | None = None) -> Path:
@@ -45,7 +46,8 @@ def is_ayari(is_kaydi: dict[str, Any]) -> dict[str, Any]:
 
 def isi_calistir(depo: IsDeposu, job_id: int, olay_yaz: Callable[[dict[str, Any]], None],
                  kilit_bekle_sn: float | None = None) -> int:
-    """Çıkış kodu: 0 bitti, 1 iş hatası, 2 kullanım hatası, 75 kaynak meşgul (iş ertelendi), 130 durduruldu."""
+    """Çıkış kodu: 0 bitti, 1 iş hatası, 2 kullanım hatası, 75 kaynak meşgul (iş ertelendi), 76 gözden geçirme
+    bekliyor (hata değil), 130 durduruldu."""
     is_kaydi = depo.getir(job_id)
     if not is_kaydi:
         olay_yaz({"event": "hata", "mesaj": f"iş bulunamadı: #{job_id}"})
@@ -85,6 +87,7 @@ def isi_calistir(depo: IsDeposu, job_id: int, olay_yaz: Callable[[dict[str, Any]
 
 def _hatti_kos(depo: IsDeposu, is_kaydi: dict[str, Any], olay_yaz: Callable[[dict[str, Any]], None],
                kilit_bekle_sn: float) -> int:
+    from dublaj_hatti.bolum_00_omurga.core.pipeline_checkpoint import GozdenGecirmeBekleniyor
     from dublaj_hatti.bolum_00_omurga.runtime.kaynak_kilidi import KaynakMesgulError, kaynak_kullan
     from dublaj_hatti.yapilandirma import AyarHatasi, dubconfig_olustur
 
@@ -137,6 +140,10 @@ def _hatti_kos(depo: IsDeposu, is_kaydi: dict[str, Any], olay_yaz: Callable[[dic
                                                         is_kaydi["transcript_format"] or "srt", cfg, istek)
             else:
                 sonuc = dubber.full_dub_pipeline(is_kaydi["source"], str(depo.cikti_koku), cfg, istek)
+    except GozdenGecirmeBekleniyor as bekleme:
+        depo.inceleme_bekle(job_id)
+        olay_yaz({"event": "inceleme_bekliyor", "is": job_id, "asama": bekleme.stage_id})
+        return CIKIS_INCELEME
     except KaynakMesgulError as hata:
         depo.ertele(job_id, 60, str(hata), "kaynak_mesgul")
         olay_yaz({"event": "hata", "mesaj": f"{hata}; iş ertelendi"})
