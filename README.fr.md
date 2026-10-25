@@ -32,7 +32,7 @@ vérifié par sha256. Disque libre pour commencer : 22 Go avec le profil GPU, 14
 
 Prérequis, ordre des étapes, carte des environnements Python, moteurs optionnels, utilisation hors ligne, mise à jour,
 désinstallation et erreurs fréquentes (en anglais) : **[docs/installation.md](docs/installation.md)**. Linux et macOS
-ne sont pas encore testés.
+ne sont pas encore testés. Retour de la communauté (non vérifié par nous) : une équipe a utilisé seulement l'étape de voix sur un Mac Apple M4, CPU uniquement, pour narrer une visite de produit en anglais, turc et arabe, environ une minute par langue.
 
 ## Utilisation
 
