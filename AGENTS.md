@@ -95,7 +95,7 @@ The three setups (one command each; steps run in the script's fixed order):
 |---|---|---|
 | Quick (minimum) | base only | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1` |
 | Recommended, no NVIDIA GPU | base + EMA Lightning (CPU) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,tts-ema,kontrol` |
-| Recommended, NVIDIA 4–5 GB | base + voice cleanup + EMA Lightning (VoxCPM2 fits in 4 GB too, measured in the [sister repository](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md); add it if the user wants a second multilingual voice) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,kontrol` |
+| Recommended, NVIDIA 4–5 GB | base + voice cleanup + EMA Lightning + VoxCPM2, the featured voice (your own designed voice, step 4 item 6; fits in 4 GB, measured in the [sister repository](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md)) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,voxcpm2,kontrol` |
 | Recommended, NVIDIA 6 GB or more | base + voice cleanup + EMA Lightning + VoxCPM2 | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,voxcpm2,kontrol` |
 | Full | recommended + `hizalama-diller,parakeet,akilli-kare,youtube,telegram`; the NC parts (`crisper`, `tts-xtts`) only after the user says yes to "non-commercial use only" | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,hizalama-diller,parakeet,akilli-kare,youtube,telegram,kontrol` (+ `,crisper,tts-xtts -TicariOlmayanKabul`) |
 
@@ -228,6 +228,26 @@ for the rest (acceptance test: 7.38 s source, 9.27 s dub, +25.6 %, `Sure Farki` 
    free memory → keep `ses.ema_cihaz = auto` (it uses the GPU and falls back to the CPU when the GPU is busy); no
    NVIDIA GPU or CPU profile → `ses.ema_cihaz = cpu` (ONNX). `dubla kontrol` shows `tts ema_lightning` and what `auto`
    would pick right now. It reads Turkish only; for other target languages keep Supertonic.
+
+6. On an NVIDIA GPU, VoxCPM2 is the featured voice: the user can dub with a voice they designed themselves
+   (multilingual, Apache-2.0, `docs/motorlar/voxcpm2.md`). If step `voxcpm2` is installed, offer it in one sentence
+   and run the flow when they want it; do not switch silently.
+   - Design inside the installed sister repository (its own environment and settings), starting from one of the
+     144 English example prompts (18 roles × 8 languages; the design text in the voice's language comes with it):
+     ```powershell
+     cd runtime_assets\tts_motorlari\voxcpm2\repo
+     .venv\Scripts\python.exe -m ses_tasarim.ornekler --dil tr --tam
+     .venv\Scripts\python.exe -m ses_tasarim.tasarla --ornek tr_belgesel_kadin --ad ayse --cesit 3
+     ```
+     Then follow that repository's skill (`.claude/skills/ses-tasarimi/SKILL.md`): every variant reads a few
+     sentences of the user's real text with its own reference and seed, the user listens and picks one.
+   - Make the chosen voice this computer's default (writes only `ayarlar\kullanici.toml`; a motor the user already
+     chose is kept):
+     `.venv\Scripts\python.exe scripts\varsayilan_motor.py --motor voxcpm2 --ses ayse/2`
+   - Several speakers: favorite lists by gender, handed out in speaker order (`docs/sesler.md`):
+     `voxcpm2_kadin_sesleri = "ayse/2, hazir/belgesel_hanim"`, `voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri"`
+     in the `[ses]` section. Empty lists use the target language's ready voices; other languages have only a male
+     narrator, so design a female voice for them (`<lang>_belgesel_kadin`).
 
 ## 5. Troubleshooting map
 

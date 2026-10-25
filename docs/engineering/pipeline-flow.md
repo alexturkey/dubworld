@@ -36,7 +36,7 @@ flowchart TD
     S6 --> MODE{genel.dublaj_kipi}
     MODE -->|full_text| FT[one speech window, one translation,<br/>one Supertonic voice; section 6]
     MODE -->|segment_sync| S7[7 flat word list, final dub segments:<br/>gap over 1.0 s, at most 150 words]
-    S7 --> S8[8 speaker routing: Supertonic with speakers only]
+    S7 --> S8[8 speaker routing: Supertonic or VoxCPM2 with speakers only]
     S8 --> S9[9 translation: one target text per segment ID]
     S9 --> S10[10 voice routing]
     S10 --> S11[11 TTS: audio per segment, real duration measured]

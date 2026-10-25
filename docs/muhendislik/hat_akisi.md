@@ -36,7 +36,7 @@ flowchart TD
     S6 --> MODE{genel.dublaj_kipi}
     MODE -->|full_text| FT[tek konuşma penceresi, tek çeviri,<br/>tek Supertonic sesi; bölüm 6]
     MODE -->|segment_sync| S7[7 düz kelime listesi, nihai dublaj segmentleri:<br/>1.0 sn üstü boşluk, en çok 150 kelime]
-    S7 --> S8[8 konuşmacı yönlendirme: yalnız Supertonic ve konuşmacı açıkken]
+    S7 --> S8[8 konuşmacı yönlendirme: yalnız Supertonic / VoxCPM2 ve konuşmacı açıkken]
     S8 --> S9[9 çeviri: segment kimliği başına tek hedef metin]
     S9 --> S10[10 ses yönlendirme]
     S10 --> S11[11 TTS: segment başına ses, gerçek süre ölçülür]

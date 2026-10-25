@@ -189,6 +189,30 @@ VOXCPM2_HAZIR_SESLER = (
     "masal_cadisi", "anlatici_en", "anlatici_fr", "anlatici_de", "anlatici_es", "anlatici_ru", "anlatici_zh",
     "anlatici_ja",
 )
+# hazır seslerin cinsiyeti (ses.json tarifinden); cinsiyete göre favori listenin dil bazlı varsayılanı bundan
+VOXCPM2_HAZIR_CINSIYET = {
+    "haber_spikeri": "male", "cekici_spiker": "female", "belgesel_hanim": "female", "gizemli_bilge": "male",
+    "tok_anlatici": "male", "yasli_bilge": "male", "masal_cadisi": "female", "anlatici_en": "male",
+    "anlatici_fr": "male", "anlatici_de": "male", "anlatici_es": "male", "anlatici_ru": "male",
+    "anlatici_zh": "male", "anlatici_ja": "male",
+}
+# dublaja uygun varsayılan sıra (karakter sesleri masal_cadisi / yasli_bilge listede yok; kullanıcı ekleyebilir)
+_VOXCPM2_TR_KADIN = ("belgesel_hanim", "cekici_spiker")
+_VOXCPM2_TR_ERKEK = ("haber_spikeri", "tok_anlatici", "gizemli_bilge")
+
+
+def voxcpm2_varsayilan_havuz(dil: str) -> tuple[list[str], list[str]]:
+    """Hedef dile göre hazır seslerden (kadın, erkek) favori listesi; o dilde hazır ses yoksa boş."""
+    if dil == "tr":
+        return [f"hazir/{a}" for a in _VOXCPM2_TR_KADIN], [f"hazir/{a}" for a in _VOXCPM2_TR_ERKEK]
+    ad = f"anlatici_{dil}"
+    if ad in VOXCPM2_HAZIR_SESLER:
+        kadin = [f"hazir/{a}" for a in VOXCPM2_HAZIR_SESLER if a.endswith(f"_{dil}") and VOXCPM2_HAZIR_CINSIYET[a] == "female"]
+        erkek = [f"hazir/{a}" for a in VOXCPM2_HAZIR_SESLER if a.endswith(f"_{dil}") and VOXCPM2_HAZIR_CINSIYET[a] == "male"]
+        return kadin, erkek
+    return [], []
+
+
 SUPERTONIC_SESLER = tuple(f"F{i}" for i in range(1, 6)) + tuple(f"M{i}" for i in range(1, 6))
 YALNIZ_INGILIZCE = frozenset({"en"})
 

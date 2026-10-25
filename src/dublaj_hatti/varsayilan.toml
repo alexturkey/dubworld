@@ -104,8 +104,16 @@ akis = "natural_blocks_1"
 hiz = 1.2
 # Seslendirme kaynak süreye sığmazsa ffmpeg atempo ile hızlandır
 atempo = true
-# VoxCPM2 sesi: "hazir/<ad>" (hazır sesler), "<ad>/<çeşit>" (kendi tasarladığınız) ya da ses klasörü yolu
+# VoxCPM2 tek sesi: "hazir/<ad>" (hazır sesler), "<ad>/<çeşit>" (kendi tasarladığınız) ya da ses klasörü yolu.
+# Varsayılan Türkçe ses başka hedef dilde o dilin hazır anlatıcısına döner (en: hazir/anlatici_en, ...).
 voxcpm2_ses = "hazir/haber_spikeri"
+# VoxCPM2 favori sesleri (cinsiyete göre ses açıkken): virgüllü liste, konuşmacılara sırayla dağıtılır
+# (1. kadın konuşmacı listenin 1. sesini, 2. kadın 2. sesini alır; liste biterse başa döner).
+# Boşsa hedef dilin hazır sesleri: tr kadın hazir/belgesel_hanim, hazir/cekici_spiker; tr erkek hazir/haber_spikeri,
+# hazir/tok_anlatici, hazir/gizemli_bilge; öbür dillerde erkek hazir/anlatici_<dil> (kadın listesi boşsa erkek
+# listesi kullanılır). Örnek: voxcpm2_kadin_sesleri = "ayse/2, hazir/belgesel_hanim"
+voxcpm2_kadin_sesleri = ""
+voxcpm2_erkek_sesleri = ""
 # EMA Lightning tek sesli bir modeldir (ses adı "ema"; tasarımla üretilmiş sentetik ses, gerçek kişi değil):
 # ses seçimi yoktur. Aynı sesin tonlama çeşidi için ema_tohum değiştirilir.
 # EMA cihazı: "auto" (GPU varsa ve en az 1 GB boşsa GPU, değilse işlemci ONNX) | "cuda" | "cpu"
@@ -115,11 +123,12 @@ ema_hiz = 1.0
 # EMA tohumu: aynı metin + aynı tohum = aynı ses (tekrar üretilebilirlik); 0..2147483647
 ema_tohum = 0
 # Konuşmacı ayrımı + cinsiyete göre ses (Önerilen akış): konuşmacılar ayrılır (3D-Speaker), her konuşmacının
-# sesinden kadın/erkek tahmin edilir (wav2vec2 XLSR-53 sınıflandırıcı, LibriSpeech) ve Supertonic havuzundan ses atanır
-# (kadın F1..F5, erkek M1..M5). Kapalıysa tüm video tek sesle (supertonic_ses) okunur.
+# sesinden kadın/erkek tahmin edilir (wav2vec2 XLSR-53 sınıflandırıcı, LibriSpeech) ve havuzdan ses atanır:
+# Supertonic kadın F1..F5, erkek M1..M5; VoxCPM2 voxcpm2_kadin_sesleri / voxcpm2_erkek_sesleri.
+# Kapalıysa tüm video tek sesle (supertonic_ses / voxcpm2_ses) okunur.
 konusmaci_cinsiyetine_gore_ses = true
 # Cinsiyet kipi: "konusmaci" (konuşmacı ayrımı + konuşmacı başına ses) | "segment" (ayrım yok; her cümlenin
-# cinsiyeti ayrı tahmin edilir, kadın/erkek sesi aşağıdaki çiftten)
+# cinsiyeti ayrı tahmin edilir; kadın/erkek sesi aşağıdaki çiftten, VoxCPM2'de favori listelerin ilk sesi)
 cinsiyet_kipi = "konusmaci"
 # Segment kipinde kadın sesi (F1..F5)
 kadin_ses = "F1"
@@ -141,7 +150,7 @@ rvc_riza_onayi = false
 
 [ses.konusmaci_sesleri]
 # Elle konuşmacı -> ses eşlemesi; tahmini ezer. Konuşmacı adları iş klasöründeki speaker_voice_map.json'dadır.
-# Örnek: SPEAKER_00 = "M2" (Supertonic F1..M5; VoxCPM2 "hazir/<ad>"; ses listesi docs/sesler.md)
+# Örnek: SPEAKER_00 = "M2" (Supertonic F1..M5; VoxCPM2 "hazir/<ad>" ya da "<ad>/<çeşit>"; ses listesi docs/sesler.md)
 # Komut satırı: --ayar ses.konusmaci_sesleri.SPEAKER_00=M2 ya da --ayar "ses.konusmaci_sesleri=SPEAKER_00:M2, SPEAKER_01:F1"
 
 [altyazi]

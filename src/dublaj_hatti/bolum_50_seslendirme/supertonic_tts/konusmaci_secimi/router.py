@@ -86,10 +86,14 @@ def konusmaci_seslerini_ata(
     speaker_timeline: list[dict] | None = None,
     speaker_timeline_source: str = "local_3d_speaker",
     manual_voice_map: dict[str, str] | None = None,
+    female_pool: list[str] | None = None,
+    male_pool: list[str] | None = None,
+    voice_attr: str = "supertonic_voice_id",
 ) -> str:
     """Konusmacilari ayirir, her konusmacinin cinsiyetini tahmin eder ve havuzdan ses atar.
 
-    Elle verilen harita (konusmaci -> ses) her zaman onceliklidir.
+    Elle verilen harita (konusmaci -> ses) her zaman onceliklidir. Havuz verilmezse Supertonic
+    sesleri (F1..F5 / M1..M5); VoxCPM2 kendi kadin / erkek listelerini ve `voxcpm2_voice` alanini verir.
     """
     if not audio_path:
         raise ValueError("Supertonic speaker gender icin audio_path bos")
@@ -113,9 +117,16 @@ def konusmaci_seslerini_ata(
     worker_metadata = {}
     speaker_gender_map = build_speaker_gender_map(segments, str(speaker_audio), timing_path, worker_metadata)
     write_json(work_dir / "speaker_gender_map.json", speaker_gender_map)
-    speaker_voice_map = assign_voice_ids_to_speakers(speaker_gender_map, manual_voice_map or {})
+    speaker_voice_map = assign_voice_ids_to_speakers(
+        speaker_gender_map, manual_voice_map or {}, female_pool=female_pool, male_pool=male_pool
+    )
     write_json(work_dir / "speaker_voice_map.json", speaker_voice_map)
-    segment_plan = apply_voice_map_to_segments(segments, speaker_voice_map)
+    segment_plan = apply_voice_map_to_segments(
+        segments,
+        speaker_voice_map,
+        voice_attr=voice_attr,
+        fallback_voice_id=(female_pool or male_pool or ["F1"])[0],
+    )
     write_json(work_dir / "segment_voice_plan.json", segment_plan)
     metadata = {
         "audio_path": audio_path,
@@ -482,9 +493,13 @@ def build_speaker_gender_map(
     return result
 
 
-def apply_voice_map_to_segments(segments, speaker_voice_map: dict[str, dict]) -> list[dict]:
+def apply_voice_map_to_segments(
+    segments,
+    speaker_voice_map: dict[str, dict],
+    voice_attr: str = "supertonic_voice_id",
+    fallback_voice_id: str = "F1",
+) -> list[dict]:
     segment_items = []
-    fallback_voice_id = "F1"
     for seg in segments:
         speaker = str(getattr(seg, "speaker", "") or "").strip()
         voice_info = speaker_voice_map.get(speaker, {})
@@ -507,7 +522,7 @@ def apply_voice_map_to_segments(segments, speaker_voice_map: dict[str, dict]) ->
                 voice_id = fallback_voice_id
                 decision_source = "default_fallback"
         setattr(seg, "gender", gender)
-        setattr(seg, "supertonic_voice_id", voice_id)
+        setattr(seg, voice_attr, voice_id)
         plan.append(
             {
                 "segment_index": int(getattr(seg, "index", -1)),
@@ -515,7 +530,7 @@ def apply_voice_map_to_segments(segments, speaker_voice_map: dict[str, dict]) ->
                 "end": round(float(getattr(seg, "end", 0.0) or 0.0), 3),
                 "speaker": speaker,
                 "gender": gender,
-                "supertonic_voice_id": voice_id,
+                voice_attr: voice_id,
                 "decision_source": decision_source,
             }
         )

@@ -688,6 +688,8 @@ class DubConfig:
     tts_voice_id: str = "F1"
     voxcpm2_ses: str = "hazir/haber_spikeri"
     voxcpm2_konusmaci_sesleri: Dict[str, str] = field(default_factory=dict)
+    voxcpm2_kadin_sesleri: List[str] = field(default_factory=list)  # favori kadın sesleri (sırayla dağıtılır)
+    voxcpm2_erkek_sesleri: List[str] = field(default_factory=list)  # favori erkek sesleri
     ema_ses: str = "ema"  # EMA Lightning tek sesli; ayar ileride ses eklenirse hazır
     ema_cihaz: str = "auto"  # auto | cuda | cpu (auto: GPU meşgulse işlemci ONNX)
     ema_hiz: float = 1.0  # EMA okuma hızı (paketin speed değeri)
@@ -1528,23 +1530,54 @@ def _apply_supertonic_manual_voice_metadata_if_needed(segments: List[Segment], c
     apply_manual_supertonic_voice_metadata(segments, cfg.tts_voice_id or "F1")
 
 
+def _konusmaci_motoru(cfg: DubConfig) -> bool:
+    """Konuşmacı/cinsiyet yönlendirmesi olan motorlar: Supertonic (F/M sesleri) ve VoxCPM2 (favori listeler)."""
+    return cfg.tts_engine in ("supertonic", "voxcpm2") and bool(getattr(cfg, "konusmaci_basina_ses", False))
+
+
+def _voxcpm2_ses_havuzlari(cfg: DubConfig) -> Tuple[List[str], List[str]]:
+    kadin = [str(v).strip() for v in (getattr(cfg, "voxcpm2_kadin_sesleri", None) or []) if str(v).strip()]
+    erkek = [str(v).strip() for v in (getattr(cfg, "voxcpm2_erkek_sesleri", None) or []) if str(v).strip()]
+    tek = str(getattr(cfg, "voxcpm2_ses", "") or "").strip()
+    kadin = kadin or erkek or [tek]
+    erkek = erkek or kadin
+    return kadin, erkek
+
+
 def _apply_konusmaci_basina_ses_if_needed(segments: List[Segment], cfg: DubConfig, run_dir: str) -> None:
-    if cfg.tts_engine != "supertonic" or not getattr(cfg, "konusmaci_basina_ses", False):
+    if not _konusmaci_motoru(cfg):
         return
     from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.konusmaci_secimi import konusmaci_seslerini_ata
 
     audio_path = str(getattr(cfg, "konusmaci_ses_yolu", "") or "").strip()
     if not audio_path:
         raise RuntimeError("Konusmaci ayrimi icin kaynak ses yolu yok")
+    voxcpm2 = cfg.tts_engine == "voxcpm2"
     if str(getattr(cfg, "cinsiyet_kipi", "konusmaci") or "konusmaci") == "segment":
         # segment kipi: konuşmacı ayrımı yok, her cümlenin cinsiyeti ayrı tahmin edilir (alefiury wav2vec2)
         from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.cinsiyet_secimi import apply_supertonic_segment_gender_routing
         from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.cinsiyet_secimi.voice_pair import validate_voice_pair
 
-        voice_pair = validate_voice_pair(
-            str(getattr(cfg, "supertonic_kadin_ses", "F1")), str(getattr(cfg, "supertonic_erkek_ses", "M1"))
-        )
+        if voxcpm2:
+            voice_pair = validate_voice_pair("F1", "M1")
+        else:
+            voice_pair = validate_voice_pair(
+                str(getattr(cfg, "supertonic_kadin_ses", "F1")), str(getattr(cfg, "supertonic_erkek_ses", "M1"))
+            )
         apply_supertonic_segment_gender_routing(segments, audio_path, voice_pair, run_dir)
+        if voxcpm2:
+            # cinsiyet cümle başına; ses her cinsiyetin favori listesindeki ilk ses (konuşmacı yok, sıra dağıtılamaz)
+            kadin, erkek = _voxcpm2_ses_havuzlari(cfg)
+            for seg in segments:
+                setattr(seg, "voxcpm2_voice", erkek[0] if getattr(seg, "gender", "") == "male" else kadin[0])
+        return
+    if voxcpm2:
+        kadin, erkek = _voxcpm2_ses_havuzlari(cfg)
+        konusmaci_seslerini_ata(
+            segments=segments, audio_path=audio_path, run_dir=run_dir,
+            manual_voice_map=dict(getattr(cfg, "voxcpm2_konusmaci_sesleri", {}) or {}),
+            female_pool=kadin, male_pool=erkek, voice_attr="voxcpm2_voice",
+        )
         return
     konusmaci_seslerini_ata(
         segments=segments, audio_path=audio_path, run_dir=run_dir,
@@ -1553,7 +1586,7 @@ def _apply_konusmaci_basina_ses_if_needed(segments: List[Segment], cfg: DubConfi
 
 
 def _supertonic_speaker_timeline_source(cfg: DubConfig) -> str:
-    if cfg.tts_engine != "supertonic" or not bool(getattr(cfg, "konusmaci_basina_ses", False)):
+    if not _konusmaci_motoru(cfg):
         return "disabled"
     return "local_3d_speaker"
 
@@ -4867,7 +4900,7 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
                 checkpoint_store.fail_stage("demucs_vokal_ayirma", exc)
                 raise
 
-        if cfg.tts_engine == "supertonic" and getattr(cfg, "konusmaci_basina_ses", False):
+        if _konusmaci_motoru(cfg):
             cfg.konusmaci_ses_yolu = audio_for_asr
 
         asr_prepare_inputs = {
@@ -5057,12 +5090,14 @@ def full_dub_pipeline(source: str, base_dir: str, cfg: Optional[DubConfig] = Non
             "tts_engine": cfg.tts_engine,
             "konusmaci_basina_ses": bool(getattr(cfg, "konusmaci_basina_ses", False)),
             "konusmaci_sesleri": dict(sorted((getattr(cfg, "supertonic_konusmaci_sesleri", {}) or {}).items())),
+            "voxcpm2_konusmaci_sesleri": dict(sorted((getattr(cfg, "voxcpm2_konusmaci_sesleri", {}) or {}).items())),
+            "voxcpm2_havuz": list(_voxcpm2_ses_havuzlari(cfg)) if cfg.tts_engine == "voxcpm2" else [],
             "cinsiyet_kipi": str(getattr(cfg, "cinsiyet_kipi", "konusmaci")),
             "segment_ses_cifti": [str(getattr(cfg, "supertonic_kadin_ses", "F1")), str(getattr(cfg, "supertonic_erkek_ses", "M1"))],
             "speaker_timeline_source": _supertonic_speaker_timeline_source(cfg),
             "use_diarization": bool(cfg.use_diarization),
         }
-        speaker_stage_enabled = cfg.tts_engine == "supertonic" and bool(getattr(cfg, "konusmaci_basina_ses", False))
+        speaker_stage_enabled = _konusmaci_motoru(cfg)
         if not speaker_stage_enabled:
             if not checkpoint_store.can_restore("konusmaci_yonlendirme", 8, 2, speaker_inputs):
                 checkpoint_store.skip_stage(

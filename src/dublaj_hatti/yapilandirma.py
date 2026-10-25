@@ -52,6 +52,7 @@ SUPERTONIC_DILLERI = kayit.SUPERTONIC_DILLERI  # listede olmayan dil Supertonic'
 VOXCPM2_DENENEN_DILLER = kayit.VOXCPM2_DENENEN_DILLER  # dışındakiler model kartına göre okunur, denenmedi (uyarı)
 XTTS_DILLERI = kayit.XTTS_DILLERI  # listede olmayan dil XTTS v2'de okunamaz (hata)
 EMA_DILLERI = kayit.EMA_DILLERI  # EMA Lightning yalnız Türkçe okur (hata)
+VOXCPM2_VARSAYILAN_SES = "hazir/haber_spikeri"  # varsayilan.toml ses.voxcpm2_ses; başka hedef dilde o dilin anlatıcısına döner
 TAM_METIN_TTS = {"supertonic", "ema_lightning"}  # genel.dublaj_kipi=full_text bu motorlarla çalışır
 HEDEF_DILLERI = kayit.tts_hedef_dilleri()
 TRANSKRIPT_BICIMLERI = ["srt", "plain", "timestamped", "paragraph"]
@@ -120,6 +121,8 @@ SEMA: dict[str, Any] = {
     "ses.hiz": float,
     "ses.atempo": bool,
     "ses.voxcpm2_ses": str,
+    "ses.voxcpm2_kadin_sesleri": str,
+    "ses.voxcpm2_erkek_sesleri": str,
     "ses.ema_cihaz": ["auto", "cuda", "cpu"],
     "ses.ema_hiz": float,
     "ses.ema_tohum": int,
@@ -261,18 +264,26 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
         if yanlis:
             hata(f"Supertonic konuşmacı sesleri F1..F5 / M1..M5 olmalı; hatalı: {', '.join(yanlis)}",
                  "ses.konusmaci_sesleri", "ses.motor")
+    elif tts == "voxcpm2":
+        _voxcpm2_sesleri_denetle(ayar, sesler, dil if dublaj else "", hata, uyari)
     elif tts == "ema_lightning" and sesler:
         uyari("EMA Lightning tek sesli; ses.konusmaci_sesleri yok sayılır", "ses.konusmaci_sesleri", "ses.motor")
     elif tts == "xtts" and sesler:
         uyari("XTTS tek referans sesle okur; ses.konusmaci_sesleri yok sayılır", "ses.konusmaci_sesleri", "ses.motor")
     # --- cinsiyete göre ses kipi ---------------------------------------------------------------------------
     if ayar.get("ses.cinsiyet_kipi") == "segment":
-        if tts != "supertonic" or not ayar["ses.konusmaci_cinsiyetine_gore_ses"]:
-            uyari("ses.cinsiyet_kipi=segment yalnız ses.motor=supertonic ve ses.konusmaci_cinsiyetine_gore_ses=true "
-                  "iken etkilidir", "ses.cinsiyet_kipi", "ses.motor", "ses.konusmaci_cinsiyetine_gore_ses")
+        if tts not in ("supertonic", "voxcpm2") or not ayar["ses.konusmaci_cinsiyetine_gore_ses"]:
+            uyari("ses.cinsiyet_kipi=segment yalnız ses.motor=supertonic / voxcpm2 ve "
+                  "ses.konusmaci_cinsiyetine_gore_ses=true iken etkilidir", "ses.cinsiyet_kipi", "ses.motor",
+                  "ses.konusmaci_cinsiyetine_gore_ses")
         elif sesler:
-            uyari("segment kipinde konuşmacı ayrımı yapılmaz; ses.konusmaci_sesleri yok sayılır, her cümle "
-                  "ses.kadin_ses / ses.erkek_ses ile okunur", "ses.cinsiyet_kipi", "ses.konusmaci_sesleri")
+            cift = ("ses.voxcpm2_kadin_sesleri / ses.voxcpm2_erkek_sesleri listesinin ilk sesiyle" if tts == "voxcpm2"
+                    else "ses.kadin_ses / ses.erkek_ses ile")
+            uyari(f"segment kipinde konuşmacı ayrımı yapılmaz; ses.konusmaci_sesleri yok sayılır, her cümle {cift} "
+                  "okunur", "ses.cinsiyet_kipi", "ses.konusmaci_sesleri")
+    if tts != "voxcpm2" and (ayar.get("ses.voxcpm2_kadin_sesleri") or ayar.get("ses.voxcpm2_erkek_sesleri")):
+        uyari("ses.voxcpm2_kadin_sesleri / ses.voxcpm2_erkek_sesleri yalnız ses.motor=voxcpm2 iken kullanılır",
+              "ses.voxcpm2_kadin_sesleri", "ses.voxcpm2_erkek_sesleri", "ses.motor")
     # --- XTTS v2 (isteğe bağlı, CPML ticari olmayan) ------------------------------------------------------
     referans = str(ayar.get("ses.xtts_referans_ses") or "").strip()
     if dublaj and tts == "xtts" and not referans:
@@ -394,6 +405,36 @@ def stt_auto_gerekcesi(stt: str, cihaz: str) -> str:
             "çalışır; metin faster-whisper, kelime zamanı CTC hizalama")
 
 
+def _voxcpm2_sesleri_denetle(ayar: dict[str, Any], sesler: dict, dil: str, hata: Callable, uyari: Callable) -> None:
+    """Favori listeler ve konuşmacı haritasındaki VoxCPM2 sesleri: hazır ses adı var mı, cinsiyet tutuyor mu."""
+    adlar = {"ses.voxcpm2_ses": [str(ayar.get("ses.voxcpm2_ses") or "")],
+             "ses.voxcpm2_kadin_sesleri": ses_listesi(ayar.get("ses.voxcpm2_kadin_sesleri")),
+             "ses.voxcpm2_erkek_sesleri": ses_listesi(ayar.get("ses.voxcpm2_erkek_sesleri")),
+             "ses.konusmaci_sesleri": [str(v) for v in sesler.values()]}
+    for anahtar, liste in adlar.items():
+        yanlis = [s for s in liste if s.startswith("hazir/") and s[6:] not in kayit.VOXCPM2_HAZIR_SESLER]
+        if yanlis:
+            hata(f"{anahtar}: bilinmeyen hazır ses {', '.join(yanlis)}; hazır sesler: "
+                 f"{', '.join('hazir/' + a for a in kayit.VOXCPM2_HAZIR_SESLER)} (kendi sesiniz: <ad>/<çeşit>)",
+                 anahtar, "ses.motor")
+    for anahtar, cinsiyet in (("ses.voxcpm2_kadin_sesleri", "female"), ("ses.voxcpm2_erkek_sesleri", "male")):
+        ters = [s for s in adlar[anahtar]
+                if s.startswith("hazir/") and kayit.VOXCPM2_HAZIR_CINSIYET.get(s[6:], cinsiyet) != cinsiyet]
+        if ters:
+            uyari(f"{anahtar} listesinde öbür cinsiyetin hazır sesi var: {', '.join(ters)}", anahtar)
+    if not ayar.get("ses.konusmaci_cinsiyetine_gore_ses") or not dil:
+        return
+    kadin, erkek, kaynak = voxcpm2_havuzlari({**ayar, "ses.voxcpm2_ses": voxcpm2_tek_ses(ayar)})
+    if kaynak == "tek_ses":
+        uyari(f"VoxCPM2: '{dil}' için hazır ses yok ve favori liste boş; bütün konuşmacılar tek sesle "
+              f"({kadin[0]}) okunur. Kadın ve erkek sesinizi tasarlayıp ses.voxcpm2_kadin_sesleri / "
+              "ses.voxcpm2_erkek_sesleri listesine yazın", "ses.voxcpm2_kadin_sesleri", "ses.voxcpm2_erkek_sesleri")
+    elif kaynak == "varsayilan" and kadin == erkek:
+        uyari(f"VoxCPM2: '{dil}' için hazır kadın sesi yok; kadın konuşmacılar da {erkek[0]} ile okunur. "
+              f"Bir kadın sesi tasarlayın (VoxCPM2 reposu örnek: {dil}_belgesel_kadin) ve "
+              "ses.voxcpm2_kadin_sesleri listesine yazın", "ses.voxcpm2_kadin_sesleri")
+
+
 def form_ek_bilgisi() -> dict[str, dict[str, Any]]:
     """Gelişmiş sekmesine şemanın yanında giden ek bilgi (arayüzler otomatik üretir; motor gizlenmez).
 
@@ -422,6 +463,10 @@ def form_ek_bilgisi() -> dict[str, dict[str, Any]]:
         "ema_lightning": [],
         "xtts": [],
     }, "bicim": "SPEAKER_00:M2, SPEAKER_01:F1"}
+    for anahtar, cinsiyet in (("ses.voxcpm2_kadin_sesleri", "female"), ("ses.voxcpm2_erkek_sesleri", "male")):
+        ek[anahtar] = {"ses_secenekleri": {"voxcpm2": [
+            f"hazir/{ad}" for ad in kayit.VOXCPM2_HAZIR_SESLER if kayit.VOXCPM2_HAZIR_CINSIYET[ad] == cinsiyet]},
+        }
     ek["genel.cihaz"] = {"donanim": {"gpu": gpu_var, "vram_mb": vram}}
     return ek
 
@@ -658,6 +703,38 @@ def _kurulum_denetle(ayar: dict[str, Any], kaynak: str | None, gerekce: Callable
                 raise AyarHatasi(f"{anahtar} dosyası bulunamadı: {Path(deger).name}")
 
 
+def ses_listesi(metin: Any) -> list[str]:
+    """`ses.voxcpm2_kadin_sesleri` gibi virgüllü ses listesini ayırır: "hazir/a, ad/2" -> ["hazir/a", "ad/2"]."""
+    return [p.strip() for p in str(metin or "").split(",") if p.strip()]
+
+
+def voxcpm2_havuzlari(ayar: dict[str, Any]) -> tuple[list[str], list[str], str]:
+    """VoxCPM2 cinsiyete göre (kadın, erkek) favori listesi ve kaynağı ("kullanici" | "varsayilan" | "tek_ses").
+
+    Kullanıcının listesi önce gelir; boş liste hedef dilin hazır seslerinden dolar; o dilde de yoksa tek ses
+    (ses.voxcpm2_ses). Bir cinsiyetin listesi boşsa o cinsiyet öbür listeyi kullanır.
+    """
+    kadin = ses_listesi(ayar.get("ses.voxcpm2_kadin_sesleri"))
+    erkek = ses_listesi(ayar.get("ses.voxcpm2_erkek_sesleri"))
+    kaynak = "kullanici"
+    if not kadin and not erkek:
+        kadin, erkek = kayit.voxcpm2_varsayilan_havuz(str(ayar.get("genel.hedef_dil") or ""))
+        kaynak = "varsayilan"
+    if not kadin and not erkek:
+        tek = str(ayar.get("ses.voxcpm2_ses") or "")
+        return [tek], [tek], "tek_ses"
+    return kadin or erkek, erkek or kadin, kaynak
+
+
+def voxcpm2_tek_ses(ayar: dict[str, Any]) -> str:
+    """Tek ses: kullanıcının sesi; varsayılan Türkçe ses başka hedef dilde o dilin hazır anlatıcısına döner."""
+    ses = str(ayar.get("ses.voxcpm2_ses") or "")
+    dil = str(ayar.get("genel.hedef_dil") or "")
+    if ses == VOXCPM2_VARSAYILAN_SES and dil != "tr" and f"anlatici_{dil}" in kayit.VOXCPM2_HAZIR_SESLER:
+        return f"hazir/anlatici_{dil}"
+    return ses
+
+
 def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[Any, Cozum]:
     """Doğrulanmış ayardan (DubConfig, Cozum) üretir.
 
@@ -709,14 +786,25 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
     if kip in ("clean", "preserve_background") and importlib.util.find_spec("demucs") is None:
         raise AyarHatasi(f"ses_temizligi.kip={kip} Demucs ister ve kurulu değil: pip install .[separation] "
                          "(ya da kip=original)")
-    konusmaci = ayar["ses.konusmaci_cinsiyetine_gore_ses"] and ayar["ses.motor"] == "supertonic"
+    voxcpm2 = ayar["ses.motor"] == "voxcpm2"
+    voxcpm2_ses = voxcpm2_tek_ses(ayar)
+    if voxcpm2 and voxcpm2_ses != ayar["ses.voxcpm2_ses"]:
+        gerekce(f"VoxCPM2 tek ses: hedef dil {ayar['genel.hedef_dil']} için {voxcpm2_ses} (Türkçe varsayılan yerine)")
+    tek_ses = voxcpm2_ses if voxcpm2 else ayar["ses.supertonic_ses"]
+    konusmaci = ayar["ses.konusmaci_cinsiyetine_gore_ses"] and ayar["ses.motor"] in ("supertonic", "voxcpm2")
     segment_kipi = ayar["ses.cinsiyet_kipi"] == "segment"
     modeller_var = cinsiyet_modeli_kurulu() if segment_kipi else konusmaci_modelleri_kurulu()
     if konusmaci and not modeller_var:
         logger.warning("Konuşmacı/cinsiyet modelleri kurulu değil (scripts/kur.ps1 -Adim modeller); tek ses (%s) kullanılacak",
-                       ayar["ses.supertonic_ses"])
-        gerekce(f"cinsiyete göre ses kapalı: modeller kurulu değil; tek ses {ayar['ses.supertonic_ses']}")
+                       tek_ses)
+        gerekce(f"cinsiyete göre ses kapalı: modeller kurulu değil; tek ses {tek_ses}")
         konusmaci = False
+    kadin_sesleri: list[str] = []
+    erkek_sesleri: list[str] = []
+    if voxcpm2 and konusmaci:
+        kadin_sesleri, erkek_sesleri, havuz_kaynagi = voxcpm2_havuzlari({**ayar, "ses.voxcpm2_ses": voxcpm2_ses})
+        gerekce(f"VoxCPM2 cinsiyete göre ses ({havuz_kaynagi}): kadın {', '.join(kadin_sesleri)}; "
+                f"erkek {', '.join(erkek_sesleri)}")
     cfg = DubConfig(
         model_name=stt_modeli,
         compute_type=hesap_tipi,
@@ -731,7 +819,9 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
         tts_speed_factor=ayar["ses.hiz"],
         tts_engine=ayar["ses.motor"],
         tts_voice_id=ayar["ses.supertonic_ses"],
-        voxcpm2_ses=ayar["ses.voxcpm2_ses"],
+        voxcpm2_ses=voxcpm2_ses,
+        voxcpm2_kadin_sesleri=kadin_sesleri,
+        voxcpm2_erkek_sesleri=erkek_sesleri,
         voxcpm2_konusmaci_sesleri=dict(ayar["ses.konusmaci_sesleri"]) if ayar["ses.motor"] == "voxcpm2" else {},
         ema_cihaz=ayar["ses.ema_cihaz"],
         ema_hiz=ayar["ses.ema_hiz"],

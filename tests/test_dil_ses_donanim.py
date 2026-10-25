@@ -75,7 +75,7 @@ def test_yeni_hata_kurallari(ifadeler, beklenen):
 
 
 @pytest.mark.parametrize("ifadeler, beklenen", [
-    (["ses.cinsiyet_kipi=segment", "ses.motor=voxcpm2"], "segment yalnız ses.motor=supertonic"),
+    (["ses.cinsiyet_kipi=segment", "ses.motor=ema_lightning"], "segment yalnız ses.motor=supertonic / voxcpm2"),
     (["ses.cinsiyet_kipi=segment", "ses.konusmaci_sesleri=SPEAKER_00:M2"], "segment kipinde konuşmacı ayrımı yapılmaz"),
     (["ses.rvc_perde=3"], "yalnız ses.rvc_model doluyken"),
     (["ses.xtts_referans_ses=ben.wav"], "yalnız ses.motor=xtts"),

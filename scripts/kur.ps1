@@ -85,7 +85,7 @@ $PY_SURUM = "3.11.14"
 # Kardeş repolar (README "Family"): adres yayında doldurulur; çatal (fork) için ortam değişkeniyle değiştirilebilir.
 # Commit sabittir: başka adresten gelen kod da yalnız bu commit'le kurulur.
 $VOX_REPO = if ($env:DUBLAJ_TTS_REPO_URL) { $env:DUBLAJ_TTS_REPO_URL } else { "https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi" }
-$VOX_COMMIT = "1b9ec4c338d1b2ca944644aaf3c89244daf73d30"
+$VOX_COMMIT = "93e8b426738905437e1b621c6b359630b59e292b"
 $STT_REPO = if ($env:DUBLAJ_STT_REPO_URL) { $env:DUBLAJ_STT_REPO_URL } else { "https://github.com/alexturkey/crisperwhisper-turkce-kelime-zamani" }
 $STT_COMMIT = "2ca4b160e4bf9254185df01b21b281db4b209c19"
 # Kilidi henüz olmayan isteğe bağlı ekler: sabit sürüm (pyproject [project.optional-dependencies] alt sınırıyla aynı).

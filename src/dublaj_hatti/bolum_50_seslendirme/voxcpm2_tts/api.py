@@ -39,7 +39,13 @@ def voxcpm2_durumu() -> Dict[str, Any]:
 def _segment_voice(seg, cfg) -> str:
     per_speaker = getattr(cfg, "voxcpm2_konusmaci_sesleri", None) or {}
     speaker = str(getattr(seg, "speaker", "") or "")
-    return str(per_speaker.get(speaker) or getattr(cfg, "voxcpm2_ses", "") or VOXCPM2_VARSAYILAN_SES)
+    # sıra: elle konuşmacı haritası > cinsiyete göre favori listeden atanan ses > tek ses
+    return str(
+        per_speaker.get(speaker)
+        or getattr(seg, "voxcpm2_voice", "")
+        or getattr(cfg, "voxcpm2_ses", "")
+        or VOXCPM2_VARSAYILAN_SES
+    )
 
 
 def _run_engine(voice: str, parts: list, cfg, work_dir: Path) -> Dict[str, Any]:

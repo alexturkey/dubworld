@@ -51,6 +51,34 @@ Ready voices from the sister voice-design repository (`hazir_sesler/` at the pin
 | `hazir/anlatici_zh` | zh | same narrator style, native Chinese |
 | `hazir/anlatici_ja` | ja | same narrator style, native Japanese |
 
+If the target language is not Turkish and `ses.voxcpm2_ses` is left at the default, that language's ready narrator
+is used (`hazir/anlatici_<lang>`); a voice you set yourself is never changed.
+
+### Favorite voices by gender (VoxCPM2)
+
+With `ses.konusmaci_cinsiyetine_gore_ses = true` VoxCPM2 works like Supertonic: speakers are separated, each speaker's
+gender is estimated, and the voice comes from your favorite list for that gender. Comma-separated, handed out in
+speaker order (the first female speaker gets the first female voice, the second the second; when the list runs out
+it starts again):
+
+```toml
+[ses]
+motor = "voxcpm2"
+voxcpm2_kadin_sesleri = "ayse/2, hazir/belgesel_hanim"
+voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri, hazir/tok_anlatici"
+```
+
+- One voice per gender: write one voice in each list. Several: write several; two speakers never share a voice while
+  the list has more.
+- Empty lists: the target language's ready voices. Turkish: female `hazir/belgesel_hanim`, `hazir/cekici_spiker`;
+  male `hazir/haber_spikeri`, `hazir/tok_anlatici`, `hazir/gizemli_bilge`. Other languages have one male narrator,
+  so female speakers also get it and the settings check warns you; design a female voice (the sister repository has
+  example prompts, e.g. `en_belgesel_kadin`) and put it in `voxcpm2_kadin_sesleri`.
+- One list only: the other gender uses the same list.
+- `ses.konusmaci_sesleri` (below) still wins for the speakers you name.
+- `ses.cinsiyet_kipi = "segment"`: gender per sentence, the first voice of each list.
+- Checks: an unknown `hazir/<id>` is an error; a ready voice of the other gender in a list is a warning.
+
 ## XTTS v2 (optional, non-commercial weights)
 
 No bundled voice: `ses.xtts_referans_ses` is a 6–15 s recording of **your own voice or a consented voice**. Weights
@@ -126,6 +154,33 @@ olarak kullanın; kendi tasarladığınız sesleri `"<name>/<variant>"` ya da bi
 | `hazir/anlatici_ja` | ja | aynı anlatıcı biçemi, anadili Japonca |
 
 Toplam 14 hazır ses: 7 Türkçe, 7 dilde birer anlatıcı.
+
+Hedef dil Türkçe değilse ve `ses.voxcpm2_ses` varsayılanda bırakıldıysa o dilin hazır anlatıcısı kullanılır
+(`hazir/anlatici_<dil>`); sizin yazdığınız ses hiç değiştirilmez.
+
+#### Cinsiyete göre favori sesler (VoxCPM2)
+
+`ses.konusmaci_cinsiyetine_gore_ses = true` iken VoxCPM2 Supertonic gibi çalışır: konuşmacılar ayrılır, her konuşmacının
+cinsiyeti tahmin edilir, ses o cinsiyetin favori listesinden gelir. Liste virgüllüdür, konuşmacı sırasıyla dağıtılır
+(1. kadın konuşmacı listenin 1. sesini, 2. kadın 2. sesini alır; liste biterse başa döner):
+
+```toml
+[ses]
+motor = "voxcpm2"
+voxcpm2_kadin_sesleri = "ayse/2, hazir/belgesel_hanim"
+voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri, hazir/tok_anlatici"
+```
+
+- Her cinsiyete tek ses: listeye tek ses yazın. Birden çok: birden çok yazın; listede ses varken iki konuşmacı aynı
+  sesi almaz.
+- Liste boşsa hedef dilin hazır sesleri: Türkçe kadın `hazir/belgesel_hanim`, `hazir/cekici_spiker`; erkek
+  `hazir/haber_spikeri`, `hazir/tok_anlatici`, `hazir/gizemli_bilge`. Öbür dillerde tek erkek anlatıcı var; kadın
+  konuşmacılar da onu alır ve ayar denetimi uyarır. Bir kadın sesi tasarlayın (kardeş repoda örnek tarifler var, ör.
+  `en_belgesel_kadin`) ve `voxcpm2_kadin_sesleri` listesine yazın.
+- Yalnız bir liste doluysa öbür cinsiyet de o listeyi kullanır.
+- `ses.konusmaci_sesleri` (aşağıda) adını verdiğiniz konuşmacılarda yine önce gelir.
+- `ses.cinsiyet_kipi = "segment"`: cümle başına cinsiyet, her listenin ilk sesi.
+- Denetim: bilinmeyen `hazir/<id>` hatadır; listede öbür cinsiyetin hazır sesi uyarıdır.
 
 ### XTTS v2 (isteğe bağlı, ticari olmayan ağırlıklar)
 

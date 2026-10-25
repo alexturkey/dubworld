@@ -95,7 +95,7 @@ Boyut ve lisanslar: [docs/kurulum.md](docs/kurulum.md) 1. bölüm, [THIRD_PARTY.
 |---|---|---|
 | Hızlı (en az) | yalnız temel | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1` |
 | Önerilen, NVIDIA GPU yok | temel + EMA Lightning (işlemci) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,tts-ema,kontrol` |
-| Önerilen, NVIDIA 4–5 GB | temel + ses temizliği + EMA Lightning (VoxCPM2 de 4 GB'a sığar, [kardeş repoda](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) ölçüldü; kullanıcı ikinci bir çok dilli ses isterse ekleyin) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,kontrol` |
+| Önerilen, NVIDIA 4–5 GB | temel + ses temizliği + EMA Lightning + öne çıkan ses VoxCPM2 (kendi tasarladığınız ses, 4. adım 6. madde; 4 GB'a sığar, [kardeş repoda](https://github.com/alexturkey/voxcpm2-turkce-ses-tasarimi/blob/main/docs/4gb.md) ölçüldü) | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,voxcpm2,kontrol` |
 | Önerilen, NVIDIA 6 GB ve üstü | temel + ses temizliği + EMA Lightning + VoxCPM2 | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,voxcpm2,kontrol` |
 | Tam | önerilen + `hizalama-diller,parakeet,akilli-kare,youtube,telegram`; NC parçalar (`crisper`, `tts-xtts`) yalnız kullanıcı "yalnız ticari olmayan kullanım"a evet dedikten sonra | `... scripts\kur.ps1 -Adim uv,python,paketler,modeller,demucs,tts-ema,hizalama-diller,parakeet,akilli-kare,youtube,telegram,kontrol` (+ `,crisper,tts-xtts -TicariOlmayanKabul`) |
 
@@ -229,6 +229,26 @@ uzatılır (kabul testi: 7,38 sn kaynak, 9,27 sn dublaj, %+25,6, iş günlüğü
    `ses.ema_cihaz = auto` kalsın (GPU'yu kullanır, GPU meşgulse işlemciye düşer); NVIDIA GPU yok ya da CPU profili →
    `ses.ema_cihaz = cpu` (ONNX). `dubla kontrol`, `tts ema_lightning` satırını ve `auto`'nun şu an neyi seçeceğini
    gösterir. Yalnız Türkçe okur; başka hedef diller için Supertonic kalsın.
+
+6. NVIDIA GPU'da öne çıkan ses VoxCPM2'dir: kullanıcı kendi tasarladığı sesle dublaj yapabilir (çok dilli,
+   Apache-2.0, `docs/motorlar/voxcpm2.md`). `voxcpm2` adımı kuruluysa tek cümleyle önerin, isterse akışı yürütün;
+   sessizce değiştirmeyin.
+   - Tasarım kurulu kardeş repoda yapılır (kendi ortamı ve ayarı), 144 İngilizce örnek tariften biriyle başlanır
+     (18 rol × 8 dil; sesin dilindeki tasarım metni birlikte gelir):
+     ```powershell
+     cd runtime_assets\tts_motorlari\voxcpm2\repo
+     .venv\Scripts\python.exe -m ses_tasarim.ornekler --dil tr --tam
+     .venv\Scripts\python.exe -m ses_tasarim.tasarla --ornek tr_belgesel_kadin --ad ayse --cesit 3
+     ```
+     Sonra o reponun becerisi (`.claude/skills/ses-tasarimi/SKILL.md`): her çeşit kullanıcının gerçek metninden
+     birkaç cümleyi kendi referansı ve tohumuyla okur, kullanıcı dinler ve birini seçer.
+   - Seçilen sesi bu bilgisayarın varsayılanı yapın (yalnız `ayarlar\kullanici.toml` yazılır; kullanıcının seçtiği
+     motor korunur):
+     `.venv\Scripts\python.exe scripts\varsayilan_motor.py --motor voxcpm2 --ses ayse/2`
+   - Birden çok konuşmacı: cinsiyete göre favori listeler, konuşmacı sırasıyla dağıtılır (`docs/sesler.md`):
+     `[ses]` bölümünde `voxcpm2_kadin_sesleri = "ayse/2, hazir/belgesel_hanim"`,
+     `voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri"`. Boş liste hedef dilin hazır seslerini kullanır; öbür
+     dillerde yalnız erkek anlatıcı var, onlar için bir kadın sesi tasarlayın (`<dil>_belgesel_kadin`).
 
 ## 5. Sorun giderme haritası
 

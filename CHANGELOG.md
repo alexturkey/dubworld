@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README (all languages): "Help and support" section with the Discussions link.
 - Engineering docs: "Upstream-capped packages" in `docs/engineering/pinned-values.md` with a safe way to try a newer
   version without breaking the install.
+- VoxCPM2 favorite voices by gender: `ses.voxcpm2_kadin_sesleri` / `ses.voxcpm2_erkek_sesleri` (comma-separated,
+  handed out in speaker order) with the same speaker separation and gender estimate as Supertonic; empty lists use
+  the target language's ready voices; `ses.konusmaci_sesleri` still wins; segment mode uses the first voice of each
+  list. Checks: unknown `hazir/<id>` is an error, a ready voice of the other gender or a missing female voice is a
+  warning (`docs/sesler.md`).
+- `scripts/varsayilan_motor.py --motor voxcpm2 --ses <voice>`: makes a designed or chosen voice this computer's
+  default (user settings layer only).
+- AGENTS: on an NVIDIA GPU VoxCPM2 is the featured voice; design your own voice from the sister repository's 144
+  example prompts and dub with it.
 
 ### Changed
 
@@ -28,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: CrisperWhisper 2.0 Turbo (engine 13) is listed as tested on real audio; CrisperWhisper 2 Medium stays untested.
   The sister repository URLs are built into `kur.ps1`; `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL` are only for forks.
 - README (all 8 languages): first macOS example (product tour voiced in English, Turkish and Arabic on an Apple M4, CPU only).
+- VoxCPM2: with the default single voice, a non-Turkish target language now reads with that language's ready narrator
+  (`hazir/anlatici_<lang>`) instead of the Turkish default voice; a voice you set is never changed.
+- Recommended NVIDIA 4–5 GB setup includes VoxCPM2. Sister repository pinned at `93e8b42` (example prompts).
 
 ### Fixed
 

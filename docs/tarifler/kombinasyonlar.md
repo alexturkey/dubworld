@@ -129,8 +129,9 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 
 Corrected automatically (not errors): transcription engines with a fixed contract (crisperwhisper, moonshine,
 whisper_cpp, parakeet, speechmatics, elevenlabs) use their own model and compute type; `transkripsiyon.model` /
-`hesap_tipi` apply only to faster-whisper and whisperx; `ses.atempo` is not applied in `full_text` mode; no gender
-estimate is made while `ses.motor=voxcpm2` (a voice per speaker is given with `ses.konusmaci_sesleri`).
+`hesap_tipi` apply only to faster-whisper and whisperx; `ses.atempo` is not applied in `full_text` mode; with
+`ses.motor=voxcpm2` the gender estimate picks voices from `ses.voxcpm2_kadin_sesleri` / `ses.voxcpm2_erkek_sesleri`
+(empty: the target language's ready voices; [sesler.md](../sesler.md)).
 
 ## Fine-tuning guide
 
@@ -278,7 +279,8 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 Kendiliğinden düzeltilenler (hata değil): sabit sözleşmeli transkripsiyon motorları (crisperwhisper, moonshine,
 whisper_cpp, parakeet, speechmatics, elevenlabs) kendi model ve hesap tipini kullanır, `transkripsiyon.model` /
 `hesap_tipi` yalnız faster-whisper ve whisperx'te geçerlidir; `full_text` kipinde `ses.atempo` uygulanmaz;
-`ses.motor=voxcpm2` iken cinsiyet tahmini yapılmaz (konuşmacı başına ses `ses.konusmaci_sesleri` ile verilir).
+`ses.motor=voxcpm2` iken cinsiyet tahmini sesi `ses.voxcpm2_kadin_sesleri` / `ses.voxcpm2_erkek_sesleri` listesinden seçer
+(boşsa hedef dilin hazır sesleri; [sesler.md](../sesler.md)).
 
 ### İnce ayar rehberi
 
