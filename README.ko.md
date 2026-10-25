@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · 한국어 · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · 한국어 · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [বাংলা](README.bn.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md) · [Azərbaycanca](README.az.md) · [Bahasa Melayu](README.ms.md)
 
 > DubWorld는 영상을 어떤 서비스에도 올리지 않고 내 컴퓨터에서 다른 언어로 더빙합니다. 말소리를 단어별 타이밍과 함께 글로 옮기고, 번역하고, 원본 영상과 박자를 맞춘 합성 음성으로 읽힙니다(말소리는 최대 1.25배까지만 빨라지고, 남는 차이는 화면 속도를 살짝 조정해 메웁니다). 마지막으로 자막을 붙여 새 영상을 만들어 줍니다. 기본 언어는 튀르키예어이며, 한국어와 다른 언어는 선택한 음성 엔진에 따라 지원됩니다([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 코드: Apache-2.0(LICENSE). 외부 구성 요소와 라이선스: THIRD_PARTY.md. 책임 있는 사용: ETHICS.md.
 개인정보(내 컴퓨터에 남는 것, 클라우드 백엔드로 가는 것): PRIVACY.md. 보안 신고: SECURITY.md. 변경 이력: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:2750a34df58c -->
+<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->

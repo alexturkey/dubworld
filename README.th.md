@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · ไทย · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · ไทย · [বাংলা](README.bn.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md) · [Azərbaycanca](README.az.md) · [Bahasa Melayu](README.ms.md)
 
 > DubWorld พากย์วิดีโอของคุณเป็นภาษาอื่นได้บนคอมพิวเตอร์ของคุณเอง โดยไม่ต้องอัปโหลดขึ้นบริการออนไลน์ใด ๆ: แปลงเสียงพูดเป็นข้อความพร้อมเวลาของทุกคำ แปลข้อความ แล้วให้เสียงสังเคราะห์ (AI) อ่านออกมาให้ตรงจังหวะกับวิดีโอต้นฉบับ (เสียงพูดเร่งได้สูงสุด 1.25 เท่า ส่วนต่างที่เหลือชดเชยด้วยการปรับความเร็ววิดีโอเล็กน้อย) ใส่คำบรรยาย และสร้างวิดีโอใหม่ ภาษาตั้งต้นคือภาษาตุรกี บอกกันตรง ๆ: การพากย์ **เป็น** ภาษาไทยยังทำไม่ได้ เพราะเครื่องมือเสียงในรีโพนี้ยังไม่มีตัวไหนพูดภาษาไทยได้ แต่วิดีโอภาษาไทยสามารถพากย์เป็นภาษาอื่นได้ ([docs/diller.md](docs/diller.md))
 
@@ -123,4 +123,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 โค้ด: Apache-2.0 (LICENSE) ส่วนประกอบภายนอกและสัญญาอนุญาต: THIRD_PARTY.md การใช้งานอย่างรับผิดชอบ: ETHICS.md
 ความเป็นส่วนตัว (อะไรอยู่ในเครื่องคุณ แบ็กเอนด์คลาวด์ได้รับอะไร): PRIVACY.md รายงานความปลอดภัย: SECURITY.md การเปลี่ยนแปลง: CHANGELOG.md
 
-<!-- i18n-source: README.md sha256:2750a34df58c -->
+<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->

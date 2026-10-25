@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · 日本語 · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · 日本語 · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [বাংলা](README.bn.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · [Magyar](README.hu.md) · [Svenska](README.sv.md) · [Azərbaycanca](README.az.md) · [Bahasa Melayu](README.ms.md)
 
 > DubWorld は自分のコンピューター上で動画を別の言語に吹き替えます。単語タイムスタンプ付きの文字起こし、翻訳、元の動画と歩調を合わせた合成音声（発話は最大 1.25 倍まで速め、残りは映像の時間を調整）、字幕、新しい動画を作ります。既定はトルコ語で、他の言語は音声エンジンによります（[docs/diller.md](docs/diller.md)）。
 
@@ -125,4 +125,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:2750a34df58c -->
+<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->

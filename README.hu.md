@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · Magyar · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [বাংলা](README.bn.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · [Română](README.ro.md) · Magyar · [Svenska](README.sv.md) · [Azərbaycanca](README.az.md) · [Bahasa Melayu](README.ms.md)
 
 > A DubWorld a saját gépeden szinkronizálja más nyelvre a videóidat, anélkül hogy bármilyen online szolgáltatásba feltöltené őket: a beszédet szöveggé alakítja minden szó időpontjával, lefordítja, majd egy mesterséges (MI-) hanggal felolvastatja úgy, hogy lépést tartson az eredeti videóval (a beszéd legfeljebb 1,25-szörösre gyorsul, a maradék eltérést a videó tempójának enyhe módosítása veszi fel), feliratot tesz rá, és új videót készít. Az alapértelmezett nyelv a török; a magyar és a többi nyelv a választott hangmotortól függ ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Kérdések, ötletek és az eredményeid: [beszélgetőfórum](https://github.co
 Kód: Apache-2.0 (LICENSE). Külső összetevők és licenceik: THIRD_PARTY.md. Felelős használat: ETHICS.md.
 Adatvédelem (mi marad a gépeden, mit kap egy felhős háttérrendszer): PRIVACY.md. Biztonsági bejelentések: SECURITY.md. Változások: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:2750a34df58c -->
+<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->

@@ -1,6 +1,6 @@
 # DubWorld
 
-[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · Română · [Magyar](README.hu.md) · [Svenska](README.sv.md)
+[English](README.md) · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [العربية](README.ar.md) · [Português (BR)](README.pt-BR.md) · [Italiano](README.it.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md) · [Tiếng Việt](README.vi.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [ไทย](README.th.md) · [বাংলা](README.bn.md) · [اردو](README.ur.md) · [Ελληνικά](README.el.md) · [Čeština](README.cs.md) · Română · [Magyar](README.hu.md) · [Svenska](README.sv.md) · [Azərbaycanca](README.az.md) · [Bahasa Melayu](README.ms.md)
 
 > DubWorld vă dublează videoclipurile în altă limbă direct pe calculatorul dumneavoastră, fără să le încarce pe vreun serviciu online: transformă vorbirea în text împreună cu momentul fiecărui cuvânt, o traduce și o citește cu o voce artificială (AI) care ține pasul cu imaginea originală (vorbirea e accelerată cel mult de 1,25 ori, restul diferenței e preluat de o ușoară schimbare a ritmului video), adaugă subtitrări și creează un videoclip nou. Limba implicită este turca; româna și celelalte limbi depind de motorul de voce ales ([docs/diller.md](docs/diller.md)).
 
@@ -124,4 +124,4 @@ Fiecare depozit-soră are licența, instalarea și issue-urile lui; datorită co
 Cod: Apache-2.0 (LICENSE). Componente externe și licențele lor: THIRD_PARTY.md. Folosire responsabilă: ETHICS.md.
 Confidențialitate (ce rămâne pe calculatorul dumneavoastră, ce primește un backend din cloud): PRIVACY.md. Raportări de securitate: SECURITY.md. Schimbări: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:2750a34df58c -->
+<!-- i18n-source: README.md sha256:08d5cfa0c4f9 -->
