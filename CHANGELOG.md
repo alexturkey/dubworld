@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and weights, one synthetic voice): GPU path and a CPU path through ONNX files exported locally from the pinned
   weights; `ses.ema_cihaz = auto | cuda | cpu` with CPU fallback when the GPU is missing or busy; segment and
   `full_text` modes; shown by `dubla kontrol` (ADR 0019).
-- README (all 8 languages): "Help and support" section with the Discussions link.
+- README in 30 languages (was 8): natively written translations with a shared language menu; Arabic, Persian,
+  Hebrew and Urdu right-to-left; the seven languages no speech engine reads yet (fa, he, ur, th, bn, az, ms) say so
+  plainly and explain that videos in them can still be dubbed into other languages.
+- README (all languages): "Help and support" section with the Discussions link.
 - Engineering docs: "Upstream-capped packages" in `docs/engineering/pinned-values.md` with a safe way to try a newer
   version without breaking the install.
 
