@@ -54,6 +54,10 @@ XTTS_DILLERI = kayit.XTTS_DILLERI  # listede olmayan dil XTTS v2'de okunamaz (ha
 EMA_DILLERI = kayit.EMA_DILLERI  # EMA Lightning yalnız Türkçe okur (hata)
 VOXCPM2_VARSAYILAN_SES = "hazir/haber_spikeri"  # varsayilan.toml ses.voxcpm2_ses; başka hedef dilde o dilin anlatıcısına döner
 TAM_METIN_TTS = {"supertonic", "ema_lightning"}  # genel.dublaj_kipi=full_text bu motorlarla çalışır
+XTTS_KALKIYOR_TR = ("XTTS kullanımdan kalkıyor (ticari olmayan CPML lisansı); VoxCPM2 metinsiz ses klonlamayı "
+                    "destekliyor.")
+XTTS_KALKIYOR_EN = ("XTTS is being deprecated (non-commercial CPML licence); VoxCPM2 supports voice cloning "
+                    "without a reference transcript.")
 HEDEF_DILLERI = kayit.tts_hedef_dilleri()
 TRANSKRIPT_BICIMLERI = ["srt", "plain", "timestamped", "paragraph"]
 WHISPERX_PROFILLERI = ["auto", "whisperx_float32_quality_v1", "whisperx_engine_default_v1"]
@@ -161,6 +165,30 @@ SINIRLAR = {"video.cq": (0, 51), "ses.hiz": (0.5, 2.0), "ileri.tts_deneme": (1, 
 KALDIRILAN_AYARLAR = frozenset({"ileri.tts_isci"})
 
 
+# Emekli motor değerleri: anahtar -> {eski değer: yeni değer}. Enum denetiminden ÖNCE bakılır; eski ayar dosyası
+# ya da --ayar bir sürüm boyunca uyarıyla yeni değere eşlenir (kullanici.toml'a dokunulmaz), sonraki sürümde
+# bu tablo silinir ve eski değer normal "geçersiz seçenek" hatası olur. Motor kaldıran her değişiklik buraya satır ekler.
+EMEKLI_DEGERLER: dict[str, dict[str, str]] = {
+    "transkripsiyon.motor": {},
+}
+_EMEKLI_UYARI = {
+    "transkripsiyon.motor": (
+        "'{eski}' bu sürümde kaldırıldı; '{yeni}' kullanılıyor (CrisperWhisper Turbo kuruluysa o, değilse faster-whisper).",
+        "'{eski}' was removed in this version; using '{yeni}' (CrisperWhisper Turbo if installed, otherwise faster-whisper).",
+    ),
+}
+
+
+def emekli_deger_esle(anahtar: str, deger: Any) -> Any:
+    """Emekli bir seçenek değerini yeni değerine eşler ve iki dilli uyarı yazar; değilse değeri olduğu gibi döndürür."""
+    yeni = EMEKLI_DEGERLER.get(anahtar, {}).get(deger) if isinstance(deger, str) else None
+    if yeni is None:
+        return deger
+    tr, en = _EMEKLI_UYARI[anahtar]
+    logger.warning("%s: %s | %s", anahtar, tr.format(eski=deger, yeni=yeni), en.format(eski=deger, yeni=yeni))
+    return yeni
+
+
 def _kaldirilanlari_ayikla(ayar: dict[str, Any], kaynak: str) -> dict[str, Any]:
     for anahtar in sorted(KALDIRILAN_AYARLAR & set(ayar)):
         logger.warning("%s: '%s' ayarı kaldırıldı (etkisi yoktu), yok sayılıyor", kaynak, anahtar)
@@ -184,6 +212,7 @@ def _deger_dogrula(anahtar: str, deger: Any) -> Any:
         raise AyarHatasi(f"bilinmeyen ayar: {anahtar}")
     kural = SEMA[anahtar]
     if isinstance(kural, list):
+        deger = emekli_deger_esle(anahtar, deger)
         if deger not in kural:
             raise AyarHatasi(f"{anahtar} = {deger!r} geçersiz; seçenekler: {', '.join(map(str, kural))}")
         return deger
@@ -294,6 +323,8 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
         uyari("ses.voxcpm2_kadin_sesleri / ses.voxcpm2_erkek_sesleri yalnız ses.motor=voxcpm2 iken kullanılır",
               "ses.voxcpm2_kadin_sesleri", "ses.voxcpm2_erkek_sesleri", "ses.motor")
     # --- XTTS v2 (isteğe bağlı, CPML ticari olmayan) ------------------------------------------------------
+    if tts == "xtts":
+        uyari(XTTS_KALKIYOR_TR + " | " + XTTS_KALKIYOR_EN, "ses.motor")
     referans = str(ayar.get("ses.xtts_referans_ses") or "").strip()
     if dublaj and tts == "xtts" and not referans:
         hata("XTTS referans ses ister: ses.xtts_referans_ses = kendi sesiniz ya da sahibinin izin verdiği bir ses "
