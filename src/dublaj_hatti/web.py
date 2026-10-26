@@ -8,7 +8,8 @@ Güvenlik (yerel sunucu da saldırı yüzeyidir):
   * her açılışta rastgele oturum belirteci: adres çubuğundaki ?t=... bir kez çereze (HttpOnly, SameSite=Strict)
     çevrilir; her API isteği çerez + X-Dublaj-Belirtec başlığı ister (CSRF), Origin varsa aynı köken olmalı
   * JSON gövdesi en çok 64 KB ve Content-Type application/json; yükleme yalnız video uzantısı ve boyut sınırı
-  * dosya sunumu yalnız çıktı klasörü ve yükleme klasörü içinden (yol kaçışı engelli)
+  * dosya sunumu yalnız çıktı klasörü, yükleme klasörü ve ses kitaplığı içinden (yol kaçışı engelli)
+  * ses kitaplığına (ses_kitapligi) yalnız rıza kaydıyla ses eklenir; ses yalnız bu bilgisayarda kalır
   * aynı anda tek iş; iş ayrı süreçte, pencere açmadan çalışır
   * dış kaynak (CDN, yazı tipi, analiz) yok; Content-Security-Policy default-src 'self'
 
@@ -35,7 +36,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
-from dublaj_hatti import __version__, arayuz_dili
+from dublaj_hatti import __version__, arayuz_dili, ses_kitapligi
 from dublaj_hatti.is_yonetimi import inceleme
 from dublaj_hatti.is_yonetimi.depo import IsDeposu, varsayilan_depo_yolu
 from dublaj_hatti.is_yurutucu import IsYurutucu, arayuz_ayari_denetle, ayar_formu, cikti_klasoru_ac
@@ -44,6 +45,7 @@ from dublaj_hatti.yapilandirma import SEMA, AyarHatasi, ayarlari_yukle
 JSON_SINIRI = 64 * 1024
 DUZENLE_JSON_SINIRI = 1024 * 1024  # satır düzeltmeleri (en çok 2000 karakterlik çok satır) için
 VIDEO_UZANTILARI = {".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"}
+SES_YUKLEME_SINIRI = 50 * 1024 * 1024
 STATIK = Path(__file__).with_name("web_statik")
 CEREZ = "dublaj_oturum"
 
@@ -102,7 +104,7 @@ class Uygulama:
         self.son_nabiz = time.time()  # sayfanın son yoklaması (masaüstü penceresi kapandı mı: masaustu.py)
 
     def izinli_kokler(self) -> list[Path]:
-        return [cikti_koku(), self.yukleme_klasoru]
+        return [cikti_koku(), self.yukleme_klasoru, ses_kitapligi.kok()]
 
 
 class Isleyici(http.server.BaseHTTPRequestHandler):
@@ -232,6 +234,8 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
             except Exception as hata:  # denetim arayüzü hiçbir zaman düşürmez
                 eksik = [arayuz_dili.t("kurulum.denetlenemedi", None, hata=hata)]
             self._json(HTTPStatus.OK, {"eksik": eksik})
+        elif adres.path == "/api/sesler":
+            self._json(HTTPStatus.OK, self._sesler())
         elif adres.path == "/api/sorunlu":
             self._json(HTTPStatus.OK, {"isler": self.uygulama.yurutucu.sorunlu(10)})
         elif adres.path == "/api/is":
@@ -252,6 +256,25 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
             self._dosya_sun(unquote(parse_qs(adres.query).get("yol", [""])[0]))
         else:
             self._gonder(HTTPStatus.NOT_FOUND, b"yok")
+
+    def _sesler(self) -> dict[str, Any]:
+        """Ses kitaplığı + XTTS durumu (kurulu mu, CPML onayı var mı): Sesler sekmesi ve ana ekrandaki ses seçici."""
+        from dublaj_hatti.bolum_50_seslendirme.xtts_tts.api import xtts_python
+        from dublaj_hatti.bolum_50_seslendirme.xtts_tts.lisans import lisans_onayli
+
+        try:  # VoxCPM2 kurulu mu: ses seçici kurulu değilse kurulum ipucunu gösterir (hiçbir zaman hata vermez)
+            from dublaj_hatti.bolum_50_seslendirme.voxcpm2_tts.api import voxcpm2_durumu
+
+            voxcpm2_kurulu = bool(voxcpm2_durumu()["kurulu"])
+        except Exception:
+            voxcpm2_kurulu = False
+        return {"sesler": ses_kitapligi.listele(), "kategoriler": list(ses_kitapligi.KATEGORILER),
+                "sinirlar": {"en_kisa_sn": ses_kitapligi.EN_KISA_SN, "en_uzun_sn": ses_kitapligi.EN_UZUN_SN,
+                             "ad": ses_kitapligi.AD_SINIRI, "metin": ses_kitapligi.METIN_SINIRI,
+                             "dosya_mb": SES_YUKLEME_SINIRI // 2**20,
+                             "uzantilar": sorted(ses_kitapligi.SES_UZANTILARI)},
+                "voxcpm2": {"kurulu": voxcpm2_kurulu},
+                "xtts": {"kurulu": xtts_python() is not None, "lisans_onayli": lisans_onayli()}}
 
     def _oynatilir(self, ham: str) -> str:
         """Yerel ve izinli köklerden birinde olan dosya yolu (oynatıcı onu `/dosya` ile açabilir), yoksa boş."""
@@ -336,6 +359,22 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 veri = self._json_govde()
                 self._json(HTTPStatus.OK, inceleme.satiri_cevir(
                     self.uygulama.yurutucu.depo, _tam_sayi(veri.get("is")), veri.get("no"), veri.get("metin")))
+            elif yol == "/api/ses_ekle":
+                self._ses_ekle()
+            elif yol == "/api/ses_guncelle":
+                veri = self._json_govde()
+                self._json(HTTPStatus.OK, ses_kitapligi.guncelle(str(veri.get("kimlik") or ""), veri.get("ad"),
+                                                                 veri.get("kategori"), veri.get("metin")))
+            elif yol == "/api/ses_sil":
+                ses_kitapligi.sil(str(self._json_govde().get("kimlik") or ""))
+                self._json(HTTPStatus.OK, {"tamam": True})
+            elif yol == "/api/xtts_lisans":
+                if self._json_govde().get("kabul") is not True:
+                    raise ValueError("lisans onayı için kabul: true gerekli")
+                from dublaj_hatti.bolum_50_seslendirme.xtts_tts.lisans import lisans_onayini_kaydet
+
+                lisans_onayini_kaydet()
+                self._json(HTTPStatus.OK, self._sesler())
             elif yol == "/api/klasor_ac":
                 veri = self._json_govde()
                 hedef = Path(str(veri.get("yol") or cikti_koku()))
@@ -347,6 +386,9 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
                 self._json(HTTPStatus.NOT_FOUND, {"hata": "yok"})
         except inceleme.InceleHatasi as hata:
             self._json(hata.kod, {"hata": str(hata), "anahtar": hata.anahtar})
+        except ses_kitapligi.SesKitapligiHatasi as hata:  # ValueError'ın alt sınıfı: önce bu, "anahtar" arayüz dilinde gösterilir
+            self.close_connection = True  # okunmamış gövde kalmış olabilir
+            self._json(HTTPStatus.BAD_REQUEST, {"hata": str(hata), "anahtar": hata.anahtar})
         except (ValueError, AyarHatasi, json.JSONDecodeError) as hata:
             self.close_connection = True  # okunmamış gövde kalmış olabilir
             self._json(HTTPStatus.BAD_REQUEST, {"hata": str(hata)})
@@ -379,6 +421,37 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
         gecici.replace(hedef)
         self.uygulama.yuklenenler[kimlik] = hedef
         self._json(HTTPStatus.OK, {"kimlik": kimlik, "ad": ad, "boyut": uzunluk})
+
+    def _ses_ekle(self) -> None:
+        """Ham gövde = ses dosyası; ad, kategori, rıza ve isteğe bağlı kayıt metni başlıklarda (X-Ses-*, URI kodlu)."""
+        baslik = lambda ad: unquote(self.headers.get(ad) or "")  # noqa: E731
+        dosya_adi = Path(baslik("X-Dosya-Adi")).name
+        if Path(dosya_adi).suffix.lower() not in ses_kitapligi.SES_UZANTILARI:
+            raise ses_kitapligi.SesKitapligiHatasi(
+                "desteklenen ses dosyaları: " + ", ".join(sorted(ses_kitapligi.SES_UZANTILARI)), "uzanti_gecersiz")
+        uzunluk = int(self.headers.get("Content-Length") or 0)
+        if uzunluk <= 0 or uzunluk > SES_YUKLEME_SINIRI:
+            raise ses_kitapligi.SesKitapligiHatasi(
+                f"ses dosyası 0 ya da {SES_YUKLEME_SINIRI // 2**20} MB üstünde", "dosya_boyutu")
+        self.uygulama.yukleme_klasoru.mkdir(parents=True, exist_ok=True)
+        gecici = self.uygulama.yukleme_klasoru / f"ses_{uuid.uuid4().hex}{Path(dosya_adi).suffix.lower()}.part"
+        try:
+            kalan = uzunluk
+            with open(gecici, "wb") as cikti:
+                while kalan > 0:
+                    parca = self.rfile.read(min(1 << 20, kalan))
+                    if not parca:
+                        break
+                    cikti.write(parca)
+                    kalan -= len(parca)
+            if kalan:
+                raise ses_kitapligi.SesKitapligiHatasi("yükleme yarım kaldı", "yukleme_yarim")
+            kayit = ses_kitapligi.ekle(gecici, baslik("X-Ses-Adi"), baslik("X-Ses-Kategori"), baslik("X-Ses-Riza"),
+                                       baslik("X-Ses-Taklit-Yok") == "1", dosya_adi=dosya_adi,
+                                       metin=baslik("X-Ses-Metin"))
+        finally:
+            gecici.unlink(missing_ok=True)
+        self._json(HTTPStatus.OK, kayit)
 
     def _baslat(self, veri: dict[str, Any]) -> None:
         kimlik = str(veri.get("yuklenen") or "")

@@ -11,6 +11,7 @@ from typing import Any, Dict
 
 import soundfile as sf
 
+from dublaj_hatti import ses_kitapligi
 from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.api import SupertonicDubResult, build_supertonic_audio_mix
 from dublaj_hatti.bolum_50_seslendirme.supertonic_tts.execution import prepare_supertonic_result_for_segment
 from dublaj_hatti.bolum_50_seslendirme.voxcpm2_tts.ayarlar import (
@@ -59,6 +60,8 @@ def _run_engine(voice: str, parts: list, cfg, work_dir: Path) -> Dict[str, Any]:
     job_path = work_dir / "is.json"
     result_path = work_dir / "sonuc.json"
     job = {"ses": voice, "dil": cfg.target_lang, "calisma": str(work_dir), "parcalar": parts}
+    if ses_kitapligi.kitaplik_mi(voice):  # kitaplik/<kimlik>: kullanicinin kendi sesi (rizali), yoksa yol gosteren hata
+        job["kitaplik"] = ses_kitapligi.coz(voice)
     job_path.write_text(json.dumps(job, ensure_ascii=False), encoding="utf-8")
     command = [
         durum["python"], "-B", str(Path(__file__).with_name("kosucu.py")),

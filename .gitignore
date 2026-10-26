@@ -27,5 +27,7 @@ ayarlar/kullanici.toml
 runtime_assets/
 ayarlar/lisans_onaylari.json
 ayarlar/lisans_onaylari.tmp
+# the user's own reference voices (ses_kitapligi.py): local only, never committed
+ayarlar/ses_kitapligi/
 # translation bridge working state (job text, translations, usage logs)
 src/dublaj_hatti/bolum_40_ceviri/*/runtime/

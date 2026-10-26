@@ -18,6 +18,7 @@
 
 - `ses.motor = "voxcpm2"`
 - `ses.voxcpm2_ses`: `hazir/<name>` (ready voices in [sesler.md](../sesler.md)), `<name>/<variant>` (your designed voice) or a voice folder path
+- `ses.voxcpm2_ses = "kitaplik/<id>"`: a voice you added on the Voices tab (cloned from your recording, audio-only, or with the optional transcript; fixed seed per voice; see [sesler.md](../sesler.md))
 - per speaker: `ses.konusmaci_sesleri.SPEAKER_00 = "hazir/<name>"` (gender prediction is skipped)
 
 **Common errors**
@@ -62,6 +63,7 @@
 
 - `ses.motor = "voxcpm2"`
 - `ses.voxcpm2_ses`: `hazir/<name>` ([sesler.md](../sesler.md) içindeki hazır sesler), `<name>/<variant>` (kendi tasarladığınız ses) ya da bir ses klasörü yolu
+- `ses.voxcpm2_ses = "kitaplik/<kimlik>"`: Sesler sekmesinde eklediğin ses (kaydından klonlanır; yalnız ses ya da isteğe bağlı kayıt metniyle; her sesin sabit tohumu; bkz. [sesler.md](../sesler.md))
 - konuşmacı başına: `ses.konusmaci_sesleri.SPEAKER_00 = "hazir/<name>"` (cinsiyet tahmini atlanır)
 
 **Sık hatalar**

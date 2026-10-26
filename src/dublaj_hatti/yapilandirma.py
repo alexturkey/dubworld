@@ -424,8 +424,17 @@ def _voxcpm2_sesleri_denetle(ayar: dict[str, Any], sesler: dict, dil: str, hata:
         yanlis = [s for s in liste if s.startswith("hazir/") and s[6:] not in kayit.VOXCPM2_HAZIR_SESLER]
         if yanlis:
             hata(f"{anahtar}: bilinmeyen hazır ses {', '.join(yanlis)}; hazır sesler: "
-                 f"{', '.join('hazir/' + a for a in kayit.VOXCPM2_HAZIR_SESLER)} (kendi sesiniz: <ad>/<çeşit>)",
+                 f"{', '.join('hazir/' + a for a in kayit.VOXCPM2_HAZIR_SESLER)} (kendi sesiniz: <ad>/<çeşit> ya da kitaplik/<kimlik>)",
                  anahtar, "ses.motor")
+    from dublaj_hatti import ses_kitapligi  # yerel içe aktarma: ses_kitapligi bu modülden PROJE_KOKU alır
+
+    for anahtar, liste in adlar.items():  # kitaplik/<kimlik>: kullanıcının kendi sesi, kitaplıkta var mı
+        for ses in liste:
+            if ses_kitapligi.kitaplik_mi(ses):
+                try:
+                    ses_kitapligi.coz(ses)
+                except ses_kitapligi.SesKitapligiHatasi as sorun:
+                    hata(f"{anahtar}: {sorun}", anahtar, "ses.motor")
     for anahtar, cinsiyet in (("ses.voxcpm2_kadin_sesleri", "female"), ("ses.voxcpm2_erkek_sesleri", "male")):
         ters = [s for s in adlar[anahtar]
                 if s.startswith("hazir/") and kayit.VOXCPM2_HAZIR_CINSIYET.get(s[6:], cinsiyet) != cinsiyet]
@@ -719,14 +728,19 @@ def ses_listesi(metin: Any) -> list[str]:
 
 
 def voxcpm2_havuzlari(ayar: dict[str, Any]) -> tuple[list[str], list[str], str]:
-    """VoxCPM2 cinsiyete göre (kadın, erkek) favori listesi ve kaynağı ("kullanici" | "varsayilan" | "tek_ses").
+    """VoxCPM2 cinsiyete göre (kadın, erkek) favori listesi ve kaynağı
+    ("kullanici" | "varsayilan" | "tek_ses" | "secili_ses").
 
     Kullanıcının listesi önce gelir; boş liste hedef dilin hazır seslerinden dolar; o dilde de yoksa tek ses
-    (ses.voxcpm2_ses). Bir cinsiyetin listesi boşsa o cinsiyet öbür listeyi kullanır.
+    (ses.voxcpm2_ses). Bir cinsiyetin listesi boşsa o cinsiyet öbür listeyi kullanır. Listeler boşken tek ses
+    kitaplıktan seçilmişse (kitaplik/<kimlik>) herkes o sesle okunur ("secili_ses").
     """
     kadin = ses_listesi(ayar.get("ses.voxcpm2_kadin_sesleri"))
     erkek = ses_listesi(ayar.get("ses.voxcpm2_erkek_sesleri"))
     kaynak = "kullanici"
+    secili = str(ayar.get("ses.voxcpm2_ses") or "")
+    if not kadin and not erkek and secili.startswith("kitaplik/"):
+        return [secili], [secili], "secili_ses"  # kullanıcı kitaplıktan kendi sesini seçti: herkes o sesle okunur
     if not kadin and not erkek:
         kadin, erkek = kayit.voxcpm2_varsayilan_havuz(str(ayar.get("genel.hedef_dil") or ""))
         kaynak = "varsayilan"

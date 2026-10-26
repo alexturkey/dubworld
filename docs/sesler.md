@@ -79,6 +79,24 @@ voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri, hazir/tok_anlatici"
 - `ses.cinsiyet_kipi = "segment"`: gender per sentence, the first voice of each list.
 - Checks: an unknown `hazir/<id>` is an error; a ready voice of the other gender in a list is a warning.
 
+## Voice library (your own voice)
+
+Open the **Voices** tab, press **Add voice** and pick a recording of 3 to 30 seconds (6 to 15 seconds is best, one
+speaker, no music). Give it a name and a category (female, male, child, young, elderly, other), then state whose voice
+it is: "this is my own voice" or "the owner explicitly allowed it", and confirm that it does not imitate a real person
+without consent ([ETHICS.md](../ETHICS.md)). Without both, **Save** stays off and the line under it says why.
+
+- Optional **transcript of the recording**: if you type exactly what is said in the recording (up to 600 characters),
+  VoxCPM2 clones the voice more faithfully. Leave it empty and the voice is cloned from the audio alone.
+- Each voice has its own fixed seed, so the same voice sounds the same in every dubbing.
+- Use it: press **Use in dubbing** on the card (or pick it under "3. Voice" on the Dub card). The setting is
+  `ses.voxcpm2_ses = "kitaplik/<id>"`; it is accepted wherever a VoxCPM2 voice is (`ses.kadin_ses`, `ses.erkek_ses`,
+  `ses.konusmaci_sesleri.<speaker>`). A chosen library voice wins over the automatic gender pools.
+- Rename, change the category, play, or delete (one confirmation) from the card. Everything is stored on this computer
+  under `ayarlar/ses_kitapligi/` (git-ignored; change it with `DUBLAJ_SES_KITAPLIGI`); nothing is uploaded.
+- Engine: VoxCPM2 (Apache-2.0, NVIDIA GPU). If you have XTTS installed, a card also offers "Use with XTTS
+  (non-commercial licence)", which needs the existing licence acceptance below.
+
 ## XTTS v2 (optional, non-commercial weights)
 
 No bundled voice: `ses.xtts_referans_ses` is a 6–15 s recording of **your own voice or a consented voice**. Weights
@@ -181,6 +199,24 @@ voxcpm2_erkek_sesleri = "ali/1, hazir/haber_spikeri, hazir/tok_anlatici"
 - `ses.konusmaci_sesleri` (aşağıda) adını verdiğiniz konuşmacılarda yine önce gelir.
 - `ses.cinsiyet_kipi = "segment"`: cümle başına cinsiyet, her listenin ilk sesi.
 - Denetim: bilinmeyen `hazir/<id>` hatadır; listede öbür cinsiyetin hazır sesi uyarıdır.
+
+### Ses kitaplığı (kendi sesin)
+
+**Sesler** sekmesini aç, **Ses ekle**'ye bas ve 3 ile 30 saniyelik bir kayıt seç (en iyisi 6 ile 15 saniye, tek
+konuşmacı, müziksiz). Bir ad ve kategori ver (kadın, erkek, çocuk, genç, yaşlı, diğer), sonra sesin kime ait olduğunu
+söyle: "bu benim sesim" ya da "sahibi açıkça izin verdi"; ayrıca gerçek bir kişiyi izni olmadan taklit etmediğini onayla
+([ETHICS.md](../ETHICS.md)). İkisi olmadan **Kaydet** kapalı kalır ve altındaki satır nedenini yazar.
+
+- İsteğe bağlı **kaydın metni**: kayıtta ne söylendiyse aynen yazarsan (en çok 600 karakter) VoxCPM2 sesi daha benzer
+  klonlar. Boş bırakırsan ses yalnız ses kaydından klonlanır.
+- Her sesin kendi sabit tohumu vardır; aynı ses her dublajda aynı duyulur.
+- Kullanmak: kartta **Dublajda kullan**'a bas (ya da Dublaj kartında "3. Ses"ten seç). Ayar
+  `ses.voxcpm2_ses = "kitaplik/<kimlik>"`; VoxCPM2 sesinin kabul edildiği her yerde geçerlidir (`ses.kadin_ses`,
+  `ses.erkek_ses`, `ses.konusmaci_sesleri.<konuşmacı>`). Seçilen kitaplık sesi otomatik cinsiyet havuzlarının önüne geçer.
+- Karttan adı değiştir, kategoriyi değiştir, dinle ya da sil (tek onay). Her şey bu bilgisayarda
+  `ayarlar/ses_kitapligi/` altında durur (git dışı; `DUBLAJ_SES_KITAPLIGI` ile değişir); hiçbir şey yüklenmez.
+- Motor: VoxCPM2 (Apache-2.0, NVIDIA GPU). XTTS kuruluysa kartta ayrıca "XTTS ile kullan (ticari olmayan lisans)"
+  görünür; aşağıdaki mevcut lisans onayını ister.
 
 ### XTTS v2 (isteğe bağlı, ticari olmayan ağırlıklar)
 
