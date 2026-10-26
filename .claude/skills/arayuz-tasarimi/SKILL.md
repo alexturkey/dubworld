@@ -1,6 +1,6 @@
 ---
 name: arayuz-tasarimi
-description: "Rules for designing and changing the DubWorld web interface so it stays consistent, calm and helpful: colour/space/motion tokens, one icon per action, one confirm dialog for risky actions, no layout shift, deliberate motion, familiar placement, instant feedback, plain words (tr/en), accessibility, and a verification checklist. Use when adding or editing anything in web_statik (index.html, app.css, app.js), a button, icon, dialog, toast, list or setting, or when the user says 'interface', 'design', 'button', 'icon', 'delete', 'are you sure', 'jumps', 'layout shift', 'animation', 'arayüz', 'tasarım', 'düğme', 'simge', 'silme onayı', 'ekran kayıyor', 'hareket'."
+description: "Rules for designing and changing the DubWorld web interface so it stays consistent, calm and helpful: colour/space/motion tokens, one icon per action, one confirm dialog for risky actions, no layout shift, deliberate motion, familiar placement, instant feedback, plain words (tr/en), accessibility, phone-first clarity (big, obvious, always helpful), the media player, and a verification checklist. Use when adding or editing anything in web_statik (index.html, app.css, app.js), a button, icon, dialog, toast, list or setting, or when the user says 'interface', 'design', 'button', 'icon', 'delete', 'are you sure', 'jumps', 'layout shift', 'animation', 'arayüz', 'tasarım', 'düğme', 'simge', 'silme onayı', 'ekran kayıyor', 'hareket'."
 ---
 
 # Interface design / Arayüz tasarımı
@@ -26,7 +26,7 @@ adding anything new; if a rule here and the code disagree, fix the code.
 
 - Icons come only from the `<symbol id="s-...">` sprite in `index.html`; no emoji or text glyphs as icons.
 - Fixed vocabulary (add to it, never vary it): trash = delete, two sheets = copy, pencil = rename, play = play/use,
-  stop square = stop, x = close, upload arrow = add file, folder = open folder, check = done, sliders = settings.
+  stop square = stop, x = close, warning triangle = caution/stale, circular arrows = redo/replay/translate again, corners out/in = full screen/leave, upload arrow = add file, folder = open folder, check = done, sliders = settings.
 - An icon never stands alone: a text label next to it, or `aria-label` plus `title` (tooltip) with the same words.
 - The same verb for the same action in every screen and both languages (Use, Rename, Delete, Copy, Stop, Close).
 - The danger colour is for Delete and Stop (on hover/focus and in the confirm dialog) and nothing else.
@@ -101,7 +101,56 @@ The eye is pulled to anything that moves, so motion must earn its place.
 - Meaning never by colour alone (add an icon or text). Dialogs use `aria-labelledby`; toasts `role="status"`;
   errors `role="alert"`.
 
-## 10. Verification checklist (before saying "done")
+## 10. Phone-first, clear and helpful
+
+"Phone-like" does NOT mean small. It means: big, clear, obvious, and always helping. The person must always know what
+they did, what the screen is waiting for and what to do next. Principles from Apple's Human Interface Guidelines:
+clarity (one purpose per screen, readable text), direct feedback (every touch answers at once), consistency (same
+thing, same place, same word) and reversibility (undo instead of "are you sure" where the action is cheap).
+
+- **Everything interactive is visible.** No menu or button that appears only on hover (the only exception is the
+  media player bar, section 11, which comes back on any touch, key or move). The selected state is obvious by three
+  signals together: a mark (check, filled dot), a colour and a word ("Selected", "Original"). Never colour alone.
+- **Every opened thing has a visible close icon** (x, top right) that is at least 44 px; Esc is an extra, never the
+  only way. This holds for dialogs, drawers, side panels, bottom sheets and full screen.
+- **Numbers are readable:** `font-variant-numeric: tabular-nums`, units always written ("12 sec", "59 %", "1,5 MB"),
+  times as `m:ss`, never a bare number.
+- **Inputs help before the person types:** a placeholder with a real example ("e.g. Ayse - my own voice"), the right
+  `inputmode`/`type` (numeric pad for numbers, `url` for links), a length counter when there is a limit, silent
+  clean-up on blur (trim, collapse runs of spaces, full-width digits to normal), and pre-filtering of characters the
+  backend would reject (control characters, characters that are not allowed in a name) so the person never meets that error.
+- **Guidance instead of errors.** The message sits directly under the field, says what happened and how to fix it
+  ("The recording is shorter than 3 sec; 6-15 sec works best."). Red is only for real errors (something failed);
+  advice is neutral or amber. Validate when the field loses focus, not while typing. A disabled button says WHY, in
+  words next to it ("Write a name first"), and the slot for that text is reserved so nothing moves.
+- **Undo before confirm.** Cheap changes save by themselves and show "Saved" in a fixed slot; bulk changes (replace all)
+  show a toast with "Undo". Ctrl+Z must keep working inside text fields (do not capture it).
+- **Big and clear:** body text 16 px or more, rows with room (44 px touch height), one primary action per area, a
+  short plain-language help line under every new feature, written for a beginner.
+- **Order of states** for anything that can wait: loading (skeleton of the final size) -> content -> saving ->
+  saved/failed. Each state has words, not only an icon.
+
+## 11. Media player
+
+- The video box has a fixed height; any ratio (9:16, 16:9, square) sits inside with `object-fit: contain` and black
+  bars, so the page never moves when the clip changes. While a job runs or after it finishes, the box shows that
+  job's own source or result video, never the empty upload zone; if the file cannot be served, the box says so in
+  one short sentence.
+- A visible full-screen icon sits inside the video at the top right; in full screen the same place shows a visible
+  exit icon. Esc and double click also work. The full-screen button lives only there (not repeated in the bar).
+- The controls bar overlays the bottom of the video on a dark gradient (token `--ov-gradyan*`) so it stays readable
+  on any picture, and slides up from the bottom. All hit areas are 44 px.
+- Auto-hide: while playing, the bar and the cursor hide after about 3 s without pointer movement. Pointer move, touch,
+  keyboard focus, a key press or pause bring it back. While paused it is always visible. On touch, the first tap on a
+  hidden bar only shows it. `prefers-reduced-motion`: no slide, just show or hide.
+- On a narrow box (up to 520 px) the bar drops the 5 s buttons and the speed menu (they return in full screen) so it
+  never hides the picture.
+- Shortcuts (when the player has focus or is full screen, never while typing in a field): Space or K play/pause,
+  Left/Right 5 s back/forward, Up/Down volume, F full screen, M mute, C captions, Esc leaves full screen.
+- Expected by everyone: a loading spinner with the word "Loading" while buffering, a "Replay" button at the end,
+  a remembered volume (`localStorage` in try/catch), elapsed and total time in tabular numbers, a speed menu.
+
+## 12. Verification checklist (before saying "done")
 
 1. `python -m pytest tests/test_web_arayuz.py tests/test_arayuz_dili.py` passes.
 2. Screenshots at desktop, half window (about 960 px) and narrow (420 px or less), light and dark, and once with
@@ -125,3 +174,5 @@ ayrılır, listeler zıplamaz, düğme genişliği sabit. Hareket yalnız neden-
 yok, `prefers-reduced-motion` hepsini durdurur. Bilinen yerleşim: ana eylem sağ altta, silme ayrı ve sonda, arama
 üstte. 100 ms içinde geri bildirim. Sade dil, aynı eylem aynı kelime. 44 px dokunma alanı, odak görünür. Bitirmeden:
 ekran görüntüleri (gündüz/gece/dar/hareket azaltılmış), taşma ve kayma (CLS < 0,02) ölçümü.
+
+Telefon gibi = küçük değil, büyük ve net: etkileşimli her şey görünür, seçili olan işaret + renk + yazıyla belli, açılan her şeyde görünür kapatma ikonu, rakamlar birimli ve tabular, giriş alanında örnek metin / doğru klavye / sessiz düzeltme, hata yerine alanın altında yol gösteren mesaj (yazarken değil alandan çıkınca), pasif düğmenin nedeni yanında yazılı, geri alma. Oynatıcı: sabit kutuda her oran sığar, sağ üstte görünür tam ekran / çıkış ikonu, altta gradyanlı kontrol çubuğu 3 sn sonra saklanır, Boşluk/K, ←/→, F, M kısayolları.

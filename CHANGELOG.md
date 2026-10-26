@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Review before voicing (optional): tick "Review the text before voicing" on the dubbing card (also the setting
+  `genel.gozden_gecir`, `dubla <video> --ayar genel.gozden_gecir=true`). Dubbing pauses right after the translation
+  ("Waiting for review", not an error) and a side panel opens next to the video (a sheet from the bottom on narrow
+  screens, full screen on phones). Fix the original or the translation line by line (changes save by themselves),
+  jump the video to a line by its time, find and replace a word everywhere (with Undo), translate a single line
+  again, and see which lines may be too long for their time. "Continue dubbing" shows how many lines will be voiced and
+  keeps your text; `dubla devam <job>` does the same from the command line.
+- Video player: the picture area always shows the video of the running or finished job (also after a page reload and
+  for jobs started from the command line); tall 9:16 and wide 16:9 clips both fit in the same fixed box with no page
+  jump. A clear full-screen icon sits at the top right of the video (and an exit icon in full screen; Esc and double
+  click work too). The controls bar lies over the bottom of the picture, fades in and out by itself while playing,
+  and keeps 44 px touch targets. New: loading spinner, "Replay" at the end, remembered volume, keyboard shortcuts
+  (Space or K, arrows, M, F).
+- A finished job shows a "Done" card with Download and "Dub into another language" (starts from the saved
+  translation, so transcription is not repeated).
+- Interface rules for a clear, phone-like screen (big, obvious, always helping) in the `arayuz-tasarimi` skill: visible
+  controls, visible close icons, readable numbers, example text in fields, guidance instead of errors, undo.
 - Modern interface: the chosen video plays right away in a built-in player (timeline with sentence marks, volume,
   speed, subtitles, full screen, keyboard shortcuts); a finished dub plays in the same place with an Original /
   Dubbed switch that keeps the moment. Day and night colours (follows the computer, switch at the top right; calm,

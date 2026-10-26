@@ -36,6 +36,10 @@
   <symbol id="s-durdur" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" class="dolu"/></symbol>
   <symbol id="s-tamam" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="s-mikrofon" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+  <symbol id="s-indir" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="s-kucult" viewBox="0 0 24 24"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></symbol>
+  <symbol id="s-uyari" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.01"/></symbol>
+  <symbol id="s-yenile" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.3L4 8.5M4 4v4.5h4.5M4 13a8 8 0 0 0 14.3 4.3L20 15.5M20 20v-4.5h-4.5"/></symbol>
   <symbol id="s-klasor" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
   <symbol id="s-arsiv" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
 </svg>
@@ -67,7 +71,7 @@
   <section id="onerilen" class="panel etkin duzen">
     <div class="sahne">
       <h2 class="sahne-baslik" data-t="adim.video">1. Videonu seç</h2>
-      <div class="oynatici" id="oynatici">
+      <div class="oynatici" id="oynatici" tabindex="0" data-t-baslik="oynatici.alan" aria-label="Video oynatıcı">
         <label class="bos-durum" id="dosya-alani">
           <input type="file" id="dosya" accept=".mp4,.mkv,.mov,.webm,.avi,.m4v">
           <svg aria-hidden="true"><use href="#s-yukle"/></svg>
@@ -75,6 +79,11 @@
           <span data-t="oynatici.bos_alt">ya da tıklayıp seç · mp4, mkv, mov, webm, avi</span>
         </label>
         <video id="video" playsinline preload="metadata" hidden></video>
+        <p class="video-mesaj" id="video-mesaj" role="status" hidden></p>
+        <div class="bekleme" id="bekleme" role="status" hidden><span class="donen" aria-hidden="true"></span><span data-t="oynatici.yukleniyor">Yükleniyor…</span></div>
+        <button id="yeniden-oynat" class="yeniden-oynat" type="button" hidden><svg aria-hidden="true"><use href="#s-yenile"/></svg><span data-t="oynatici.yeniden">Yeniden oynat</span></button>
+        <button id="tam-ekran" class="kose-dugme" type="button" data-t-baslik="oynatici.tam_ekran" title="Tam ekran" aria-label="Tam ekran" hidden><svg><use href="#s-tam"/></svg></button>
+        <button id="tam-cik" class="kose-dugme" type="button" data-t-baslik="oynatici.tam_ekran_cik" title="Tam ekrandan çık" aria-label="Tam ekrandan çık" hidden><svg><use href="#s-kucult"/></svg></button>
         <div class="kontroller" id="kontroller" hidden>
           <div class="zaman-cizgisi" id="zaman-cizgisi">
             <div class="isaretler" id="isaretler" aria-hidden="true"></div>
@@ -99,7 +108,6 @@
               <option value="0.75">0.75×</option><option value="1" selected>1×</option>
               <option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
             <button id="altyazi" class="simge-dugme" data-t-baslik="oynatici.altyazi" title="Altyazı aç / kapa" aria-label="Altyazı aç / kapa" hidden><svg><use href="#s-altyazi"/></svg></button>
-            <button id="tam-ekran" class="simge-dugme" data-t-baslik="oynatici.tam_ekran" title="Tam ekran" aria-label="Tam ekran"><svg><use href="#s-tam"/></svg></button>
           </div>
         </div>
       </div>
@@ -112,12 +120,38 @@
              placeholder="ya da https bağlantısı yapıştır (isteğe bağlı: yt-dlp / gallery-dl kurulu olmalı; yalnız hakkınız olan içerik)">
     </div>
 
-    <div class="yan">
+    <div class="yan" id="yan">
+      <aside class="inceleme-paneli" id="inceleme" hidden aria-labelledby="inceleme-sekme">
+        <div class="inceleme-ust">
+          <span class="rozet" data-t="inceleme.rozet">İnceleme bekliyor</span>
+          <button class="ana devam-dugmesi" id="inceleme-devam" type="button" data-t="inceleme.devam">Dublaja devam et</button>
+          <button id="inceleme-kapat" class="simge-dugme" type="button" data-t-baslik="inceleme.kapat" title="Paneli kapat" aria-label="Paneli kapat"><svg><use href="#s-kapat"/></svg></button>
+        </div>
+        <div class="inceleme-sekmeler" role="tablist" data-t-baslik="inceleme.sekmeler" aria-label="Panel bölümleri">
+          <button role="tab" id="inceleme-sekme" class="secili" aria-selected="true" aria-controls="inceleme-govde" type="button"><svg aria-hidden="true"><use href="#s-altyazi"/></svg><span data-t="inceleme.sekme_metin">Metin</span></button>
+        </div>
+        <div class="inceleme-govde" id="inceleme-govde" role="tabpanel" aria-labelledby="inceleme-sekme">
+          <p class="inceleme-not" data-t="inceleme.not">Çeviri hazır. İstersen düzelt; hiçbir şey değiştirmek zorunda değilsin. Hazırsan 'Dublaja devam et'e bas.</p>
+          <div class="bul-satiri">
+            <div class="bul-alanlar">
+              <input type="text" id="bul-ara" maxlength="200" autocomplete="off" spellcheck="false" data-t-ipucu="inceleme.bul_ipucu" placeholder="ör. Ahmet" data-t-baslik="inceleme.bul_etiket" aria-label="Bul ve değiştir">
+              <span class="ok" aria-hidden="true">→</span>
+              <input type="text" id="bul-yeni" maxlength="200" autocomplete="off" spellcheck="false" data-t-ipucu="inceleme.yerine_ipucu" placeholder="ör. Mehmet" aria-label="Yerine">
+              <button id="bul-degistir" type="button" disabled data-t="inceleme.hepsini">Hepsini değiştir</button>
+            </div>
+            <p class="bul-sayi" id="bul-sayi" role="status"></p>
+          </div>
+          <div class="inceleme-liste" id="inceleme-liste"></div>
+        </div>
+        <p class="inceleme-durum" id="inceleme-durum" role="status" aria-live="polite"></p>
+      </aside>
       <div class="kart">
         <h2 data-t="adim.dil">2. Dublaj dili</h2>
         <!-- Ayarlar'daki genel.hedef_dil ile aynı ayar (app.js onerilenDiliEsitle); ayrı kaynak yok -->
         <label for="hedef-dil" class="gizli-etiket" data-t="adim.dil">2. Dublaj dili</label>
         <select id="hedef-dil" class="dil-secici"></select>
+        <label class="kutu iri-kutu" for="gozden-kutusu"><input type="checkbox" id="gozden-kutusu"> <span data-t="gozden.kutu">Seslendirmeden önce metni gözden geçir (isteğe bağlı)</span></label>
+        <p class="not kutu-yardim" data-t="gozden.yardim">Çeviri bitince dublaj durur; metni okuyup düzeltebilirsin. Hazır olunca sen devam edersin. Kapalıysa dublaj hiç durmadan biter.</p>
         <h2 data-t="adim.baslat">3. Başlat</h2>
         <div class="satir">
           <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
@@ -130,6 +164,11 @@
         <div class="ilerleme-ust">
           <h2 id="ilerleme-baslik" data-t="ilerleme.calisiyor">İş sürüyor</h2>
           <span id="ilerleme-yuzde" class="buyuk-yuzde"></span>
+        </div>
+        <div class="inceleme-seridi" id="inceleme-seridi" hidden>
+          <span class="rozet" data-t="inceleme.rozet">İnceleme bekliyor</span>
+          <button class="ana devam-dugmesi" type="button" data-t="inceleme.devam">Dublaja devam et</button>
+          <button id="inceleme-ac" type="button"><svg aria-hidden="true"><use href="#s-kalem"/></svg><span data-t="inceleme.ac">Metni gözden geçir</span></button>
         </div>
         <ol id="duraklar" class="duraklar"></ol>
         <div id="ilerleme-cerceve" class="cubuk kalin" role="progressbar" aria-valuemin="0" aria-valuemax="100"
@@ -146,9 +185,13 @@
       </div>
 
       <div class="kart" id="sonuc" hidden>
-        <h2 data-t="web.sonuc">Sonuç</h2>
+        <h2 class="hazir-baslik"><svg aria-hidden="true"><use href="#s-tamam"/></svg><span data-t="bitti.hazir">Hazır</span></h2>
+        <div class="satir">
+          <a id="indir" class="dugme-gorunumlu ana" download><svg aria-hidden="true"><use href="#s-indir"/></svg><span data-t="bitti.indir">İndir</span></a>
+          <button id="baska-dil" type="button"><svg aria-hidden="true"><use href="#s-dil"/></svg><span data-t="bitti.baska_dil">Başka dile dubla</span></button>
+          <button id="klasor-ac" data-t="dugme.cikti_klasoru">Çıktı klasörünü aç</button>
+        </div>
         <ul id="sonuc-dosyalari" class="dosya-listesi"></ul>
-        <div class="satir"><button id="klasor-ac" data-t="dugme.cikti_klasoru">Çıktı klasörünü aç</button></div>
       </div>
     </div>
   </section>
@@ -188,6 +231,7 @@
   <div id="form"></div>
 </aside>
 <div id="perde" class="perde" hidden></div>
+<div id="inceleme-perde" class="perde" hidden></div>
 
 <dialog id="yardim" aria-labelledby="yardim-baslik">
   <div class="cekmece-ust">
@@ -201,10 +245,10 @@
   <p class="not" data-t="onerilen.not4">Yalnız hakkınız olan ya da izinli içerik kullanın. Çıktıya "yapay zekâ ile dublajlandı" meta etiketi eklenir.</p>
   <h3 data-t="yardim.kisayollar">Klavye kısayolları</h3>
   <ul class="kisayollar">
-    <li data-t="kisayol.oynat">Boşluk: oynat / duraklat</li>
+    <li data-t="kisayol.oynat">Boşluk ya da K: oynat / duraklat</li>
     <li data-t="kisayol.sar">← →: 5 saniye geri / ileri</li>
     <li data-t="kisayol.ses">↑ ↓: sesi aç / kıs, M: sessiz</li>
-    <li data-t="kisayol.ekran">F: tam ekran, C: altyazı aç / kapa</li>
+    <li data-t="kisayol.ekran">F: tam ekran (çift tık da olur), C: altyazı aç / kapa</li>
     <li data-t="kisayol.kapat">Esc: açık pencereyi kapat</li>
   </ul>
 </dialog>

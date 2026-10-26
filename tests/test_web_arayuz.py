@@ -45,6 +45,7 @@ def test_renkler_okunur_ve_goz_yormaz(tema):
     r = _temalar()[tema]
     for yazi, zemin in (("yazi", "zemin"), ("yazi", "kart"), ("soluk", "kart"), ("soluk", "zemin"), ("ana", "kart"),
                         ("ana-yazi", "ana"), ("hata", "kart"), ("tamam", "kart"),
+                        ("uyari", "kart"), ("uyari", "zemin"), ("yazi", "ana-acik"), ("ana", "zemin"),
                         ("hata-yazi", "hata"), ("ov-yazi", "video"), ("ov-soluk", "video"), ("ov-isaret", "video"),
                         ("ov-vurgu", "video"), ("ov-vurgu-yazi", "ov-vurgu")):
         oran = kontrast(r[yazi], r[zemin])
@@ -125,3 +126,48 @@ def test_kayma_ve_hareket_kurallari():
     assert "nabiz" not in CSS
     assert "animation: none !important" in CSS and "transition: none !important" in CSS
     assert not re.search(r"min-height: (3[0-9]|[12]?[0-9])px", CSS), "dokunma alanı en az 44 px"
+
+
+def test_oynatici_tam_ekran_cikis_ve_kontrol_cubugu():
+    """Videonun içinde sağ üstte görünür tam ekran ve çıkış ikonu; çubuk altta, 3 sn sonra saklanır; kutu sabit, oran sığar."""
+    assert 'id="tam-ekran"' in HTML and 'id="tam-cik"' in HTML
+    assert '<symbol id="s-tam"' in HTML and '<symbol id="s-kucult"' in HTML
+    assert re.search(r"\.kose-dugme \{[^}]*position: absolute; top: 8px; right: 8px", CSS)
+    assert "object-fit: contain" in CSS and "aspect-ratio: 16 / 9" in CSS
+    assert re.search(r"\.kontroller \{ position: absolute;[^}]*bottom: 0", CSS) and "var(--ov-gradyan1)" in CSS
+    assert ".kontrol-gizli .kontroller" in CSS and "translateY(100%)" in CSS and "cursor: none" in CSS
+    assert "setTimeout(kontrolGizleDene, 3000)" in JS and 'addEventListener("dblclick", tamEkranDegistir)' in JS
+    for olay in ("pointermove", "pointerdown", "keydown", "focusin"):
+        assert f'kutuOynatici.addEventListener("{olay}"' in JS, olay
+    assert ".zaman-cizgisi { position: relative; height: 44px" in CSS
+    # yaygın oynatıcı beklentileri: bekleme işareti, yeniden oynat, hatırlanan ses, sekmeli zaman
+    for parca in ('id="bekleme"', 'id="yeniden-oynat"', 'id="video-mesaj"'):
+        assert parca in HTML, parca
+    assert "dubworld.ses" in JS and "localStorage.setItem(YEREL_SES" in JS
+    assert "font-variant-numeric: tabular-nums" in CSS
+    for tus in ('"arrowleft"', '"arrowright"', '"m"', '"f"', '" "', '"k"'):
+        assert tus in JS, tus
+
+
+def test_video_alani_isin_videosunu_gosterir():
+    """İş sürerken ve bitince alan o işin kaynağını/sonucunu gösterir; sayfa yenilense de; sunulamıyorsa kısa mesaj."""
+    for parca in ("function isBagla(", "function acilistaIsiBagla(", "function isTakip(", '"/api/isler"', "oynatici.kaynak_yok",
+                  "oynatici.baglanti_bekle", "bekleyenYerel"):
+        assert parca in JS, parca
+
+
+def test_inceleme_paneli_parcalari():
+    for parca in ('id="inceleme"', 'id="inceleme-devam"', 'id="inceleme-kapat"', 'id="bul-ara"', 'id="bul-yeni"',
+                  'id="bul-degistir"', 'id="inceleme-liste"', 'id="inceleme-durum"', 'id="gozden-kutusu"',
+                  'id="inceleme-seridi"', 'id="indir"', 'id="baska-dil"', 'role="tablist"', 'class="rozet"'):
+        assert parca in HTML, parca
+    for parca in ('"/api/duzenle"', '"/api/cevir_satir"', '"/api/devam"', "tts_ve_segment_sesleri", "OTO_KAYIT_MS = 1500",
+                  "SAAT_SINIRI = 15", "tek_satir_desteklenmiyor", "is_inceleme_degil", "a_genel.gozden_gecir", "geriAl:",
+                  "onayIste({ baslik: t(\"onay.devam_baslik\")"):
+        assert parca in JS, parca
+    # dar ekran: 700 altı alt sayfa, 450 altı tam ekran; panel hareketi yalnız transform + opacity
+    assert "max-width: 699px" in CSS and "max-width: 449px" in CSS
+    assert re.search(r"@keyframes panel-gel \{ from \{ transform: translateX\(16px\); opacity: 0; \}", CSS)
+    assert ".iskelet" in CSS and "grid-template-columns" in CSS
+    assert not re.search(r"(window\.)?confirm\(", JS)
+
