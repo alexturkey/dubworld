@@ -582,13 +582,13 @@ coqpit-config==0.2.5 \
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   coqui-tts
     #   coqui-tts-trainer
-coqui-tts==0.27.5 \
-    --hash=sha256:64304dd6a817c4b56019d53ba65b63e0e25ec1593f4b96f3d40b243daa73bf72 \
-    --hash=sha256:feb7c47dd1f1dfc0f0a6919d4f513b709f3d695c87013d353e12430b51c33916
+coqui-tts==0.28.0 \
+    --hash=sha256:0d19e499cafd49a3af94af222e6937c12d64f2a27ecb81fd77df4ba3581c090c \
+    --hash=sha256:dc50125980cf17ec859ad34fda725028b164d18dbbd96de45bde4c6bb4e6ceb5
     # via
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   -r ek_tts_xtts.in
-coqui-tts-trainer==0.4.0 \
+coqui-tts-trainer==0.4.0 \\
     --hash=sha256:4a3910be7cd1c05e32e43dbdf90b5a796c33e649bbe030916f6f6446cb51ffc6 \
     --hash=sha256:829333dd1eea1089ee26685c3bfdf3791e5e4706c4fdaf70f8db0cc785ffe7cb
     # via
