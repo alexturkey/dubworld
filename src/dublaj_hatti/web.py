@@ -124,7 +124,8 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
 
     # --- ortak -----------------------------------------------------------------------------------------
     def log_message(self, bicim: str, *args: Any) -> None:  # istek günlüğü yalnız stderr'e, kısa
-        sys.stderr.write("web: " + (bicim % args) + "\n")
+        if sys.stderr is not None:  # konsolsuz süreçte yazılamayan günlük isteği düşürmesin
+            sys.stderr.write("web: " + (bicim % args) + "\n")
 
     def _basliklar(self, tur: str, uzunluk: int, ek: dict[str, str] | None = None) -> None:
         self.send_header("Content-Type", tur)

@@ -59,11 +59,23 @@ def kapanmali(surec_bitti: bool, son_nabiz: float, simdi: float) -> bool:
     return surec_bitti and simdi - son_nabiz > NABIZ_ZAMAN_ASIMI_SN
 
 
+def akislari_bagla(kok: Path) -> None:
+    """Konsolsuz açılışta (`dubla-gui` pythonw ile çalışır) sys.stdout/stderr None gelir; istek günlüğü yazılamayınca
+    her istek boş yanıtla kapanır (tarayıcıda ERR_EMPTY_RESPONSE). Eksik akışları çıktı kökünde dubla-gui.log'a bağlar."""
+    if sys.stdout is not None and sys.stderr is not None:
+        return
+    kok.mkdir(parents=True, exist_ok=True)
+    gunluk = open(kok / "dubla-gui.log", "a", encoding="utf-8", buffering=1)  # süreç boyunca açık kalır
+    sys.stdout = sys.stdout or gunluk
+    sys.stderr = sys.stderr or gunluk
+
+
 def main(argv: list[str] | None = None) -> int:
     ayr = argparse.ArgumentParser(prog="dubla-gui", description="DubWorld'ü kendi penceresinde açar (web arayüzü)")
     ayr.add_argument("--yukleme-siniri-mb", type=int, default=8192)
     ayr.add_argument("--pencere-konumu", default="", help=argparse.SUPPRESS)  # deneme: "x,y" (ekran dışı)
     args = ayr.parse_args(argv)
+    akislari_bagla(web.cikti_koku())
 
     sunucu = web.Sunucu(("127.0.0.1", 0), web.Isleyici)
     uygulama = web.Uygulama(sunucu.server_address[1], args.yukleme_siniri_mb)

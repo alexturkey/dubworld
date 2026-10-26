@@ -127,6 +127,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The desktop app (`arayuz.cmd` / `dubla-gui`) opened an empty window ("127.0.0.1 didn't send any data"): started
+  without a console, the server dropped every request while writing its request log. The log now goes to
+  `cikti/dubla-gui.log`. Two UI tests that held a stray control character now check what they were meant to.
 - `dubla ayir` (and `api.ayir`) no longer stops with "Demucs output missing" after a successful separation: the
   speech and background tracks are now taken from Demucs's own output folder.
 - Tests that need numpy are skipped when numpy is not installed (plain CPU CI).

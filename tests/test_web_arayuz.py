@@ -97,7 +97,7 @@ JS = (STATIK / "app.js").read_text(encoding="utf-8")
 
 def test_tek_onay_penceresi_window_confirm_yok():
     """Riskli eylemler sayfa içi <dialog id="onay"> ile sorulur; tarayıcının confirm/alert/prompt penceresi yok."""
-    assert not re.search(r"(window\.)?(confirm|alert|prompt)\(", JS)
+    assert not re.search(r"\b(window\.)?(confirm|alert|prompt)\(", JS)
     assert '<dialog id="onay"' in HTML and 'id="onay-vazgec"' in HTML and 'id="onay-tamam"' in HTML
     assert "function onayIste(" in JS and "showModal()" in JS
     # lisans, durdur, iş iptali ve arşivleme bu bileşeni kullanır
@@ -118,7 +118,7 @@ def test_simge_sprite_tam_ve_emoji_yok():
 def test_css_renk_yalniz_belirteclerde():
     """Sabit renk yok: onaltılık renk yalnız :root belirteç bloklarında."""
     disarida = re.sub(r"(:root[^{]*\{[^}]*\})", "", CSS)
-    assert not re.search(r"#[0-9a-fA-F]{3,8}", disarida)
+    assert not re.search(r"#[0-9a-fA-F]{3,8}\b", disarida)
 
 
 def test_kayma_ve_hareket_kurallari():
@@ -217,3 +217,15 @@ def test_ses_suzgeci_kaymaz_ve_pasif_baslat_nedenini_soyler():
         for neden in nedenler:
             assert sozluk.get("baslat.neden." + neden, "").strip(), neden
     assert 'id="ses-secici"' in HTML and re.search(r'<select id="ses-secici"(?![^>]*(size|multiple))', HTML)
+
+
+def test_konsolsuz_acilista_akislar_gunluge_baglanir(tmp_path, monkeypatch):
+    # pythonw: sys.stdout/stderr None; bağlanmazsa her istek boş yanıtla kapanır (ERR_EMPTY_RESPONSE)
+    monkeypatch.setattr(masaustu.sys, "stdout", None)
+    monkeypatch.setattr(masaustu.sys, "stderr", None)
+    masaustu.akislari_bagla(tmp_path / "cikti")
+    gunluk = masaustu.sys.stderr
+    gunluk.write("web: deneme\n")
+    monkeypatch.undo()
+    gunluk.close()
+    assert "web: deneme" in (tmp_path / "cikti" / "dubla-gui.log").read_text(encoding="utf-8")
