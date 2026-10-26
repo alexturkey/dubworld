@@ -95,7 +95,7 @@ Regional codes are normalised (`pt-BR` → `pt`, `zh-TW` → `zh`); the appendix
 |---|---|---|
 | `faster-whisper`, `faster_whisper_ctc`, `whisperx` (large-v3-turbo) | multilingual (Whisper model card); `distil-*` models English only | per docs |
 | `crisperwhisper_turbo_ct2` | Whisper languages; real audio run: tr, en, ja; production-accepted en, zh, ja | measured |
-| `moonshine_medium_streaming_en`, `whisper_cpp_cpu_align`, `parakeet_cpu_align` | English only (settings error otherwise; Parakeet falls back to WhisperX) | per docs |
+| `whisper_cpp_cpu_align`, `parakeet_cpu_align` | English only (settings error otherwise; Parakeet falls back to WhisperX) | per docs |
 | `speechmatics`, `elevenlabs_scribe_v2` | the provider's list (ISO code or automatic) | per docs |
 | `youtube_translate` | the video's caption track (its own language, then `en`) | per docs |
 
@@ -207,7 +207,7 @@ Bölgesel kodlar sadeleştirilir (`pt-BR` → `pt`, `zh-TW` → `zh`); ek bu dur
 |---|---|---|
 | `faster-whisper`, `faster_whisper_ctc`, `whisperx` (large-v3-turbo) | çok dilli (Whisper model kartı); `distil-*` modelleri yalnız İngilizce | belgeye göre |
 | `crisperwhisper_turbo_ct2` | Whisper dilleri; gerçek ses koşusu: tr, en, ja; üretimde kabul edilen en, zh, ja | ölçüldü |
-| `moonshine_medium_streaming_en`, `whisper_cpp_cpu_align`, `parakeet_cpu_align` | yalnız İngilizce (aksi ayar hatası; Parakeet WhisperX'e geçer) | belgeye göre |
+| `whisper_cpp_cpu_align`, `parakeet_cpu_align` | yalnız İngilizce (aksi ayar hatası; Parakeet WhisperX'e geçer) | belgeye göre |
 | `speechmatics`, `elevenlabs_scribe_v2` | sağlayıcının listesi (ISO kodu ya da otomatik) | belgeye göre |
 | `youtube_translate` | videonun altyazı izi (kendi dili, sonra `en`) | belgeye göre |
 

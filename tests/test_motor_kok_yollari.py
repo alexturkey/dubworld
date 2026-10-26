@@ -1,6 +1,6 @@
 """Motor kök yolları paket içinden çözülür (src/dublaj_hatti/...), ortam değişkeni geçersiz kılar.
 
-Kök hata (K9 bulgusu): paket `src/dublaj_hatti/` altına taşınınca Moonshine ve CrisperWhisper
+Kök hata (K9 bulgusu): paket `src/dublaj_hatti/` altına taşınınca CrisperWhisper
 Turbo sözleşme girdileri hâlâ `<repo>/src/bolum_*` gösteriyordu; ortam değişkeni verilmezse motor açılmıyordu.
 """
 
@@ -11,36 +11,15 @@ from pathlib import Path
 
 import dublaj_hatti
 from dublaj_hatti.bolum_00_omurga.runtime import crisperwhisper_turbo_ct2_runtime as turbo
-from dublaj_hatti.bolum_00_omurga.runtime import moonshine_medium_streaming_runtime as moonshine
 
 PAKET = Path(dublaj_hatti.__file__).resolve().parent
 KOK = Path(__file__).resolve().parents[1]
 
 
 def test_paket_koku_dogru():
-    for modul in (turbo, moonshine):
+    for modul in (turbo,):
         assert modul.PACKAGE_ROOT == PAKET
         assert modul.PROJECT_ROOT == KOK
-
-
-def test_moonshine_varsayilan_kok_paket_icinde(monkeypatch):
-    monkeypatch.delenv(moonshine.MOONSHINE_ROOT_ENV, raising=False)
-    kok = moonshine.motor_root()
-    assert kok == PAKET / "bolum_20_transkripsiyon" / "moonshine_medium_streaming_motoru"
-    assert (kok / "src" / "run_experiment.py").is_file()
-    assert (kok / "config" / "model_manifest.json").is_file()
-
-
-def test_moonshine_ortam_degiskeni_gecersiz_kilar(monkeypatch, tmp_path):
-    monkeypatch.setenv(moonshine.MOONSHINE_ROOT_ENV, str(tmp_path))
-    assert moonshine.motor_root() == tmp_path.resolve()
-    monkeypatch.delenv("DUBLAJ_MOONSHINE_PYTHON", raising=False)
-    try:
-        moonshine._python_path()
-    except RuntimeError as hata:
-        assert str(tmp_path) in str(hata)
-    else:  # pragma: no cover - geçici klasörde python yok
-        raise AssertionError("python bulunmamalıydı")
 
 
 def test_turbo_sozlesme_kaynaklari_var():

@@ -66,7 +66,6 @@ WHISPERX_PROFILLERI = ["auto", "whisperx_float32_quality_v1", "whisperx_engine_d
 # menü ön ayarlarıyla aynı). `transkripsiyon.model` / `hesap_tipi` yalnız faster-whisper (+ CTC) ve whisperx'te geçerlidir.
 STT_SABIT_PROFIL: dict[str, tuple[str, str]] = {
     "crisperwhisper_turbo_ct2": ("CrisperWhisper2.0_turbo", "int8"),
-    "moonshine_medium_streaming_en": ("medium-streaming-en", "cpu"),
     "whisper_cpp_cpu_align": ("base.en", "float32"),
     "parakeet_cpu_align": ("parakeet-unified-en-0.6b-int8", "int8"),
     "speechmatics": ("API", "float32"),
@@ -74,7 +73,7 @@ STT_SABIT_PROFIL: dict[str, tuple[str, str]] = {
     # metin YouTube'un json3 otomatik altyazısından gelir, kelime zamanı CTC hizalamadan; ses tanıma modeli yok
     "youtube_translate": ("json3+ctc", "n/a"),
 }
-STT_YALNIZ_INGILIZCE = {"moonshine_medium_streaming_en", "whisper_cpp_cpu_align", "parakeet_cpu_align"}
+STT_YALNIZ_INGILIZCE = {"whisper_cpp_cpu_align", "parakeet_cpu_align"}
 STT_YALNIZ_GPU = {"crisperwhisper_turbo_ct2"}
 TTS_YALNIZ_GPU = {"voxcpm2"}
 YOUTUBE_ALANLARI = ("youtube.com", "youtu.be")  # youtube_translate yalnız bu alan adlarındaki bağlantıyla
@@ -167,7 +166,7 @@ KALDIRILAN_AYARLAR = frozenset({"ileri.tts_isci"})
 # ya da --ayar bir sürüm boyunca uyarıyla yeni değere eşlenir (kullanici.toml'a dokunulmaz), sonraki sürümde
 # bu tablo silinir ve eski değer normal "geçersiz seçenek" hatası olur. Motor kaldıran her değişiklik buraya satır ekler.
 EMEKLI_DEGERLER: dict[str, dict[str, str]] = {
-    "transkripsiyon.motor": {"crisperwhisper2_medium": "auto"},
+    "transkripsiyon.motor": {"crisperwhisper2_medium": "auto", "moonshine_medium_streaming_en": "auto"},
     "transkripsiyon.crisper_dil_tespiti": {"per_window": "global_first_window"},  # yalnız CrisperWhisper Medium destekliyordu
 }
 _EMEKLI_UYARI = {

@@ -105,12 +105,6 @@ from dublaj_hatti.bolum_00_omurga.full_metin_dublaji import (
     fit_audio_to_speech_window,
     synthesize_full_text_supertonic,
 )
-from dublaj_hatti.bolum_00_omurga.runtime.moonshine_medium_streaming_runtime import (
-    ENGINE_ID as MOONSHINE_ENGINE,
-    MODEL_ID as MOONSHINE_MODEL,
-    moonshine_contract_inputs,
-    invoke_moonshine,
-)
 from dublaj_hatti.bolum_00_omurga.runtime.crisperwhisper_turbo_ct2_runtime import (
     ENGINE_ID as CRISPERWHISPER_TURBO_CT2_ENGINE,
     MODEL_ID as CRISPERWHISPER_TURBO_CT2_MODEL,
@@ -246,8 +240,6 @@ def _transcription_engine_contract_inputs(engine_name: str) -> dict[str, Any]:
         }
     if engine_name in {"whisper_cpp_cpu_align", "youtube_translate", FASTER_WHISPER_CTC_ENGINE}:
         return {"ctc_word_boundary_policy": CTC_WORD_BOUNDARY_POLICY}
-    if engine_name == MOONSHINE_ENGINE:
-        return moonshine_contract_inputs()
     return {}
 
 
@@ -2128,7 +2120,6 @@ _transcription_engine_display_names = {
     FASTER_WHISPER_CTC_ENGINE: "faster-whisper + CTC",
     "whisperx": "WhisperX",
     "crisperwhisper_turbo_ct2": "CrisperWhisper2.0 Turbo CT2 (istege bagli, ticari olmayan)",
-    "moonshine_medium_streaming_en": "Moonshine Medium Streaming EN (CPU)",
     "whisper_cpp_cpu_align": "whisper.cpp CPU + CTC",
     "parakeet_cpu_align": "Parakeet Unified EN INT8 CPU + CTC",
     "speechmatics": "Speechmatics (bulut, kendi anahtariniz)",
@@ -2744,114 +2735,6 @@ def _transcribe_elevenlabs_scribe_v2(
     return segments, detected_language, aligned
 
 
-def _transcribe_moonshine(
-    wav_path: str,
-    cfg: DubConfig,
-    run_dir: str,
-    asr_time_offset: float,
-    full_text_mode: bool,
-    prepare_final_segments: bool,
-) -> Tuple[List[Segment], str, Dict]:
-    if cfg.model_name and cfg.model_name != MOONSHINE_MODEL:
-        raise RuntimeError("Moonshine model sozlesmesi medium-streaming-en olmali")
-    if str(cfg.compute_type or "").lower() != "cpu":
-        raise RuntimeError("Moonshine compute sozlesmesi cpu olmali")
-    if getattr(cfg, "use_diarization", False):
-        raise RuntimeError("Moonshine yerlesik diarization desteklemez")
-    if cfg.whisper_language not in ("", "auto", "en"):
-        raise RuntimeError("Moonshine yalniz English kaynak destekler")
-    if asr_time_offset:
-        raise RuntimeError("Moonshine native zamanlari padding offset ile degistirilemez")
-    data = invoke_moonshine(wav_path, run_dir)
-    moonshine_raw_path = Path(str(data["artifacts"]["raw_result_path"]))
-    moonshine_raw_copy = Path(run_dir) / "moonshine_medium_streaming_raw.json"
-    moonshine_transcript_copy = Path(run_dir) / "moonshine_medium_streaming_transcript.txt"
-    shutil.copy2(moonshine_raw_path, moonshine_raw_copy)
-    source_transcript = moonshine_raw_path.with_name("transcript.txt")
-    if source_transcript.is_file():
-        shutil.copy2(source_transcript, moonshine_transcript_copy)
-    profile_path = Path(run_dir) / "transcription_profile_moonshine_medium_streaming_en.json"
-    profile_path.write_text(json.dumps({
-        "engine": MOONSHINE_ENGINE,
-        "model": MOONSHINE_MODEL,
-        "runtime_contract_version": data["runtime_contract_version"],
-        "result_schema_version": data["result_schema_version"],
-        "execution_mode": data["execution_mode"],
-        "package_version": data["package_version"],
-        "runner_sha256": data["runner_sha256"],
-        "result_sha256": data["artifacts"]["result_sha256"],
-        "raw_result_path": _checkpoint_relative_path(run_dir, str(moonshine_raw_copy)),
-        "transcript_path": _checkpoint_relative_path(run_dir, str(moonshine_transcript_copy)),
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    all_words = list(data.get("word_timestamps") or [])
-    if not all_words:
-        raise RuntimeError("Moonshine native kelime zamani uretmedi")
-    full_text = str(data.get("transcript") or "").strip()
-    detected_language = "en"
-    artifact_metadata = {
-        "transcription_profile_path": _checkpoint_relative_path(run_dir, str(profile_path)),
-        "raw_result_path": _checkpoint_relative_path(run_dir, str(moonshine_raw_copy)),
-        "transcript_path": _checkpoint_relative_path(run_dir, str(moonshine_transcript_copy)),
-    }
-    aligned = {"segments": [{
-        "start": float(all_words[0]["start"]),
-        "end": float(all_words[-1]["end"]),
-        "text": full_text,
-        "words": all_words,
-    }], **artifact_metadata}
-    if full_text_mode:
-        return [Segment(
-            index=1,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=list(all_words),
-        )], detected_language, aligned
-    moonshine_kronoloji_denetle(all_words)
-    if not prepare_final_segments:
-        return [Segment(
-            index=0,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=list(all_words),
-        )], detected_language, aligned
-    segments, final_aligned = _nihai_kaynak_segmentlerini_olustur(all_words)
-    final_aligned.update(artifact_metadata)
-    check_word_overlaps(final_aligned)
-    return segments, detected_language, final_aligned
-
-
-class MoonshineDeneyselHatasi(RuntimeError):
-    """Moonshine (deneysel motor) bilinen sınırına çarptı: kelime zamanları kronolojik değil."""
-
-
-def moonshine_kronoloji_denetle(words: List[Dict]) -> None:
-    """Moonshine akış modelinin parça sınırında geri kayan kelime başlangıçlarını açık hatayla durdurur.
-
-    Bilinen, çözümü kanıtlanmamış üst akım sınırı (docs/engineering/transcription.md §6): parçalar örtüşür, güven her
-    zaman 1.0, ham zamanlar düzeltilmez. Merkezi segment kapısı bunu "Kelime sirasi kronolojik degil" diye reddederdi;
-    kullanıcı ne yapacağını bilsin diye aynı ret burada, nedeni ve seçenekleriyle verilir.
-    """
-    geri = [
-        (i, words[i - 1], words[i])
-        for i in range(1, len(words))
-        if float(words[i].get("start", 0.0)) < float(words[i - 1].get("start", 0.0))
-    ]
-    if not geri:
-        return
-    i, onceki, kelime = geri[0]
-    raise MoonshineDeneyselHatasi(
-        f"Moonshine (experimental / deneysel): {len(geri)} word start(s) go backwards at chunk boundaries "
-        f"(first: word {i + 1} '{kelime.get('word', '')}' {float(kelime.get('start', 0.0)):.3f}s < previous "
-        f"'{onceki.get('word', '')}' {float(onceki.get('start', 0.0)):.3f}s). This is a known upstream limit; "
-        "times are never edited. Use transkripsiyon.motor=parakeet_cpu_align (English, CPU) or faster-whisper. | "
-        f"Moonshine deneysel motor: parça sınırında {len(geri)} kelime başlangıcı geri kaydı; bilinen üst akım "
-        "sınırı, zamanlar düzeltilmez. transkripsiyon.motor=parakeet_cpu_align (İngilizce, işlemci) ya da "
-        "faster-whisper seçin. Ayrıntı: docs/engineering/transcription.md §6"
-    )
-
-
 def transcribe_and_align(
     wav_path: str,
     cfg: DubConfig,
@@ -2892,16 +2775,6 @@ def transcribe_and_align(
             cfg,
             run_dir,
             platform_lang,
-            asr_time_offset,
-            full_text_mode,
-            prepare_final_segments,
-        )
-
-    if engine_name == MOONSHINE_ENGINE:
-        return _transcribe_moonshine(
-            wav_path,
-            cfg,
-            run_dir,
             asr_time_offset,
             full_text_mode,
             prepare_final_segments,

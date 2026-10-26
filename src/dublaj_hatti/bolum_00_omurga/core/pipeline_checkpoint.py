@@ -129,19 +129,6 @@ def stage_runtime_contract_matches(stage_id: str, inputs: dict[str, Any]) -> boo
         from dublaj_hatti.bolum_00_omurga.runtime.crisperwhisper_turbo_ct2_runtime import RUNTIME_CONTRACT_VERSION
 
         return inputs.get("crisperwhisper_turbo_ct2_runtime_contract_version") == RUNTIME_CONTRACT_VERSION
-    if stage_id == "transkripsiyon" and inputs.get("engine") == "moonshine_medium_streaming_en":
-        from dublaj_hatti.bolum_00_omurga.runtime.moonshine_medium_streaming_runtime import (
-            RUNTIME_CONTRACT_VERSION,
-            moonshine_contract_inputs,
-        )
-
-        if inputs.get("moonshine_runtime_contract_version") != RUNTIME_CONTRACT_VERSION:
-            return False
-        try:
-            current_runtime = moonshine_contract_inputs()
-        except (OSError, RuntimeError, ValueError):
-            return False
-        return all(key in inputs and inputs[key] == value for key, value in current_runtime.items())
     if stage_id != "full_text_tek_ses_tts" and not (
         stage_id == "tts_ve_segment_sesleri" and inputs.get("tts_engine") == "supertonic"
     ):

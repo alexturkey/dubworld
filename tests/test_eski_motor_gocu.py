@@ -40,7 +40,7 @@ def caplog():
 
 
 # Bu sürümde kaldırılan transkripsiyon motorları (her kaldırma commit'i listeye bir satır ekler)
-KALDIRILAN_STT: list[str] = ["crisperwhisper2_medium"]
+KALDIRILAN_STT: list[str] = ["crisperwhisper2_medium", "moonshine_medium_streaming_en"]
 
 
 def test_emekli_deger_auto_ya_eslenir_ve_iki_dilli_uyari_yazar(monkeypatch, caplog):

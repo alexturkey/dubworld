@@ -55,7 +55,6 @@ process isolation, Supertonic lanes): change it only with the measurement recipe
 | stt | `faster_whisper_ctc` | gpu+cpu | 2400 (CTC step; recognition as `faster-whisper`) | works | measured | Recognition and CTC run one after another in separate processes. CPU, one run each: 23.8 s English → recognition ≈ 140 s + CTC 16.5 s; 60 s Turkish → ≈ 161 s + 42.9 s (CTC incl. ≈ 10 s load) | timing-sources.md §2.1, word_alignment.md |
 | stt | `whisperx` | gpu+cpu | 1147 (int8) / 3451 (fp32) | works | measured | batch 1 + VAD on CPU removed an out-of-memory on 4 GB; 4.3–5.3× real time on GPU | transcription.md |
 | stt | `crisperwhisper_turbo_ct2` | gpu | ~1450 | no | measured | int8, WSL2, one-shot subprocess; ~11× real time; 1435 MiB on 74 min audio | crisperwhisper_turbo_ct2.md |
-| stt | `moonshine_medium_streaming_en` | cpu | — | good | measured | 96.9 s audio: 75.4 s streaming; RAM not measured; English only | transcription.md |
 | stt | `whisper_cpp_cpu_align` | cpu | — (CTC step may use GPU) | good | measured | 96.9 s audio: 32.4 s (12.7 recognition + 19.4 alignment) | transcription.md |
 | stt | `parakeet_cpu_align` | cpu | — | good | measured | int8, ~1.9 GB RAM, 96.9 s audio in 11.9 s (8 threads); input capped below 400 s | transcription.md |
 | stt | `speechmatics` | cloud | — | cloud | per docs | audio is sent to the service (PRIVACY.md) | provider docs |
@@ -145,7 +144,6 @@ isteğiyle değişir.
 | stt | `faster_whisper_ctc` | gpu+cpu | 2400 (CTC adımı; tanıma `faster-whisper` gibi) | çalışır | ölçüldü | Tanıma ve CTC ayrı süreçlerde art arda çalışır. İşlemci, birer koşu: 23.8 s İngilizce → tanıma ≈ 140 s + CTC 16.5 s; 60 s Türkçe → ≈ 161 s + 42.9 s (CTC, ≈ 10 s yükleme dahil) | timing-sources.md §2.1, word_alignment.md |
 | stt | `whisperx` | gpu+cpu | 1147 (int8) / 3451 (fp32) | çalışır | ölçüldü | batch 1 + işlemcide VAD, 4 GB'ta bellek taşmasını giderdi; GPU'da gerçek zamanın 4.3–5.3 katı | transcription.md |
 | stt | `crisperwhisper_turbo_ct2` | gpu | ~1450 | hayır | ölçüldü | int8, WSL2, tek seferlik alt süreç; gerçek zamanın ~11 katı; 74 dk seste 1435 MiB | crisperwhisper_turbo_ct2.md |
-| stt | `moonshine_medium_streaming_en` | cpu | — | iyi | ölçüldü | 96.9 s ses: akışla 75.4 s; RAM ölçülmedi; yalnız İngilizce | transcription.md |
 | stt | `whisper_cpp_cpu_align` | cpu | — (CTC adımı GPU kullanabilir) | iyi | ölçüldü | 96.9 s ses: 32.4 s (12.7 tanıma + 19.4 hizalama) | transcription.md |
 | stt | `parakeet_cpu_align` | cpu | — | iyi | ölçüldü | int8, ~1.9 GB RAM, 96.9 s ses 11.9 s'de (8 iş parçacığı); girdi 400 s altıyla sınırlı | transcription.md |
 | stt | `speechmatics` | bulut | — | bulut | belgeye göre | ses servise gönderilir (PRIVACY.md) | sağlayıcı belgeleri |

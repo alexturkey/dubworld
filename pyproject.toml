@@ -73,7 +73,6 @@ separation = ["demucs>=4.0.1"]                 # ses_temizligi.kip = clean / pre
 youtube = ["yt-dlp>=2026.7.4"]                 # URL input; only content you own or may use
 stt-parakeet = ["sherpa-onnx>=1.13.4"]         # English, CPU
 stt-speechmatics = ["speechmatics-batch>=0.4.7"]  # cloud, your own key
-stt-moonshine = ["moonshine-voice==0.0.73"]   # pinned: the engine checks the 0.0.73 DLL sha256; English, CPU; manual, see docs/motorlar/moonshine_medium_streaming_en.md
 # CrisperWhisper 2.0 Turbo (non-commercial weights) runs in its own WSL environment built by
 # scripts/kur.ps1 -Adim crisper; VoxCPM2 runs in the sibling repo's environment (-Adim voxcpm2).
 # whisper.cpp uses the official prebuilt binary (docs/motorlar/whisper_cpp_cpu_align.md).

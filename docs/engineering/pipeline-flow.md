@@ -166,7 +166,6 @@ of stage 5.
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | sub-word tokens with times | yes | shared CTC box | windows rebuilt from tokens: a gap ≥ 1.0 s starts a window, 80 ms pad |
 | [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | whisper.cpp segments | yes | shared CTC box | alignment windows |
 | [youtube_translate](../motorlar/youtube_translate.md) | caption words with start hints, no end | no | shared CTC box | windows at sentence ends, gaps > 2.5 s, > 18 s or 80 words |
-| [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) | streaming words | no | native timestamps, no CTC; backwards starts stop the job | nothing after stage 6 |
 | [speechmatics](../motorlar/speechmatics.md) | provider words (optional speakers) | yes | provider times, no CTC | nothing after stage 6 |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | provider words (optional speakers) | yes | provider times, no CTC | nothing after stage 6 |
 

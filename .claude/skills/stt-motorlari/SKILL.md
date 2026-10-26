@@ -19,7 +19,6 @@ Every engine has its own page: `docs/motorlar/<engine>.md` (name = setting value
 | `faster-whisper` | GPU or CPU | multilingual | MIT | base install |
 | `whisperx` | GPU or CPU | multilingual (+ pyannote speakers, optional) | BSD-2 code; MIT / CC-BY-4.0 models | base install |
 | `crisperwhisper_turbo_ct2` | NVIDIA GPU + WSL2 | Whisper languages | **non-commercial** | `kur.ps1 -Adim crisper -TicariOlmayanKabul` |
-| `moonshine_medium_streaming_en` | CPU | English | MIT | manual (`stt-moonshine` extra + own venv) |
 | `whisper_cpp_cpu_align` | CPU | English | MIT | manual (prebuilt binary + model) |
 | `parakeet_cpu_align` | CPU | English | NVIDIA Open Model License (conditional) | `kur.ps1 -Adim parakeet` (package + model, sha256-pinned) |
 | `speechmatics` | cloud | provider list | provider terms | `kur.ps1 -Adim speechmatics` + key |
@@ -72,7 +71,6 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 [docs/engineering/word_alignment.md](../../../docs/engineering/word_alignment.md) · engine pages:
 [faster-whisper](../../../docs/motorlar/faster-whisper.md), [whisperx](../../../docs/motorlar/whisperx.md),
 [crisperwhisper_turbo_ct2](../../../docs/motorlar/crisperwhisper_turbo_ct2.md),
-[moonshine_medium_streaming_en](../../../docs/motorlar/moonshine_medium_streaming_en.md),
 [whisper_cpp_cpu_align](../../../docs/motorlar/whisper_cpp_cpu_align.md),
 [parakeet_cpu_align](../../../docs/motorlar/parakeet_cpu_align.md), [speechmatics](../../../docs/motorlar/speechmatics.md),
 [elevenlabs_scribe_v2](../../../docs/motorlar/elevenlabs_scribe_v2.md), [youtube_translate](../../../docs/motorlar/youtube_translate.md)

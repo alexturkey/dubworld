@@ -63,7 +63,7 @@ stopped with `ayar hatası` (setting error) / `uyarı` (warning).
 | `ses.motor=voxcpm2` | `genel.cihaz=cpu` | error: NVIDIA GPU needed |
 | `genel.dublaj_kipi=full_text` | `ses.motor=voxcpm2` or a non-CLI backend | error |
 | CrisperWhisper | CPU / no CUDA | error |
-| English-only STT (moonshine, whisper.cpp, parakeet) | non-English `kaynak_dil` | error |
+| English-only STT (whisper.cpp, parakeet) | non-English `kaynak_dil` | error |
 | `ses_temizligi.kip=clean`/`preserve_background` | Demucs missing | error at start |
 | `video.politika=max_mb` | `video.max_mb=0` | error |
 
