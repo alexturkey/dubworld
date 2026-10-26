@@ -123,3 +123,4 @@ Questions, ideas and results: [Discussions](https://github.com/alexturkey/dubwor
 
 Code: Apache-2.0 (LICENSE). Third-party components and their licenses: THIRD_PARTY.md. Responsible use: ETHICS.md.
 Privacy (what stays local, what a cloud backend receives): PRIVACY.md. Security reports: SECURITY.md. Changes: CHANGELOG.md.
+Artık python scripts/kurulum_sihirbazi.py komutuyla akıllı kurulum sihirbazını çalıştırabilirsiniz. İşletim sistemi, donanım ve venv konumunu otomatik algılar.
