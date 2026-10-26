@@ -70,6 +70,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Engine picker in Settings: a new "Engines" group at the top has two pickers, Transcription (`transkripsiyon.motor`)
+  and Voice (`ses.motor`). "Automatic (recommended)" comes first and says in plain words which engine it will pick on
+  this computer (and why); each engine shows its strength, whether it is installed (with the exact `kur.ps1` step when
+  it is not), the licence (commercial use yes or no), the hardware it needs and its languages. Engines that cannot run
+  here are greyed out with the reason; XTTS shows "Being retired". The remaining engine-specific settings (model,
+  compute type, EMA, XTTS, RVC, `ileri.*`) moved into a collapsed "Advanced engine settings" section; search still
+  covers everything. New read-only endpoint `GET /api/motorlar` (same session check as the other pages).
+- Notices on narrow screens appear at the top, under the header, instead of covering the bottom of the page (such as
+  the reason under the Start button); "Undo" stays on one line with a 44 px target. The Settings drawer no longer
+  scrolls sideways at 400 px.
 - Web interface is calmer and more consistent: stopping a job, cancelling a queued job, archiving and accepting a
   licence all use the same in-page confirmation window (no more browser pop-ups); job buttons have icons with words;
   a small notice confirms what happened; error and progress areas keep their place so the page no longer jumps; small

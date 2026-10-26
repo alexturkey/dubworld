@@ -411,6 +411,24 @@ _BILGI: dict[str, tuple[bool, str, str, str, str]] = {
 }
 
 
+# Kurulu olmayan motor için arayüzün gösterdiği tam kurulum adımı (scripts/kur.ps1 -Adim ...); varsayılan kurulumla
+# gelenler "scripts/kur.ps1" ile kurulur. Her stt/tts motoru için satır şart (test denetler).
+KURULUM_KOMUTLARI: dict[str, str] = {
+    "faster-whisper": "scripts/kur.ps1",
+    "faster_whisper_ctc": "scripts/kur.ps1",
+    "whisperx": "scripts/kur.ps1",
+    "crisperwhisper_turbo_ct2": "scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul",
+    "parakeet_cpu_align": "scripts/kur.ps1 -Adim parakeet",
+    "youtube_translate": "scripts/kur.ps1 -Adim youtube",
+    "supertonic": "scripts/kur.ps1",
+    "voxcpm2": "scripts/kur.ps1 -Adim voxcpm2",
+    "ema_lightning": "scripts/kur.ps1 -Adim tts-ema",
+    "xtts": "scripts/kur.ps1 -Adim tts-xtts -TicariOlmayanKabul",
+}
+# Kullanımdan kalkan motorlar: seçilebilir, ama arayüz "kullanımdan kalkıyor" der (yapilandirma uyarısıyla aynı karar)
+KULLANIMDAN_KALKAN = frozenset({"xtts"})
+
+
 def _bilgi_ekle(m: Motor) -> Motor:
     b = _BILGI.get(m.ad)
     if b is None:
@@ -447,6 +465,10 @@ def motor_bilgisi(ad: str) -> dict[str, object]:
         "hardware": m.donanim_metni,
         "languages": m.diller_metni,
         "strength": {"tr": m.guc_tr, "en": m.guc_en},
+        "install": KURULUM_KOMUTLARI.get(m.ad, ""),
+        "gpu_only": m.cpu == "çalışmaz",
+        "deprecated": m.ad in KULLANIMDAN_KALKAN,
+        "experimental": bool(m.deneysel),
     }
 
 

@@ -83,7 +83,8 @@ The eye is pulled to anything that moves, so motion must earn its place.
 
 - Every control has hover, focus-visible, pressed and disabled states.
 - A started action shows a spinner on the button itself and ignores repeat clicks; success shows a toast
-  (3-4 s, `role="status"`, bottom, never covering the primary button); failure shows an inline error next to the
+  (3-4 s, `role="status"`, bottom on wide screens; on narrow screens (up to 640 px) at the top under the header or
+  drawer title so it never covers the Start button or the reason under it; "Undo" stays on one line, 44 px); failure shows an inline error next to the
   thing that failed, with what to do next.
 - No silent success and no silent failure.
 

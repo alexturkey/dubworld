@@ -64,8 +64,19 @@ function onayIste({ baslik, metin, tamam, tehlike }) {
 
 // Küçük bildirim (başarı): ekranın tek yerinde, 4 sn sonra kendiliğinden kaybolur; sayfayı kaydırmaz.
 let bildirimSayaci = null;
+// Dar ekranda (telefon) bildirim ALTTA değil, en üstteki katmanın başlığının altında çıkar: alttaki Başlat düğmesinin nedeni,
+// ses seçici ve form satırları örtülmez. Katman: açık Ayarlar çekmecesi > tam ekran inceleme paneli > sayfa başlığı.
+function bildirimYeri(kutu) {
+  if (!matchMedia("(max-width: 640px)").matches) { kutu.classList.remove("ustte"); kutu.style.top = ""; return; }
+  let baslik = document.querySelector(".ust");
+  if (!$("gelismis").hidden) baslik = $("gelismis").querySelector(".cekmece-ust") || baslik;
+  else if (!$("inceleme").hidden && innerWidth < 450) baslik = $("inceleme").firstElementChild || baslik;
+  kutu.classList.add("ustte");
+  kutu.style.top = Math.round(baslik.getBoundingClientRect().bottom + 8) + "px";
+}
 function bildir(metin, { geriAl } = {}) {
   const kutu = $("bildirim"), geri = $("bildirim-geri");
+  bildirimYeri(kutu);
   $("bildirim-metin").textContent = metin;
   geri.hidden = !geriAl;
   geri.textContent = geriAl ? t("toast.geri_al") : "";
@@ -121,7 +132,7 @@ async function dilYukle(secim) {
   temaDugmesi();
 }
 async function formYukle(oncekiDegisiklik) {
-  const v = await api("/api/ayarlar?dil=" + encodeURIComponent(DIL));
+  const [v] = await Promise.all([api("/api/ayarlar?dil=" + encodeURIComponent(DIL)), motorlariYukle()]);
   form = v.form;
   formCiz();
   // dil değişince Gelişmiş'te yapılan değişiklikler korunur (form sırasıyla: ses.motor önce, süzülen dil sonra)
@@ -150,7 +161,7 @@ function dosyaAdresi(yol) { return "/dosya?yol=" + encodeURIComponent(yol); }
 function cekmece(acik) {
   $("gelismis").hidden = !acik; $("perde").hidden = !acik;
   document.querySelector('.sekme[data-sekme="gelismis"]').setAttribute("aria-expanded", String(acik));
-  if (acik) $("ayar-ara").focus();
+  if (acik) { $("ayar-ara").focus(); motorlariTazele(); }
 }
 function sayfaAc(ad) {
   document.querySelectorAll(".sekme").forEach((x) => { if (x.dataset.sekme !== "gelismis") x.classList.toggle("etkin", x.dataset.sekme === ad); });
@@ -166,13 +177,28 @@ $("ayar-ara").addEventListener("input", (e) => {  // anahtar, açıklama ya da b
   const aranan = e.target.value.trim().toLocaleLowerCase(DIL);
   let gorunen = 0;
   document.querySelectorAll("#form fieldset").forEach((fs) => {
+    if (fs.classList.contains("motor-bolum")) {  // seçici: kendi metninde arar (motor adı, güçlü yan, lisans, donanım)
+      const uygun = !aranan || fs.textContent.toLocaleLowerCase(DIL).includes(aranan);
+      fs.hidden = !uygun; if (uygun) gorunen++;
+      return;
+    }
     let bolumde = 0;
-    fs.querySelectorAll(".alan").forEach((a) => {
+    fs.querySelectorAll(".alan:not(.motor-gizli)").forEach((a) => {
       const uygun = !aranan || a.textContent.toLocaleLowerCase(DIL).includes(aranan)
         || fs.querySelector("legend").textContent.toLocaleLowerCase(DIL).includes(aranan);
       a.hidden = !uygun; if (uygun) bolumde++;
     });
     fs.hidden = !bolumde; gorunen += bolumde;
+  });
+  document.querySelectorAll("#form details.gelismis-motor").forEach((d) => {  // eşleşme varsa açılır; arama bitince eski haline döner
+    const eslesen = !!d.querySelector("fieldset:not([hidden])");
+    if (aranan) {
+      if (d.dataset.once === undefined) d.dataset.once = d.open ? "1" : "0";
+      d.hidden = !eslesen; d.open = eslesen;
+    } else {
+      d.hidden = false;
+      if (d.dataset.once !== undefined) { d.open = d.dataset.once === "1"; delete d.dataset.once; }
+    }
   });
   $("ayar-sonuc-yok").hidden = gorunen > 0;
 });
@@ -305,18 +331,36 @@ function formCiz() {
   const kok = $("form");
   kok.replaceChildren();
   degisiklik = {};
-  const bolumler = {};
-  form.forEach((alan) => {
-    if (!bolumler[alan.bolum]) {
+  const bolumler = {}, gelismisBolumler = {};
+  const gelismis = new Set(MOTORLAR ? MOTORLAR.advanced_keys : []);
+  const motorAnahtarlari = MOTORLAR ? [MOTORLAR.stt.key, MOTORLAR.tts.key] : [];
+  const gelismisKap = document.createElement("details");
+  gelismisKap.className = "gelismis-motor";
+  const ozet = document.createElement("summary");
+  ozet.textContent = t("motor.gelismis.baslik");
+  const gelismisYardim = document.createElement("p");
+  gelismisYardim.className = "not"; gelismisYardim.textContent = t("motor.gelismis.yardim");
+  gelismisKap.append(ozet, gelismisYardim);
+  const bolumKur = (hedef, kayit, anahtar) => {
+    if (!kayit[anahtar]) {
       const fs = document.createElement("fieldset");
       const lg = document.createElement("legend");
-      lg.textContent = cevir("bolum", alan.bolum, alan.bolum.replace("_", " "));
+      lg.textContent = cevir("bolum", anahtar, anahtar.replace("_", " "));
       fs.appendChild(lg);
-      kok.appendChild(fs);
-      bolumler[alan.bolum] = fs;
+      hedef.appendChild(fs);
+      kayit[anahtar] = fs;
     }
-    bolumler[alan.bolum].appendChild(alanCiz(alan));
+    return kayit[anahtar];
+  };
+  form.forEach((alan) => {
+    const oge = alanCiz(alan);
+    if (motorAnahtarlari.includes(alan.anahtar)) { oge.classList.add("motor-gizli"); oge.hidden = true; }  // seçici yazar
+    if (gelismis.has(alan.anahtar)) bolumKur(gelismisKap, gelismisBolumler, alan.bolum).appendChild(oge);
+    else bolumKur(kok, bolumler, alan.bolum).appendChild(oge);
   });
+  if (Object.keys(gelismisBolumler).length) kok.appendChild(gelismisKap);
+  if (MOTORLAR) kok.prepend(motorGrubuCiz());
+  else { const n = document.createElement("p"); n.className = "not"; n.textContent = t("motor.yuklenemedi"); kok.prepend(n); }
   suzgecleriBagla();
   const dilKaynagi = $("a_" + DIL_ANAHTARI);
   if (dilKaynagi) dilKaynagi.addEventListener("change", onerilenDiliEsitle);
@@ -331,6 +375,130 @@ function formCiz() {
 }
 let gozdenBaglandi = false;
 $("sifirla").addEventListener("click", formCiz);
+
+// --- Motorlar: yazıya dökme ve seslendirme seçicileri -------------------------------------------------------------
+// Veri /api/motorlar (kayit.py bilgi satırı + bu bilgisayarın durumu). Seçim Ayarlar'daki a_ alanına yazılır (change olayı:
+// kalıcılık ve "değişti" işareti eskisiyle aynı); o iki alan gizlidir, seçici açılamazsa görünür kalır.
+let MOTORLAR = null;
+async function motorlariYukle() { try { MOTORLAR = await api("/api/motorlar"); } catch (_) { MOTORLAR = null; } }
+async function motorlariTazele() {  // çekmece her açılışında: kurulum bu arada değiştiyse seçici güncel görünür
+  const eski = MOTORLAR ? JSON.stringify(MOTORLAR) : "";
+  await motorlariYukle();
+  if (!MOTORLAR || JSON.stringify(MOTORLAR) === eski) return;
+  const eskiGrup = document.querySelector("#form .motor-bolum");
+  if (eskiGrup) eskiGrup.replaceWith(motorGrubuCiz());
+}
+// Dinamik anahtarlar (neden kodu, engel, tür): tests/test_motor_secici.py hepsinin iki dilde var olduğunu denetler.
+const motorMetni = (anahtar, degerler) => t(anahtar, degerler);
+const motorAdi = (e) => cevir("motor.ad", e.id, e.name);
+const motorKurulumKomutu = (e) => e.install || "scripts/kur.ps1";
+function motorCipi(metin, tur, simge) {
+  const c = document.createElement("span");
+  c.className = "motor-cip" + (tur ? " " + tur : "");
+  if (simge) { const sv = document.createElementNS("http://www.w3.org/2000/svg", "svg"); sv.setAttribute("aria-hidden", "true"); const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", "#" + simge); sv.appendChild(u); c.appendChild(sv); }
+  c.appendChild(document.createTextNode(metin));
+  return c;
+}
+function motorNotu(metin, komut) {  // düz metin; kurulum komutu <code> içinde
+  const p = document.createElement("span");
+  p.className = "motor-not";
+  const parcalar = metin.split("{komut}");
+  p.append(parcalar[0]);
+  if (komut && parcalar.length > 1) { const k = document.createElement("code"); k.textContent = komut; p.append(k, parcalar[1]); }
+  return p;
+}
+function motorSatiriCiz(grup, e, ad) {
+  const etiket = document.createElement("label");
+  etiket.className = "motor-secenek"; etiket.dataset.motor = e.id;
+  const radyo = document.createElement("input");
+  radyo.type = "radio"; radyo.name = "motor-" + grup.tur; radyo.value = e.id;
+  radyo.addEventListener("change", () => { if (radyo.checked) motorSec(grup, e.id); });
+  const ust = document.createElement("span");
+  ust.className = "motor-ust";
+  const adi = document.createElement("span");
+  adi.className = "motor-ad";
+  adi.textContent = e.id === "auto" ? t("motor.auto.ad") : motorAdi(e);
+  const isaret = motorCipi(t("motor.cip.secili"), "motor-secili-isareti", "s-tamam");
+  ust.append(adi, isaret);
+  etiket.append(radyo, ust);
+  if (e.id === "auto") {
+    const a = grup.veri.auto, secilen = grup.veri.engines.find((x) => x.id === a.engine);
+    const satir = document.createElement("span");
+    satir.className = "motor-satir";
+    satir.textContent = t("motor.auto.burada", { ad: secilen ? motorAdi(secilen) : a.engine });
+    const neden = document.createElement("span");
+    neden.className = "motor-not";
+    neden.textContent = motorMetni("motor.auto." + grup.tur + "." + a.reason) + " " + t("motor.auto.sonra");
+    etiket.append(satir, neden);
+    if (secilen && !a.installed) etiket.append(motorNotu(t("motor.auto.kurulu_degil_ek", { ad: motorAdi(secilen), komut: "{komut}" }), motorKurulumKomutu(secilen)));
+    return etiket;
+  }
+  const guc = (e.strength && (e.strength[DIL] || e.strength.en)) || "";
+  const satir = document.createElement("span");
+  satir.className = "motor-satir"; satir.textContent = guc;
+  const cipler = document.createElement("span");
+  cipler.className = "motor-cipler";
+  cipler.append(e.installed ? motorCipi(t("motor.cip.kurulu"), "motor-cip-tamam", "s-tamam") : motorCipi(t("motor.cip.kurulu_degil"), "motor-cip-uyari", "s-uyari"));
+  cipler.append(motorCipi(t(e.licence_commercial ? "motor.cip.ticari_evet" : "motor.cip.ticari_hayir")));
+  cipler.append(motorCipi(cevir("motor.donanim", e.id, e.hardware)));
+  cipler.append(motorCipi(cevir("motor.diller", e.id, e.languages)));
+  if (e.deprecated) cipler.append(motorCipi(t("motor.cip.kalkiyor"), "motor-cip-uyari", "s-uyari"));
+  if (e.experimental) cipler.append(motorCipi(t("motor.cip.deneysel"), "motor-cip-uyari"));
+  etiket.append(satir, cipler);
+  if (e.deprecated) etiket.append(motorNotu(t("motor.kalkiyor_not")));
+  if (e.blocked_by) etiket.append(motorNotu(motorMetni("motor.engel." + e.blocked_by, { komut: "{komut}" }), motorKurulumKomutu(e)));
+  etiket.dataset.engel = e.blocked_by || "";
+  return etiket;
+}
+function motorSec(grup, deger) {
+  // Kitaplık/XTTS sesi seçiliyken motor onunla uyumsuz seçilirse ses Otomatik'e döner (sessiz çelişki olmaz)
+  const sesMotoru = sesSecimi.startsWith("kitaplik/") ? "voxcpm2" : (sesSecimi.startsWith("xtts/") ? "xtts" : "");
+  if (grup.veri.key === "ses.motor" && sesMotoru && deger !== sesMotoru) { sesSec(""); bildir(t("motor.kitaplik_birakildi")); }
+  ayarYaz(grup.veri.key, deger);
+}
+function motorlariEsitle() {  // a_ alanı = tek kaynak; seçici onu yansıtır (ses seçici ya da Varsayılana dön de değiştirir)
+  document.querySelectorAll("#form .motor-liste").forEach((liste) => {
+    const girdi = $("a_" + liste.dataset.anahtar);
+    if (!girdi) return;
+    liste.querySelectorAll(".motor-secenek").forEach((satir) => {
+      const secili = satir.dataset.motor === girdi.value;
+      satir.classList.toggle("secili", secili);
+      const r = satir.querySelector("input");
+      r.checked = secili;
+      const engelli = satir.dataset.engel;
+      r.disabled = !!engelli && !secili;  // seçili olan hiç pasif olmaz (dosyadan gelmiş olabilir); iş başlamayınca neden yazar
+      satir.classList.toggle("pasif", r.disabled);
+      satir.classList.toggle("secili-ama-engelli", secili && !!engelli);
+    });
+    liste.querySelector(".motor-degisti").style.visibility = (liste.dataset.anahtar in degisiklik) ? "visible" : "hidden";
+  });
+}
+function motorGrubuCiz() {
+  const grup = document.createElement("fieldset");
+  grup.className = "motor-bolum";
+  const lg = document.createElement("legend");
+  lg.textContent = t("motor.grup");
+  const yardim = document.createElement("p");
+  yardim.className = "not"; yardim.textContent = t("motor.grup_yardim");
+  grup.append(lg, yardim);
+  [["stt", MOTORLAR.stt], ["tts", MOTORLAR.tts]].forEach(([tur, veri]) => {
+    const g = { tur, veri };
+    const liste = document.createElement("div");
+    liste.className = "motor-liste"; liste.setAttribute("role", "radiogroup"); liste.dataset.anahtar = veri.key;
+    const baslik = document.createElement("h3");
+    baslik.className = "motor-baslik"; baslik.id = "motor-baslik-" + tur;
+    const bt = document.createElement("span"); bt.textContent = motorMetni("motor." + tur + ".baslik");
+    const dg = document.createElement("span"); dg.className = "motor-degisti"; dg.textContent = t("motor.degisti"); dg.style.visibility = "hidden";
+    baslik.append(bt, dg);
+    liste.setAttribute("aria-labelledby", baslik.id);
+    liste.append(baslik, motorSatiriCiz(g, { id: "auto" }), ...veri.engines.map((e) => motorSatiriCiz(g, e)));
+    grup.append(liste);
+    const girdi = $("a_" + veri.key);
+    if (girdi) girdi.addEventListener("change", motorlariEsitle);
+  });
+  queueMicrotask(motorlariEsitle);
+  return grup;
+}
 
 // --- yükleme ------------------------------------------------------------------------------------------
 function dosyaYukle(dosya) {

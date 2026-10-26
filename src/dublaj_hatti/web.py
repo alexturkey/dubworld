@@ -102,6 +102,16 @@ class Uygulama:
         self.yukleme_klasoru = cikti_koku() / "_yuklemeler"
         self.yuklenenler: dict[str, Path] = {}
         self.son_nabiz = time.time()  # sayfanın son yoklaması (masaüstü penceresi kapandı mı: masaustu.py)
+        self._motor_onbellek: tuple[float, dict[str, Any]] | None = None
+
+    def motorlar(self) -> dict[str, Any]:
+        """Motor seçicisinin verisi (`motor_secici`); kurulu denetimi dosya okur, 15 sn önbellekli (Ayarlar her açılışta sorar)."""
+        simdi = time.time()
+        if self._motor_onbellek is None or simdi - self._motor_onbellek[0] > 15:
+            from dublaj_hatti.motor_secici import motor_secici_verisi
+
+            self._motor_onbellek = (simdi, motor_secici_verisi())
+        return self._motor_onbellek[1]
 
     def izinli_kokler(self) -> list[Path]:
         return [cikti_koku(), self.yukleme_klasoru, ses_kitapligi.kok()]
@@ -206,6 +216,8 @@ class Isleyici(http.server.BaseHTTPRequestHandler):
         elif adres.path == "/api/ayarlar":
             dil = _istenen_dil(parse_qs(adres.query))
             self._json(HTTPStatus.OK, {"form": ayar_formu(dil or "tr"), "surum": __version__})
+        elif adres.path == "/api/motorlar":
+            self._json(HTTPStatus.OK, self.uygulama.motorlar())
         elif adres.path == "/api/arayuz_dili":
             sorgu = parse_qs(adres.query)
             try:

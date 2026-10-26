@@ -422,26 +422,62 @@ def _uyumluluk_uygula(ayar: dict[str, Any]) -> None:
         raise AyarHatasi("uyumsuz seçim: " + " | ".join(hatalar))
 
 
+def tts_auto_karar(full_text: bool, gpu: bool, voxcpm2_kurulu: bool) -> tuple[str, str]:
+    """ses.motor="auto" kuralı (saf): (motor, neden kodu). Kod: full_text | gpu_yok | kurulu_degil | tamam.
+
+    Hem iş başlarken (`tts_auto_coz`, gerçek CUDA) hem arayüzün motor seçicisi (hafif nvidia-smi) bunu kullanır.
+    """
+    if full_text:
+        return "supertonic", "full_text"
+    if not gpu:
+        return "supertonic", "gpu_yok"
+    if not voxcpm2_kurulu:
+        return "supertonic", "kurulu_degil"
+    return "voxcpm2", "tamam"
+
+
+_TTS_AUTO_NEDEN = {
+    "full_text": "ses.motor=auto → supertonic: full_text kipi yalnız Supertonic ya da EMA ile seslendirir",
+    "gpu_yok": "ses.motor=auto → supertonic: çalışan NVIDIA GPU yok (VoxCPM2 GPU ister)",
+    "kurulu_degil": ("ses.motor=auto → supertonic: VoxCPM2 kurulu değil (kurulum: scripts/kur.ps1 -Adim voxcpm2); "
+                     "kurulunca otomatik VoxCPM2 kullanılır"),
+    "tamam": "ses.motor=auto → voxcpm2: kurulu ve NVIDIA GPU çalışıyor",
+}
+
+
+def stt_auto_karar(gpu: bool, turbo_kurulu: bool) -> tuple[str, str]:
+    """transkripsiyon.motor="auto" kuralı (saf): (motor, neden kodu). Kod: turbo | turbo_yok | gpu_yok.
+
+    Yedek faster-whisper metni + CTC kelime zamanı (ADR 0017); elle "faster-whisper" Whisper zamanını korur.
+    """
+    if gpu and turbo_kurulu:
+        return "crisperwhisper_turbo_ct2", "turbo"
+    return "faster_whisper_ctc", "turbo_yok" if gpu else "gpu_yok"
+
+
 def tts_auto_coz(ayar: dict[str, Any]) -> tuple[str, str]:
     """ses.motor="auto" -> (motor, gerekçe). VoxCPM2 kuruluysa ve çalışan NVIDIA GPU varsa o, değilse Supertonic.
 
     Kurulu denetimi `kayit` kaydındaki VoxCPM2 denetimiyle, GPU denetimi `genel.cihaz` çözümüyle aynıdır.
     full_text kipi yalnız Supertonic/EMA ile seslendirdiği için Supertonic'e çözülür. Açık seçim ("voxcpm2" vb.) buraya girmez.
+    Kitaplık sesi (ses.voxcpm2_ses = kitaplik/<kimlik>) VoxCPM2 ister: auto onu seçer; seçemiyorsa ses yok sayılır ve uyarılır.
     """
-    if ayar["genel.dublaj_kipi"] == "full_text":
-        return "supertonic", "ses.motor=auto → supertonic: full_text kipi yalnız Supertonic ya da EMA ile seslendirir"
-    from dublaj_hatti.bolum_00_omurga.runtime.donanim import DonanimHatasi, cihaz_coz
+    full_text = ayar["genel.dublaj_kipi"] == "full_text"
+    gpu = voxcpm2_kurulu = False
+    if not full_text:
+        from dublaj_hatti.bolum_00_omurga.runtime.donanim import DonanimHatasi, cihaz_coz
 
-    try:
-        gpu = cihaz_coz(ayar["genel.cihaz"]) == "cuda"
-    except DonanimHatasi:
-        gpu = False
-    if not gpu:
-        return "supertonic", "ses.motor=auto → supertonic: çalışan NVIDIA GPU yok (VoxCPM2 GPU ister)"
-    if not kayit.motor("voxcpm2").kurulu():
-        return "supertonic", ("ses.motor=auto → supertonic: VoxCPM2 kurulu değil (kurulum: scripts/kur.ps1 -Adim "
-                              "voxcpm2); kurulunca otomatik VoxCPM2 kullanılır")
-    return "voxcpm2", "ses.motor=auto → voxcpm2: kurulu ve NVIDIA GPU çalışıyor"
+        try:
+            gpu = cihaz_coz(ayar["genel.cihaz"]) == "cuda"
+        except DonanimHatasi:
+            gpu = False
+        voxcpm2_kurulu = gpu and bool(kayit.motor("voxcpm2").kurulu())
+    motor, kod = tts_auto_karar(full_text, gpu, voxcpm2_kurulu)
+    neden = _TTS_AUTO_NEDEN[kod]
+    if motor != "voxcpm2" and str(ayar.get("ses.voxcpm2_ses") or "").startswith("kitaplik/"):
+        neden += (" · kitaplık sesi (" + str(ayar["ses.voxcpm2_ses"]) + ") yalnız VoxCPM2 ile okunur, bu işte "
+                  "kullanılmayacak")
+    return motor, neden
 
 
 def tts_motoru_coz(ayar: dict[str, Any], gunluk: bool = False) -> str:
@@ -462,7 +498,7 @@ def stt_secimi_coz(ayar: dict[str, Any], cihaz: str, hesap_tipi: str) -> tuple[s
     stt = ayar["transkripsiyon.motor"]
     if stt == "auto":
         # Yedek faster-whisper metni + CTC kelime zamanı (ADR 0017); elle "faster-whisper" Whisper zamanını korur
-        stt = "crisperwhisper_turbo_ct2" if cihaz == "cuda" and crisper_turbo_kurulu() else "faster_whisper_ctc"
+        stt = stt_auto_karar(cihaz == "cuda", cihaz == "cuda" and crisper_turbo_kurulu())[0]
     if stt in STT_SABIT_PROFIL:
         model, hesap = STT_SABIT_PROFIL[stt]
         return stt, model, hesap, ""
