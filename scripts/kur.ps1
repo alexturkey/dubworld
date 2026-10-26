@@ -49,7 +49,8 @@
 param(
   [string]$Adim = "uv,python,paketler,modeller,kontrol",
   [switch]$Cpu,
-  [switch]$TicariOlmayanKabul
+  [switch]$TicariOlmayanKabul,
+  [string]$VenvYolu = ""
 )
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
@@ -73,7 +74,11 @@ $Varlik = Join-Path $Repo "runtime_assets"
 $Araclar = Join-Path $Varlik "araclar"
 $UvDir = Join-Path $Araclar "uv"
 $Uv = Join-Path $UvDir "uv.exe"
-$Venv = Join-Path $Repo ".venv"
+if ($VenvYolu) {
+  $Venv = $VenvYolu
+} else {
+  $Venv = Join-Path $Repo ".venv"
+}
 $Py = Join-Path $Venv "Scripts\python.exe"
 $Adimlar = $Adim.Split(",") | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $_ }
 

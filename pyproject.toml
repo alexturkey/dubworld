@@ -100,7 +100,6 @@ dubla-telegram = "dublaj_hatti.bolum_80_arayuz_ve_teslim.telegram_botu.bot:main"
 
 [project.gui-scripts]
 # no console window on Windows
-dubla-gui = "dublaj_hatti.masaustu:main"
 
 [project.urls]
 Homepage = "https://github.com/alexturkey/DubWorld"
