@@ -203,6 +203,8 @@ dokunmadan tek başına kaldırılabilir.
 | `voxcpm2` | sabit commit'le kardeş TTS reposu ve kurulum betiği (model, CUDA 12.8 çalışma DLL'leri, hazır motor, Python paketleri) | `runtime_assets/tts_motorlari/voxcpm2/` | THIRD_PARTY.md'ye göre | – |
 | `tts-ema` | EMA Lightning 1.1.0 + normalizer-tr, sabit ağırlık, yerelde dışa aktarılan ONNX (`ses.motor = ema_lightning`) | `.venv`, `runtime_assets/tts_motorlari/ema_lightning/` | Apache-2.0 (kod ve ağırlık); tek sentetik ses, YZ etiketi kalır | – |
 
+**Sonda tek soru (CrisperWhisper Turbo).** `kur.cmd` / `kur.ps1` varsayılan adımlarla, etkileşimli bir pencerede çalışır, makinede NVIDIA kartı ve WSL2 varsa `kontrol` adımından sonra tek bir soru sorar: CrisperWhisper Turbo ticari olmayan lisansla kurulsun mu? [E/h]. Sorudan önce lisans özeti ve boyut (≈ 7 GB) yazılır. E derseniz `crisper` adımı `-TicariOlmayanKabul` verilmiş gibi çalışır; H derseniz (ya da Enter) faster-whisper kullanılır. `-Adim` ile adım verildiğinde, CI'da, `-NonInteractive` ile ya da giriş yönlendirildiğinde hiç sorulmaz; Turbo zaten kuruluysa da sorulmaz.
+
 Başka repo kullanan adımların ön koşulları:
 
 - `crisper`: **Ubuntu 24.04**'lü WSL2 (`wsl --install -d Ubuntu`, bir kez, yönetici; ardından kullanıcıyı oluşturmak

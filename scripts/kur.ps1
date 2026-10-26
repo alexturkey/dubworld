@@ -278,16 +278,18 @@ if (Adim "hizalama-diller") {
   Bilgi "HIZALAMA-DILLER_OK"
 }
 
-if (Adim "crisper") {
+function CrisperKur([bool]$Kabul) {
   Bilgi "== CrisperWhisper 2.0 Turbo (13. motor)"
   Bilgi "  UYARI: model ağırlığı TİCARİ OLMAYAN kullanım lisanslıdır (nyralabs/CrisperWhisper2.0_turbo model kartı)."
-  if (-not $TicariOlmayanKabul) { throw "Bu adım için lisansı okuyup -TicariOlmayanKabul ile yeniden çalıştırın" }
+  if (-not $Kabul) { throw "Bu adım için lisansı okuyup -TicariOlmayanKabul ile yeniden çalıştırın" }
   Kardes-Repo-Denetle $STT_REPO "DUBLAJ_STT_REPO_URL"
   & $Py -B (Join-Path $Repo "scripts\crisper_kur.py") --stt-repo $STT_REPO --stt-commit $STT_COMMIT
   if ($LASTEXITCODE -ne 0) { throw "CrisperWhisper kurulumu başarısız" }
   & $Py -B (Join-Path $Repo "scripts\modelleri_indir.py") --adim crisper
   Bilgi "CRISPER_OK"
 }
+
+if (Adim "crisper") { CrisperKur ([bool]$TicariOlmayanKabul) }
 
 if (Adim "voxcpm2") {
   Bilgi "== VoxCPM2 (kardeş repo $VOX_COMMIT)"
@@ -352,6 +354,53 @@ if (Adim "kontrol") {
   & (Join-Path $Venv "Scripts\dubla.exe") kontrol
   if ($LASTEXITCODE -ne 0) { throw "dubla kontrol başarısız" }
   Bilgi "KONTROL_OK"
+}
+
+# --- varsayılan etkileşimli kurulumun sonunda tek soru: CrisperWhisper Turbo (ticari olmayan lisans) -------------
+# Yalnız: etkileşimli (CI / -NonInteractive / yönlendirilmiş giriş değil) VE varsayılan adım listesi VE NVIDIA VE WSL2.
+# Hayır ya da hiç sorulmazsa transkripsiyon.motor=auto faster-whisper'a düşer (kurulum kırılmaz).
+function Etkilesimli {
+  if ($env:CI -or $env:GITHUB_ACTIONS -or $env:TF_BUILD) { return $false }
+  if (-not [Environment]::UserInteractive) { return $false }
+  $arg = @([Environment]::GetCommandLineArgs() | Where-Object { $_ -match '^-noni' })
+  if ($arg.Count -gt 0) { return $false }
+  try { if ([Console]::IsInputRedirected) { return $false } } catch { return $false }
+  return $true
+}
+function WslVar {
+  if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { return $false }
+  $dagitimlar = & wsl.exe -l -q 2>$null
+  if ($LASTEXITCODE -ne 0) { return $false }
+  return [bool](($dagitimlar -join "") -replace "[^A-Za-z0-9]", "")
+}
+function CrisperKuruluMu {
+  if (-not (Test-Path $Py)) { return $false }
+  $o = & $Py -B -c "from dublaj_hatti.yapilandirma import crisper_turbo_kurulu as k; print(int(k()))" 2>$null
+  return ("$o".Trim() -eq "1")
+}
+$VarsayilanAdimlar = -not $PSBoundParameters.ContainsKey("Adim")
+if ($VarsayilanAdimlar -and -not $Cpu -and (Adim "kontrol") -and (Etkilesimli) -and (Test-Path $Py)) {
+  if ((NvidiaVar) -and (WslVar) -and -not (CrisperKuruluMu)) {
+    Bilgi ""
+    Bilgi "== İsteğe bağlı: CrisperWhisper Turbo (daha hassas kelime zamanı)"
+    Bilgi "  Lisans: model ağırlığı yalnız TİCARİ OLMAYAN kullanım içindir (Nyra Health Non-Commercial Research License)."
+    Bilgi "  Ücretli iş, müşteri işi ya da gelir getiren kullanımda KULLANMAYIN. Ayrıntı: THIRD_PARTY.md."
+    Bilgi "  Boyut: yaklaşık 7 GB disk (WSL içinde torch ≈ 3 GB + model indirme 1,6 GB + dönüştürülmüş model 1,6 GB); dönüşüm sırasında ≈ 4,5 GB boş RAM gerekir."
+    Bilgi "  Licence: the model weights are for NON-COMMERCIAL use only (Nyra Health Non-Commercial Research License). Do not use them for paid, client or monetised work."
+    Bilgi "  Size: about 7 GB of disk (torch in WSL ≈ 3 GB + 1.6 GB download + 1.6 GB converted model); conversion needs ≈ 4.5 GB of free RAM."
+    $cevap = Read-Host "CrisperWhisper Turbo ticari olmayan lisansla kurulsun mu? / Install under the non-commercial licence? [E/h]"
+    if ($cevap.Trim() -match '^(e|evet|y|yes)$') {
+      try { CrisperKur $true }
+      catch {
+        Bilgi "  UYARI: CrisperWhisper kurulumu tamamlanamadı: $($_.Exception.Message)"
+        Bilgi "  faster-whisper kullanılacak. Sonra denemek için: scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul"
+        Bilgi "  faster-whisper will be used. To retry later: scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul"
+      }
+    } else {
+      Bilgi "  Atlandı: faster-whisper kullanılacak (transkripsiyon.motor=auto). Sonradan: scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul"
+      Bilgi "  Skipped: faster-whisper will be used (transkripsiyon.motor=auto). Later: scripts/kur.ps1 -Adim crisper -TicariOlmayanKabul"
+    }
+  }
 }
 
 Bilgi "KURULUM_OK"

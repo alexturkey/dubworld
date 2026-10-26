@@ -207,6 +207,8 @@ environment can be removed alone without touching `.venv`.
 | `voxcpm2` | sister TTS repository at a pinned commit and its installer (model, CUDA 12.8 runtime DLLs, prebuilt engine, Python packages) | `runtime_assets/tts_motorlari/voxcpm2/` | per THIRD_PARTY.md | – |
 | `tts-ema` | EMA Lightning 1.1.0 + normalizer-tr, pinned weights, locally exported ONNX (`ses.motor = ema_lightning`) | `.venv`, `runtime_assets/tts_motorlari/ema_lightning/` | Apache-2.0 (code and weights); one synthetic voice, keep the AI label | – |
 
+**One question at the end (CrisperWhisper Turbo).** When `kur.cmd` / `kur.ps1` runs with the default steps in an interactive window on a machine with an NVIDIA card and WSL2, it asks one question after the `kontrol` step: install CrisperWhisper Turbo under its non-commercial licence? [E/h] (E = yes, h = no). A licence summary and the size (about 7 GB) are printed first. Yes runs the `crisper` step as if `-TicariOlmayanKabul` was given; no (or Enter) means faster-whisper is used. Nothing is asked when `-Adim` is given, in CI, with `-NonInteractive`, when input is redirected, or when Turbo is already installed.
+
 Prerequisites of the steps that use other repositories:
 
 - `crisper`: WSL2 with **Ubuntu 24.04** (`wsl --install -d Ubuntu`, once, administrator; then open Ubuntu once to

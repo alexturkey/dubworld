@@ -47,6 +47,7 @@ indirmesiydi) sürdü. Hızlı bağlantıda daha kısa sürer.
 3. Siyah bir pencere ilerlemeyi gösterir; kapatmayın. **Kurulum bitti** yazınca bir tuşa basın. **KURULUM DURDU /
    INSTALL STOPPED** yazarsa altındaki satırlar ne yapılacağını söyler; çoğu zaman `kur.cmd`'ye yeniden çift
    tıklamak yeter (kaldığı yerden sürer).
+4. NVIDIA kartı ve WSL2 varsa kurulum sonda tek soru sorar: CrisperWhisper Turbo eklensin mi (daha hassas kelime zamanı, **ticari olmayan lisans**, yaklaşık 7 GB). **E** evet, **h** hayır; hayırda program faster-whisper kullanır (ticari kullanıma da uygundur).
 
 ## İlk dublajınız
 

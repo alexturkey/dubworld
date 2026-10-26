@@ -45,6 +45,7 @@ was the model download). A faster connection is quicker.
 3. A black window shows the progress. Do not close it. When it shows **Install finished**, press any key.
    If it shows **KURULUM DURDU / INSTALL STOPPED**, the lines below it say what to do; usually it is enough to
    double-click `kur.cmd` again (it continues where it stopped).
+4. With an NVIDIA card and WSL2 the installer asks one last question: whether to add CrisperWhisper Turbo (more precise word times, **non-commercial licence**, about 7 GB). Answer **E** for yes or **h** for no; with no, the program uses faster-whisper, which also works for commercial use.
 
 ## Your first dub
 
