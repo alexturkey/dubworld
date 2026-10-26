@@ -28,7 +28,6 @@ hatasıdır.
 | faster-whisper distil-large-v3 int8 | 5.11 % | 8.9 | 126 ms | 514 ms | 889 |
 | distil-large-v3.5 fp32 | 5.64 % | 6.9 | 107 ms | 461 ms | 611 |
 | distil-large-v3.5 int8 | 5.84 % | **9.2** | 106 ms | 453 ms | 664 |
-| whisper.cpp base.en (CPU) + CTC | 6.89 % | 5.4 | 51 ms | 386 ms | 0 |
 
 - Kısa dosyalar: distil int8, fp32'ye eşit ve daha hızlı. 9–22 dakika: WhisperX int8 önde. ≈ 70 dakika: en iyisi Parakeet.
 - Kelime zamanları CTC hizalamasından (CTC zorlamalı hizalama: bilinen metni sesteki zamanlara oturtma) gelen motorlar,

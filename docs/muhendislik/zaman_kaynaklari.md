@@ -38,7 +38,6 @@ birleşimler: [../tarifler/kombinasyonlar.md](../tarifler/kombinasyonlar.md).
 | [faster-whisper](../motorlar/faster-whisper.md) | Whisper çapraz dikkat (cross-attention) zamanları (`word_timestamps=True`), **CTC yok** | – | yalnız elle |
 | [whisperx](../motorlar/whisperx.md) | işçinin içinde WhisperX `align()` (wav2vec2 CTC) | ASR segmentleri | elle; ayrıca distil / Parakeet dil yedeğinin hedefi |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | ortak CTC kutusu | belirteç (token) zamanları; ≥ 1,0 sn boşluk yeni pencere açar (80 ms pay) | elle (İngilizce, işlemci) |
-| [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | ortak CTC kutusu | whisper.cpp segmentleri | elle (İngilizce, işlemci) |
 | [youtube_translate](../motorlar/youtube_translate.md) | ortak CTC kutusu | json3 başlangıç ipuçlarından pencereler | elle, yalnız YouTube bağlantısı (§3) |
 | [speechmatics](../motorlar/speechmatics.md) | sağlayıcı API'sinin kelime zamanları, **CTC yok** | – | elle, kendi anahtarınızla |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | sağlayıcı API'sinin kelime zamanları, **CTC yok** | – | elle, kendi anahtarınızla |
@@ -64,7 +63,7 @@ flowchart TD
     P -->|evet| J[json3 kelimeleri = metin<br/>json3 zamanları = pencere ipucu]
     T --> CTC[ortak CTC kutusu<br/>ctc_speech_bounded_v2]
     J --> CTC
-    E -->|parakeet / whisper.cpp| CTC
+    E -->|parakeet| CTC
     E -->|whisperx| WX[WhisperX align]
     E -->|faster-whisper| FW[faster-whisper]
     FW --> N[Whisper'ın kendi kelime zamanları]

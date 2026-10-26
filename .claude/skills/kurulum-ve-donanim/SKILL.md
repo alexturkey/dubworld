@@ -65,7 +65,7 @@ Türkçe özet en altta. / Turkish summary at the end.
    at a fixed commit (URLs built in; for a fork set `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`).
 5. **Pick engines that fit the hardware** with [docs/donanim.md](../../../docs/donanim.md):
    - No NVIDIA GPU: `--ayar genel.cihaz=cpu` (or leave `auto`). STT `faster-whisper` int8, TTS `supertonic`,
-     `ses_temizligi.kip=original`. English sources on CPU: `parakeet_cpu_align` or `whisper_cpp_cpu_align`.
+     `ses_temizligi.kip=original`. English sources on CPU: `parakeet_cpu_align`.
    - 4 GB GPU: defaults fit. One GPU job at a time. `crisperwhisper2_medium` (~3.6 GB) and `voxcpm2` (~3 GB) need the
      card alone. Details: [docs/engineering/low_vram.md](../../../docs/engineering/low_vram.md).
    - GPU-only engines (`crisperwhisper_*`, `voxcpm2`) stop with a clear error on a CPU machine; they are never swapped

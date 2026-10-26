@@ -164,7 +164,6 @@ of stage 5.
 | [faster-whisper](../motorlar/faster-whisper.md) | segments with Whisper word timestamps | yes | Whisper cross-attention, no CTC | nothing after stage 6 |
 | [whisperx](../motorlar/whisperx.md) | ASR segments | yes | WhisperX `align()`; without diarization the alignment runs in stage 7 (`dubber.py:1442`) | alignment windows |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | sub-word tokens with times | yes | shared CTC box | windows rebuilt from tokens: a gap ≥ 1.0 s starts a window, 80 ms pad |
-| [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | whisper.cpp segments | yes | shared CTC box | alignment windows |
 | [youtube_translate](../motorlar/youtube_translate.md) | caption words with start hints, no end | no | shared CTC box | windows at sentence ends, gaps > 2.5 s, > 18 s or 80 words |
 | [speechmatics](../motorlar/speechmatics.md) | provider words (optional speakers) | yes | provider times, no CTC | nothing after stage 6 |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | provider words (optional speakers) | yes | provider times, no CTC | nothing after stage 6 |

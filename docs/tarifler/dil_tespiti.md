@@ -12,7 +12,7 @@
 | One language, known | faster-whisper, whisperx, CrisperWhisper, cloud | `kaynak_dil = "en"` (skips detection; safest) |
 | Several languages / code-switching (speakers switch language mid-video) | CrisperWhisper Turbo or Medium | `crisper_dil_tespiti = "continuous_stream"`, `kaynak_dil = "auto"` |
 | Long video, language changes between sections | CrisperWhisper Medium | `crisper_dil_tespiti = "per_window"` |
-| English only, CPU | whisper.cpp / parakeet | `kaynak_dil = "auto"` or `"en"` |
+| English only, CPU | parakeet | `kaynak_dil = "auto"` or `"en"` |
 | Fast English on GPU | faster-whisper with `distil-large-v3` | `kaynak_dil = "auto"`: a non-English video automatically switches to a multilingual model |
 | YouTube link with captions | `youtube_translate` | language comes from the caption track; `kaynak_dil` is ignored (warning) |
 
@@ -33,7 +33,6 @@ Priority (same as the original application): **platform language** (the video si
 | 8 | CrisperWhisper Turbo / Medium | fixed / platform | detection skipped, probability 1.0 (only in `global_first_window`) | `kaynak_dil = "<iso>"` or link metadata | — |
 | 9 | CrisperWhisper Turbo / Medium | `continuous_stream` (code-switching, change point) | a tick every 1 s over a 4 s context (+ a final coverage tick); a tick counts only if top probability ≥ 0.6 and margin ≥ 0.2; a new language needs 2 consecutive confident ticks; the boundary is the midpoint between the last stable and first confirmed tick; main language = longest total duration | `crisper_dil_tespiti = "continuous_stream"` | 4.0 s / 1.0 s / 2 ticks / 0.6 / 0.2 |
 | 10 | CrisperWhisper **Medium only** | `per_window` | VAD-planned windows (target 25 s, max 29.5 s, min 5 s), language per window, equal neighbours merged into runs | `crisper_dil_tespiti = "per_window"` | 25 / 29.5 / 5 s |
-| 11 | whisper.cpp | English only | non-English language is a settings error | — | — |
 | 12 | parakeet | English only + fallback | non-English → mode 5 | — | — |
 | 13 | speechmatics | service detection / fixed | `language = <iso>` or `"auto"`; detected language read from the words | `kaynak_dil` | — |
 | 14 | elevenlabs_scribe_v2 | service detection / fixed | `language_code` sent only when fixed; 3-letter codes mapped to 2-letter | `kaynak_dil` | — |
@@ -76,7 +75,7 @@ Ayarlar: `transkripsiyon.kaynak_dil` (`auto` ya da bir ISO kodu) ve `transkripsi
 | Tek dil, biliniyor | faster-whisper, whisperx, CrisperWhisper, bulut | `kaynak_dil = "en"` (tespit atlanır; en güvenlisi) |
 | Birden çok dil / kod değişimi (konuşmacılar video içinde dil değiştiriyor) | CrisperWhisper Turbo ya da Medium | `crisper_dil_tespiti = "continuous_stream"`, `kaynak_dil = "auto"` |
 | Uzun video, bölümler arasında dil değişiyor | CrisperWhisper Medium | `crisper_dil_tespiti = "per_window"` |
-| Yalnız İngilizce, işlemci | whisper.cpp / parakeet | `kaynak_dil = "auto"` ya da `"en"` |
+| Yalnız İngilizce, işlemci | parakeet | `kaynak_dil = "auto"` ya da `"en"` |
 | GPU'da hızlı İngilizce | `distil-large-v3` ile faster-whisper | `kaynak_dil = "auto"`: İngilizce olmayan video kendiliğinden çok dilli modele geçer |
 | Altyazılı YouTube bağlantısı | `youtube_translate` | dil altyazı izinden gelir; `kaynak_dil` yok sayılır (uyarı) |
 
@@ -97,7 +96,6 @@ Ayarlar: `transkripsiyon.kaynak_dil` (`auto` ya da bir ISO kodu) ve `transkripsi
 | 8 | CrisperWhisper Turbo / Medium | sabit / platform | tespit atlanır, olasılık 1.0 (yalnız `global_first_window` içinde) | `kaynak_dil = "<iso>"` ya da bağlantı üst verisi | — |
 | 9 | CrisperWhisper Turbo / Medium | `continuous_stream` (kod değişimi, değişim noktası) | 4 s bağlam üzerinde her 1 s'de bir tık (+ son kapsama tıkı); bir tık yalnız en yüksek olasılık ≥ 0.6 ve fark ≥ 0.2 ise sayılır; yeni dil için art arda 2 emin tık gerekir; sınır, son kararlı tık ile ilk onaylanan tıkın orta noktasıdır; ana dil = toplam süresi en uzun dil | `crisper_dil_tespiti = "continuous_stream"` | 4.0 s / 1.0 s / 2 tık / 0.6 / 0.2 |
 | 10 | **Yalnız** CrisperWhisper **Medium** | `per_window` | VAD ile planlanan pencereler (hedef 25 s, en çok 29.5 s, en az 5 s), pencere başına dil, eşit komşular dizilere birleştirilir | `crisper_dil_tespiti = "per_window"` | 25 / 29.5 / 5 s |
-| 11 | whisper.cpp | yalnız İngilizce | İngilizce dışı dil ayar hatasıdır | — | — |
 | 12 | parakeet | yalnız İngilizce + yedek | İngilizce dışı → kip 5 | — | — |
 | 13 | speechmatics | servis tespiti / sabit | `language = <iso>` ya da `"auto"`; tespit edilen dil kelimelerden okunur | `kaynak_dil` | — |
 | 14 | elevenlabs_scribe_v2 | servis tespiti / sabit | `language_code` yalnız sabitken gönderilir; 3 harfli kodlar 2 harfliye eşlenir | `kaynak_dil` | — |

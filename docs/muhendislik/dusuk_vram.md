@@ -58,7 +58,7 @@ Bunu mümkün kılan kurallar:
 ## 4. NVIDIA GPU yok
 
 - `--ayar genel.cihaz=cpu` (ya da CUDA olmayan makinede `auto`). CLI, torch içe aktarılmadan önce CUDA'yı gizler.
-- Transkripsiyon: faster-whisper int8 (ya da İngilizce için Parakeet / whisper.cpp); Supertonic TTS zaten CPU'da
+- Transkripsiyon: faster-whisper int8 (ya da İngilizce için Parakeet); Supertonic TTS zaten CPU'da
   çalışır; video libx264 kullanır. CPU'da ayrıştırma yavaştır; `ses_temizligi.kip = "original"` tercih et.
 - Bu deponun uçtan uca CPU duman testi (temel çalışırlık testi) yerel Opus-MT çevirmeniyle tamamlandı
   (bulduğu sorunlar için bkz. [video_altyazi_ve_devam.md](video_altyazi_ve_devam.md) §7).

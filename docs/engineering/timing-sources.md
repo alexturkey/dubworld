@@ -36,7 +36,6 @@ Which combinations are allowed: [../tarifler/kombinasyonlar.md](../tarifler/komb
 | [faster-whisper](../motorlar/faster-whisper.md) | Whisper cross-attention timestamps (`word_timestamps=True`), **no CTC** | – | explicitly only |
 | [whisperx](../motorlar/whisperx.md) | WhisperX `align()` (wav2vec2 CTC) inside its worker | ASR segments | explicitly; also the target of the distil / Parakeet language fallback |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | shared CTC box | token times; a gap ≥ 1.0 s starts a new window (80 ms pad) | explicitly (English, CPU) |
-| [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | shared CTC box | whisper.cpp segments | explicitly (English, CPU) |
 | [youtube_translate](../motorlar/youtube_translate.md) | shared CTC box | json3 start hints grouped into windows | explicitly, YouTube link only (§3) |
 | [speechmatics](../motorlar/speechmatics.md) | provider API word times, **no CTC** | – | explicitly, your own key |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | provider API word times, **no CTC** | – | explicitly, your own key |
@@ -62,7 +61,7 @@ flowchart TD
     P -->|yes| J[json3 words = text<br/>json3 times = window hints]
     T --> CTC[shared CTC box<br/>ctc_speech_bounded_v2]
     J --> CTC
-    E -->|parakeet / whisper.cpp| CTC
+    E -->|parakeet| CTC
     E -->|whisperx| WX[WhisperX align]
     E -->|faster-whisper| FW[faster-whisper]
     FW --> N[native Whisper word times]

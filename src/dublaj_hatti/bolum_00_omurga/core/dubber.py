@@ -138,7 +138,6 @@ ASR_LEADING_PAD_ENGINES = {
     "whisperx",
     "speechmatics",
     "elevenlabs_scribe_v2",
-    "whisper_cpp_cpu_align",
     "parakeet_cpu_align",
 }
 PARAKEET_ALIGNMENT_INPUT_CONTRACT_VERSION = 2
@@ -238,7 +237,7 @@ def _transcription_engine_contract_inputs(engine_name: str) -> dict[str, Any]:
             "parakeet_alignment_input_contract_version": PARAKEET_ALIGNMENT_INPUT_CONTRACT_VERSION,
             "ctc_word_boundary_policy": CTC_WORD_BOUNDARY_POLICY,
         }
-    if engine_name in {"whisper_cpp_cpu_align", "youtube_translate", FASTER_WHISPER_CTC_ENGINE}:
+    if engine_name in {"youtube_translate", FASTER_WHISPER_CTC_ENGINE}:
         return {"ctc_word_boundary_policy": CTC_WORD_BOUNDARY_POLICY}
     return {}
 
@@ -2120,7 +2119,6 @@ _transcription_engine_display_names = {
     FASTER_WHISPER_CTC_ENGINE: "faster-whisper + CTC",
     "whisperx": "WhisperX",
     "crisperwhisper_turbo_ct2": "CrisperWhisper2.0 Turbo CT2 (istege bagli, ticari olmayan)",
-    "whisper_cpp_cpu_align": "whisper.cpp CPU + CTC",
     "parakeet_cpu_align": "Parakeet Unified EN INT8 CPU + CTC",
     "speechmatics": "Speechmatics (bulut, kendi anahtariniz)",
     "elevenlabs_scribe_v2": "ElevenLabs Scribe v2 (bulut, kendi anahtariniz)",
@@ -2849,34 +2847,26 @@ def transcribe_and_align(
         logger.info("[DIL TESPITI] Whisper modu: OTOMATIK TESPIT (%s)", cfg.model_name)
         logger.info("[DIL TESPITI] Dil parametresi: auto")
 
-    if engine_name in {"whisper_cpp_cpu_align", "parakeet_cpu_align"}:
-        if engine_name == "whisper_cpp_cpu_align":
-            from bolum_20_transkripsiyon.whisper_cpp_cpu_align_motoru import transcribe_audio as transcribe_with_cpu_align
-            transcribe_label = "whisper.cpp ggml-base.en.bin CPU"
-            profile_slug = "whisper_cpp_cpu_align"
-            ham_title = "WHISPER.CPP CPU ALIGN"
-        else:
-            from bolum_20_transkripsiyon.parakeet_cpu_align_motoru import transcribe_audio as transcribe_with_cpu_align
-            transcribe_label = "Parakeet Unified EN 0.6B INT8 CPU"
-            profile_slug = "parakeet_cpu_align"
-            ham_title = "PARAKEET UNIFIED EN INT8 CPU ALIGN"
+    if engine_name == "parakeet_cpu_align":
+        from bolum_20_transkripsiyon.parakeet_cpu_align_motoru import transcribe_audio as transcribe_with_cpu_align
+        transcribe_label = "Parakeet Unified EN 0.6B INT8 CPU"
+        profile_slug = "parakeet_cpu_align"
+        ham_title = "PARAKEET UNIFIED EN INT8 CPU ALIGN"
 
         if whisper_lang and whisper_lang != "en":
-            if engine_name == "parakeet_cpu_align":
-                return _run_distil_language_fallback(
-                    wav_path,
-                    cfg,
-                    run_dir,
-                    platform_lang,
-                    source_url,
-                    asr_time_offset,
-                    full_text_mode,
-                    prepare_final_segments,
-                    trigger=lang_source,
-                    detected_language=whisper_lang,
-                    fallback_family="parakeet",
-                )
-            raise RuntimeError("Whisper.cpp CPU Align motoru ilk surumde sadece language=en destekler")
+            return _run_distil_language_fallback(
+                wav_path,
+                cfg,
+                run_dir,
+                platform_lang,
+                source_url,
+                asr_time_offset,
+                full_text_mode,
+                prepare_final_segments,
+                trigger=lang_source,
+                detected_language=whisper_lang,
+                fallback_family="parakeet",
+            )
 
         cache_dir = cfg.cache_dir if cfg.cache_dir else str(huggingface_home())
         os.makedirs(cache_dir, exist_ok=True)
@@ -3230,6 +3220,24 @@ def transcribe_and_align(
     return segments, detected_language, aligned
 
 
+def _ctc_kelimelerini_dogrula(words: List[Dict[str, Any]]) -> None:
+    """CTC hizalamasının kelime listesi boş değil, her kelime metinli, başlangıç <= bitiş ve başlangıçlar sıralı."""
+    if not words:
+        raise RuntimeError("CTC kelime hizalama bos kelime listesi dondurdu")
+    previous_start = -1.0
+    for index, word in enumerate(words):
+        text = str(word.get("word") or "").strip()
+        start = float(word.get("start"))
+        end = float(word.get("end"))
+        if not text:
+            raise RuntimeError(f"Aligned word text is empty at index {index}")
+        if end < start:
+            raise RuntimeError(f"Aligned word end before start at index {index}")
+        if start < previous_start:
+            raise RuntimeError(f"Aligned word order is not monotonic at index {index}")
+        previous_start = start
+
+
 def faster_whisper_ctc_pencereleri(segments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """faster-whisper segmentleri -> CTC pencereleri [{start, end, text}] (boş metin atlanır, süre > 0 olmalı)."""
     pencereler: List[Dict[str, Any]] = []
@@ -3254,7 +3262,7 @@ def faster_whisper_ctc_metin_ayni(whisper_kelimeleri: List[Dict[str, Any]], ctc_
 
 
 def faster_whisper_ctc_zaman_asimi(ses_saniye: float, device: str) -> float:
-    """CTC alt süreç zaman aşımı: GPU 1800 sn (whisper.cpp/Parakeet ile aynı); işlemcide ses süresiyle büyür.
+    """CTC alt süreç zaman aşımı: GPU 1800 sn (Parakeet ile aynı); işlemcide ses süresiyle büyür.
 
     Ölçüm (işlemci): tr xls-r-300m 60 sn ses 42,9 sn (yükleme ~10 sn), en base-960h 23,8 sn ses 16,5 sn; belgedeki
     en kötü işlemci vakası 3,5 dk ses ~10 dk (≈ 2,9×). 3× + 600 sn bu vakayı da kapsar; taban 1800 sn korunur.
@@ -3273,13 +3281,12 @@ def _faster_whisper_ctc_hizala(
     device: str,
     cache_dir: str,
 ) -> Dict[str, Any]:
-    """`faster_whisper_ctc`: faster-whisper metni ortak CTC kutusundan geçer (whisper.cpp / Parakeet ile aynı bağ).
+    """`faster_whisper_ctc`: faster-whisper metni ortak CTC kutusundan geçer (Parakeet ile aynı bağ).
 
     Pencere = faster-whisper segmentleri; kelime zamanı = CTC (`ctc_speech_bounded_v2`). Whisper'ın kendi kelime
     zamanları yalnız tanılama için `faster_whisper_ctc/whisper_dogal_kelimeler.json` dosyasında kalır. CTC modeli
     yoksa iş açık hatayla durur; Whisper zamanına sessizce düşülmez (ADR 0005, ADR 0009).
     """
-    from dublaj_hatti.bolum_20_transkripsiyon.whisper_cpp_cpu_align_motoru.result_converter import validate_words
     from dublaj_hatti.bolum_30_hizalama_ve_segment.ctc_kelime_hizalama import run_ctc_word_alignment
     from dublaj_hatti.bolum_00_omurga.runtime.ctc_model_durumu import ctc_modeli_gerekli
 
@@ -3306,7 +3313,7 @@ def _faster_whisper_ctc_hizala(
     sonuc = run_ctc_word_alignment(wav_path, girdi, language, cache_dir, zaman_asimi, device=device,
                                    debug_dir=debug_dir)
     words = list(sonuc.get("words") or [])
-    validate_words(words)
+    _ctc_kelimelerini_dogrula(words)
     metin_ayni = faster_whisper_ctc_metin_ayni(dogal, words)
     if not metin_ayni:
         logger.warning("faster-whisper + CTC: hizalanan metin Whisper metninden farkli (whisper %d, CTC %d kelime); "

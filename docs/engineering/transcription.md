@@ -26,7 +26,6 @@ corpus-level; "start MAE" is the mean absolute error of word start times against
 | faster-whisper distil-large-v3 int8 | 5.11 % | 8.9 | 126 ms | 514 ms | 889 |
 | distil-large-v3.5 fp32 | 5.64 % | 6.9 | 107 ms | 461 ms | 611 |
 | distil-large-v3.5 int8 | 5.84 % | **9.2** | 106 ms | 453 ms | 664 |
-| whisper.cpp base.en (CPU) + CTC | 6.89 % | 5.4 | 51 ms | 386 ms | 0 |
 
 - Short files: distil int8 equals fp32 and is faster. 9–22 minutes: WhisperX int8 leads. ≈ 70 minutes: Parakeet best.
 - Engines whose word times come from CTC alignment are ≈ 4× more accurate at word starts than native distil timestamps.

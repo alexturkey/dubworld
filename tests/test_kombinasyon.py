@@ -163,7 +163,7 @@ KAYNAK_SECENEKLERI = {
     "genel.dublaj_kipi": ["segment_sync", "full_text"],
     "genel.transkript_bicimi": ["plain", "srt", "timestamped", "paragraph"],
     "genel.hedef_dil": ["tr", "en", "de", "fr", "es", "it", "pt", "ru", "ja", "ko", "zh", "ar"],
-    "transkripsiyon.motor": ["whisperx", "faster-whisper", "parakeet_cpu_align", "whisper_cpp_cpu_align",
+    "transkripsiyon.motor": ["whisperx", "faster-whisper", "parakeet_cpu_align",
                              "speechmatics", "elevenlabs_scribe_v2",
                              "crisperwhisper_turbo_ct2"],
     "transkripsiyon.crisper_dil_tespiti": ["global_first_window", "continuous_stream"],

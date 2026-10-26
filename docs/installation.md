@@ -149,9 +149,7 @@ one environment.
 | **VoxCPM2** | `runtime_assets/tts_motorlari/voxcpm2/repo/.venv/` (+ engine, model, CUDA DLLs under `.../voxcpm2/kok/`) | the repository's Python 3.11.14 (put on `PATH` for the step) | sister TTS repository `requirements.txt` (numpy, soundfile); the model runs in a C++ engine (audio.cpp), not in Python | `ses.motor = voxcpm2` | separate project with its own engine binary and CUDA 12.8 runtime DLLs | ≈ 3.7 GB | `-Adim voxcpm2` |
 | **RVC** (manual) | the official RVC WebUI clone, `DUBLAJ_RVC_KOK` (+ `DUBLAJ_RVC_PYTHON`) | as required by RVC WebUI | its own requirements | `ses.rvc_model` post-processing | separate upstream project with its own PyTorch and numpy | – | manual, docs/motorlar/rvc.md |
 
-Not Python environments: **whisper.cpp** (`whisper_cpp_cpu_align`) is the official prebuilt `whisper-cli.exe` placed
-under `runtime_assets/transkripsiyon_motorlari/whisper_cpp_cpu_align/` (or `DUBLAJ_WHISPER_CPP_CPU_ROOT`);
-**FFmpeg** is a binary in `runtime_assets/ffmpeg/bin`. The Codex and Claude Code CLIs used by the translation
+Not a Python environment: **FFmpeg** is a binary in `runtime_assets/ffmpeg/bin`. The Codex and Claude Code CLIs used by the translation
 backends are installed by the user and found on `PATH` (or `CODEX_BRIDGE_CODEX_BIN`, `CODEX_BRIDGE_CLAUDE_CLI`).
 
 Design rule behind the map: a new engine whose pins (PyTorch, numpy, Transformers, ONNX Runtime) differ from the

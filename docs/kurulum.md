@@ -148,9 +148,7 @@ bağımlılıkları ana kilitle bir arada bulunamaz. Ana hat tek ortamla çalı�
 | **VoxCPM2** | `runtime_assets/tts_motorlari/voxcpm2/repo/.venv/` (+ motor, model, CUDA DLL'leri `.../voxcpm2/kok/` altında) | reponun Python 3.11.14'ü (adım için `PATH` başına konur) | kardeş TTS reposunun `requirements.txt`'si (numpy, soundfile); model Python'da değil C++ motorunda (audio.cpp) çalışır | `ses.motor = voxcpm2` | kendi motor ikilisi ve CUDA 12.8 çalışma DLL'leri olan ayrı proje | ≈ 3,7 GB | `-Adim voxcpm2` |
 | **RVC** (elle) | resmî RVC WebUI klonu, `DUBLAJ_RVC_KOK` (+ `DUBLAJ_RVC_PYTHON`) | RVC WebUI'nin istediği | kendi gereksinimleri | `ses.rvc_model` son işlemi | kendi PyTorch'u ve numpy'ı olan ayrı üst kaynak proje | – | elle, docs/motorlar/rvc.md |
 
-Python ortamı olmayanlar: **whisper.cpp** (`whisper_cpp_cpu_align`) resmî hazır `whisper-cli.exe` ikilisidir ve
-`runtime_assets/transkripsiyon_motorlari/whisper_cpp_cpu_align/` altına konur (ya da `DUBLAJ_WHISPER_CPP_CPU_ROOT`);
-**FFmpeg** `runtime_assets/ffmpeg/bin` altındaki ikilidir. Çeviri arka uçlarının kullandığı Codex ve Claude Code
+Python ortamı olmayan: **FFmpeg** `runtime_assets/ffmpeg/bin` altındaki ikilidir. Çeviri arka uçlarının kullandığı Codex ve Claude Code
 CLI'larını kullanıcı kurar; `PATH` üzerinden bulunur (ya da `CODEX_BRIDGE_CODEX_BIN`, `CODEX_BRIDGE_CLAUDE_CLI`).
 
 Haritanın kuralı: sabitleri (PyTorch, numpy, Transformers, ONNX Runtime) ana kilitten farklı olan yeni bir motor kendi

@@ -14,7 +14,7 @@ without a stored run), **no record** (unknown; do not assume).
 | [low_vram.md](low_vram.md) | **Start here on a 4 GB card or CPU-only machine**: settings, symptoms, fixes |
 | [gpu_memory_and_isolation.md](gpu_memory_and_isolation.md) | VRAM budget per model, OOM diagnosis, one process per model, environments, model cache, resource lock, measurement method |
 | [source_audio_and_separation.md](source_audio_and_separation.md) | Audio extraction, inverted-phase fix, Demucs (batching, two-stem RAM work, OOM fallback), automatic background detection |
-| [transcription.md](transcription.md) | faster-whisper, WhisperX, Parakeet, whisper.cpp, cloud engines, VAD, language detection, engine comparison |
+| [transcription.md](transcription.md) | faster-whisper, WhisperX, Parakeet, cloud engines, VAD, language detection, engine comparison |
 | [crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) | The optional verbatim engines (12 and 13): CT2/int8/WSL2, long-form fixes, multilingual work, speed |
 | [word_alignment.md](word_alignment.md) | CTC forced alignment: why, window preparation, silence at word ends, space-less scripts, numbers |
 | [timing-sources.md](timing-sources.md) | Where every word time comes from: per-engine source, YouTube json3 captions, where CTC is skipped, decision flow |

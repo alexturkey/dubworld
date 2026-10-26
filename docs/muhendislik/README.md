@@ -17,7 +17,7 @@ kural ya da bulgu), **kayıt yok** (bilinmiyor; varsayma).
 | [dusuk_vram.md](dusuk_vram.md) | **4 GB kartta ya da yalnız CPU olan makinede buradan başla**: ayarlar, belirtiler, çözümler |
 | [gpu_bellek_ve_yalitim.md](gpu_bellek_ve_yalitim.md) | Model başına VRAM bütçesi, OOM (bellek yetmedi hatası) teşhisi, model başına tek süreç, ortamlar, model önbelleği, kaynak kilidi, ölçüm yöntemi |
 | [kaynak_ses_ve_ayristirma.md](kaynak_ses_ve_ayristirma.md) | Ses çıkarma, ters faz düzeltmesi, Demucs (toplu işleme, iki parçalı (stem) RAM çalışması, OOM yedeği), otomatik arka plan algılama |
-| [transkripsiyon.md](transkripsiyon.md) | faster-whisper, WhisperX, Parakeet, whisper.cpp, bulut motorları, VAD, dil algılama, motor karşılaştırması |
+| [transkripsiyon.md](transkripsiyon.md) | faster-whisper, WhisperX, Parakeet, bulut motorları, VAD, dil algılama, motor karşılaştırması |
 | [crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) | İsteğe bağlı kelimesi kelimesine motorlar (12 ve 13): CT2/int8/WSL2, uzun kayıt düzeltmeleri, çok dilli çalışma, hız |
 | [kelime_hizalama.md](kelime_hizalama.md) | CTC zorlamalı hizalama: neden, pencere hazırlama, kelime sonlarındaki sessizlik, boşluksuz yazı sistemleri, sayılar |
 | [zaman_kaynaklari.md](zaman_kaynaklari.md) | Her kelime zamanı nereden gelir: motor başına kaynak, YouTube json3 altyazısı, CTC'nin atlandığı yerler, karar akışı |

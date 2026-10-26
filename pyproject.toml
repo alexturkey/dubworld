@@ -75,7 +75,6 @@ stt-parakeet = ["sherpa-onnx>=1.13.4"]         # English, CPU
 stt-speechmatics = ["speechmatics-batch>=0.4.7"]  # cloud, your own key
 # CrisperWhisper 2.0 Turbo (non-commercial weights) runs in its own WSL environment built by
 # scripts/kur.ps1 -Adim crisper; VoxCPM2 runs in the sibling repo's environment (-Adim voxcpm2).
-# whisper.cpp uses the official prebuilt binary (docs/motorlar/whisper_cpp_cpu_align.md).
 # All of the following are off by default (docs/motorlar/<name>.md).
 akilli-kare = ["opencv-python-headless>=5.0.0.93"]       # smart frame crop (OpenCV, Apache-2.0)
 galeri = ["gallery-dl>=1.32.17"]               # GPL-2.0-only: called ONLY as a separate CLI process, never imported

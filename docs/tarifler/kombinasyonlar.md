@@ -117,7 +117,7 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 | `ceviri.arka_uc=yerel` | `transkripsiyon.kaynak_dil` ≠ `en`/`auto` | error | same |
 | `ceviri.arka_uc=auto` | no Codex/Claude CLI + target ≠ `tr` | error (at start) | the automatic choice fell back to local |
 | `ses.akis` ≠ `natural_blocks_1` | local translation or VoxCPM2 | warning | candidate/repair flows need an LLM + Supertonic |
-| whisper_cpp / parakeet | `kaynak_dil` ≠ `en`/`auto` | error | English-only engines |
+| parakeet | `kaynak_dil` ≠ `en`/`auto` | error | English-only engines |
 | crisperwhisper (turbo, medium) | `genel.cihaz=cpu` or no CUDA | error | NVIDIA GPU only |
 | crisper / cpu_align | `ileri.pyannote_konusmaci_ayrimi=true` | error | these engines do not separate speakers |
 | faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | warning | separation only with whisperx / speechmatics / elevenlabs |
@@ -268,7 +268,7 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 | `ceviri.arka_uc=yerel` | `transkripsiyon.kaynak_dil` ≠ `en`/`auto` | hata | aynı |
 | `ceviri.arka_uc=auto` | Codex/Claude CLI yok + hedef ≠ `tr` | hata (başlarken) | otomatik seçim yerel'e düştü |
 | `ses.akis` ≠ `natural_blocks_1` | yerel çeviri ya da VoxCPM2 | uyarı | aday/onarım akışları LLM + Supertonic ister |
-| whisper_cpp / parakeet | `kaynak_dil` ≠ `en`/`auto` | hata | yalnız İngilizce motorlar |
+| parakeet | `kaynak_dil` ≠ `en`/`auto` | hata | yalnız İngilizce motorlar |
 | crisperwhisper (turbo, medium) | `genel.cihaz=cpu` ya da CUDA yok | hata | yalnız NVIDIA GPU |
 | crisper / cpu_align | `ileri.pyannote_konusmaci_ayrimi=true` | hata | bu motorlar konuşmacı ayırmaz |
 | faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | uyarı | ayrım yalnız whisperx / speechmatics / elevenlabs |

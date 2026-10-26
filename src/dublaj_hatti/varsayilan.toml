@@ -41,10 +41,10 @@ gozden_gecir = false
 [transkripsiyon]
 # Motor: "auto" = CrisperWhisper Turbo CT2 kuruluysa o (en iyi Türkçe/İngilizce kelime zamanı, ticari olmayan
 # lisans), değilse faster-whisper. Seçenekler: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2,
-# whisper_cpp_cpu_align, parakeet_cpu_align,
+# parakeet_cpu_align,
 # speechmatics (bulut, kendi anahtarınız), elevenlabs_scribe_v2 (bulut, kendi anahtarınız),
 # youtube_translate (yalnız YouTube bağlantısıyla: metin videonun altyazısından + CTC; pip install .[youtube])
-# Yalnız İngilizce: whisper_cpp_cpu_align, parakeet_cpu_align.
+# Yalnız İngilizce: parakeet_cpu_align.
 # Yalnız NVIDIA GPU: crisperwhisper_turbo_ct2. Donanım tablosu: docs/donanim.md
 motor = "auto"
 # faster-whisper / whisperx modeli: large-v3-turbo | large-v3 | medium | small (çok dilli) |

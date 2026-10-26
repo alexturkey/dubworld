@@ -43,7 +43,7 @@ MODEL_LISANSLARI: dict[str, tuple[str, str]] = {
 }
 # Kelime zamanını CTC kutusundan (ya da WhisperX hizalamasından) alan STT motorları; "auto" yedeği faster_whisper_ctc.
 CTC_KULLANAN_STT = frozenset({"auto", "faster_whisper_ctc", "whisperx", "crisperwhisper_turbo_ct2",
-                              "whisper_cpp_cpu_align", "youtube_translate"})
+                              "youtube_translate"})
 _KABUL = {"1", "e", "evet", "y", "yes", "true", "kabul", "kabul ediyorum", "i accept"}
 
 

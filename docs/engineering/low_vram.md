@@ -55,7 +55,7 @@ Rules that make this work:
 ## 4. No NVIDIA GPU
 
 - `--ayar genel.cihaz=cpu` (or `auto` on a machine without CUDA). The CLI hides CUDA before torch is imported.
-- Transcription: faster-whisper int8 (or Parakeet / whisper.cpp for English); Supertonic TTS already runs on the CPU;
+- Transcription: faster-whisper int8 (or Parakeet for English); Supertonic TTS already runs on the CPU;
   video uses libx264. Separation on CPU is slow; prefer `ses_temizligi.kip = "original"`.
 - The end-to-end CPU smoke test of this repository completed with the local Opus-MT translator
   (see [video_subtitles_and_resume.md](video_subtitles_and_resume.md) §7 for the problems it found).
