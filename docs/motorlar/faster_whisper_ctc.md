@@ -48,7 +48,7 @@ or not installed).
 - **Why this choice:** on a 10-file English corpus, CTC-timed engines had word-start error 28–51 ms against 106–126 ms
   for Whisper's native timestamps ([transcription.md](../engineering/transcription.md) §1), and CTC is the project's
   time source ([ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)). The permissive fallback of `auto`
-  therefore uses the same text + CTC binding as whisper.cpp and Parakeet ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)).
+  therefore uses the same text + CTC binding as Parakeet ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)).
   WhisperX was the alternative; the shared box was preferred because it applies the speech-bounding policy and
   runs on CPU at ≈ 0.2–0.5 × real time after loading (measured above).
 - **How it fits:** 1.0 s leading pad (subtracted after alignment); a missing CTC model stops the job with the install
@@ -107,7 +107,7 @@ CTC hizalama kutusundan. CrisperWhisper Turbo çalışamadığında (NVIDIA GPU 
 - **Neden bu seçim:** 10 dosyalık bir İngilizce derlemde CTC zamanlı motorların kelime başlangıç hatası 28–51 ms iken
   Whisper'ın kendi zaman damgalarında 106–126 ms idi ([transcription.md](../engineering/transcription.md) §1) ve CTC
   projenin zaman kaynağıdır ([ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md)). Bu yüzden `auto`'nun
-  serbest lisanslı yedeği whisper.cpp ve Parakeet ile aynı metin + CTC bağlamasını kullanır ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)).
+  serbest lisanslı yedeği Parakeet ile aynı metin + CTC bağlamasını kullanır ([ADR 0017](../adr/0017-defaults-and-licence-gate.md)).
   Alternatif WhisperX'ti; ortak kutu tercih edildi, çünkü konuşmayla sınırlama (speech-bounding) politikasını uygular ve
   yüklemeden sonra CPU'da ≈ 0.2–0.5 × gerçek zamanda çalışır (yukarıda ölçüldü).
 - **Nasıl oturur:** 1.0 s başa dolgu (hizalamadan sonra çıkarılır); eksik CTC modeli işi kurulum adımını söyleyerek

@@ -68,7 +68,7 @@ Windows 10/11 x64; ไม่ต้องมี Python, CUDA หรือ ffmpeg 
 - CI ทดสอบเฉพาะ CPU; เส้นทาง GPU รันด้วยมือบนการ์ด Pascal 4 GB การ์ดใหม่ (RTX 50), Linux และ macOS ยังไม่ได้ทดสอบ; ไลบรารี GPU ที่ติดตั้งมีเคอร์เนลตั้งแต่ Pascal ถึง RTX 50 ส่วน Maxwell ใช้โปรไฟล์ CPU ([ตารางรองรับ GPU ภาษาอังกฤษ](docs/installation.md#1-system-requirements))
 - ตัวแปลออฟไลน์แปลได้แค่อังกฤษเป็นตุรกี; คู่ภาษาอื่นต้องใช้ Codex / Claude Code CLI หรือแบ็กเอนด์ API
 - เวลาคำสำหรับภาษาต้นทางนอกจากอังกฤษและตุรกี: ญี่ปุ่นและจีนผ่าน `scripts/kur.ps1 -Adim hizalama-diller` ภาษาอื่นหลังรันหนึ่งครั้งด้วย `DUBLAJ_CEVRIMICI=1`
-- ยังไม่ได้ทดสอบตั้งแต่ต้นจนจบ: การติดตั้ง XTTS-v2 จริง, RVC, บอท Telegram ที่ต่อกับบริการจริง และ CrisperWhisper 2 Medium; Moonshine ยังเป็นรุ่นทดลอง CrisperWhisper 2.0 Turbo (เครื่องมือ 13) ทดสอบกับเสียงจริงบน GTX 1050 Ti 4 GB แล้ว (tr, en, ja; ≈ 1.4 GB VRAM)
+- ยังไม่ได้ทดสอบตั้งแต่ต้นจนจบ: การติดตั้ง XTTS-v2 จริง, RVC และ บอท Telegram ที่ต่อกับบริการจริง CrisperWhisper 2.0 Turbo (เครื่องมือ 13) ทดสอบกับเสียงจริงบน GTX 1050 Ti 4 GB แล้ว (tr, en, ja; ≈ 1.4 GB VRAM)
 
 ## ชิ้นส่วนประกอบ
 
@@ -123,4 +123,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 โค้ด: Apache-2.0 (LICENSE) ส่วนประกอบภายนอกและสัญญาอนุญาต: THIRD_PARTY.md การใช้งานอย่างรับผิดชอบ: ETHICS.md
 ความเป็นส่วนตัว (อะไรอยู่ในเครื่องคุณ แบ็กเอนด์คลาวด์ได้รับอะไร): PRIVACY.md รายงานความปลอดภัย: SECURITY.md การเปลี่ยนแปลง: CHANGELOG.md
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

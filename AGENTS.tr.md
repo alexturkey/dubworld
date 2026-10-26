@@ -73,13 +73,12 @@ hizmeti: veri bilgisayardan çıkar, kullanıcının kendi hesabı ve anahtarı)
 | Temel (her zaman) | konuşmadan metne (faster-whisper large-v3-turbo + CTC kelime zamanı en, tr), çevrimdışı İngilizce→Türkçe çeviri (Opus-MT), varsayılan ses Supertonic 3, konuşmacı ve cinsiyet tespiti, FFmpeg | varsayılan adımlar | başlamak için 22 GB boş (GPU) / 14 GB (CPU); ölçülen kullanım ≈ 14,6 GB (GPU) | ≈ 44 dk GPU, ≈ 38 dk CPU, ölçüldü | Supertonic: **şartlı** (OpenRAIL-M); Opus-MT ve tr CTC modeli: **atıf** (CC BY 4.0); gerisi ticari serbest |
 | Ses temizliği | yazıya dökmeden önce konuşmayı müzik ve gürültüden ayırır | `demucs` | ≈ 84 MB ağırlık | kayıt yok | ticari serbest (MIT) |
 | EMA Lightning sesi | ikinci ses, yalnız Türkçe, tek sentetik konuşmacı, GPU ya da işlemci | `tts-ema` | ≈ 0,12 GB | kayıt yok | ticari serbest (Apache-2.0) |
-| VoxCPM2 sesi | ses tasarımı ve klonlamalı çok dilli ses; NVIDIA GPU, git ister | `voxcpm2` | ≈ 3,7 GB indirme | kayıt yok | ticari serbest (Apache-2.0) |
-| XTTS v2 sesi | çok dilli ses klonlama, ayrı ortam | `tts-xtts` + `-TicariOlmayanKabul` | 3–8 GB (tahmin, ölçülmedi) | kayıt yok | **NC** (CPML) |
+| VoxCPM2 sesi | ses tasarımı ve klonlamalı çok dilli ses; NVIDIA GPU, git ister; kurulunca `ses.motor = auto` onu kullanır | `voxcpm2` | ≈ 3,7 GB indirme | kayıt yok | ticari serbest (Apache-2.0) |
+| XTTS v2 sesi (kullanımdan kalkıyor; VoxCPM2 metinsiz klonlar) | çok dilli ses klonlama, ayrı ortam | `tts-xtts` + `-TicariOlmayanKabul` | 3–8 GB (tahmin, ölçülmedi) | kayıt yok | **NC** (CPML) |
 | Ek kaynak dilleri ja, zh | Japonca ve Çince kaynak için kelime zamanı | `hizalama-diller` | ≈ 2,5 GB | kayıt yok | ticari serbest (Apache-2.0) |
 | Kaynak dilleri fr, de, es, it | kelime zamanı modelleri ilk kullanımda iner (bir kez `DUBLAJ_CEVRIMICI=1`) | yok | dil başına | kayıt yok | **NC** (CC BY-NC 4.0) |
 | Parakeet | işlemcide İngilizce konuşmadan metne | `parakeet` | ≈ 0,7 GB | kayıt yok | **şartlı** (NVIDIA Open Model License) |
 | CrisperWhisper Turbo | birebir (verbatim) konuşmadan metne; WSL2 + NVIDIA, git ister | `crisper` + `-TicariOlmayanKabul` | ≈ 7 GB | kayıt yok | **NC** |
-| Speechmatics / ElevenLabs | kullanıcının kendi anahtarıyla bulut konuşmadan metne | `speechmatics` (ElevenLabs adım istemez) | küçük | kayıt yok | **hizmet şartları** |
 | Codex / Claude Code / API çevirisi | daha iyi çeviri ve başka dil çiftleri | yok (`ceviri.arka_uc = auto` kurulu ve girişli CLI'yi kullanır) | yok | yok | **hizmet şartları** |
 | Akıllı kare | videodaki siyah bantları kırpar | `akilli-kare` | küçük | kayıt yok | ticari serbest (Apache-2.0) |
 | Bağlantıdan indirme | bağlantıdan video indirir (yalnız kullanıcının hakkı olan içerik) | `youtube` | küçük | kayıt yok | yt-dlp Unlicense + sitenin şartları |

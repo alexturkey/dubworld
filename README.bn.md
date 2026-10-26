@@ -69,7 +69,7 @@ sha256 দিয়ে যাচাই করা হয়। শুরু ক�
 - CI শুধু CPU পরীক্ষা করে; GPU পথ হাতে চালানো হয়েছে একটি 4 GB Pascal কার্ডে। নতুন কার্ড (RTX 50), Linux ও macOS পরীক্ষিত নয়; ইনস্টল হওয়া GPU লাইব্রেরিতে Pascal থেকে RTX 50 পর্যন্ত কার্নেল আছে, আর Maxwell CPU প্রোফাইল ব্যবহার করে ([GPU সমর্থন তালিকা, ইংরেজিতে](docs/installation.md#1-system-requirements))।
 - অফলাইন অনুবাদক শুধু ইংরেজি থেকে তুর্কি করে; অন্য ভাষা-জোড়ার জন্য Codex / Claude Code CLI বা API ব্যাকএন্ড লাগে।
 - ইংরেজি ও তুর্কি ছাড়া অন্য উৎস-ভাষার শব্দ-সময়: জাপানি ও চীনা `scripts/kur.ps1 -Adim hizalama-diller` দিয়ে, বাকিগুলো `DUBLAJ_CEVRIMICI=1` দিয়ে একবার চালানোর পর।
-- এখনো শুরু থেকে শেষ পর্যন্ত পরীক্ষা হয়নি: XTTS-v2-এর আসল ইনস্টলেশন, RVC, আসল সেবায় যুক্ত Telegram বট এবং CrisperWhisper 2 Medium; Moonshine পরীক্ষামূলক। CrisperWhisper 2.0 Turbo (ইঞ্জিন 13) আসল অডিও দিয়ে GTX 1050 Ti 4 GB-তে পরীক্ষা করা হয়েছে (tr, en, ja; ≈ 1.4 GB VRAM)।
+- এখনো শুরু থেকে শেষ পর্যন্ত পরীক্ষা হয়নি: XTTS-v2-এর আসল ইনস্টলেশন, RVC এবং আসল সেবায় যুক্ত Telegram বট। CrisperWhisper 2.0 Turbo (ইঞ্জিন 13) আসল অডিও দিয়ে GTX 1050 Ti 4 GB-তে পরীক্ষা করা হয়েছে (tr, en, ja; ≈ 1.4 GB VRAM)।
 
 ## গঠনের খণ্ড
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 কোড: Apache-2.0 (LICENSE)। বাইরের অংশ ও তাদের লাইসেন্স: THIRD_PARTY.md। দায়িত্বশীল ব্যবহার: ETHICS.md।
 গোপনীয়তা (কী আপনার কম্পিউটারে থাকে, ক্লাউড ব্যাকএন্ড কী পায়): PRIVACY.md। নিরাপত্তা রিপোর্ট: SECURITY.md। পরিবর্তন: CHANGELOG.md।
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

@@ -30,7 +30,6 @@ Evidence labels used on every engineering page:
 | WhisperX large-v3-turbo | fp32 / int8 | 3451 MiB / 1147 MiB |
 | faster-whisper distil-large-v3 | fp32 / int8 | 3427 MiB / 1283 MiB |
 | CrisperWhisper Turbo (CTranslate2) | int8 | ≈ 1.4 GB |
-| CrisperWhisper 2 Medium (Transformers) | fp16 | 3.5–3.6 GB (fp32 does not fit) |
 | CTC word alignment (wav2vec2) | fp32 | up to ≈ 1.65–2.4 GB depending on language model |
 
 Model file size is not VRAM need: one speech-enhancement model with 213 MB of weights reached 10.45 GB of

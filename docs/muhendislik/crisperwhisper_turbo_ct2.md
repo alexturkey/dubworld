@@ -1,4 +1,4 @@
-# CrisperWhisper motorları ("motor 12" Medium ve "motor 13" Turbo CT2)
+# CrisperWhisper Turbo CT2 ("motor 13")
 
 English: [../engineering/crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md)
 
@@ -15,15 +15,13 @@ Kanıt etiketleri: bkz. [gpu_bellek_ve_yalitim.md](gpu_bellek_ve_yalitim.md).
 
 ## 1. Kimlik
 
-| | Motor 12: CrisperWhisper 2 Medium | Motor 13: CrisperWhisper 2 Turbo CT2 |
-|---|---|---|
-| Arka uç | Transformers, CUDA fp16 | CrisperWhisper hizalama başlıklı CTranslate2 çatalı; fp16 depolama, **int8 hesaplama**; beam 1 |
-| Çalıştığı yer | kendi Windows ortamı | WSL2 Ubuntu (istek başına tek seferlik alt süreç) |
-| Kelime zamanları | modelin kendi dikkat (attention) zamanları | **ortak CTC zorlamalı hizalama** (kendi zamanları yalnız teşhis için tutulur) |
-| VRAM tepesi | 3.5–3.6 GB (fp32 sığmaz) | ≈ 1.4 GB |
+| | Motor 13: CrisperWhisper 2 Turbo CT2 |
+|---|---|
+| Arka uç | CrisperWhisper hizalama başlıklı CTranslate2 çatalı; fp16 depolama, **int8 hesaplama**; beam 1 |
+| Çalıştığı yer | WSL2 Ubuntu (istek başına tek seferlik alt süreç) |
+| Kelime zamanları | **ortak CTC zorlamalı hizalama** (kendi zamanları yalnız teşhis için tutulur) |
+| VRAM tepesi | ≈ 1.4 GB |
 
-İki motor hiçbir ortamı, anlık kopyayı, ürün dosyası adını ya da bağdaştırıcıyı paylaşmaz; Turbo, "dublaja hazır" metin
-mantığını içe aktarmak yerine onun yerel bir kopyasını tutar.
 
 ## 2. Karar: neden CTranslate2, WSL2 ve int8 (ayrıca bkz. [ADR 0004](../adr/0004-crisperwhisper-turbo-ct2-int8.md))
 
@@ -33,9 +31,6 @@ mantığını içe aktarmak yerine onun yerel bir kopyasını tutar.
   manylinux x86_64 paketleri (wheel)** yayımlar. Bu yüzden motor WSL2 içinde çalışır; Windows'tan atomik JSON istek/yanıt
   dosyalarıyla tek seferlik bir alt süreç olarak çağrılır: HTTP sunucusu yok, port yok, bellekte sürekli duran model yok.
 - **Neden int8:** Pascal'da hızlı fp16 yok ve CTranslate2'nin bu kartta fp16 hesaplaması yok; hızlı yol int8.
-- **Medium için reddedilen:** Medium'un CT2 float32 ve int8 dönüşümleri, Transformers referansına karşı katı bir kelime ve
-  zaman eşitliği kapısını geçemedi; bu yüzden Medium Transformers fp16'da kalıyor. Kayda geçen dersler: "tek başına
-  dönüştürme bir çözüm değildir"; "int8 kısa seste hızlı görünüp genelleşmeyebilir".
 - **Turbo için reddedilen:** kalıcı bir model sunucusu. Bellekte sürekli duran bir WSL işçisi kesinlik kapısını geçti ama
   transkripsiyon adımını **%16,9 yavaşlattı** (131.7 → 154.0 s); kurulum kazançları adımın dışında kaldı (ölçüldü).
 - CPU yedeği yok: CUDA int8 desteklenmiyorsa motor hatayla durur.
@@ -163,10 +158,7 @@ olarak artıyorsa** (tolerans yok) gerçek konuşma olarak kabul edilir; aksi ha
 
 1. **`global_first_window`** (varsayılan): bir platform/kullanıcı dili verildiyse ve model onu biliyorsa onu kullan; aksi
    halde konuşmanın ilk ≤ 29,5 s'sinde bir kez algıla ve bütün dosyayı o dilde işle.
-2. **`per_window`** (Medium, eski): her pencereyi puanla ve bitişik aynı dilli pencereleri koşulara birleştir.
-   Maliyet 29,5 s'lik pencere başına ≈ 1,25 s, yani çalışma süresinin +%4–5'i; tekrarlanan 242 çıkarımda 0 kararsız karar
-   (ölçüldü).
-3. **`continuous_stream`**: 4 s'lik kayan bağlam, 1 s'lik tikler; her tik en yüksek olasılık ≥ 0.60 ve fark ≥ 0.20 ister;
+2. **`continuous_stream`**: 4 s'lik kayan bağlam, 1 s'lik tikler; her tik en yüksek olasılık ≥ 0.60 ve fark ≥ 0.20 ister;
    art arda iki emin tik bir dili ya da bir değişimi doğrular; sınır, son kararlı tik ile ilk doğrulanmış tikin ortasına
    konur. Verilen bir platform dili yalnız kanıttır, asla karar değildir.
    Birleştirilmiş Türkçe + İngilizce + Almanca bir dosyada (17,9 s) ölçüldü: geçişler 5,5 s ve 11,0 s'de bulundu,
@@ -177,7 +169,6 @@ olarak artıyorsa** (tolerans yok) gerçek konuşma olarak kabul edilir; aksi ha
 | Dil | Yapılan | Durum |
 |---|---|---|
 | İngilizce | 10 seste int8 kabulü, kapsama toparlaması, CTC zamanları, uzun kelime kapısı, hız çalışması | üretimde |
-| İspanyolca | dikiş orta noktası düzeltmesi (Medium) | Medium üretimde; Turbo için ayrı kayıt yok |
 | Çince | ilk pencereden itibaren boşluksuz "devam" yolu; çok baytlı belirteçler bütün gruplar halinde çözülür; `split()` yerine içerik belirteci sayımı; 448 konumluk çözücü bütçesi (istem 192 ile sınırlı + 256 ayrılmış) | üretimde |
 | Japonca | belirteç başına çözme U+FFFD üretti → Unicode güvenli yeniden gruplama; düz transkripsiyon kardeş yolu; zamanı bilinen son gruptan sonra > 3 s etkin ses kalırsa ret; CTC karakter yeniden gruplama | üretimde |
 | Tayca, Laoca, Birmanca, Kantonca | boşluksuz yolu paylaşır | **gerçek seste kabul yok**, CTC modeli yok |
@@ -257,13 +248,6 @@ yavaşlamadı, çıktı aynı); **entegre edilmedi**.
 - 74 dakikalık İngilizce: 4.096 MiB'nin 1.435 MiB'i tepe (yüklenmiş model 911 MiB + 524 MiB çalışma); GPU ≈ %74 meşgul.
 - ASR ve hizalama ayrı, art arda gelen süreçlerde çalışır, böylece kart iki modeli asla birlikte tutmaz.
 - Her işten sonra: işçi süreçleri gitmiş, ≈ 0 MiB VRAM.
-
-### 8.6 Medium hız çalışması
-
-Dile göre yönlendirilmiş iyileştirmeler (kodlayıcı önbelleği ve seçici eager (anında çalıştırma) yollar; Çince/Japonca için
-ek bir SDPA yolu ve tek GPU batch'inde 3 uzlaşı tohumu), metin, kelimeler, zamanlar ve dilde 19/19 test sesi tam eşitken
-1,45–3,56× hızlanma verdi. 5× hedefi bir dosya için imkânsız olarak kapatıldı: zorunlu iki eager çözücü penceresi tek
-başına zaman bütçesini aştı.
 
 ## 9. Açık maddeler
 

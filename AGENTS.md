@@ -73,13 +73,12 @@ License classes: **commercial OK** (permissive license), **attribution** (allowe
 | Base (always) | speech-to-text (faster-whisper large-v3-turbo + CTC word times en, tr), offline English→Turkish translation (Opus-MT), the default voice Supertonic 3, speaker and gender detection, FFmpeg | default steps | start with 22 GB free (GPU) / 14 GB (CPU); measured use ≈ 14.6 GB (GPU) | ≈ 44 min GPU, ≈ 38 min CPU, measured | Supertonic: **conditions** (OpenRAIL-M); Opus-MT and the tr CTC model: **attribution** (CC BY 4.0); the rest commercial OK |
 | Voice cleanup | separates speech from music and noise before transcription | `demucs` | ≈ 84 MB weight | no record | commercial OK (MIT) |
 | EMA Lightning voice | second voice, Turkish only, one synthetic speaker, GPU or CPU | `tts-ema` | ≈ 0.12 GB | no record | commercial OK (Apache-2.0) |
-| VoxCPM2 voice | multilingual voice with voice design and cloning; NVIDIA GPU, needs git | `voxcpm2` | ≈ 3.7 GB download | no record | commercial OK (Apache-2.0) |
-| XTTS v2 voice | multilingual voice cloning, separate environment | `tts-xtts` + `-TicariOlmayanKabul` | 3–8 GB (estimate, not measured) | no record | **NC** (CPML) |
+| VoxCPM2 voice | multilingual voice with voice design and cloning; NVIDIA GPU, needs git; once installed, `ses.motor = auto` uses it | `voxcpm2` | ≈ 3.7 GB download | no record | commercial OK (Apache-2.0) |
+| XTTS v2 voice (being deprecated; VoxCPM2 clones without a reference transcript) | multilingual voice cloning, separate environment | `tts-xtts` + `-TicariOlmayanKabul` | 3–8 GB (estimate, not measured) | no record | **NC** (CPML) |
 | Extra source languages ja, zh | word times for Japanese and Chinese sources | `hizalama-diller` | ≈ 2.5 GB | no record | commercial OK (Apache-2.0) |
 | Source languages fr, de, es, it | word-time models downloaded on first use (`DUBLAJ_CEVRIMICI=1` once) | none | per language | no record | **NC** (CC BY-NC 4.0) |
 | Parakeet | English speech-to-text on the CPU | `parakeet` | ≈ 0.7 GB | no record | **conditions** (NVIDIA Open Model License) |
 | CrisperWhisper Turbo | verbatim speech-to-text; WSL2 + NVIDIA, needs git | `crisper` + `-TicariOlmayanKabul` | ≈ 7 GB | no record | **NC** |
-| Speechmatics / ElevenLabs | cloud speech-to-text with the user's own key | `speechmatics` (ElevenLabs needs no step) | small | no record | **service terms** |
 | Codex / Claude Code / API translation | better translation and other language pairs | none (`ceviri.arka_uc = auto` uses an installed, logged-in CLI) | none | none | **service terms** |
 | Smart frame | crops black bars from the video | `akilli-kare` | small | no record | commercial OK (Apache-2.0) |
 | Link download | downloads a video from a link (only content the user has rights to) | `youtube` | small | no record | yt-dlp Unlicense + the site's terms |

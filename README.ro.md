@@ -69,7 +69,7 @@ Calculator de referință: GPU Pascal 4 GB, Windows 10; metoda și toate rândur
 - CI testează doar CPU; calea GPU a fost rulată manual pe o placă Pascal de 4 GB. Plăcile noi (RTX 50), Linux și macOS nu sunt testate; bibliotecile GPU instalate conțin kerneluri de la Pascal la RTX 50, iar Maxwell folosește profilul CPU ([tabel de suport GPU, în engleză](docs/installation.md#1-system-requirements)).
 - Traducătorul offline face doar engleză în turcă; alte perechi de limbi au nevoie de Codex / Claude Code CLI sau de un backend API.
 - Timpii cuvintelor pentru limbi sursă în afară de engleză și turcă: japoneză și chineză prin `scripts/kur.ps1 -Adim hizalama-diller`, celelalte după o rulare cu `DUBLAJ_CEVRIMICI=1`.
-- Netestate încă de la cap la coadă: o instalare reală XTTS-v2, RVC, un bot Telegram legat la un serviciu real și CrisperWhisper 2 Medium; Moonshine e experimental. CrisperWhisper 2.0 Turbo (motorul 13) a fost testat cu audio real pe GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
+- Netestate încă de la cap la coadă: o instalare reală XTTS-v2, RVC și un bot Telegram legat la un serviciu real. CrisperWhisper 2.0 Turbo (motorul 13) a fost testat cu audio real pe GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Piese de construcție
 
@@ -124,4 +124,4 @@ Fiecare depozit-soră are licența, instalarea și issue-urile lui; datorită co
 Cod: Apache-2.0 (LICENSE). Componente externe și licențele lor: THIRD_PARTY.md. Folosire responsabilă: ETHICS.md.
 Confidențialitate (ce rămâne pe calculatorul dumneavoastră, ce primește un backend din cloud): PRIVACY.md. Raportări de securitate: SECURITY.md. Schimbări: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

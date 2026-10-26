@@ -69,7 +69,7 @@ Komputer rujukan: GPU Pascal 4 GB, Windows 10; kaedah dan semua baris dalam [doc
 - CI hanya menguji CPU; laluan GPU dijalankan secara manual pada kad Pascal 4 GB. Kad baharu (RTX 50), Linux dan macOS belum diuji; pustaka GPU yang dipasang mempunyai kernel dari Pascal hingga RTX 50, dan Maxwell menggunakan profil CPU ([jadual sokongan GPU, dalam bahasa Inggeris](docs/installation.md#1-system-requirements)).
 - Penterjemah luar talian hanya Inggeris ke Turki; pasangan bahasa lain memerlukan Codex / Claude Code CLI atau bahagian belakang API.
 - Masa perkataan untuk bahasa sumber selain Inggeris dan Turki: Jepun dan Cina melalui `scripts/kur.ps1 -Adim hizalama-diller`, yang lain selepas sekali dijalankan dengan `DUBLAJ_CEVRIMICI=1`.
-- Belum diuji dari mula hingga akhir: pemasangan XTTS-v2 sebenar, RVC, bot Telegram yang disambung ke perkhidmatan sebenar dan CrisperWhisper 2 Medium; Moonshine masih percubaan. CrisperWhisper 2.0 Turbo (enjin 13) telah diuji dengan audio sebenar pada GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
+- Belum diuji dari mula hingga akhir: pemasangan XTTS-v2 sebenar, RVC dan bot Telegram yang disambung ke perkhidmatan sebenar. CrisperWhisper 2.0 Turbo (enjin 13) telah diuji dengan audio sebenar pada GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
 
 ## Blok binaan
 
@@ -124,4 +124,4 @@ Soalan, idea dan hasil anda: [forum perbincangan](https://github.com/alexturkey/
 Kod: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lesennya: THIRD_PARTY.md. Penggunaan bertanggungjawab: ETHICS.md.
 Privasi (apa yang kekal di komputer anda, apa yang diterima bahagian belakang awan): PRIVACY.md. Laporan keselamatan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

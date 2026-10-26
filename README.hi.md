@@ -69,7 +69,7 @@ sha256 से जाँचा जाता है। शुरू करने �
 - CI सिर्फ़ CPU टेस्ट करता है; GPU रास्ता एक 4 GB Pascal कार्ड पर हाथ से चलाया गया। नए कार्ड (RTX 50), Linux और macOS आज़माए नहीं गए; इंस्टॉल होने वाली GPU लाइब्रेरी में Pascal से RTX 50 तक के कर्नेल हैं, और Maxwell CPU प्रोफ़ाइल इस्तेमाल करता है ([GPU सपोर्ट तालिका, अंग्रेज़ी में](docs/installation.md#1-system-requirements))।
 - ऑफ़लाइन अनुवादक सिर्फ़ अंग्रेज़ी से तुर्की करता है; दूसरी भाषा-जोड़ियों के लिए Codex / Claude Code CLI या API बैकएंड चाहिए।
 - अंग्रेज़ी और तुर्की के अलावा दूसरी स्रोत भाषाओं के लिए शब्द-समय: जापानी और चीनी के लिए `scripts/kur.ps1 -Adim hizalama-diller`, बाकी के लिए `DUBLAJ_CEVRIMICI=1` के साथ एक बार चलाने के बाद।
-- अभी शुरू से आख़िर तक नहीं आज़माए गए: XTTS-v2 का असली इंस्टॉलेशन, RVC, असली सेवा से जुड़ा Telegram बॉट और CrisperWhisper 2 Medium; Moonshine प्रयोग के दौर में है। CrisperWhisper 2.0 Turbo (इंजन 13) को GTX 1050 Ti 4 GB पर असली ऑडियो से टेस्ट किया गया है (tr, en, ja; ≈ 1.4 GB VRAM)।
+- अभी शुरू से आख़िर तक नहीं आज़माए गए: XTTS-v2 का असली इंस्टॉलेशन, RVC और असली सेवा से जुड़ा Telegram बॉट। CrisperWhisper 2.0 Turbo (इंजन 13) को GTX 1050 Ti 4 GB पर असली ऑडियो से टेस्ट किया गया है (tr, en, ja; ≈ 1.4 GB VRAM)।
 
 ## बिल्डिंग ब्लॉक
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 कोड: Apache-2.0 (LICENSE)। बाहरी हिस्से और उनके लाइसेंस: THIRD_PARTY.md। ज़िम्मेदारी से इस्तेमाल: ETHICS.md।
 निजता (क्या आपके कंप्यूटर पर रहता है, क्लाउड बैकएंड को क्या मिलता है): PRIVACY.md। सुरक्षा रिपोर्ट: SECURITY.md। बदलाव: CHANGELOG.md।
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

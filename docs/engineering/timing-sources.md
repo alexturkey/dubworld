@@ -13,8 +13,7 @@ this page and its tests): `src/dublaj_hatti/bolum_20_transkripsiyon/zaman_kaynak
 - The preferred source is **CTC forced alignment** (wav2vec2 via WhisperX 3.8.6, policy `ctc_speech_bounded_v2`):
   either the shared CTC box or WhisperX's own `align()`. See [word_alignment.md](word_alignment.md) and
   [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md).
-- Five engines keep their **own** word times and never enter CTC: `faster-whisper` (explicit choice only), CrisperWhisper 2 Medium, Moonshine,
-  Speechmatics, ElevenLabs Scribe v2 (§4).
+- One engine keeps its **own** word times and never enters CTC: `faster-whisper` (explicit choice only) (§4).
 - A **ready-made subtitle** (the YouTube automatic `json3` caption track) is used only as **text**; its times are only
   hints for the alignment windows and never become word times (§3).
 - Times are never derived from segment boundaries. The direction is always words → segments (§6).
@@ -63,13 +62,9 @@ flowchart TD
     E -->|whisperx| WX[WhisperX align]
     E -->|faster-whisper| FW[faster-whisper]
     FW --> N[native Whisper word times]
-    E -->|crisper medium / moonshine| M[model's own word times]
-    E -->|speechmatics / elevenlabs| S[provider word times]
     CTC --> G[integrity checks:<br/>all words timed, 1:1 text, ordered,<br/>no overlap, inside audio]
     WX --> G
     N --> G
-    M --> G
-    S --> G
     G -->|fail| X3[stop, no fallback]
     G -->|ok| F[final dub segments<br/>built from word times]
 ```
@@ -85,7 +80,7 @@ non-English source; logged; see [transcription.md](transcription.md) §9).
   `faster_whisper_ctc` (`yapilandirma.stt_secimi_coz`). An explicitly chosen `faster-whisper` keeps Whisper's own word
   times; nothing else changes for it. The split is selectable through the existing setting `transkripsiyon.motor`
   (`faster_whisper_ctc` can also be chosen explicitly); no extra key was added.
-- **Binding:** the same as whisper.cpp and Parakeet: faster-whisper runs as before; its segments (text, start, end)
+- **Binding:** the same as Parakeet: faster-whisper runs as before; its segments (text, start, end)
   become the CTC windows; `run_ctc_word_alignment` measures every word. Whisper's own word times are written only for
   diagnostics (`faster_whisper_ctc/whisper_dogal_kelimeler.json`); `faster_whisper_ctc/report.json` records the window
   count, both word counts and `text_identical` (Whisper splits `İstanbul'a` into two tokens, CTC keeps one word, so a
@@ -152,7 +147,7 @@ Text accuracy equals the caption track's accuracy.
 |---|---|---|
 | faster-whisper (explicit only) | Kept as the fast path without an alignment step, and for languages without a CTC model. `auto` does not use it: its fallback is `faster_whisper_ctc` (§2.1) | On a 10-file English corpus (3.9 h), CTC-timed engines had word-start MAE 28–51 ms and 0 zero-length words; distil native timestamps 106–126 ms and 611–899 zero-length words ([transcription.md](transcription.md) §1). Non-distil faster-whisper native timing against CTC: **no record** |
 
-All five still pass the shared checks (§5) and the final segment builder.
+It still passes the shared checks (§5) and the final segment builder.
 
 ## 5. Checks every source passes
 
@@ -169,7 +164,7 @@ All five still pass the shared checks (§5) and the final segment builder.
 
 - **No code derives word times from segment times** (no proportional split by characters or duration). This was
   rejected as an estimate, not a measurement ([word_alignment.md](word_alignment.md) §2).
-- Where an engine gives only segments (whisper.cpp, WhisperX ASR output) or only text (`hizala`, json3), the segments
+- Where an engine gives only segments (WhisperX ASR output) or only text (`hizala`, json3), the segments
   are used as **alignment windows** and CTC measures the words inside them.
 - Words without times are dropped by the WhisperX worker and the CTC box worker; json3 and CrisperWhisper Turbo then
   stop on the 1:1 text check.
@@ -198,12 +193,12 @@ All five still pass the shared checks (§5) and the final segment builder.
 | YouTube URL check | substring match on the host | exact host or subdomain |
 | CTC and `soundfile` imports in the json3 module | at import time | lazy (parser and track choice testable without numpy) |
 | Turbo checkpoint fingerprint of the repair code | pointed at the json3 module (where the repair lived) | points at `ctc_kelime_hizalama/zaman_onarimi.py`, the copy Turbo actually runs; the json3 copy is kept and a test asserts both behave identically |
-| All other engine timing paths | – | identical apart from package paths, hidden subprocess windows and the Moonshine chronology stop |
+| All other engine timing paths | – | identical apart from package paths and hidden subprocess windows |
 
 ## 9. Open items
 
 - Closed: `auto` without CrisperWhisper used faster-whisper native timestamps while ADR 0017 and the installation pages
   said "faster-whisper + CTC"; the code now follows the pages (`faster_whisper_ctc`, §2.1).
 - CPU cost of the CTC step rests on one short run per language; long-audio CPU timing is not measured.
-- No measurement of json3 + CTC, CrisperWhisper Medium attention times or ElevenLabs word times against CTC.
+- No measurement of json3 + CTC against an ASR engine.
 - VAD-window preparation for engines with no time evidence is a rule, never measured ([word_alignment.md](word_alignment.md) §8).

@@ -142,7 +142,7 @@ one environment.
 
 | Environment | Location | Python | Lock / pin | Used by | Why separate | Size | Created by |
 |---|---|---|---|---|---|---|---|
-| **Main** | `.venv/` | 3.11.14 (uv) | `requirements/gpu.txt` or `cpu.txt` (hash), add-ons `requirements/ek_*.txt` | CLI, GUI, web, Telegram bot, faster-whisper, WhisperX, CTC word alignment, Opus-MT, Supertonic, 3D-Speaker, gender classifier, Demucs, Parakeet, Speechmatics/ElevenLabs clients, yt-dlp, gallery-dl, OpenCV | – (base) | ≈ 7.8 GB GPU, ≈ 3.8 GB CPU | `-Adim paketler` |
+| **Main** | `.venv/` | 3.11.14 (uv) | `requirements/gpu.txt` or `cpu.txt` (hash), add-ons `requirements/ek_*.txt` | CLI, GUI, web, Telegram bot, faster-whisper, WhisperX, CTC word alignment, Opus-MT, Supertonic, 3D-Speaker, gender classifier, Demucs, Parakeet, yt-dlp, gallery-dl, OpenCV | – (base) | ≈ 7.8 GB GPU, ≈ 3.8 GB CPU | `-Adim paketler` |
 | **XTTS v2** | `runtime_assets/tts_motorlari/xtts/venv/` | 3.11.14 (uv) | `requirements/xtts_venv_gpu.txt` / `xtts_venv_cpu.txt` (hash, PyTorch included) | `ses.motor = xtts` (called as a subprocess through `DUBLAJ_XTTS_PYTHON`, written to `.env`) | keeps `coqui-tts` and its ≈ 80-package dependency tree, and the non-commercial engine, out of the locked main environment | not measured | `-Adim tts-xtts -TicariOlmayanKabul` |
 | **CrisperWhisper Turbo runtime (WSL)** | `runtime_assets/transkripsiyon_motorlari/crisperwhisper_turbo_ct2/.venv_wsl_ct2/` (Linux venv inside WSL2) | 3.12 (Ubuntu 24.04 system Python) | `src/dublaj_hatti/bolum_20_transkripsiyon/crisperwhisper_turbo_ct2_motoru/requirements/requirements_wsl_ct2.lock.txt` (pinned versions, no hashes; `pip check` must pass) | `transkripsiyon.motor = crisperwhisper_turbo_ct2` | the CTranslate2 fork `ctranslate2-crisperwhisper` ships Linux wheels only; CUDA comes from pip `nvidia-cublas-cu12` 12.9 | ≈ 1 GB (estimate) | `-Adim crisper` |
 | **CrisperWhisper conversion (WSL)** | `runtime_assets/transkripsiyon_motorlari/stt_repo/.venv/` | Ubuntu Python (3.10–3.12 per sister repo) | sister STT repository `requirements.txt` + PyTorch cu126 | one-time download and CTranslate2 conversion of the model; not used at run time | conversion needs PyTorch + Transformers; Linux cu128 wheels lack Pascal kernels, so cu126 is used | ≈ 3 GB + model 3.2 GB | `-Adim crisper` (sister installer) |
@@ -216,9 +216,8 @@ Prerequisites of the steps that use other repositories:
 - `voxcpm2`: needs git and an NVIDIA GPU. The sister installer looks for `py -3`, `python` or `python3` (64-bit, 3.10+);
   `kur.ps1` puts its own Python 3.11.14 first on `PATH` for this step only, so no system Python is needed.
 
-Engines without an installer step (manual, see their pages in `docs/motorlar/`): `moonshine_medium_streaming_en`,
-`crisperwhisper2_medium`, `whisper_cpp_cpu_align`, `rvc`; cloud engines need only a key in `.env`
-(`.env.example` lists the names).
+Engines without an installer step (manual, see their pages in `docs/motorlar/`): `rvc`. Cloud translation backends
+need only a key in `.env` (`.env.example` lists the names).
 
 ## 8. Verify the installation
 
@@ -245,7 +244,6 @@ DubWorld 0.1.0 · Python 3.11.14
   ceviri: yerel=var, codex=var, claude_code=var, gemini_2_5_flash=yok, ...
   tts: supertonic=var, voxcpm2=yok, ema_lightning=var, xtts=yok
   ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, segment_cinsiyet_kipi=var, ...
-  deneysel / experimental: moonshine_medium_streaming_en (...)
   telegram yerel sunucu: kapalı (bulut Bot API, en çok 50 MB; 2 GB için: dubla-telegram sunucu kur)
   tts ema_lightning: GPU (torch) + işlemci ONNX; auto şimdi: onnx-cpu (GPU yok: işlemci)
   hizalama (CTC): en=var, tr=var
@@ -298,8 +296,8 @@ removed separately:
 | `.env`, `ayarlar/kullanici.toml`, `ayarlar/lisans_onaylari.json` | keys, personal settings, license acceptances | only on purpose |
 
 Outside the folder: the machine-wide GPU lock directory `dublaj_hatti_kaynak_kilitleri` in the system temporary
-folder (or `DUBLAJ_KILIT_KLASORU`) contains only small lock files. Manually installed engines (RVC WebUI, a
-Moonshine or CrisperWhisper Medium environment outside the repository) and WSL are removed by their own means.
+folder (or `DUBLAJ_KILIT_KLASORU`) contains only small lock files. Manually installed engines (RVC WebUI, an
+environment outside the repository) and WSL are removed by their own means.
 
 ## 11. Linux and macOS
 

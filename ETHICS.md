@@ -39,7 +39,7 @@ Download only content you own or are clearly permitted to download, and check th
 first. Tests and examples in this repository never use real third-party URLs or copyrighted media.
 
 **6. Non-commercial engines stay out of commercial work.** The code is Apache-2.0, but some optional engines are
-not: **CrisperWhisper 2.0 (Turbo and Medium) and Coqui XTTS-v2 are licensed for non-commercial use only** and are off
+not: **CrisperWhisper 2.0 Turbo and Coqui XTTS-v2 are licensed for non-commercial use only** and are off
 by default; you accept their licenses explicitly before use. Do not use non-commercial engines for paid, client or
 monetised work. Every engine's commercial status is in `THIRD_PARTY.md`.
 
@@ -84,7 +84,7 @@ Yalnız sahibi olduğunuz ya da indirme izni açık olan içeriği indirin; önc
 Bu repodaki testler ve örnekler hiçbir zaman gerçek üçüncü taraf bağlantısı ya da telifli medya kullanmaz.
 
 **6. Ticari olmayan motorlar ticari işe girmez.** Kod Apache-2.0'dır, ama bazı isteğe bağlı motorlar değildir:
-**CrisperWhisper 2.0 (Turbo ve Medium) ve Coqui XTTS-v2 yalnız ticari olmayan kullanım için lisanslıdır** ve
+**CrisperWhisper 2.0 Turbo ve Coqui XTTS-v2 yalnız ticari olmayan kullanım için lisanslıdır** ve
 varsayılan olarak kapalıdır; kullanmadan önce lisanslarını açıkça kabul edersiniz. Ticari olmayan motorları ücretli, müşteri ya da gelir
 getiren işte kullanmayın. Her motorun ticari durumu `THIRD_PARTY.md`'de yazılıdır.
 

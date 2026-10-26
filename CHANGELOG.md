@@ -83,13 +83,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI: `actions/checkout` 7 and `actions/setup-python` 7.
 - Optional English STT extra: `sherpa-onnx` 1.13.8.
 - Dependabot ignores versions above an upstream cap (`coqui-tts-trainer >= 0.4.0`, `antlr4-python3-runtime >= 4.10`).
-- Docs: CrisperWhisper 2.0 Turbo (engine 13) is listed as tested on real audio; CrisperWhisper 2 Medium stays untested.
+- Docs: CrisperWhisper 2.0 Turbo (engine 13) is listed as tested on real audio.
   The sister repository URLs are built into `kur.ps1`; `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL` are only for forks.
 - README (all 8 languages): first macOS example (product tour voiced in English, Turkish and Arabic on an Apple M4, CPU only).
 - VoxCPM2: with the default single voice, a non-Turkish target language now reads with that language's ready narrator
   (`hazir/anlatici_<lang>`) instead of the Turkish default voice; a voice you set is never changed.
 - Recommended NVIDIA 4–5 GB setup includes VoxCPM2. Sister repository pinned at `2d74db1` (example prompts; engine
   scratch files, about 3 MB of log per dubbed line, are deleted after each successful run).
+- The voice engine now chooses itself: `ses.motor` defaults to `auto`. It uses VoxCPM2 when VoxCPM2 is installed and an
+  NVIDIA graphics card works, and Supertonic otherwise (always Supertonic in `full_text` mode). The choice is written
+  to the job log. A value you set yourself (`supertonic`, `voxcpm2`, ...) keeps working and wins over `auto`.
+- Each remaining speech-to-text and voice engine now states its commercial-use status, hardware, languages and
+  strengths (English and Turkish) in one place, available to tools as `kayit.motor_bilgileri()`.
+- The installer (`kur.cmd`) asks one last question at the end of an interactive default install on a machine with an
+  NVIDIA card and WSL2: add CrisperWhisper Turbo? It prints the non-commercial licence summary and the size (about
+  7 GB) first; answer E or h. Nothing is asked with `-Adim`, in CI or when input is redirected.
+- A saved setting that names a removed engine no longer stops the program: it prints a warning in Turkish and
+  English and falls back to `auto`.
+
+### Deprecated
+
+- XTTS v2 voice engine: it still works, and now prints a warning when you select it (non-commercial CPML licence;
+  VoxCPM2 clones a voice without a reference transcript).
+
+### Removed
+
+- Five speech-to-text engines: CrisperWhisper 2 Medium, Moonshine Medium Streaming, whisper.cpp (CPU), Speechmatics
+  and ElevenLabs Scribe v2. None was ever the default, none had been tested on real audio, and each overlapped
+  faster-whisper, Parakeet or CrisperWhisper Turbo. Their code, install steps (`speechmatics` extra and lock files),
+  documentation pages and API-key lines in `.env.example` are gone. `transkripsiyon.motor = auto` is unchanged
+  (CrisperWhisper Turbo when installed, otherwise faster-whisper). The setting `crisper_dil_tespiti = per_window`
+  belonged to the removed Medium engine and is read as `global_first_window`.
 
 ### Fixed
 

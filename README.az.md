@@ -69,7 +69,7 @@ Azərbaycan dilinə dublyaj hələ yoxdur, çünki səs mühərrikləri azərbay
 - CI yalnız CPU-nu sınayır; GPU yolu 4 GB Pascal kartında əl ilə işlədilib. Yeni kartlar (RTX 50), Linux və macOS sınanmayıb; quraşdırılan GPU kitabxanalarında Pascal-dan RTX 50-yə qədər nüvələr var, Maxwell isə CPU profilindən istifadə edir ([GPU dəstəyi cədvəli, ingiliscə](docs/installation.md#1-system-requirements)).
 - Oflayn tərcüməçi yalnız ingiliscədən türkcəyə çevirir; başqa dil cütləri üçün Codex / Claude Code CLI və ya API arxa ucu lazımdır.
 - İngilis və türk dilindən başqa mənbə dilləri üçün söz vaxtları: yapon və çin dilləri `scripts/kur.ps1 -Adim hizalama-diller` ilə, digərləri `DUBLAJ_CEVRIMICI=1` ilə bir dəfə işlətdikdən sonra.
-- Hələ əvvəldən axıra sınanmayıb: real XTTS-v2 quraşdırması, RVC, real xidmətə qoşulmuş Telegram botu və CrisperWhisper 2 Medium; Moonshine sınaq mərhələsindədir. CrisperWhisper 2.0 Turbo (mühərrik 13) real səslə GTX 1050 Ti 4 GB-da sınanıb (tr, en, ja; ≈ 1,4 GB VRAM).
+- Hələ əvvəldən axıra sınanmayıb: real XTTS-v2 quraşdırması, RVC və real xidmətə qoşulmuş Telegram botu. CrisperWhisper 2.0 Turbo (mühərrik 13) real səslə GTX 1050 Ti 4 GB-da sınanıb (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Tikinti blokları
 
@@ -124,4 +124,4 @@ Suallar, fikirlər və nəticələriniz: [müzakirə forumu](https://github.com/
 Kod: Apache-2.0 (LICENSE). Xarici hissələr və onların lisenziyaları: THIRD_PARTY.md. Məsuliyyətli istifadə: ETHICS.md.
 Məxfilik (kompüterinizdə nə qalır, bulud arxa ucu nə alır): PRIVACY.md. Təhlükəsizlik bildirişləri: SECURITY.md. Dəyişikliklər: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

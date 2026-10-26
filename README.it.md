@@ -69,7 +69,7 @@ Macchina di riferimento: GPU Pascal da 4 GB, Windows 10; metodo e tutte le righe
 - La CI testa solo la CPU; il percorso GPU è stato eseguito a mano su una scheda Pascal da 4 GB. Schede più nuove (RTX 50), Linux e macOS non sono stati provati; le librerie GPU installate contengono kernel da Pascal a RTX 50, mentre Maxwell usa il profilo CPU ([tabella di supporto GPU, in inglese](docs/installation.md#1-system-requirements)).
 - Il traduttore offline fa solo inglese → turco; le altre coppie richiedono Codex / Claude Code CLI o un backend API.
 - Tempi delle parole per audio sorgente diverso da inglese e turco: giapponese e cinese con `scripts/kur.ps1 -Adim hizalama-diller`, le altre lingue dopo un'esecuzione con `DUBLAJ_CEVRIMICI=1`.
-- Non ancora provati dall'inizio alla fine: installazione reale di XTTS-v2, RVC, il bot Telegram con il servizio vero e CrisperWhisper 2 Medium; Moonshine è sperimentale. CrisperWhisper 2.0 Turbo (motore 13) è testato su audio reale con una GTX 1050 Ti da 4 GB (tr, en, ja; ≈ 1,4 GB di VRAM).
+- Non ancora provati dall'inizio alla fine: installazione reale di XTTS-v2, RVC e il bot Telegram con il servizio vero. CrisperWhisper 2.0 Turbo (motore 13) è testato su audio reale con una GTX 1050 Ti da 4 GB (tr, en, ja; ≈ 1,4 GB di VRAM).
 
 ## Mattoncini
 
@@ -124,4 +124,4 @@ Domande, idee e risultati: [Discussioni](https://github.com/alexturkey/dubworld/
 Codice: Apache-2.0 (LICENSE). Componenti di terze parti e relative licenze: THIRD_PARTY.md. Uso responsabile: ETHICS.md.
 Privacy (cosa resta sul tuo computer e cosa riceve un backend cloud): PRIVACY.md. Segnalazioni di sicurezza: SECURITY.md. Modifiche: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

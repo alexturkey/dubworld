@@ -6,7 +6,7 @@ engine source (`tests/test_dil_ses_donanim.py`, `tests/test_kombinasyon.py`).
 
 ## Target language (dubbing) per speech engine
 
-The target-language list in the desktop and web *Advanced* tab is **filtered by the selected `ses.motor`**. A language
+The target-language list in the desktop and web *Advanced* tab is **filtered by the selected `ses.motor`** (with `auto`, the languages that Supertonic or VoxCPM2 can read). A language
 an engine cannot read is rejected when settings load (`ayar hatası ... dilini okuyamaz`), on the command line too.
 
 | Code | Language | Supertonic 3 | VoxCPM2 | XTTS v2 | Local Opus-MT |
@@ -96,14 +96,13 @@ Regional codes are normalised (`pt-BR` → `pt`, `zh-TW` → `zh`); the appendix
 | `faster-whisper`, `faster_whisper_ctc`, `whisperx` (large-v3-turbo) | multilingual (Whisper model card); `distil-*` models English only | per docs |
 | `crisperwhisper_turbo_ct2` | Whisper languages; real audio run: tr, en, ja; production-accepted en, zh, ja | measured |
 | `parakeet_cpu_align` | English only (settings error otherwise; Parakeet falls back to WhisperX) | per docs |
-| `speechmatics`, `elevenlabs_scribe_v2` | the provider's list (ISO code or automatic) | per docs |
 | `youtube_translate` | the video's caption track (its own language, then `en`) | per docs |
 
 How the source language is detected (first window, per window, code-switching, change point, fixed):
 [docs/tarifler/dil_tespiti.md](tarifler/dil_tespiti.md).
 
 **Word alignment (CTC).** Engines that use CTC (see [engineering/timing-sources.md](engineering/timing-sources.md);
-not plain `faster-whisper`, CrisperWhisper Medium, Moonshine or the cloud engines) get word times from a wav2vec2 CTC
+not plain `faster-whisper`) get word times from a wav2vec2 CTC
 model chosen by language: `en` torchaudio WAV2VEC2_ASR_BASE_960H, `tr` mpoyraz/wav2vec2-xls-r-300m-cv7-turkish (pinned in
 `scripts/modeller.json`), `id` Galuh/wav2vec2-large-xlsr-indonesian, others WhisperX defaults
 (`bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/worker.py`). A language without a CTC model cannot be aligned. Only `en` and `tr` are installed by `scripts/kur.ps1 -Adim modeller`; `ja` and `zh` by the optional `-Adim hizalama-diller`; for another language run once with `DUBLAJ_CEVRIMICI=1` (otherwise `faster_whisper_ctc`, the `auto` fallback, stops with this instruction right after language detection). Every Hugging Face CTC model loads from a pinned commit (`ctc_model_durumu.HF_CTC_SURUMLERI`), never from the Hub's moving "main". The WhisperX defaults for `fr`, `de`, `es`, `it` are VoxPopuli models under CC BY-NC 4.0 (non-commercial).
@@ -118,7 +117,7 @@ kurallar: `yapilandirma.uyumluluk_denetle()`. Testler bu listeleri motor kaynağ
 
 ### Ses motoruna göre hedef dil (dublaj)
 
-Masaüstü ve web *Gelişmiş* sekmesindeki hedef dil listesi **seçili `ses.motor`'a göre süzülür**. Motorun okuyamadığı
+Masaüstü ve web *Gelişmiş* sekmesindeki hedef dil listesi **seçili `ses.motor`'a göre süzülür** (`auto` iken Supertonic ya da VoxCPM2'nin okuyabildiği diller). Motorun okuyamadığı
 dil, ayarlar yüklenirken reddedilir (`ayar hatası ... dilini okuyamaz`); komut satırında da.
 
 | Kod | Dil | Supertonic 3 | VoxCPM2 | XTTS v2 | Yerel Opus-MT |
@@ -208,14 +207,13 @@ Bölgesel kodlar sadeleştirilir (`pt-BR` → `pt`, `zh-TW` → `zh`); ek bu dur
 | `faster-whisper`, `faster_whisper_ctc`, `whisperx` (large-v3-turbo) | çok dilli (Whisper model kartı); `distil-*` modelleri yalnız İngilizce | belgeye göre |
 | `crisperwhisper_turbo_ct2` | Whisper dilleri; gerçek ses koşusu: tr, en, ja; üretimde kabul edilen en, zh, ja | ölçüldü |
 | `parakeet_cpu_align` | yalnız İngilizce (aksi ayar hatası; Parakeet WhisperX'e geçer) | belgeye göre |
-| `speechmatics`, `elevenlabs_scribe_v2` | sağlayıcının listesi (ISO kodu ya da otomatik) | belgeye göre |
 | `youtube_translate` | videonun altyazı izi (kendi dili, sonra `en`) | belgeye göre |
 
 Kaynak dilin nasıl tespit edildiği (ilk pencere, pencere başına, kod değişimi, değişim noktası, sabit):
 [docs/tarifler/dil_tespiti.md](tarifler/dil_tespiti.md).
 
 **Kelime hizalama (CTC).** CTC kullanan motorlar ([engineering/timing-sources.md](engineering/timing-sources.md);
-düz `faster-whisper`, CrisperWhisper Medium, Moonshine ve bulut motorları değil) kelime zamanlarını dile göre seçilen
+düz `faster-whisper` değil) kelime zamanlarını dile göre seçilen
 bir wav2vec2 CTC modelinden alır: `en` torchaudio WAV2VEC2_ASR_BASE_960H, `tr` mpoyraz/wav2vec2-xls-r-300m-cv7-turkish
 (`scripts/modeller.json` içinde sabitlenmiş), `id` Galuh/wav2vec2-large-xlsr-indonesian, diğerleri WhisperX
 varsayılanları (`bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/worker.py`). CTC modeli olmayan dil hizalanamaz.

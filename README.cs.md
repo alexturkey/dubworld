@@ -69,7 +69,7 @@ Referenční počítač: GPU Pascal 4 GB, Windows 10; metodika a všechny řádk
 - CI testuje jen CPU; cesta GPU byla spuštěna ručně na kartě Pascal 4 GB. Nové karty (RTX 50), Linux a macOS nejsou vyzkoušené; instalované knihovny GPU obsahují kernely od Pascalu po RTX 50 a Maxwell používá profil CPU ([tabulka podpory GPU, anglicky](docs/installation.md#1-system-requirements)).
 - Offline překladač umí jen z angličtiny do turečtiny; jiné jazykové páry potřebují Codex / Claude Code CLI nebo API backend.
 - Časy slov pro zdrojové jazyky kromě angličtiny a turečtiny: japonština a čínština přes `scripts/kur.ps1 -Adim hizalama-diller`, ostatní po jednom spuštění s `DUBLAJ_CEVRIMICI=1`.
-- Zatím nevyzkoušeno od začátku do konce: skutečná instalace XTTS-v2, RVC, telegramový bot napojený na skutečnou službu a CrisperWhisper 2 Medium; Moonshine je experimentální. CrisperWhisper 2.0 Turbo (engine 13) byl vyzkoušen se skutečným zvukem na GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
+- Zatím nevyzkoušeno od začátku do konce: skutečná instalace XTTS-v2, RVC a telegramový bot napojený na skutečnou službu. CrisperWhisper 2.0 Turbo (engine 13) byl vyzkoušen se skutečným zvukem na GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Stavební kostky
 
@@ -124,4 +124,4 @@ Dotazy, nápady a vaše výsledky: [diskusní fórum](https://github.com/alextur
 Kód: Apache-2.0 (LICENSE). Součásti třetích stran a jejich licence: THIRD_PARTY.md. Odpovědné používání: ETHICS.md.
 Soukromí (co zůstává na vašem počítači, co dostane cloudový backend): PRIVACY.md. Hlášení zranitelností: SECURITY.md. Změny: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

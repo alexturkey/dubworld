@@ -67,7 +67,7 @@ Windows 10/11 x64。Python、CUDA、ffmpeg の事前インストールは不要�
 - CI は CPU のみをテストします。GPU 経路は 4 GB Pascal カード 1 枚で手動実行しました。新しいカード（RTX 50）、Linux、macOS は未検証です。インストールされる GPU ライブラリは Pascal から RTX 50 までのカーネルを含み、Maxwell は CPU プロファイルを使います（[GPU runtime matrix](docs/installation.md#1-system-requirements)）。
 - オフライン翻訳は英語→トルコ語のみです。他の言語の組み合わせには Codex / Claude Code CLI または API バックエンドが必要です。
 - 英語とトルコ語以外の元言語の単語タイミング：日本語と中国語は `scripts/kur.ps1 -Adim hizalama-diller`、その他は `DUBLAJ_CEVRIMICI=1` で一度実行した後。
-- エンドツーエンド未検証：XTTS-v2 の実インストール、RVC、実サービスに接続した Telegram ボット、CrisperWhisper 2 Medium。Moonshine は実験的です。CrisperWhisper 2.0 Turbo（エンジン 13）は GTX 1050 Ti 4 GB で実音声により検証済みです（tr、en、ja、VRAM 約 1.4 GB）。
+- エンドツーエンド未検証：XTTS-v2 の実インストール、RVC、実サービスに接続した Telegram ボット。CrisperWhisper 2.0 Turbo（エンジン 13）は GTX 1050 Ti 4 GB で実音声により検証済みです（tr、en、ja、VRAM 約 1.4 GB）。
 
 ## 構成要素
 
@@ -125,4 +125,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

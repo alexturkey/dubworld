@@ -71,7 +71,7 @@ sha256 سے جانچا جاتا ہے۔ شروع کرنے کے لیے خالی ج
 - CI صرف CPU ٹیسٹ کرتا ہے؛ GPU راستہ 4 GB پاسکل کارڈ پر ہاتھ سے چلایا گیا۔ نئے کارڈ (RTX 50)، Linux اور macOS آزمائے نہیں گئے؛ انسٹال ہونے والی GPU لائبریریوں میں پاسکل سے RTX 50 تک کے کرنل ہیں، اور Maxwell CPU پروفائل استعمال کرتا ہے ([GPU سپورٹ ٹیبل، انگریزی میں](docs/installation.md#1-system-requirements))۔
 - آف لائن مترجم صرف انگریزی سے ترکی کرتا ہے؛ دوسرے زبانوں کے جوڑوں کے لیے Codex / Claude Code CLI یا API بیک اینڈ چاہیے۔
 - انگریزی اور ترکی کے علاوہ ماخذ زبانوں کے لیے الفاظ کا وقت: جاپانی اور چینی کے لیے `scripts/kur.ps1 -Adim hizalama-diller`، باقی کے لیے `DUBLAJ_CEVRIMICI=1` کے ساتھ ایک بار چلانے کے بعد۔
-- ابھی شروع سے آخر تک نہیں آزمایا گیا: XTTS-v2 کی اصل انسٹالیشن، RVC، اصل سروس سے جڑا Telegram بوٹ اور CrisperWhisper 2 Medium؛ Moonshine تجرباتی ہے۔ CrisperWhisper 2.0 Turbo (انجن 13) اصل آڈیو کے ساتھ GTX 1050 Ti 4 GB پر آزمایا گیا ہے (tr، en، ja؛ ≈ 1.4 GB VRAM)۔
+- ابھی شروع سے آخر تک نہیں آزمایا گیا: XTTS-v2 کی اصل انسٹالیشن، RVC اور اصل سروس سے جڑا Telegram بوٹ۔ CrisperWhisper 2.0 Turbo (انجن 13) اصل آڈیو کے ساتھ GTX 1050 Ti 4 GB پر آزمایا گیا ہے (tr، en، ja؛ ≈ 1.4 GB VRAM)۔
 
 ## بنیادی اینٹیں
 
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

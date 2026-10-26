@@ -70,7 +70,7 @@ Windows 10/11 x64; заранее не нужны ни Python, ни CUDA, ни f
 - CI проверяет только CPU; путь GPU запускался вручную на одной карте Pascal 4 ГБ. Новые карты (RTX 50), Linux и macOS не проверялись; установленные GPU-библиотеки содержат ядра от Pascal до RTX 50, Maxwell использует профиль CPU ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - Офлайн-переводчик переводит только с английского на турецкий; для других пар нужен Codex / Claude Code CLI или API-бэкенд.
 - Метки времени слов для исходных языков, кроме английского и турецкого: японский и китайский через `scripts/kur.ps1 -Adim hizalama-diller`, остальные после одного запуска с `DUBLAJ_CEVRIMICI=1`.
-- Не проверено от начала до конца: реальная установка XTTS-v2, RVC, Telegram-бот с настоящим сервисом, CrisperWhisper 2 Medium; Moonshine экспериментальный. CrisperWhisper 2.0 Turbo (движок 13) проверен на реальном аудио на GTX 1050 Ti 4 ГБ (tr, en, ja; ≈ 1,4 ГБ VRAM).
+- Не проверено от начала до конца: реальная установка XTTS-v2, RVC, Telegram-бот с настоящим сервисом. CrisperWhisper 2.0 Turbo (движок 13) проверен на реальном аудио на GTX 1050 Ti 4 ГБ (tr, en, ja; ≈ 1,4 ГБ VRAM).
 
 ## Строительные блоки
 
@@ -131,4 +131,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. Этот перевод может отставать; основной является английская
 > версия. Источник: README.md (метка синхронизации ниже). Машинный перевод (Claude); PR с исправлениями приветствуются.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

@@ -21,10 +21,6 @@ engine segment that contained 10.2 s of gaps, or a 40 ms word that would have sl
 ## Known exceptions
 - `faster-whisper` chosen explicitly keeps Whisper's own word times (a deliberate speed/compatibility choice). `auto`
   never resolves to it: its permissive fallback is `faster_whisper_ctc` (same recogniser, shared CTC box).
-- Cloud engines (`speechmatics`) keep the provider's word times; no CTC pass runs on them in
-  the current code, and no comparison against CTC times is recorded.
-- `crisperwhisper2_medium` keeps the model's own attention word times
-  ([crisperwhisper_turbo_ct2.md](../engineering/crisperwhisper_turbo_ct2.md) §1).
 - Generated-side alignment applies to Supertonic candidates and the final dub; VoxCPM2 and XTTS output is placed by
   its measured duration and aligned for subtitles only when subtitles are requested.
 

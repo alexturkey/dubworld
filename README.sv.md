@@ -69,7 +69,7 @@ Referensdator: Pascal-GPU 4 GB, Windows 10; metod och alla rader i [docs/olcumle
 - CI testar bara CPU; GPU-vägen kördes för hand på ett Pascal-kort på 4 GB. Nya kort (RTX 50), Linux och macOS är otestade; de GPU-bibliotek som installeras har kärnor från Pascal till RTX 50, och Maxwell använder CPU-profilen ([tabell över GPU-stöd, på engelska](docs/installation.md#1-system-requirements)).
 - Offlineöversättaren kan bara engelska till turkiska; andra språkpar kräver Codex / Claude Code CLI eller en API-backend.
 - Ordtider för andra källspråk än engelska och turkiska: japanska och kinesiska via `scripts/kur.ps1 -Adim hizalama-diller`, övriga efter en körning med `DUBLAJ_CEVRIMICI=1`.
-- Ännu inte testat från början till slut: en riktig XTTS-v2-installation, RVC, en Telegram-bot kopplad till en riktig tjänst och CrisperWhisper 2 Medium; Moonshine är experimentell. CrisperWhisper 2.0 Turbo (motor 13) är testad med riktigt ljud på ett GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
+- Ännu inte testat från början till slut: en riktig XTTS-v2-installation, RVC och en Telegram-bot kopplad till en riktig tjänst. CrisperWhisper 2.0 Turbo (motor 13) är testad med riktigt ljud på ett GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Byggklossar
 
@@ -124,4 +124,4 @@ Frågor, idéer och dina resultat: [diskussionsforum](https://github.com/alextur
 Kod: Apache-2.0 (LICENSE). Externa delar och deras licenser: THIRD_PARTY.md. Ansvarsfull användning: ETHICS.md.
 Integritet (vad som stannar på din dator, vad en molnbackend får): PRIVACY.md. Säkerhetsrapporter: SECURITY.md. Ändringar: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

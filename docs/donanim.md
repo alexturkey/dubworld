@@ -42,7 +42,7 @@ never edits code constants. Every cell says **measured (source)** or **estimate,
 | RAM | – | – | – | 8 GB minimum (estimate, not measured); 16 GB tested (measured, installation.md) | – | Demucs on 75 min audio 7.2 GB; CrisperWhisper Turbo conversion 4.5 GB free; Supertonic 1.8 GB (measured, low_vram.md) |
 
 What a larger machine may change **by setting** (no code change): `transkripsiyon.hesap_tipi` (`float32` for WhisperX
-on 6 GB and more), `transkripsiyon.motor` (`crisperwhisper2_medium`), `ses.motor` (`voxcpm2`),
+on 6 GB and more), `transkripsiyon.motor` (`crisperwhisper_turbo_ct2`), `ses.motor` (`auto` already picks VoxCPM2 when it is installed and an NVIDIA GPU is usable; `voxcpm2` forces it),
 `ses_temizligi.kip` (`preserve_background` with Demucs). What is a **code constant** (batch sizes, GPU lock capacity,
 process isolation, Supertonic lanes): change it only with the measurement recipe in
 [engineering/pinned-values.md](engineering/pinned-values.md) and a pull request.
@@ -79,7 +79,7 @@ process isolation, Supertonic lanes): change it only with the measurement recipe
 exit; fp16 gives no speed-up on Pascal (float16 / int8_float16 are refused, int8 or fp32 are used).
 
 **Open measurements (estimate rows):** Opus-MT VRAM and speed, faster-whisper / WhisperX / Demucs CPU speed, XTTS peak
-VRAM, RVC, Speechmatics speed, VoxCPM2 inside the dubbing pipeline.
+VRAM, RVC, VoxCPM2 inside the dubbing pipeline.
 
 ---
 
@@ -128,7 +128,7 @@ asla değiştirmez. Her hücre **ölçüldü (kaynak)** ya da **tahmin, ölçül
 | RAM | – | – | – | en az 8 GB (tahmin, ölçülmedi); 16 GB denendi (ölçüldü, kurulum.md) | – | Demucs 75 dk seste 7,2 GB; CrisperWhisper Turbo dönüşümü 4,5 GB boş; Supertonic 1,8 GB (ölçüldü, dusuk_vram.md) |
 
 Büyük makinede **ayarla** değişebilenler (kod değişmez): `transkripsiyon.hesap_tipi` (6 GB ve üstünde WhisperX için
-`float32`), `transkripsiyon.motor` (`crisperwhisper2_medium`), `ses.motor` (`voxcpm2`), `ses_temizligi.kip` (Demucs ile
+`float32`), `transkripsiyon.motor` (`crisperwhisper_turbo_ct2`), `ses.motor` (`auto` VoxCPM2 kuruluysa ve NVIDIA GPU çalışıyorsa onu zaten seçer; `voxcpm2` zorlar), `ses_temizligi.kip` (Demucs ile
 `preserve_background`). **Kod sabiti** olanlar (batch boyutları, GPU kilidi kapasitesi, süreç yalıtımı, Supertonic
 şeritleri): yalnız [muhendislik/sabit_degerler.md](muhendislik/sabit_degerler.md)'deki ölçüm reçetesi ve bir çekme
 isteğiyle değişir.
@@ -165,4 +165,4 @@ isteğiyle değişir.
 VRAM çıkışta boşalır; fp16 Pascal'da hız kazandırmaz (float16 / int8_float16 reddedilir, int8 ya da fp32 kullanılır).
 
 **Açık ölçümler (tahmin satırları):** Opus-MT VRAM ve hızı, faster-whisper / WhisperX / Demucs işlemci hızı, XTTS tepe
-VRAM'i, RVC, Speechmatics hızı, VoxCPM2'nin dublaj hattı içindeki ölçümü.
+VRAM'i, RVC, VoxCPM2'nin dublaj hattı içindeki ölçümü.

@@ -70,7 +70,7 @@ sha256. المساحة الحرة اللازمة للبدء: 22 GB مع ملف �
 - يختبر التكامل المستمر (CI) المعالج فقط؛ شُغّل مسار GPU يدوياً على بطاقة Pascal واحدة بذاكرة 4 GB. لم تُجرَّب البطاقات الأحدث (RTX 50) ولا Linux ولا macOS؛ مكتبات GPU المثبّتة تحمل نوى من Pascal إلى RTX 50، وMaxwell يستخدم ملف تعريف CPU ([جدول دعم بطاقات الرسوميات، بالإنجليزية](docs/installation.md#1-system-requirements)).
 - المترجم دون اتصال يترجم من الإنجليزية إلى التركية فقط؛ الأزواج الأخرى تحتاج Codex / Claude Code CLI أو واجهة API.
 - توقيت الكلمات للغات مصدر غير الإنجليزية والتركية: اليابانية والصينية عبر `scripts/kur.ps1 -Adim hizalama-diller`، والأخرى بعد تشغيل واحد مع `DUBLAJ_CEVRIMICI=1`.
-- لم يُجرَّب من البداية إلى النهاية: التثبيت الفعلي لـ XTTS-v2، وRVC، وبوت Telegram مع الخدمة الحقيقية، وCrisperWhisper 2 Medium؛ وMoonshine تجريبي. اختُبر CrisperWhisper 2.0 Turbo (المحرك 13) على صوت حقيقي ببطاقة GTX 1050 Ti 4 GB (tr، en، ja؛ ≈ 1.4 GB VRAM).
+- لم يُجرَّب من البداية إلى النهاية: التثبيت الفعلي لـ XTTS-v2، وRVC، وبوت Telegram مع الخدمة الحقيقية. اختُبر CrisperWhisper 2.0 Turbo (المحرك 13) على صوت حقيقي ببطاقة GTX 1050 Ti 4 GB (tr، en، ja؛ ≈ 1.4 GB VRAM).
 
 ## اللبنات الأساسية
 
@@ -127,4 +127,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

@@ -305,7 +305,7 @@
   "ayar.ileri.tts_deneme": "How many times to retry the voice engine",
   "ayar.ileri.tts_deneme_bekleme_sn": "Seconds to wait between retries",
   "ayar.ileri.ornekleme_hizi": "Output sample rate (Supertonic uses its own rate)",
-  "ayar.ileri.pyannote_konusmaci_ayrimi": "Tell speakers apart in the transcript: whisperx (pyannote; accept the terms of two models on Hugging Face and set HF_TOKEN). CrisperWhisper, moonshine and cpu_align don't support it.",
+  "ayar.ileri.pyannote_konusmaci_ayrimi": "Tell speakers apart in the transcript: whisperx (pyannote; accept the terms of two models on Hugging Face and set HF_TOKEN). CrisperWhisper and cpu_align don't support it.",
 
   "oynatici.alan": "Video player",
   "oynatici.tam_ekran_cik": "Leave full screen",

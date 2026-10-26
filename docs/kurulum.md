@@ -141,7 +141,7 @@ bağımlılıkları ana kilitle bir arada bulunamaz. Ana hat tek ortamla çalı�
 
 | Ortam | Yer | Python | Kilit / sabit | Kullanan | Neden ayrı | Boyut | Kuran |
 |---|---|---|---|---|---|---|---|
-| **Ana** | `.venv/` | 3.11.14 (uv) | `requirements/gpu.txt` ya da `cpu.txt` (hash), ekler `requirements/ek_*.txt` | CLI, GUI, web, Telegram botu, faster-whisper, WhisperX, CTC kelime hizalama, Opus-MT, Supertonic, 3D-Speaker, cinsiyet sınıflandırıcı, Demucs, Parakeet, Speechmatics/ElevenLabs istemcileri, yt-dlp, gallery-dl, OpenCV | – (taban) | GPU'da ≈ 7,8 GB, işlemcide ≈ 3,8 GB | `-Adim paketler` |
+| **Ana** | `.venv/` | 3.11.14 (uv) | `requirements/gpu.txt` ya da `cpu.txt` (hash), ekler `requirements/ek_*.txt` | CLI, GUI, web, Telegram botu, faster-whisper, WhisperX, CTC kelime hizalama, Opus-MT, Supertonic, 3D-Speaker, cinsiyet sınıflandırıcı, Demucs, Parakeet, yt-dlp, gallery-dl, OpenCV | – (taban) | GPU'da ≈ 7,8 GB, işlemcide ≈ 3,8 GB | `-Adim paketler` |
 | **XTTS v2** | `runtime_assets/tts_motorlari/xtts/venv/` | 3.11.14 (uv) | `requirements/xtts_venv_gpu.txt` / `xtts_venv_cpu.txt` (hash, PyTorch dahil) | `ses.motor = xtts` (`.env`'e yazılan `DUBLAJ_XTTS_PYTHON` üzerinden alt süreç) | `coqui-tts`'i ve ≈ 80 paketlik bağımlılık ağacını, ayrıca ticari olmayan motoru kilitli ana ortamın dışında tutar | ölçülmedi | `-Adim tts-xtts -TicariOlmayanKabul` |
 | **CrisperWhisper Turbo çalışma ortamı (WSL)** | `runtime_assets/transkripsiyon_motorlari/crisperwhisper_turbo_ct2/.venv_wsl_ct2/` (WSL2 içinde Linux venv) | 3.12 (Ubuntu 24.04 sistem Python'u) | `src/dublaj_hatti/bolum_20_transkripsiyon/crisperwhisper_turbo_ct2_motoru/requirements/requirements_wsl_ct2.lock.txt` (sabit sürüm, hash yok; `pip check` geçmeli) | `transkripsiyon.motor = crisperwhisper_turbo_ct2` | CTranslate2 çatalı `ctranslate2-crisperwhisper` yalnız Linux tekerleği yayımlar; CUDA pip `nvidia-cublas-cu12` 12.9'dan gelir | ≈ 1 GB (tahmin) | `-Adim crisper` |
 | **CrisperWhisper dönüşüm ortamı (WSL)** | `runtime_assets/transkripsiyon_motorlari/stt_repo/.venv/` | Ubuntu Python'u (kardeş repoya göre 3.10–3.12) | kardeş STT reposunun `requirements.txt`'si + PyTorch cu126 | modelin bir kerelik indirilmesi ve CTranslate2'ye dönüştürülmesi; çalışma anında kullanılmaz | dönüşüm PyTorch + Transformers ister; Linux cu128 tekerleklerinde Pascal çekirdeği olmadığından cu126 kullanılır | ≈ 3 GB + model 3,2 GB | `-Adim crisper` (kardeş kurulum betiği) |
@@ -212,9 +212,8 @@ Başka repo kullanan adımların ön koşulları:
 - `voxcpm2`: git ve NVIDIA GPU ister. Kardeş kurulum betiği `py -3`, `python` ya da `python3` arar (64 bit, 3.10+);
   `kur.ps1` yalnız bu adım için kendi Python 3.11.14'ünü `PATH` başına koyar, sistem Python'u gerekmez.
 
-Kurulum adımı olmayan motorlar (elle; `docs/motorlar/` altındaki sayfalarına bakın): `moonshine_medium_streaming_en`,
-`crisperwhisper2_medium`, `whisper_cpp_cpu_align`, `rvc`. Bulut motorları yalnız `.env`'de anahtar ister
-(`.env.example` adları listeler).
+Kurulum adımı olmayan motorlar (elle; `docs/motorlar/` altındaki sayfalarına bakın): `rvc`. Bulut çeviri arka uçları
+yalnız `.env`'de anahtar ister (`.env.example` adları listeler).
 
 ## 8. Kurulumu doğrulama
 
@@ -241,7 +240,6 @@ DubWorld 0.1.0 · Python 3.11.14
   ceviri: yerel=var, codex=var, claude_code=var, gemini_2_5_flash=yok, ...
   tts: supertonic=var, voxcpm2=yok, ema_lightning=var, xtts=yok
   ek: demucs=yok, yt_dlp=yok, konusmaci_ayrimi=var, cinsiyet_siniflandirici=var, segment_cinsiyet_kipi=var, ...
-  deneysel / experimental: moonshine_medium_streaming_en (...)
   telegram yerel sunucu: kapalı (bulut Bot API, en çok 50 MB; 2 GB için: dubla-telegram sunucu kur)
   tts ema_lightning: GPU (torch) + işlemci ONNX; auto şimdi: onnx-cpu (GPU yok: işlemci)
   hizalama (CTC): en=var, tr=var
@@ -294,7 +292,7 @@ Her şey repo klasörünün içindedir; klasörü silmek kurulumu kaldırır. Ay
 
 Klasör dışında: sistem geçici klasöründeki makine geneli GPU kilit klasörü `dublaj_hatti_kaynak_kilitleri` (ya da
 `DUBLAJ_KILIT_KLASORU`) yalnız küçük kilit dosyaları içerir. Elle kurulan motorlar (RVC WebUI, repo dışındaki
-Moonshine ya da CrisperWhisper Medium ortamı) ve WSL kendi yollarıyla kaldırılır.
+bir ortam) ve WSL kendi yollarıyla kaldırılır.
 
 ## 11. Linux ve macOS
 

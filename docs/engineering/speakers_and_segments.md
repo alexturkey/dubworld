@@ -58,11 +58,8 @@ Where segmentation sits in the whole job and why words are regrouped: [pipeline-
 3. **Current: 3D-Speaker** (Silero VAD + CAM++ embeddings + clustering; the upstream FSMN VAD was replaced for licence
    reasons, [ADR 0013](../adr/0013-silero-vad.md)). The reason for preferring it over pyannote was
    **not recorded**. pyannote is not imported on this path; overlap handling is off.
-4. Cloud engines that return word-level speakers (Speechmatics, ElevenLabs) do **not** replace 3D-Speaker in this
-   pipeline: `dubber.py` calls `konusmaci_seslerini_ata` without a speaker timeline, so 3D-Speaker always runs when
+4. `dubber.py` calls `konusmaci_seslerini_ata` without a speaker timeline, so 3D-Speaker always runs when
    per-speaker voices are on (`_supertonic_speaker_timeline_source` returns only `local_3d_speaker` or `disabled`).
-   The helper that would build a timeline from those labels (`build_speaker_timeline_from_segment_words` in
-   `konusmaci_secimi/router.py`) has no caller.
 
 ### Current 3D-Speaker settings
 

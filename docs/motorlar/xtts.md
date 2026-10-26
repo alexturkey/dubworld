@@ -1,4 +1,4 @@
-# XTTS v2 (reference-voice TTS) (`xtts`)
+# XTTS v2 (reference-voice TTS) (`xtts`), being deprecated
 
 [Türkçe](#türkçe) · registry row: `src/dublaj_hatti/kayit.py` (`dubla kontrol` shows whether it is installed)
 
@@ -13,6 +13,7 @@ job ends, the model memory is released.
 | Install | recommended: `scripts/kur.ps1 -Adim tts-xtts -TicariOlmayanKabul` (separate virtual environment, hash-locked lock files including torch `requirements/xtts_venv_gpu.txt` / `xtts_venv_cpu.txt`, writes `DUBLAJ_XTTS_PYTHON` to `.env`); or `pip install .[tts-xtts]` into the same environment + licence acceptance |
 | Hardware | NVIDIA GPU recommended (~4 GB VRAM, estimate); works on the CPU but very slowly |
 | Default | off |
+| Status | **being deprecated**: it still works and warns when selected (non-commercial CPML licence); VoxCPM2 clones a voice without a reference transcript |
 
 **Licence acceptance:** The weights are not in the repository and are not downloaded automatically. Acceptance:
 `python -m dublaj_hatti.bolum_50_seslendirme.xtts_tts onay` (read the text and type `kabul ediyorum`). The acceptance is
@@ -73,6 +74,7 @@ Her cümle 150 karakterlik parçalarla, ayrı bir süreçte (coqui-tts) üretili
 | Kurulum | önerilen: `scripts/kur.ps1 -Adim tts-xtts -TicariOlmayanKabul` (ayrı sanal ortam, torch dahil hash'li kilit `requirements/xtts_venv_gpu.txt` / `xtts_venv_cpu.txt`, `.env`'e `DUBLAJ_XTTS_PYTHON` yazar); ya da aynı ortama `pip install .[tts-xtts]` + lisans onayı |
 | Donanım | NVIDIA GPU önerilir (~4 GB VRAM, tahmini); işlemcide çalışır ama çok yavaş |
 | Varsayılan | kapalı |
+| Durum | **kullanımdan kalkıyor**: çalışmaya devam eder, seçilince uyarır (ticari olmayan CPML lisansı); VoxCPM2 referans metni olmadan ses klonlar |
 
 **Lisans onayı:** Ağırlık repoda yoktur, otomatik indirilmez. Onay:
 `python -m dublaj_hatti.bolum_50_seslendirme.xtts_tts onay` (metni okuyup `kabul ediyorum` yazın). Onay yerel

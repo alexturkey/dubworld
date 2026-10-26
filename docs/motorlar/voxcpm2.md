@@ -12,7 +12,7 @@
 | Install | `scripts/kur.ps1 -Adim voxcpm2` (sister repository URL built in; for a fork set `DUBLAJ_TTS_REPO_URL`) |
 | Hardware | NVIDIA GPU, 2.6–3.0 GB VRAM (Q8_0 GGUF + 4 GB patch, measured), ~2 s compute per 1 s audio; CPU disabled (48.5 s audio took 535 s) |
 | Languages | tested: tr, en, fr, de, es, ru, zh, ja; others allowed with a warning |
-| Default | off |
+| Default | chosen by `ses.motor = auto` (the default) when installed and an NVIDIA GPU is usable; otherwise only when set explicitly |
 
 **Settings**
 
@@ -57,7 +57,7 @@
 | Kurulum | `scripts/kur.ps1 -Adim voxcpm2` (kardeş repo adresi hazırdır; çatal (fork) için `DUBLAJ_TTS_REPO_URL` ayarlanır) |
 | Donanım | NVIDIA GPU, 2.6–3.0 GB VRAM (Q8_0 GGUF + 4 GB yaması, ölçüldü), 1 sn ses için ~2 sn hesap; işlemci kapalı (48.5 sn ses 535 sn sürdü) |
 | Diller | denendi: tr, en, fr, de, es, ru, zh, ja; diğerlerine uyarıyla izin verilir |
-| Varsayılan | kapalı |
+| Varsayılan | kurulu ve NVIDIA GPU çalışıyorsa `ses.motor = auto` (varsayılan) onu seçer; aksi halde yalnız elle seçilince |
 
 **Ayarlar**
 

@@ -1,4 +1,4 @@
-# CrisperWhisper engines ("engine 12" Medium and "engine 13" Turbo CT2)
+# CrisperWhisper Turbo CT2 ("engine 13")
 
 The optional verbatim transcription engines: why they exist, how the Turbo engine was made to run in ≈ 1.4 GB of
 VRAM, every long-form and multilingual failure that was fixed, and the speed work. Türkçe:
@@ -13,15 +13,13 @@ Evidence labels: see [gpu_memory_and_isolation.md](gpu_memory_and_isolation.md).
 
 ## 1. Identity
 
-| | Engine 12: CrisperWhisper 2 Medium | Engine 13: CrisperWhisper 2 Turbo CT2 |
-|---|---|---|
-| Backend | Transformers, CUDA fp16 | CTranslate2 fork with CrisperWhisper alignment heads; fp16 storage, **int8 compute**; beam 1 |
-| Runs in | its own Windows environment | WSL2 Ubuntu (one-shot subprocess per request) |
-| Word times | the model's own attention times | **shared CTC forced alignment** (native times are kept only for diagnostics) |
-| VRAM peak | 3.5–3.6 GB (fp32 does not fit) | ≈ 1.4 GB |
+| | Engine 13: CrisperWhisper 2 Turbo CT2 |
+|---|---|
+| Backend | CTranslate2 fork with CrisperWhisper alignment heads; fp16 storage, **int8 compute**; beam 1 |
+| Runs in | WSL2 Ubuntu (one-shot subprocess per request) |
+| Word times | **shared CTC forced alignment** (native times are kept only for diagnostics) |
+| VRAM peak | ≈ 1.4 GB |
 
-The two engines share no environment, snapshot, artefact names or adapters; Turbo keeps a local copy of the
-"dubbing-ready" text logic instead of importing it.
 
 ## 2. Decision: why CTranslate2, WSL2 and int8 (see also [ADR 0004](../adr/0004-crisperwhisper-turbo-ct2-int8.md))
 
@@ -31,9 +29,6 @@ The two engines share no environment, snapshot, artefact names or adapters; Turb
   **only manylinux x86_64 wheels**. The engine therefore runs inside WSL2, called from Windows as a one-shot
   subprocess with atomic JSON request/response files: no HTTP server, no port, no resident model.
 - **Why int8:** Pascal has no fast fp16 and CTranslate2 has no fp16 compute on this card; int8 is the fast path.
-- **Rejected for Medium:** CT2 float32 and int8 conversions of Medium did not pass a strict word-and-time equality
-  gate against the Transformers reference, so Medium stays on Transformers fp16. Recorded lessons: "conversion alone
-  is not a solution"; "int8 can look fast on short audio and not generalise".
 - **Rejected for Turbo:** a persistent model server. A resident WSL worker passed the exactness gate but made the
   transcription step **16.9 % slower** (131.7 → 154.0 s); setup savings fell outside the step (measured).
 - No CPU fallback: if CUDA int8 is not supported the engine stops with an error.
@@ -152,9 +147,7 @@ start and the starts are **strictly increasing** (no tolerance); otherwise they 
 
 1. **`global_first_window`** (default): if a platform/user language is given and the model knows it, use it;
    otherwise detect once on the first ≤ 29.5 s of speech and process the whole file in that language.
-2. **`per_window`** (Medium, legacy): score every window and merge adjacent same-language windows into runs.
-   Cost ≈ 1.25 s per 29.5 s window, i.e. +4–5 % of runtime; 0 unstable decisions in 242 repeated inferences (measured).
-3. **`continuous_stream`**: a 4 s moving context, 1 s ticks; each tick needs top probability ≥ 0.60 and margin ≥ 0.20;
+2. **`continuous_stream`**: a 4 s moving context, 1 s ticks; each tick needs top probability ≥ 0.60 and margin ≥ 0.20;
    two consecutive confident ticks confirm a language or a change; the boundary is placed midway between the last
    stable and first confirmed tick. A given platform language is evidence only, never the decision.
    Measured on a concatenated Turkish + English + German file (17.9 s): switches found at 5.5 s and 11.0 s,
@@ -165,7 +158,6 @@ start and the starts are **strictly increasing** (no tolerance); otherwise they 
 | Language | What was done | Status |
 |---|---|---|
 | English | int8 acceptance on 10 voices, coverage recovery, CTC times, long-word gate, speed work | production |
-| Spanish | stitch midpoint fix (Medium) | Medium production; Turbo no separate record |
 | Chinese | space-less "continuation" path from the first window; multi-byte tokens decoded as whole groups; content-token counting instead of `split()`; 448-position decoder budget (prompt capped at 192 + 256 reserved) | production |
 | Japanese | per-token decoding produced U+FFFD → Unicode-safe regrouping; plain-transcribe sibling; reject if > 3 s of active audio remains after the last timed group; CTC character regroup | production |
 | Thai, Lao, Burmese, Cantonese | share the space-less route | **no real-audio acceptance**, no CTC model |
@@ -243,13 +235,6 @@ engine not slower, output identical); **not integrated**.
 - 74-minute English: peak 1,435 MiB of 4,096 (model loaded 911 MiB + 524 MiB working); GPU ≈ 74 % busy.
 - ASR and alignment run in separate, sequential processes, so the card never holds both models.
 - After every job: worker processes gone, ≈ 0 MiB VRAM.
-
-### 8.6 Medium speed work
-
-Language-routed optimisations (encoder caching and selective eager paths; for Chinese/Japanese an extra SDPA path and
-3 consensus seeds in one GPU batch) gave 1.45–3.56× speed-ups with 19/19 test voices exactly equal on text, words,
-times and language. A 5× target was closed as impossible for one file: two mandatory eager decoder windows alone
-exceeded the time budget.
 
 ## 9. Open items
 

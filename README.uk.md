@@ -69,7 +69,7 @@ Windows 10/11 x64; заздалегідь встановлювати Python, CUD
 - CI тестує лише CPU; шлях GPU запускали вручну на картці Pascal 4 ГБ. Нові картки (RTX 50), Linux і macOS не перевірені; встановлювані GPU-бібліотеки мають ядра від Pascal до RTX 50, а Maxwell використовує профіль CPU ([таблиця підтримки GPU, англійською](docs/installation.md#1-system-requirements)).
 - Офлайн-перекладач уміє лише з англійської на турецьку; інші мовні пари потребують Codex / Claude Code CLI або API-бекенду.
 - Час слів для вихідних мов, крім англійської й турецької: японська й китайська через `scripts/kur.ps1 -Adim hizalama-diller`, інші після одного запуску з `DUBLAJ_CEVRIMICI=1`.
-- Ще не перевірено від початку до кінця: справжнє встановлення XTTS-v2, RVC, Telegram-бот, підключений до справжнього сервісу, і CrisperWhisper 2 Medium; Moonshine експериментальний. CrisperWhisper 2.0 Turbo (рушій 13) перевірено на справжньому аудіо на GTX 1050 Ti 4 ГБ (tr, en, ja; ≈ 1,4 ГБ VRAM).
+- Ще не перевірено від початку до кінця: справжнє встановлення XTTS-v2, RVC, Telegram-бот, підключений до справжнього сервісу. CrisperWhisper 2.0 Turbo (рушій 13) перевірено на справжньому аудіо на GTX 1050 Ti 4 ГБ (tr, en, ja; ≈ 1,4 ГБ VRAM).
 
 ## Будівельні блоки
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 Код: Apache-2.0 (LICENSE). Сторонні компоненти та їхні ліцензії: THIRD_PARTY.md. Відповідальне використання: ETHICS.md.
 Приватність (що лишається на вашому комп'ютері, що отримує хмарний бекенд): PRIVACY.md. Повідомлення про вразливості: SECURITY.md. Зміни: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

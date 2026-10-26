@@ -69,7 +69,7 @@ sha256으로 검증됩니다. 시작에 필요한 여유 공간: GPU 프로필 2
 - CI는 CPU만 테스트합니다. GPU 경로는 4 GB Pascal 카드 한 장에서 직접 돌려 봤습니다. 최신 카드(RTX 50), Linux, macOS는 시험하지 않았습니다. 설치되는 GPU 라이브러리는 Pascal부터 RTX 50까지 커널을 포함하며, Maxwell은 CPU 프로필을 씁니다([GPU 지원표, 영어](docs/installation.md#1-system-requirements)).
 - 오프라인 번역기는 영어→튀르키예어만 지원합니다. 다른 언어 조합에는 Codex / Claude Code CLI나 API 백엔드가 필요합니다.
 - 영어·튀르키예어가 아닌 원본 음성의 단어 타이밍: 일본어와 중국어는 `scripts/kur.ps1 -Adim hizalama-diller`로, 나머지는 `DUBLAJ_CEVRIMICI=1`로 한 번 실행한 뒤 사용할 수 있습니다.
-- 아직 처음부터 끝까지 시험하지 않은 것: XTTS-v2 실제 설치, RVC, 실제 서비스와 연결한 Telegram 봇, CrisperWhisper 2 Medium. Moonshine은 실험 단계입니다. CrisperWhisper 2.0 Turbo(엔진 13)는 GTX 1050 Ti 4 GB에서 실제 음성으로 테스트했습니다(tr, en, ja; VRAM ≈ 1.4 GB).
+- 아직 처음부터 끝까지 시험하지 않은 것: XTTS-v2 실제 설치, RVC, 실제 서비스와 연결한 Telegram 봇. CrisperWhisper 2.0 Turbo(엔진 13)는 GTX 1050 Ti 4 GB에서 실제 음성으로 테스트했습니다(tr, en, ja; VRAM ≈ 1.4 GB).
 
 ## 구성 요소
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 코드: Apache-2.0(LICENSE). 외부 구성 요소와 라이선스: THIRD_PARTY.md. 책임 있는 사용: ETHICS.md.
 개인정보(내 컴퓨터에 남는 것, 클라우드 백엔드로 가는 것): PRIVACY.md. 보안 신고: SECURITY.md. 변경 이력: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

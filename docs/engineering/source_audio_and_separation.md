@@ -133,7 +133,7 @@ writing. Lesson: worker time and application time are different numbers; measure
 - For WhisperX, 44.1 kHz stereo `clean_source.wav` and 16 kHz mono `asr_ready.wav` gave identical text, segment and
   word counts and identical timestamps on 4 runs (measured), so WhisperX reads the clean source directly. Other
   engines still get 16 kHz mono.
-- A 1.0 s leading pad is added for listed engines; it is disabled for CrisperWhisper Medium and for subtitle-file
+- A 1.0 s leading pad is added for listed engines; it is disabled for subtitle-file
   sources.
 
 ## 7. Low-VRAM settings summary

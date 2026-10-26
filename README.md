@@ -69,7 +69,7 @@ Reference machine: 4 GB Pascal GPU, Windows 10; method and all rows in [docs/olc
 - CI tests the CPU only; the GPU path was run by hand on one 4 GB Pascal card. Newer cards (RTX 50), Linux and macOS were not tried; the installed GPU libraries carry kernels for Pascal to RTX 50 and Maxwell uses the CPU profile ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - The offline translator does English to Turkish only; other pairs need the Codex / Claude Code CLI or an API backend.
 - Word timing for source languages other than English and Turkish: Japanese and Chinese with `scripts/kur.ps1 -Adim hizalama-diller`, others after one run with `DUBLAJ_CEVRIMICI=1`.
-- Not tried end to end: XTTS-v2 real install, RVC, the Telegram bot against the real service, CrisperWhisper 2 Medium; Moonshine is experimental. CrisperWhisper 2.0 Turbo (engine 13) is tested on real audio on a GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
+- Not tried end to end: XTTS-v2 real install, RVC, the Telegram bot against the real service. CrisperWhisper 2.0 Turbo (engine 13) is tested on real audio on a GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
 
 ## Building blocks
 

@@ -16,9 +16,7 @@ bolum_00_omurga/
   runtime/                 output yolu, model/asset yollari ve harici motor adapterleri
     output_paths.py
     asset_paths.py
-    crisperwhisper_runtime.py
     crisperwhisper_turbo_ct2_runtime.py
-    moonshine_medium_streaming_runtime.py
     whisperx_runtime.py
     internet_gateway/      dis internet route ve DNS/IPv4 egress kurtarmasinin tek sahibi
   full_metin_dublaji.py    Full Metin akisi

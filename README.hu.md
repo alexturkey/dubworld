@@ -69,7 +69,7 @@ Referenciagép: 4 GB-os Pascal GPU, Windows 10; módszer és minden sor: [docs/o
 - A CI csak CPU-t tesztel; a GPU-ágat kézzel futtattuk egy 4 GB-os Pascal kártyán. Az új kártyák (RTX 50), a Linux és a macOS nincs kipróbálva; a telepített GPU-könyvtárakban Pascaltól RTX 50-ig vannak kernelek, a Maxwell pedig a CPU-profilt használja ([GPU-támogatási táblázat, angolul](docs/installation.md#1-system-requirements)).
 - Az offline fordító csak angolról törökre fordít; más nyelvpárokhoz Codex / Claude Code CLI vagy API-háttérrendszer kell.
 - Szóidők az angoltól és töröktől eltérő forrásnyelvekhez: japán és kínai a `scripts/kur.ps1 -Adim hizalama-diller` paranccsal, a többi egyszeri `DUBLAJ_CEVRIMICI=1` futtatás után.
-- Még nincs végigpróbálva: valódi XTTS-v2-telepítés, RVC, valódi szolgáltatáshoz kötött Telegram-bot és CrisperWhisper 2 Medium; a Moonshine kísérleti. A CrisperWhisper 2.0 Turbót (13-as motor) valódi hanggal teszteltük GTX 1050 Ti 4 GB-on (tr, en, ja; ≈ 1,4 GB VRAM).
+- Még nincs végigpróbálva: valódi XTTS-v2-telepítés, RVC és valódi szolgáltatáshoz kötött Telegram-bot. A CrisperWhisper 2.0 Turbót (13-as motor) valódi hanggal teszteltük GTX 1050 Ti 4 GB-on (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Építőkockák
 
@@ -124,4 +124,4 @@ Kérdések, ötletek és az eredményeid: [beszélgetőfórum](https://github.co
 Kód: Apache-2.0 (LICENSE). Külső összetevők és licenceik: THIRD_PARTY.md. Felelős használat: ETHICS.md.
 Adatvédelem (mi marad a gépeden, mit kap egy felhős háttérrendszer): PRIVACY.md. Biztonsági bejelentések: SECURITY.md. Változások: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

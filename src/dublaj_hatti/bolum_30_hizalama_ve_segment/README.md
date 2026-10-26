@@ -22,7 +22,7 @@ Anlam:
 - `konusmaci_ve_cinsiyet/` speaker/gender kararlarinda kullanilan yardimci
   modeli tasir.
 - `ctc_kelime_hizalama/` bilinen metni sese hizalayan ortak kutudur; 13. motor,
-  Whisper.cpp, Parakeet ve YouTube JSON3 onu kullanir. Kelime siniri
+  faster-whisper (CTC), Parakeet ve YouTube JSON3 onu kullanir. Kelime siniri
   politikasi ve kanitlari kutunun `README.md` dosyasindadir.
 
 Bu bolum ses uretmez. Ses uretimi `src/bolum_50_seslendirme/tts_orkestratoru/`

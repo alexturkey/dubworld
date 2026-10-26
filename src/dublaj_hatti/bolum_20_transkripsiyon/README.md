@@ -24,16 +24,3 @@ kutusu acilmaz.
 Ana akis motor kutularindan implementation import etmez. Harici motor kutulari
 `src/bolum_00_omurga/runtime/` altindaki sinir adapterleriyle JSON istek ve
 subprocess uzerinden cagrilir.
-
-CrisperWhisper2.0 Medium, kutunun kendi sabit venv ve model snapshot'ini
-`src/bolum_00_omurga/runtime/crisperwhisper_runtime.py` araciligiyla kullanir.
-Ana uygulama motor algoritmasini barindirmaz; sesi JSON istekle
-`src/bolum_20_transkripsiyon/crisperwhisper2_medium_motoru/src/crisperwhisper_api_service.py`
-girisine verir. Dil tespiti, Silero VAD konusma bandi, en fazla 29.5 saniyelik
-dogal pencereler, 1.5-10 saniye dinamik overlap, en az iki ortak kelimelik
-Stitch, ozgun zamana esleme ve motor artefaktlari motor API'sinin tek
-sorumlulugudur. Crisper native kelime zamanlarini urettigi icin forced
-alignment calismaz; continuation, onceki metin baglami, referans metni ve CPU
-fallback yoktur. Kutu kokundeki `worker.py`, `language_worker.py` ve
-`__init__.py` yalniz eski girisler icin API yonlendiricisidir ve aktif akista
-cagrilmaz.

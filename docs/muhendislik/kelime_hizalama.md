@@ -13,9 +13,8 @@ Karar kaydı: [ADR 0005](kararlar.md#0005).
   işlevini kullanır.
 - **Ortak CTC kutusu** `bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/` (`client.py`, `worker.py`,
   `ctc_konusma_siniri.py`): kendi zamanlarına güvenilmeyen motorlar için: CrisperWhisper Turbo, faster-whisper + CTC
-  (`faster_whisper_ctc`, `auto`'nun yedeği), whisper.cpp + hizalama, Parakeet + hizalama, altyazı dosyası kaynakları.
-- Kendi zamanlarını üreten ve kutuya girmeyen motorlar: CrisperWhisper Medium, Moonshine, bulut motorları
-  (Speechmatics, ElevenLabs), elle seçilen `faster-whisper` (yerel kelime zaman damgaları, distil olsun olmasın).
+  (`faster_whisper_ctc`, `auto`'nun yedeği), Parakeet + hizalama, altyazı dosyası kaynakları.
+- Kendi zamanlarını üreten ve kutuya girmeyen motorlar: elle seçilen `faster-whisper` (yerel kelime zaman damgaları, distil olsun olmasın).
 - **API:** `run_ctc_word_alignment(audio_path, segments_json, language, cache_dir, timeout_seconds, device="cuda", debug_dir=None)`;
   girdi `[{start, end, text}]`; dönüş `words{word,start,end,score}`, `segments`, `profile_summary`, `speech_spans`.
   Hatalar, işçinin kendi mesajıyla `CtcHizalamaHatasi` fırlatır.

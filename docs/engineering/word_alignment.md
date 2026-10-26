@@ -9,9 +9,8 @@ Decision record: [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md
 - **WhisperX engine:** uses its built-in `whisperx.align()` inside its worker.
 - **Shared CTC box** `bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/` (`client.py`, `worker.py`,
   `ctc_konusma_siniri.py`) for engines whose own timings are not trusted: CrisperWhisper Turbo, faster-whisper + CTC
-  (`faster_whisper_ctc`, the `auto` fallback), whisper.cpp + align, Parakeet + align, subtitle-file sources.
-- Engines that produce their own timings and do not enter the box: CrisperWhisper Medium, Moonshine, cloud engines
-  (Speechmatics, ElevenLabs), `faster-whisper` when chosen explicitly (native word timestamps, distil or not).
+  (`faster_whisper_ctc`, the `auto` fallback), Parakeet + align, subtitle-file sources.
+- Engines that produce their own timings and do not enter the box: `faster-whisper` when chosen explicitly (native word timestamps, distil or not).
 - **API:** `run_ctc_word_alignment(audio_path, segments_json, language, cache_dir, timeout_seconds, device="cuda", debug_dir=None)`;
   input `[{start, end, text}]`; returns `words{word,start,end,score}`, `segments`, `profile_summary`, `speech_spans`.
   Errors raise `CtcHizalamaHatasi` with the worker's own message.

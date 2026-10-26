@@ -71,7 +71,7 @@ Windows 10/11 x64; לא צריך Python, CUDA או ffmpeg מותקנים מרא�
 - ה-CI בודק רק CPU; מסלול ה-GPU הורץ ידנית על כרטיס פסקל 4 GB. כרטיסים חדשים (RTX 50), Linux ו-macOS לא נבדקו; ספריות ה-GPU המותקנות כוללות קרנלים מפסקל עד RTX 50, ו-Maxwell משתמש בפרופיל CPU ([טבלת תמיכת GPU, באנגלית](docs/installation.md#1-system-requirements)).
 - המתרגם הלא-מקוון יודע רק אנגלית לטורקית; צמדי שפות אחרים דורשים Codex / Claude Code CLI או ממשק API.
 - זמני מילים לשפות מקור מלבד אנגלית וטורקית: יפנית וסינית דרך `scripts/kur.ps1 -Adim hizalama-diller`, האחרות אחרי הרצה אחת עם `DUBLAJ_CEVRIMICI=1`.
-- עוד לא נבדק מההתחלה עד הסוף: התקנה אמיתית של XTTS-v2, RVC, בוט טלגרם מחובר לשירות אמיתי ו-CrisperWhisper 2 Medium; Moonshine ניסיוני. CrisperWhisper 2.0 Turbo (מנוע 13) נבדק עם שמע אמיתי על GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
+- עוד לא נבדק מההתחלה עד הסוף: התקנה אמיתית של XTTS-v2, RVC ובוט טלגרם מחובר לשירות אמיתי. CrisperWhisper 2.0 Turbo (מנוע 13) נבדק עם שמע אמיתי על GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1.4 GB VRAM).
 
 ## אבני בניין
 
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

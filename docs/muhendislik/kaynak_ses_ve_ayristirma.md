@@ -137,7 +137,7 @@ kapanması ≈ 58 s; `asr_ready` dönüşümü ≈ 25 s. GPU, WAV yazımı sıra
 - WhisperX için 44.1 kHz stereo `clean_source.wav` ve 16 kHz mono `asr_ready.wav`, 4 çalıştırmada aynı metni, segment ve
   kelime sayılarını ve aynı zaman damgalarını verdi (ölçüldü); bu yüzden WhisperX temiz kaynağı doğrudan okur. Diğer
   motorlar hâlâ 16 kHz mono alır.
-- Listelenen motorlar için başa 1,0 s'lik dolgu eklenir; CrisperWhisper Medium ve altyazı dosyası kaynakları için kapalıdır.
+- Listelenen motorlar için başa 1,0 s'lik dolgu eklenir; altyazı dosyası kaynakları için kapalıdır.
 
 ## 7. Düşük VRAM ayarları özeti
 

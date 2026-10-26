@@ -71,7 +71,7 @@ Windows 10/11 x64؛ نیازی نیست Python، CUDA یا ffmpeg از قبل ن
 - CI فقط CPU را آزمایش می‌کند؛ مسیر GPU دستی روی یک کارت پاسکال ۴ گیگابایتی اجرا شده. کارت‌های جدید (RTX 50)، Linux و macOS آزمایش نشده‌اند؛ کتابخانه‌های GPU نصب‌شده کرنل‌هایی از پاسکال تا RTX 50 دارند و Maxwell از پروفایل CPU استفاده می‌کند ([جدول پشتیبانی GPU، به انگلیسی](docs/installation.md#1-system-requirements)).
 - مترجم آفلاین فقط انگلیسی به ترکی است؛ جفت‌زبان‌های دیگر به Codex / Claude Code CLI یا یک بک‌اند API نیاز دارند.
 - زمان کلمات برای زبان‌های مبدأ غیر از انگلیسی و ترکی: ژاپنی و چینی با `scripts/kur.ps1 -Adim hizalama-diller`، بقیه پس از یک بار اجرا با `DUBLAJ_CEVRIMICI=1`.
-- هنوز از اول تا آخر آزمایش نشده: نصب واقعی XTTS-v2، RVC، ربات تلگرام وصل به سرویس واقعی و CrisperWhisper 2 Medium؛ Moonshine آزمایشی است. CrisperWhisper 2.0 Turbo (موتور ۱۳) با صدای واقعی روی GTX 1050 Ti 4 GB آزمایش شده (tr، en، ja؛ ≈ ۱٫۴ گیگابایت VRAM).
+- هنوز از اول تا آخر آزمایش نشده: نصب واقعی XTTS-v2، RVC و ربات تلگرام وصل به سرویس واقعی. CrisperWhisper 2.0 Turbo (موتور ۱۳) با صدای واقعی روی GTX 1050 Ti 4 GB آزمایش شده (tr، en، ja؛ ≈ ۱٫۴ گیگابایت VRAM).
 
 ## قطعه‌های سازنده
 
@@ -128,4 +128,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 
 </div>
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

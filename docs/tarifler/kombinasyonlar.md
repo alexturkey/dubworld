@@ -91,8 +91,8 @@ motor = "supertonic"
 konusmaci_cinsiyetine_gore_ses = false   # skips speaker separation (single voice: supertonic_ses)
 ```
 
-For an English source, `motor = "whisper_cpp_cpu_align"` or `"parakeet_cpu_align"` are options written for the
-processor (separate install, docs/motorlar/).
+For an English source, `motor = "parakeet_cpu_align"` is the option written for the
+processor (`kur.cmd -Adim parakeet`, docs/motorlar/).
 
 ## Choices that do not work together (validation layer)
 
@@ -118,9 +118,9 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 | `ceviri.arka_uc=auto` | no Codex/Claude CLI + target ≠ `tr` | error (at start) | the automatic choice fell back to local |
 | `ses.akis` ≠ `natural_blocks_1` | local translation or VoxCPM2 | warning | candidate/repair flows need an LLM + Supertonic |
 | parakeet | `kaynak_dil` ≠ `en`/`auto` | error | English-only engines |
-| crisperwhisper (turbo, medium) | `genel.cihaz=cpu` or no CUDA | error | NVIDIA GPU only |
+| crisperwhisper (turbo) | `genel.cihaz=cpu` or no CUDA | error | NVIDIA GPU only |
 | crisper / cpu_align | `ileri.pyannote_konusmaci_ayrimi=true` | error | these engines do not separate speakers |
-| faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | warning | separation only with whisperx / speechmatics / elevenlabs |
+| faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | warning | separation only with whisperx |
 | `transkripsiyon.crisper_dil_tespiti` ≠ default | an engine other than CrisperWhisper | warning | no effect |
 | `transkripsiyon.whisperx_profili` ≠ `auto` | motor ≠ `whisperx` | error | the profile is WhisperX only |
 | `whisperx_float32_quality_v1` / `whisperx_engine_default_v1` | `hesap_tipi` ≠ float32 / int8 | error | the profile is tied to the compute type |
@@ -129,8 +129,7 @@ choice has no effect in that combination). Rules: `src/dublaj_hatti/yapilandirma
 | `video.politika=cq` | `video.max_mb>0` | warning | the size limit applies only to the max_mb policy |
 | `ses_temizligi.kip=clean`/`preserve_background` | Demucs not installed | error (at start) | `pip install .[separation]` or `original` |
 
-Corrected automatically (not errors): transcription engines with a fixed contract (crisperwhisper, moonshine,
-whisper_cpp, parakeet, speechmatics, elevenlabs) use their own model and compute type; `transkripsiyon.model` /
+Corrected automatically (not errors): transcription engines with a fixed contract (crisperwhisper, parakeet) use their own model and compute type; `transkripsiyon.model` /
 `hesap_tipi` apply only to faster-whisper and whisperx; `ses.atempo` is not applied in `full_text` mode; with
 `ses.motor=voxcpm2` the gender estimate picks voices from `ses.voxcpm2_kadin_sesleri` / `ses.voxcpm2_erkek_sesleri`
 (empty: the target language's ready voices; [sesler.md](../sesler.md)).
@@ -243,8 +242,8 @@ motor = "supertonic"
 konusmaci_cinsiyetine_gore_ses = false   # konuşmacı ayrımını atlar (tek ses: supertonic_ses)
 ```
 
-İngilizce kaynakta `motor = "whisper_cpp_cpu_align"` ya da `"parakeet_cpu_align"` işlemci için yazılmış
-seçeneklerdir (ayrı kurulum, docs/motorlar/).
+İngilizce kaynakta `motor = "parakeet_cpu_align"` işlemci için yazılmış
+seçenektir (`kur.cmd -Adim parakeet`, docs/motorlar/).
 
 ### Birlikte çalışmayan seçimler (doğrulama katmanı)
 
@@ -269,9 +268,9 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 | `ceviri.arka_uc=auto` | Codex/Claude CLI yok + hedef ≠ `tr` | hata (başlarken) | otomatik seçim yerel'e düştü |
 | `ses.akis` ≠ `natural_blocks_1` | yerel çeviri ya da VoxCPM2 | uyarı | aday/onarım akışları LLM + Supertonic ister |
 | parakeet | `kaynak_dil` ≠ `en`/`auto` | hata | yalnız İngilizce motorlar |
-| crisperwhisper (turbo, medium) | `genel.cihaz=cpu` ya da CUDA yok | hata | yalnız NVIDIA GPU |
+| crisperwhisper (turbo) | `genel.cihaz=cpu` ya da CUDA yok | hata | yalnız NVIDIA GPU |
 | crisper / cpu_align | `ileri.pyannote_konusmaci_ayrimi=true` | hata | bu motorlar konuşmacı ayırmaz |
-| faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | uyarı | ayrım yalnız whisperx / speechmatics / elevenlabs |
+| faster-whisper | `ileri.pyannote_konusmaci_ayrimi=true` | uyarı | ayrım yalnız whisperx |
 | `transkripsiyon.crisper_dil_tespiti` ≠ varsayılan | CrisperWhisper dışı motor | uyarı | etkisiz |
 | `transkripsiyon.whisperx_profili` ≠ `auto` | motor ≠ `whisperx` | hata | profil yalnız WhisperX |
 | `whisperx_float32_quality_v1` / `whisperx_engine_default_v1` | `hesap_tipi` ≠ float32 / int8 | hata | profil hesap tipine bağlı |
@@ -280,8 +279,7 @@ Kurallar `src/dublaj_hatti/yapilandirma.py` → `uyumluluk_denetle()`, testleri 
 | `video.politika=cq` | `video.max_mb>0` | uyarı | boyut sınırı yalnız max_mb politikasında |
 | `ses_temizligi.kip=clean`/`preserve_background` | Demucs kurulu değil | hata (başlarken) | `pip install .[separation]` ya da `original` |
 
-Kendiliğinden düzeltilenler (hata değil): sabit sözleşmeli transkripsiyon motorları (crisperwhisper, moonshine,
-whisper_cpp, parakeet, speechmatics, elevenlabs) kendi model ve hesap tipini kullanır, `transkripsiyon.model` /
+Kendiliğinden düzeltilenler (hata değil): sabit sözleşmeli transkripsiyon motorları (crisperwhisper, parakeet) kendi model ve hesap tipini kullanır, `transkripsiyon.model` /
 `hesap_tipi` yalnız faster-whisper ve whisperx'te geçerlidir; `full_text` kipinde `ses.atempo` uygulanmaz;
 `ses.motor=voxcpm2` iken cinsiyet tahmini sesi `ses.voxcpm2_kadin_sesleri` / `ses.voxcpm2_erkek_sesleri` listesinden seçer
 (boşsa hedef dilin hazır sesleri; [sesler.md](../sesler.md)).

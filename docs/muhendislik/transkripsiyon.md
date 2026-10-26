@@ -9,8 +9,8 @@ Kod: `src/dublaj_hatti/bolum_20_transkripsiyon/<engine>/`. Ayar: `[transkripsiyo
 
 ## 0. Motor etiketleri
 
-Eski belgeler ve günlükler motorlara menü numarasıyla atıf yapar. Burada önemli olanlar: **12** = CrisperWhisper 2 Medium,
-**13** = CrisperWhisper 2 Turbo CT2, **14** = Moonshine Medium Streaming. Numaralandırma bir sunum sırasıdır, kalite
+Eski belgeler ve günlükler motorlara menü numarasıyla atıf yapar. Burada önemli olanlar: **12** = CrisperWhisper 2 Medium (kaldırıldı),
+**13** = CrisperWhisper 2 Turbo CT2, **14** = Moonshine Medium Streaming (kaldırıldı). Numaralandırma bir sunum sırasıdır, kalite
 sıralaması değildir.
 
 ## 1. 10 dosyalık İngilizce derlemde karşılaştırma (ölçüldü)
@@ -94,37 +94,9 @@ hatasıdır.
 - **Açık:** dil `auto` olduğunda otomatik dil yoklaması yok; zor, yavaşlatılmış bir klip hâlâ kapalı başarısızlıkla
   (fail-closed) düşüyor.
 
-## 5. whisper.cpp (CPU) + CTC
+## 5–7. Kaldırılan motorlar
 
-- CPU'da `ggml-base.en`, ardından ortak CTC hizalaması; İngilizce olmayan girdi hatadır. 96,9 s, 32,4 s'de (12,7 s tanıma
-  + 19,4 s hizalama).
-- Bir hazır ayar etiketi bir keresinde çalışandan daha büyük bir model iddia etti; etiketler kontrol noktası parmak
-  izlerini besler, bu yüzden yanlış bir etiket gereksiz yeniden çalıştırmalara zorlayabilir.
-- Deney, entegre edilmedi: CUDA'da `max_context=0` ile large-v3-turbo Q8_0, 106 s'lik bir klipte %1,2 WER'e ulaştı; kendi
-  zaman damgaları ilk kelimeyi 4,3 s'ye kadar erken yerleştirdi, bu yüzden kabul edilen tasarım onun metni + CTC
-  hizalaması oldu.
-
-## 6. Moonshine Medium Streaming (CPU, İngilizce)
-
-- Akış (streaming) kipi 179 güncelleme çağrısı yaptı (75 s'nin 74'ü); akışsız API 3,6× daha hızlıydı.
-- **Engellendi:** parça sınırlarında bazı kelimeler önceki kelimeden önce başlıyor (parçalar 192–480 ms örtüşür); güven
-  değeri her zaman 1.0, bu yüzden bunları işaretleyemez; belgelenmiş birkaç seçeneği kurulu ikili dosya tanımıyor. Ham
-  zamanlar asla düzenlenmez; kapı çıktıyı reddeder. Ders: üst kaynağın (upstream) belgelerindeki özelliklerin kurulu
-  sürümde var olduğunu varsayma.
-- **Bu repodaki durumu: deneysel.** Kök neden sabitlenen native sürümün içinde (parça sınırında decoder/DTW; metin
-  hataları da var, yalnız CTC ile yeniden hizalama düzeltmez); kanıtlanmış çözüm yok. Kayıt motoru `deneysel` işaretler
-  (`dubla kontrol`, ayar uyarısı, GUI/web etiketi); geri kayan kelime başlangıcı işi `MoonshineDeneyselHatasi` ile,
-  ilk hatalı kelimeyi ve seçenekleri (`parakeet_cpu_align`, `faster-whisper`) söyleyerek durdurur.
-
-## 7. Bulut motorları (kendi anahtarınla)
-
-- **Speechmatics:** yerel bir konuşmacı ayırıcı (diarizer) konuşmacıları eksik saydığı için eklendi; noktalama ayrı öğeler
-  olarak gelir ve önceki kelimeye eklenmelidir (yoksa 137 kelimelik tek bir segment). Dil ilk kelimeden algılanır, bu da
-  kısa kliplerde risklidir. Ücretsiz kota anahtar başına sınırlıdır.
-- **ElevenLabs Scribe v2:** ham yanıtlar bir parmak iziyle (ses SHA-256, model, dil, konuşmacı ayrımı) önbelleğe alınır,
-  böylece bir yeniden deneme asla iki kez ödeme yapmaz; yalnız kapasite/5xx hatasında bir yeniden deneme; sabit 30 s'lik
-  zaman aşımı uzun dosyalarda başarısız olduktan sonra yükleme zaman aşımı dosya boyutuyla ölçeklenir
-  (boyut / 64 KiB/s + 60 s, 30–1800 s arasına sıkıştırılmış).
+whisper.cpp (CPU) + CTC, Moonshine Medium Streaming, CrisperWhisper 2 Medium, Speechmatics ve ElevenLabs Scribe v2 üründen kaldırıldı: hiçbiri varsayılan değildi, hiçbiri gerçek sesle uçtan uca denenmemişti ve her biri faster-whisper, Parakeet ya da CrisperWhisper Turbo ile örtüşüyordu. Bölümleri bu sayfadan çıkarıldı; geçmişi git günlüğünde ve `CHANGELOG.md` içindedir. Kayıtlı bir ayar bunlardan birini söylüyorsa yine yüklenir: uyarır ve `auto`ya döner.
 
 ## 8. Altyazı dosyası kaynağı (json3)
 
@@ -133,7 +105,7 @@ eşleşmelidir; başta dolgu yok. Zaman aşımı `max(120, 90 + minutes × 8)` s
 
 ## 9. Ortak ayarlar
 
-- **Baştaki dolgu:** ilk kelime kırpılmasın diye faster-whisper, WhisperX, bulut motorları, whisper.cpp ve Parakeet için
+- **Baştaki dolgu:** ilk kelime kırpılmasın diye faster-whisper, WhisperX ve Parakeet için
   tanımadan önce 1,0 s sessizlik; tam olarak bir kez çıkarılır.
 - **Motor başına VAD:** faster-whisper (distil olmayan) Silero 0.5 / 500 ms / pad 300 ms; distil kapalı; WhisperX
   pyannote CPU'da; Parakeet yalnız 399 s üstünde kesim noktası önermek için; CrisperWhisper Silero CPU'da.

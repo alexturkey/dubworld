@@ -159,10 +159,6 @@ yüksekliği) kırpmasının her biri kaymaya yol açtı: ör. 10,2 sn boşluk i
 ### Bilinen istisnalar
 - Açıkça seçilen `faster-whisper` Whisper'ın kendi kelime zamanlarını korur (bilinçli bir hız/uyumluluk seçimi). `auto`
   hiçbir zaman ona çözülmez: izin verici yedeği `faster_whisper_ctc`'dir (aynı tanıyıcı, ortak CTC kutusu).
-- Bulut motorları (`speechmatics`, `elevenlabs_scribe_v2`) sağlayıcının kelime zamanlarını korur; şimdiki kodda bunların
-  üzerinde CTC geçişi çalışmaz ve CTC zamanlarıyla bir karşılaştırma kayıtlı değildir.
-- `crisperwhisper2_medium` modelin kendi dikkat (attention) kelime zamanlarını korur
-  ([crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) §1).
 - Üretilen taraftaki hizalama Supertonic adaylarına ve son dublaja uygulanır; VoxCPM2 ve XTTS çıktısı ölçülen süresine
   göre yerleştirilir ve yalnız altyazı istendiğinde altyazı için hizalanır.
 

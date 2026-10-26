@@ -69,7 +69,7 @@ Máy tham chiếu: GPU Pascal 4 GB, Windows 10; phương pháp và tất cả c�
 - CI chỉ kiểm thử CPU; đường GPU được chạy thủ công trên card Pascal 4 GB. Card mới (RTX 50), Linux và macOS chưa được thử; thư viện GPU được cài có kernel từ Pascal đến RTX 50, còn Maxwell dùng cấu hình CPU ([bảng hỗ trợ GPU, bằng tiếng Anh](docs/installation.md#1-system-requirements)).
 - Trình dịch ngoại tuyến chỉ dịch Anh sang Thổ Nhĩ Kỳ; các cặp ngôn ngữ khác cần Codex / Claude Code CLI hoặc backend API.
 - Thời điểm từ cho ngôn ngữ nguồn ngoài tiếng Anh và tiếng Thổ Nhĩ Kỳ: tiếng Nhật và tiếng Trung qua `scripts/kur.ps1 -Adim hizalama-diller`, các ngôn ngữ khác sau một lần chạy với `DUBLAJ_CEVRIMICI=1`.
-- Chưa thử từ đầu đến cuối: cài XTTS-v2 thật, RVC, bot Telegram nối với dịch vụ thật và CrisperWhisper 2 Medium; Moonshine vẫn đang thử nghiệm. CrisperWhisper 2.0 Turbo (công cụ 13) đã được thử với âm thanh thật trên GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
+- Chưa thử từ đầu đến cuối: cài XTTS-v2 thật, RVC và bot Telegram nối với dịch vụ thật. CrisperWhisper 2.0 Turbo (công cụ 13) đã được thử với âm thanh thật trên GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Các khối xây dựng
 
@@ -124,4 +124,4 @@ Câu hỏi, ý tưởng và kết quả của bạn: [diễn đàn thảo luận
 Mã nguồn: Apache-2.0 (LICENSE). Thành phần bên thứ ba và giấy phép: THIRD_PARTY.md. Sử dụng có trách nhiệm: ETHICS.md.
 Quyền riêng tư (thứ gì ở lại trên máy bạn, backend đám mây nhận được gì): PRIVACY.md. Báo cáo bảo mật: SECURITY.md. Thay đổi: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

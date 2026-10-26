@@ -8,7 +8,6 @@ Bilinen metni sese hizalar ve her kelimenin gerçek başlangıç/bitiş zamanın
 | Motor | Çağıran yer |
 |---|---|
 | CrisperWhisper Turbo CT2 (13. motor) | `bolum_00_omurga/runtime/crisperwhisper_turbo_ct2_runtime.py::align_dubbing_delivery` |
-| Whisper.cpp CPU + Align | `whisper_cpp_cpu_align_motoru/ctc_alignment_runner.py` |
 | Parakeet CPU + Align | `parakeet_cpu_align_motoru/alignment_runner.py` |
 | faster-whisper + CTC (`faster_whisper_ctc`, `auto` yedeği) | `bolum_00_omurga/core/dubber.py::_faster_whisper_ctc_hizala` (model denetimi: `bolum_00_omurga/runtime/ctc_model_durumu.py`) |
 | YouTube JSON3 | `youtube_json3_kaynagi/engine.py::_run_ctc_alignment` |
@@ -64,7 +63,7 @@ uygulanmaz ve `status=word_mismatch_unbounded` açıkça raporlanır.
 
 Worker sonucunda `words` ile aynı sırada `speech_spans` listesi döner: her
 kelime için ölçülen gerçek ses aralığı `[başlangıç, bitiş]` veya ölçülemediyse
-`null`. Kelime nesnelerinin biçimi değişmez; bu yüzden Whisper.cpp, Parakeet ve
+`null`. Kelime nesnelerinin biçimi değişmez; bu yüzden faster-whisper (CTC), Parakeet ve
 YouTube JSON3 çıktıları etkilenmez. 13. motorun teslim kapısı uzun kelimeyi
 süreye göre değil, bu ölçülmüş ses aralığına göre değerlendirir (bkz. Turbo
 `docs/motor_sozlesmesi.md`).
@@ -131,7 +130,7 @@ için bu tekrar bilinçli tercihtir; WhisperX iç koduna yama yapılmaz.
   indekstedir; WhisperX tireyi blank gibi hizalar. 100 dk seste 141 tireli
   kelimenin zamanları diğerlerinden kötü değildir; torchaudio adımı tireyi
   bilinmeyen karakter olarak işler.
-- Checkpoint: politika adı Whisper.cpp, Parakeet ve YouTube JSON3'ün
+- Checkpoint: politika adı faster-whisper (CTC), Parakeet ve YouTube JSON3'ün
   transkripsiyon girdisine (`ctc_word_boundary_policy`), kutunun dosya
   hash'leri 13. motorun parmak izine girer; politika değişirse transkripsiyon
   ve ardılları yeniden üretilir. `v1` → `v2` geçişi bu dört motorun eski

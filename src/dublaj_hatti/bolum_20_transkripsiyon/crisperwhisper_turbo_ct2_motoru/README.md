@@ -59,7 +59,7 @@ Unicode token grupları ve doğal zaman kapsamının sahibi
 ayrımı ana projedeki `docs/crisperwhisper_turbo_ct2_verbatim_kalite_iz_defteri.md`
 belgesindedir.
 
-`src/dubbing_ready.py`, Medium'un mevcut ayrıştırmasının yerel kopyasıdır.
+`src/dubbing_ready.py` yerel ayrıştırma kodudur (kaldırılan Medium motorundaki ayrıştırmadan türemiştir).
 Worker ana uygulamaya teslimden önce bu dönüşümü uygular; raw ve hazırlanmış
 çıktı aynı dublaj klasöründe tutulur. Olay/filler ve checkpoint sözleşmesinin
 ayrıntısı `docs/motor_sozlesmesi.md` içindedir.

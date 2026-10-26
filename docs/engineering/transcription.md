@@ -8,8 +8,8 @@ Code: `src/dublaj_hatti/bolum_20_transkripsiyon/<engine>/`. Setting: `[transkrip
 
 ## 0. Engine labels
 
-Older documents and logs refer to engines by menu number. The ones that matter here: **12** = CrisperWhisper 2 Medium,
-**13** = CrisperWhisper 2 Turbo CT2, **14** = Moonshine Medium Streaming. The numbering is a presentation order, not a
+Older documents and logs refer to engines by menu number. The ones that matter here: **12** = CrisperWhisper 2 Medium (removed),
+**13** = CrisperWhisper 2 Turbo CT2, **14** = Moonshine Medium Streaming (removed). The numbering is a presentation order, not a
 quality ranking.
 
 ## 1. Comparison on a 10-file English corpus (measured)
@@ -86,35 +86,9 @@ corpus-level; "start MAE" is the mean absolute error of word start times against
 - The CTC window lesson (a 6.4 s gap inside one window) is in [word_alignment.md](word_alignment.md) §3.
 - **Open:** no automatic language probe when the language is `auto`; one hard slowed-down clip still fails closed.
 
-## 5. whisper.cpp (CPU) + CTC
+## 5–7. Removed engines
 
-- `ggml-base.en` on the CPU, then shared CTC alignment; non-English input is an error. 96.9 s in 32.4 s (12.7 s
-  recognition + 19.4 s alignment).
-- A preset label once claimed a larger model than the one that ran; labels feed checkpoint fingerprints, so a wrong
-  label can force needless re-runs.
-- Experiment, not integrated: large-v3-turbo Q8_0 on CUDA with `max_context=0` reached 1.2 % WER on a 106 s clip; native
-  timestamps placed the first word up to 4.3 s early, so the accepted design was its text + CTC alignment.
-
-## 6. Moonshine Medium Streaming (CPU, English)
-
-- Streaming made 179 update calls (74 of 75 s); the non-streaming API was 3.6× faster.
-- **Blocked:** some words start earlier than the previous word at chunk boundaries (chunks overlap 192–480 ms); confidence
-  is always 1.0 so it cannot flag them; several documented options are not recognised by the installed binary. Raw times
-  are never edited; the gate rejects the output. Lesson: do not assume features from upstream docs exist in the
-  installed build.
-- **Status in this repo: experimental.** The root cause sits in the pinned native build (decoder/DTW at chunk
-  boundaries; text errors too, so CTC re-alignment alone does not fix it); no fix is proven. The registry marks the engine
-  `deneysel` (`dubla kontrol`, settings warning, GUI/web label) and a backwards word start stops the run with
-  `MoonshineDeneyselHatasi`, naming the first bad word and the alternatives (`parakeet_cpu_align`, `faster-whisper`).
-
-## 7. Cloud engines (your own key)
-
-- **Speechmatics:** added because a local diarizer under-counted speakers; punctuation arrives as separate items and must
-  be attached to the previous word (otherwise one 137-word segment). Language is detected from the first word, which is
-  risky on short clips. Free quota is limited per key.
-- **ElevenLabs Scribe v2:** raw responses are cached by a fingerprint (audio SHA-256, model, language, diarization) so a
-  retry never pays twice; one retry on capacity/5xx only; upload timeout scales with file size (size / 64 KiB/s + 60 s,
-  clamped 30–1800 s) after a fixed 30 s timeout failed on long files.
+whisper.cpp (CPU) + CTC, Moonshine Medium Streaming, CrisperWhisper 2 Medium, Speechmatics and ElevenLabs Scribe v2 were removed from the product: none was a default, none had been tested end to end on real audio, and each overlapped faster-whisper, Parakeet or CrisperWhisper Turbo. Their sections are gone from this page; the history is in the git log and in `CHANGELOG.md`. A saved setting that names one of them still loads: it warns and falls back to `auto`.
 
 ## 8. Subtitle-file source (json3)
 
@@ -123,7 +97,7 @@ pad. Timeout `max(120, 90 + minutes × 8)` s.
 
 ## 9. Common settings
 
-- **Leading pad:** 1.0 s of silence before recognition for faster-whisper, WhisperX, cloud engines, whisper.cpp and
+- **Leading pad:** 1.0 s of silence before recognition for faster-whisper, WhisperX and
   Parakeet so the first word is not clipped; subtracted exactly once.
 - **VAD per engine:** faster-whisper (non-distil) Silero 0.5 / 500 ms / pad 300 ms; distil off; WhisperX pyannote on CPU;
   Parakeet only to propose cut points above 399 s; CrisperWhisper Silero on CPU.

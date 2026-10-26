@@ -69,7 +69,7 @@ Referentiecomputer: Pascal-GPU 4 GB, Windows 10; methode en alle rijen in [docs/
 - CI test alleen CPU; het GPU-pad is met de hand gedraaid op een Pascal-kaart van 4 GB. Nieuwe kaarten (RTX 50), Linux en macOS zijn niet getest; de geïnstalleerde GPU-bibliotheken bevatten kernels van Pascal tot RTX 50, en Maxwell gebruikt het CPU-profiel ([tabel GPU-ondersteuning, in het Engels](docs/installation.md#1-system-requirements)).
 - De offline vertaler kan alleen Engels naar Turks; andere taalparen hebben Codex / Claude Code CLI of een API-backend nodig.
 - Woordtijden voor brontalen anders dan Engels en Turks: Japans en Chinees via `scripts/kur.ps1 -Adim hizalama-diller`, de andere na één keer draaien met `DUBLAJ_CEVRIMICI=1`.
-- Nog niet van begin tot eind getest: een echte XTTS-v2-installatie, RVC, een Telegram-bot gekoppeld aan een echte dienst en CrisperWhisper 2 Medium; Moonshine is experimenteel. CrisperWhisper 2.0 Turbo (engine 13) is met echte audio getest op een GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
+- Nog niet van begin tot eind getest: een echte XTTS-v2-installatie, RVC en een Telegram-bot gekoppeld aan een echte dienst. CrisperWhisper 2.0 Turbo (engine 13) is met echte audio getest op een GTX 1050 Ti 4 GB (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Bouwstenen
 
@@ -124,4 +124,4 @@ Vragen, ideeën en je resultaten: [discussieforum](https://github.com/alexturkey
 Code: Apache-2.0 (LICENSE). Externe onderdelen en hun licenties: THIRD_PARTY.md. Verantwoord gebruik: ETHICS.md.
 Privacy (wat op je computer blijft, wat een cloudbackend ontvangt): PRIVACY.md. Beveiligingsmeldingen: SECURITY.md. Wijzigingen: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

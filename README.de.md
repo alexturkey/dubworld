@@ -71,7 +71,7 @@ Referenzrechner: Pascal-GPU mit 4 GB, Windows 10; Methode und alle Zeilen in [do
 - Die CI testet nur die CPU; der GPU-Pfad wurde von Hand auf einer Pascal-Karte mit 4 GB ausgeführt. Neuere Karten (RTX 50), Linux und macOS wurden nicht getestet; die installierten GPU-Bibliotheken enthalten Kernel von Pascal bis RTX 50, Maxwell nutzt das CPU-Profil ([GPU runtime matrix](docs/installation.md#1-system-requirements)).
 - Der Offline-Übersetzer kann nur Englisch→Türkisch; andere Sprachpaare brauchen die Codex / Claude Code CLI oder ein API-Backend.
 - Wort-Zeitstempel für andere Quellsprachen als Englisch und Türkisch: Japanisch und Chinesisch mit `scripts/kur.ps1 -Adim hizalama-diller`, andere nach einem Lauf mit `DUBLAJ_CEVRIMICI=1`.
-- Nicht durchgängig getestet: echte Installation von XTTS-v2, RVC, der Telegram-Bot mit dem echten Dienst, CrisperWhisper 2 Medium; Moonshine ist experimentell. CrisperWhisper 2.0 Turbo (Engine 13) ist mit echtem Audio auf einer GTX 1050 Ti 4 GB getestet (tr, en, ja; ≈ 1,4 GB VRAM).
+- Nicht durchgängig getestet: echte Installation von XTTS-v2, RVC, der Telegram-Bot mit dem echten Dienst. CrisperWhisper 2.0 Turbo (Engine 13) ist mit echtem Audio auf einer GTX 1050 Ti 4 GB getestet (tr, en, ja; ≈ 1,4 GB VRAM).
 
 ## Bausteine
 
@@ -133,4 +133,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

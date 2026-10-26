@@ -12,7 +12,7 @@
 | Install | base install (step `modeller`) |
 | Hardware | CPU, 4 lanes × 2 threads, ~2.3× real time, ~1.8 GB RAM (measured); the CUDA provider was slower and is not used |
 | Languages | 31 (no `zh`), [diller.md](../diller.md) |
-| Default | `ses.motor = supertonic` |
+| Default | `ses.motor = auto`: Supertonic unless VoxCPM2 is installed and an NVIDIA GPU is usable |
 
 **Settings**
 
@@ -58,7 +58,7 @@
 | Kurulum | temel kurulum (adım `modeller`) |
 | Donanım | işlemci, 4 hat × 2 iş parçacığı, ~2.3× gerçek zaman, ~1.8 GB RAM (ölçüldü); CUDA sağlayıcısı daha yavaştı ve kullanılmaz |
 | Diller | 31 (`zh` yok), [diller.md](../diller.md) |
-| Varsayılan | `ses.motor = supertonic` |
+| Varsayılan | `ses.motor = auto`: VoxCPM2 kurulu ve NVIDIA GPU çalışır değilse Supertonic |
 
 **Ayarlar**
 

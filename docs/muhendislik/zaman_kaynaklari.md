@@ -15,8 +15,7 @@ testlerinin tek kaynağı): `src/dublaj_hatti/bolum_20_transkripsiyon/zaman_kayn
 - Tercih edilen kaynak **CTC zorlamalı hizalamadır** (forced alignment; WhisperX 3.8.6 üzerinden wav2vec2, politika
   `ctc_speech_bounded_v2`): ya ortak CTC kutusu ya da WhisperX'in kendi `align()` işlevi. Bkz.
   [kelime_hizalama.md](kelime_hizalama.md) ve [ADR 0005](../adr/0005-ctc-forced-alignment-only-time-source.md).
-- Beş motor kelime zamanını **kendisi** verir ve CTC'ye hiç girmez: `faster-whisper` (yalnız elle seçilince), CrisperWhisper 2 Medium, Moonshine,
-  Speechmatics, ElevenLabs Scribe v2 (§4).
+- Bir motor kelime zamanını **kendisi** verir ve CTC'ye hiç girmez: `faster-whisper` (yalnız elle seçilince) (§4).
 - **Hazır altyazı** (YouTube'un otomatik `json3` altyazı izi) yalnız **metin** olarak kullanılır; zamanları yalnız
   hizalama penceresi ipucudur, hiçbir zaman kelime zamanı olmaz (§3).
 - Kelime zamanı hiçbir yerde segment sınırından türetilmez. Yön her zaman kelimeden segmente doğrudur (§6).
@@ -65,13 +64,9 @@ flowchart TD
     E -->|whisperx| WX[WhisperX align]
     E -->|faster-whisper| FW[faster-whisper]
     FW --> N[Whisper'ın kendi kelime zamanları]
-    E -->|crisper medium / moonshine| M[modelin kendi zamanları]
-    E -->|speechmatics / elevenlabs| S[sağlayıcı zamanları]
     CTC --> G[bütünlük denetimi:<br/>her kelime zamanlı, metin 1:1, sıralı,<br/>bindirme yok, ses içinde]
     WX --> G
     N --> G
-    M --> G
-    S --> G
     G -->|hata| X3[dur, yedek yok]
     G -->|tamam| F[nihai dublaj segmentleri<br/>kelime zamanlarından kurulur]
 ```
@@ -87,7 +82,7 @@ kaynakta WhisperX'e geçer; günlüğe yazılır; bkz. [transkripsiyon.md](trans
   (`yapilandirma.stt_secimi_coz`). Elle seçilen `faster-whisper` Whisper'ın kendi kelime zamanını korur, onda hiçbir şey
   değişmedi. Ayrım mevcut ayarla seçilir: `transkripsiyon.motor` (`faster_whisper_ctc` elle de seçilebilir); yeni anahtar
   eklenmedi.
-- **Bağlantı:** whisper.cpp ve Parakeet ile aynı: faster-whisper eskisi gibi çalışır; segmentleri (metin, başlangıç,
+- **Bağlantı:** Parakeet ile aynı: faster-whisper eskisi gibi çalışır; segmentleri (metin, başlangıç,
   bitiş) CTC pencereleri olur; `run_ctc_word_alignment` her kelimeyi ölçer. Whisper'ın kendi kelime zamanları yalnız
   tanılama için yazılır (`faster_whisper_ctc/whisper_dogal_kelimeler.json`); `faster_whisper_ctc/report.json` pencere
   sayısını, iki kelime sayısını ve `text_identical` alanını tutar (Whisper `İstanbul'a`yı iki parçaya böler, CTC tek
@@ -154,7 +149,7 @@ doğruluğu altyazı izinin doğruluğu kadardır.
 |---|---|---|
 | faster-whisper (yalnız elle) | Hizalama adımı olmadan hızlı yol olarak ve CTC modeli olmayan diller için tutulur. `auto` bunu kullanmaz; yedeği `faster_whisper_ctc`'dir (§2.1) | 10 dosyalık İngilizce derlemde (3,9 sa) CTC zamanlı motorlarda kelime başı ortalama mutlak hata (MAE) 28–51 ms ve 0 sıfır süreli kelime; distil'in kendi zamanlarında 106–126 ms ve 611–899 sıfır süreli kelime ([transkripsiyon.md](transkripsiyon.md) §1). distil olmayan faster-whisper'ın kendi zamanı ↔ CTC: **kayıt yok** |
 
-Beşi de ortak denetimlerden (§5) ve nihai segment kurucudan geçer.
+O da ortak denetimlerden (§5) ve nihai segment kurucudan geçer.
 
 ## 5. Her kaynağın geçtiği denetimler
 
@@ -171,7 +166,7 @@ Beşi de ortak denetimlerden (§5) ve nihai segment kurucudan geçer.
 
 - **Hiçbir kod kelime zamanını segment zamanından türetmez** (karakter ya da süre oranıyla bölme yok). Bu, ölçüm değil
   tahmin olduğu için reddedildi ([kelime_hizalama.md](kelime_hizalama.md) §2).
-- Motor yalnız segment (whisper.cpp, WhisperX ASR çıktısı) ya da yalnız metin (`hizala`, json3) verdiğinde segmentler
+- Motor yalnız segment (WhisperX ASR çıktısı) ya da yalnız metin (`hizala`, json3) verdiğinde segmentler
   **hizalama penceresi** olarak kullanılır; içindeki kelimeleri CTC ölçer.
 - Zamanı olmayan kelimeler WhisperX işçisinde ve CTC kutusu işçisinde düşürülür; json3 ve CrisperWhisper Turbo sonra
   bire bir metin denetiminde durur.
@@ -200,12 +195,12 @@ Beşi de ortak denetimlerden (§5) ve nihai segment kurucudan geçer.
 | YouTube adres denetimi | ana makinede alt dize eşleşmesi | tam ana makine ya da alt alan adı |
 | json3 modülünde CTC ve `soundfile` içe aktarımı | modül yüklenirken | tembel (ayrıştırıcı ve iz seçimi numpy olmadan sınanabilir) |
 | Turbo ara kaydında onarım kodunun parmak izi | json3 modülünü gösteriyordu (onarım oradaydı) | `ctc_kelime_hizalama/zaman_onarimi.py`'yi, yani Turbo'nun gerçekten çalıştırdığı kopyayı gösterir; json3 kopyası durur, bir test ikisinin aynı davrandığını denetler |
-| Diğer bütün motor zaman yolları | – | paket yolları, gizli alt süreç pencereleri ve Moonshine kronoloji durdurması dışında aynı |
+| Diğer bütün motor zaman yolları | – | paket yolları ve gizli alt süreç pencereleri dışında aynı |
 
 ## 9. Açık kalanlar
 
 - Kapandı: CrisperWhisper yokken `auto` faster-whisper'ın kendi zamanlarını kullanıyordu, ADR 0017 ve kurulum sayfaları
   "faster-whisper + CTC" diyordu; artık kod sayfalara uyuyor (`faster_whisper_ctc`, §2.1).
 - CTC adımının işlemci bedeli dil başına tek kısa koşuya dayanıyor; uzun seste işlemci süresi ölçülmedi.
-- json3 + CTC, CrisperWhisper Medium dikkat zamanları ve ElevenLabs kelime zamanları için CTC'ye karşı ölçüm yok.
+- json3 + CTC için bir ses tanıma motoruna karşı ölçüm yok.
 - Zaman kanıtı vermeyen motorlar için VAD penceresi hazırlama bir kuraldır, hiç ölçülmedi ([kelime_hizalama.md](kelime_hizalama.md) §8).

@@ -15,7 +15,8 @@ Changing `ses.motor`, the target language (`genel.hedef_dil`), a voice, per-spea
 
 | `ses.motor` | Device | Target languages | License | Install |
 |---|---|---|---|---|
-| `supertonic` (default) | CPU (fast) | 31 (no `zh`) | BigScience Open RAIL-M (use restrictions, conditional) | base install |
+| `auto` (default) | VoxCPM2 if installed + NVIDIA GPU, else Supertonic | – | – | – |
+| `supertonic` | CPU (fast) | 31 (no `zh`) | BigScience Open RAIL-M (use restrictions, conditional) | base install |
 | `voxcpm2` | NVIDIA GPU (~3 GB) | tested: tr en fr de es ru zh ja; others with a warning | Apache-2.0 | `kur.ps1 -Adim voxcpm2` |
 | `xtts` | GPU or CPU (slow) | 17 | **weights non-commercial (CPML)** | `kur.ps1 -Adim tts-xtts -TicariOlmayanKabul` |
 | RVC (post-processing, not a TTS) | GPU or CPU | any | your own model; code MIT | manual, `.env` `DUBLAJ_RVC_KOK` |
@@ -30,7 +31,7 @@ error, never a silent switch.
    user's own voice or used with the owner's explicit consent; never imitate a real or famous person
    ([ETHICS.md](../../../ETHICS.md)). Ask the user to confirm this before enabling XTTS or RVC.
 2. **Pick the engine:**
-   - default / CPU / most languages → `supertonic`;
+   - default (`auto`) → VoxCPM2 when installed and an NVIDIA GPU works, otherwise `supertonic`; CPU / most languages → `supertonic`;
    - Turkish voice design quality, NVIDIA GPU → `voxcpm2` (`ses.voxcpm2_ses = "hazir/haber_spikeri"` or another
      ready voice from `docs/sesler.md`, or a voice designed with the sister VoxCPM2 repository);
    - a voice from a short reference recording, non-commercial use only → `xtts`.
@@ -81,7 +82,7 @@ error, never a silent switch.
 
 ## Türkçe özet
 
-Varsayılan `supertonic` (işlemcide hızlı, 31 dil, zh yok); `voxcpm2` NVIDIA GPU ister (denenen 8 dil, hazır sesler
+Varsayılan `auto` (VoxCPM2 kuruluysa ve NVIDIA GPU çalışıyorsa o, değilse `supertonic`: işlemcide hızlı, 31 dil, zh yok); `voxcpm2` NVIDIA GPU ister (denenen 8 dil, hazır sesler
 `docs/sesler.md`); `xtts` ticari olmayan CPML lisanslı, kurulumda `-TicariOlmayanKabul`; RVC kendi modelinizle ve
 `ses.rvc_riza_onayi=true` olmadan çalışmaz. Referans ses/model yalnız kendi sesiniz ya da sahibinin açık izniyle;
 gerçek kişi taklidi yok. Tek ses, konuşmacıya ses sabitleme ve segment cinsiyet kipi `--ayar` ile. Başka hedef dil

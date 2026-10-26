@@ -33,7 +33,6 @@ Her mühendislik sayfasında kullanılan kanıt etiketleri:
 | WhisperX large-v3-turbo | fp32 / int8 | 3451 MiB / 1147 MiB |
 | faster-whisper distil-large-v3 | fp32 / int8 | 3427 MiB / 1283 MiB |
 | CrisperWhisper Turbo (CTranslate2) | int8 | ≈ 1.4 GB |
-| CrisperWhisper 2 Medium (Transformers) | fp16 | 3.5–3.6 GB (fp32 sığmaz) |
 | CTC kelime hizalama (wav2vec2) | fp32 | dil modeline göre ≈ 1.65–2.4 GB'a kadar |
 
 Model dosya boyutu VRAM ihtiyacı değildir: 213 MB ağırlığı olan bir konuşma iyileştirme modeli 10,45 GB

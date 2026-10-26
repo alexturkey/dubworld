@@ -1,6 +1,6 @@
 ---
 name: stt-motorlari
-description: "Choose and run a speech-to-text (transcription) engine and the right source-language detection mode: faster-whisper, WhisperX, CrisperWhisper Turbo/Medium, Moonshine, whisper.cpp, Parakeet, Speechmatics, ElevenLabs, YouTube captions. Use when the user says 'which transcription engine', 'better word timing', 'English only on CPU', 'language detection', 'mixed language', 'code-switching', 'kaynak dil', 'transkript motoru', 'dil tespiti', 'transcribe this', or transcription quality/timing is wrong."
+description: "Choose and run a speech-to-text (transcription) engine and the right source-language detection mode: faster-whisper, WhisperX, CrisperWhisper Turbo, Parakeet, YouTube captions. Use when the user says 'which transcription engine', 'better word timing', 'English only on CPU', 'language detection', 'mixed language', 'code-switching', 'kaynak dil', 'transkript motoru', 'dil tespiti', 'transcribe this', or transcription quality/timing is wrong."
 ---
 
 # Speech-to-text engines and language detection / STT motorları ve dil tespiti
@@ -39,7 +39,6 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
    - known single language → `transkripsiyon.kaynak_dil=en` (skips detection, safest);
    - unknown single language → `auto` (default);
    - speakers switch language → CrisperWhisper + `transkripsiyon.crisper_dil_tespiti=continuous_stream`;
-   - long video, sections in different languages → `crisperwhisper2_medium` + `per_window`.
 4. Run:
    ```powershell
    dubla video.mp4 --ayar transkripsiyon.motor=whisperx --ayar transkripsiyon.kaynak_dil=en
@@ -73,6 +72,6 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 
 Motor `transkripsiyon.motor` ile seçilir; `auto` CrisperWhisper Turbo kuruluysa onu, değilse faster-whisper'ı alır.
 Ticari olmayan kullanım + NVIDIA GPU → CrisperWhisper Turbo (en iyi kelime zamanı, lisans önce söylenir); ticari ya
-da WSL2 yok → faster-whisper / whisperx; İngilizce + yalnız işlemci → parakeet / whisper.cpp; anahtarınız varsa bulut.
-Dil: bilinen tek dil → `kaynak_dil=<kod>`, bilinmiyor → `auto`, karışık konuşma → CrisperWhisper +
-`continuous_stream`, bölüm bölüm farklı dil → Medium + `per_window`. Her motorun sayfası `docs/motorlar/<ad>.md`.
+da WSL2 yok → faster-whisper / whisperx; İngilizce + yalnız işlemci → parakeet.
+Dil: bilinen tek dil → `kaynak_dil=<kod>`, bilinmiyor → `auto`, karışık konuşma ya da bölüm bölüm farklı dil → CrisperWhisper +
+`continuous_stream`. Her motorun sayfası `docs/motorlar/<ad>.md`.

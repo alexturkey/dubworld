@@ -69,7 +69,7 @@ Windows 10/11 x64· δεν χρειάζεται προεγκατεστημένο
 - Το CI δοκιμάζει μόνο CPU· η διαδρομή GPU τρέχτηκε με το χέρι σε κάρτα Pascal 4 GB. Νέες κάρτες (RTX 50), Linux και macOS δεν έχουν δοκιμαστεί· οι βιβλιοθήκες GPU που εγκαθίστανται έχουν πυρήνες από Pascal έως RTX 50, ενώ η Maxwell χρησιμοποιεί το προφίλ CPU ([πίνακας υποστήριξης GPU, στα αγγλικά](docs/installation.md#1-system-requirements)).
 - Ο offline μεταφραστής κάνει μόνο αγγλικά προς τουρκικά· άλλα ζεύγη γλωσσών χρειάζονται Codex / Claude Code CLI ή API backend.
 - Χρόνοι λέξεων για γλώσσες πηγής εκτός αγγλικών και τουρκικών: ιαπωνικά και κινέζικα μέσω `scripts/kur.ps1 -Adim hizalama-diller`, οι υπόλοιπες μετά από μία εκτέλεση με `DUBLAJ_CEVRIMICI=1`.
-- Δεν έχουν δοκιμαστεί ακόμα από την αρχή ως το τέλος: πραγματική εγκατάσταση XTTS-v2, RVC, bot Telegram συνδεδεμένο σε πραγματική υπηρεσία και CrisperWhisper 2 Medium· το Moonshine είναι πειραματικό. Το CrisperWhisper 2.0 Turbo (μηχανή 13) δοκιμάστηκε με πραγματικό ήχο σε GTX 1050 Ti 4 GB (tr, en, ja· ≈ 1,4 GB VRAM).
+- Δεν έχουν δοκιμαστεί ακόμα από την αρχή ως το τέλος: πραγματική εγκατάσταση XTTS-v2, RVC και bot Telegram συνδεδεμένο σε πραγματική υπηρεσία. Το CrisperWhisper 2.0 Turbo (μηχανή 13) δοκιμάστηκε με πραγματικό ήχο σε GTX 1050 Ti 4 GB (tr, en, ja· ≈ 1,4 GB VRAM).
 
 ## Δομικά στοιχεία
 
@@ -124,4 +124,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 Κώδικας: Apache-2.0 (LICENSE). Εξωτερικά εξαρτήματα και οι άδειές τους: THIRD_PARTY.md. Υπεύθυνη χρήση: ETHICS.md.
 Ιδιωτικότητα (τι μένει στον υπολογιστή σας, τι λαμβάνει ένα cloud backend): PRIVACY.md. Αναφορές ασφάλειας: SECURITY.md. Αλλαγές: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:bb424df69aff -->
+<!-- i18n-source: README.md sha256:cdd2c731c59f -->

@@ -17,7 +17,7 @@
 **Settings**
 
 - `transkripsiyon.motor = "crisperwhisper_turbo_ct2"`
-- `transkripsiyon.crisper_dil_tespiti`: `global_first_window` (default) or `continuous_stream` (code-switching); `per_window` is rejected for Turbo
+- `transkripsiyon.crisper_dil_tespiti`: `global_first_window` (default) or `continuous_stream` (code-switching); a saved `per_window` (removed with the Medium engine) is read as `global_first_window` with a warning
 - first use asks for license acceptance (`--lisans-onay`)
 
 **Common errors**
@@ -62,7 +62,7 @@ Kayıt satırı: `src/dublaj_hatti/kayit.py` (kurulu olup olmadığını `dubla 
 **Ayarlar**
 
 - `transkripsiyon.motor = "crisperwhisper_turbo_ct2"`
-- `transkripsiyon.crisper_dil_tespiti`: `global_first_window` (varsayılan) ya da `continuous_stream` (dil değiştirerek konuşma, code-switching); Turbo için `per_window` reddedilir
+- `transkripsiyon.crisper_dil_tespiti`: `global_first_window` (varsayılan) ya da `continuous_stream` (dil değiştirerek konuşma, code-switching); kayıtlı bir `per_window` (Medium motoruyla kalktı) uyarıyla `global_first_window` olarak okunur
 - ilk kullanımda lisans onayı istenir (`--lisans-onay`)
 
 **Sık hatalar**
