@@ -40,7 +40,6 @@ birleşimler: [../tarifler/kombinasyonlar.md](../tarifler/kombinasyonlar.md).
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | ortak CTC kutusu | belirteç (token) zamanları; ≥ 1,0 sn boşluk yeni pencere açar (80 ms pay) | elle (İngilizce, işlemci) |
 | [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | ortak CTC kutusu | whisper.cpp segmentleri | elle (İngilizce, işlemci) |
 | [youtube_translate](../motorlar/youtube_translate.md) | ortak CTC kutusu | json3 başlangıç ipuçlarından pencereler | elle, yalnız YouTube bağlantısı (§3) |
-| [crisperwhisper2_medium](../motorlar/crisperwhisper2_medium.md) | modelin kendi dikkat zamanları, **CTC yok** | – | elle |
 | [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) | akış modelinin kendi zamanları, **CTC yok** (deneysel) | – | elle (İngilizce) |
 | [speechmatics](../motorlar/speechmatics.md) | sağlayıcı API'sinin kelime zamanları, **CTC yok** | – | elle, kendi anahtarınızla |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | sağlayıcı API'sinin kelime zamanları, **CTC yok** | – | elle, kendi anahtarınızla |
@@ -158,7 +157,6 @@ doğruluğu altyazı izinin doğruluğu kadardır.
 | Motor | CTC neden çalışmaz | Ölçülmüş karşılaştırma |
 |---|---|---|
 | faster-whisper (yalnız elle) | Hizalama adımı olmadan hızlı yol olarak ve CTC modeli olmayan diller için tutulur. `auto` bunu kullanmaz; yedeği `faster_whisper_ctc`'dir (§2.1) | 10 dosyalık İngilizce derlemde (3,9 sa) CTC zamanlı motorlarda kelime başı ortalama mutlak hata (MAE) 28–51 ms ve 0 sıfır süreli kelime; distil'in kendi zamanlarında 106–126 ms ve 611–899 sıfır süreli kelime ([transkripsiyon.md](transkripsiyon.md) §1). distil olmayan faster-whisper'ın kendi zamanı ↔ CTC: **kayıt yok** |
-| crisperwhisper2_medium | Kendi ortamında `forced_alignment = false` ile çalışır ve modelin kendi kelime zamanlarını kullanır (belgelendi). Turbo gibi CTC'ye neden taşınmadığı: **kayıt yok** | **kayıt yok**. Not: aynı dikkat tabanlı zaman ailesi Turbo'da 0 ms ve 40 ms kelimeler üretti; Turbo bu yüzden CTC'ye geçti ([crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) §6) |
 | moonshine_medium_streaming_en | Deneysel. Parça sınırlarında metin hatası da olduğu için yalnız CTC ile yeniden hizalama çözmez; geri kayan başlangıç işi durdurur (`MoonshineDeneyselHatasi`), zamanlar asla düzenlenmez | [transkripsiyon.md](transkripsiyon.md) §6 |
 | speechmatics | Sağlayıcı kelime zamanı döndürür; kodda CTC geçişi yok. CTC'nin atlanma gerekçesi: **kayıt yok** | belgelendi: WhisperX + CTC'ye göre ≈ 100 ms ortalama fark, kelimelerin %75'i 100 ms içinde; 60 sn video ≈ 6 sn'ye karşı ≈ 40 sn (örnek sayısı kayıtlı değil) |
 | elevenlabs_scribe_v2 | Sağlayıcı kelime zamanı döndürür; CTC geçişi yok. Gerekçe: **kayıt yok** | **kayıt yok** |

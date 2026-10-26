@@ -12,9 +12,8 @@ import pytest
 from dublaj_hatti.bolum_00_omurga.runtime import arac_yolu
 
 SRC = Path(__file__).resolve().parents[1] / "src" / "dublaj_hatti"
-# Ayrı yorumlayıcıda (CrisperWhisper 2.0 Medium deney ortamı) çalışan, paket içe aktaramayan betik: bilinen istisna.
+# Bilinen istisnalar (paket içinden aranmayan betik / yardımcının kendisi).
 ISTISNALAR = {
-    "bolum_20_transkripsiyon/crisperwhisper2_medium_motoru/src/crisperwhisper2_medium_transkript.py",  # ayrı yorumlayıcı
     "bolum_00_omurga/runtime/arac_yolu.py",  # yardımcının kendisi (belgesinde örnek olarak geçer)
 }
 

@@ -40,7 +40,7 @@ def caplog():
 
 
 # Bu sürümde kaldırılan transkripsiyon motorları (her kaldırma commit'i listeye bir satır ekler)
-KALDIRILAN_STT: list[str] = []
+KALDIRILAN_STT: list[str] = ["crisperwhisper2_medium"]
 
 
 def test_emekli_deger_auto_ya_eslenir_ve_iki_dilli_uyari_yazar(monkeypatch, caplog):
@@ -85,3 +85,8 @@ def test_xtts_secilince_kullanimdan_kalkiyor_uyarisi():
 def test_xtts_secili_degilken_uyari_yok():
     ayar = yapilandirma.ayarlari_yukle()
     assert not any("XTTS" in b.mesaj for b in yapilandirma.uyumluluk_denetle(ayar))
+
+
+def test_kaldirilan_per_window_dil_tespiti_global_first_windowa_eslenir(caplog):
+    assert yapilandirma._deger_dogrula("transkripsiyon.crisper_dil_tespiti", "per_window") == "global_first_window"
+    assert "kaldırıldı" in caplog.text and "was removed" in caplog.text

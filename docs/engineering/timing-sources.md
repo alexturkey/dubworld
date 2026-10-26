@@ -38,7 +38,6 @@ Which combinations are allowed: [../tarifler/kombinasyonlar.md](../tarifler/komb
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | shared CTC box | token times; a gap ≥ 1.0 s starts a new window (80 ms pad) | explicitly (English, CPU) |
 | [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | shared CTC box | whisper.cpp segments | explicitly (English, CPU) |
 | [youtube_translate](../motorlar/youtube_translate.md) | shared CTC box | json3 start hints grouped into windows | explicitly, YouTube link only (§3) |
-| [crisperwhisper2_medium](../motorlar/crisperwhisper2_medium.md) | the model's own attention times, **no CTC** | – | explicitly |
 | [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) | native streaming timestamps, **no CTC** (experimental) | – | explicitly (English) |
 | [speechmatics](../motorlar/speechmatics.md) | provider API word times, **no CTC** | – | explicitly, your own key |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | provider API word times, **no CTC** | – | explicitly, your own key |
@@ -156,7 +155,6 @@ Text accuracy equals the caption track's accuracy.
 | Engine | Why CTC is not run | Measured comparison |
 |---|---|---|
 | faster-whisper (explicit only) | Kept as the fast path without an alignment step, and for languages without a CTC model. `auto` does not use it: its fallback is `faster_whisper_ctc` (§2.1) | On a 10-file English corpus (3.9 h), CTC-timed engines had word-start MAE 28–51 ms and 0 zero-length words; distil native timestamps 106–126 ms and 611–899 zero-length words ([transcription.md](transcription.md) §1). Non-distil faster-whisper native timing against CTC: **no record** |
-| crisperwhisper2_medium | Runs in its own environment with `forced_alignment = false` and uses the model's own word times (documented). Why it was not moved to CTC like Turbo: **no record** | **no record**. Note: the same native-attention family produced 0 ms and 40 ms words on Turbo, which is why Turbo moved to CTC ([crisperwhisper_turbo_ct2.md](crisperwhisper_turbo_ct2.md) §6) |
 | moonshine_medium_streaming_en | Experimental. Text errors also occur at chunk boundaries, so CTC re-alignment alone does not fix it; backwards starts stop the run (`MoonshineDeneyselHatasi`) and times are never edited | [transcription.md](transcription.md) §6 |
 | speechmatics | Provider returns word times; no CTC pass in the code. Rationale for skipping CTC: **no record** | documented: against WhisperX + CTC, ≈ 100 ms mean difference, 75 % of words within 100 ms; 60 s video ≈ 6 s vs ≈ 40 s (sample size not recorded) |
 | elevenlabs_scribe_v2 | Provider returns word times; no CTC pass. Rationale: **no record** | **no record** |

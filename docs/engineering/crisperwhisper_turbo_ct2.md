@@ -19,7 +19,6 @@ Evidence labels: see [gpu_memory_and_isolation.md](gpu_memory_and_isolation.md).
 | Runs in | its own Windows environment | WSL2 Ubuntu (one-shot subprocess per request) |
 | Word times | the model's own attention times | **shared CTC forced alignment** (native times are kept only for diagnostics) |
 | VRAM peak | 3.5–3.6 GB (fp32 does not fit) | ≈ 1.4 GB |
-| Code | `bolum_20_transkripsiyon/crisperwhisper2_medium_motoru/` | `bolum_20_transkripsiyon/crisperwhisper_turbo_ct2_motoru/` |
 
 The two engines share no environment, snapshot, artefact names or adapters; Turbo keeps a local copy of the
 "dubbing-ready" text logic instead of importing it.

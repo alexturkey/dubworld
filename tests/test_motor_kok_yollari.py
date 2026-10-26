@@ -1,6 +1,6 @@
 """Motor kök yolları paket içinden çözülür (src/dublaj_hatti/...), ortam değişkeni geçersiz kılar.
 
-Kök hata (K9 bulgusu): paket `src/dublaj_hatti/` altına taşınınca Moonshine, CrisperWhisper Medium ve CrisperWhisper
+Kök hata (K9 bulgusu): paket `src/dublaj_hatti/` altına taşınınca Moonshine ve CrisperWhisper
 Turbo sözleşme girdileri hâlâ `<repo>/src/bolum_*` gösteriyordu; ortam değişkeni verilmezse motor açılmıyordu.
 """
 
@@ -10,7 +10,6 @@ import re
 from pathlib import Path
 
 import dublaj_hatti
-from dublaj_hatti.bolum_00_omurga.runtime import crisperwhisper_runtime as medium
 from dublaj_hatti.bolum_00_omurga.runtime import crisperwhisper_turbo_ct2_runtime as turbo
 from dublaj_hatti.bolum_00_omurga.runtime import moonshine_medium_streaming_runtime as moonshine
 
@@ -19,7 +18,7 @@ KOK = Path(__file__).resolve().parents[1]
 
 
 def test_paket_koku_dogru():
-    for modul in (medium, turbo, moonshine):
+    for modul in (turbo, moonshine):
         assert modul.PACKAGE_ROOT == PAKET
         assert modul.PROJECT_ROOT == KOK
 
@@ -42,19 +41,6 @@ def test_moonshine_ortam_degiskeni_gecersiz_kilar(monkeypatch, tmp_path):
         assert str(tmp_path) in str(hata)
     else:  # pragma: no cover - geçici klasörde python yok
         raise AssertionError("python bulunmamalıydı")
-
-
-def test_crisper_medium_varsayilan_kok_paket_icinde(monkeypatch):
-    monkeypatch.delenv(medium.CRISPERWHISPER_ROOT_ENV, raising=False)
-    kok = medium.crisperwhisper_root()
-    assert kok == PAKET / "bolum_20_transkripsiyon" / "crisperwhisper2_medium_motoru"
-    for goreli in medium.CRISPERWHISPER_SOURCE_FILES:
-        assert (kok / goreli).is_file(), goreli
-
-
-def test_crisper_medium_ortam_degiskeni_gecersiz_kilar(monkeypatch, tmp_path):
-    monkeypatch.setenv(medium.CRISPERWHISPER_ROOT_ENV, str(tmp_path))
-    assert medium.crisperwhisper_root() == tmp_path.resolve()
 
 
 def test_turbo_sozlesme_kaynaklari_var():

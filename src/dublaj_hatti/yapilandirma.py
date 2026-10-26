@@ -66,7 +66,6 @@ WHISPERX_PROFILLERI = ["auto", "whisperx_float32_quality_v1", "whisperx_engine_d
 # menü ön ayarlarıyla aynı). `transkripsiyon.model` / `hesap_tipi` yalnız faster-whisper (+ CTC) ve whisperx'te geçerlidir.
 STT_SABIT_PROFIL: dict[str, tuple[str, str]] = {
     "crisperwhisper_turbo_ct2": ("CrisperWhisper2.0_turbo", "int8"),
-    "crisperwhisper2_medium": ("CrisperWhisper2.0_medium", "float16"),
     "moonshine_medium_streaming_en": ("medium-streaming-en", "cpu"),
     "whisper_cpp_cpu_align": ("base.en", "float32"),
     "parakeet_cpu_align": ("parakeet-unified-en-0.6b-int8", "int8"),
@@ -76,15 +75,14 @@ STT_SABIT_PROFIL: dict[str, tuple[str, str]] = {
     "youtube_translate": ("json3+ctc", "n/a"),
 }
 STT_YALNIZ_INGILIZCE = {"moonshine_medium_streaming_en", "whisper_cpp_cpu_align", "parakeet_cpu_align"}
-STT_YALNIZ_GPU = {"crisperwhisper_turbo_ct2", "crisperwhisper2_medium"}
+STT_YALNIZ_GPU = {"crisperwhisper_turbo_ct2"}
 TTS_YALNIZ_GPU = {"voxcpm2"}
 YOUTUBE_ALANLARI = ("youtube.com", "youtu.be")  # youtube_translate yalnız bu alan adlarındaki bağlantıyla
-STT_CRISPER = {"crisperwhisper_turbo_ct2", "crisperwhisper2_medium"}
+STT_CRISPER = {"crisperwhisper_turbo_ct2"}
 # CrisperWhisper dil tespiti kipleri motor başına (Turbo CT2 per_window desteklemez: runtime + contract.py).
 # "auto" Turbo'ya çözülebildiği için Turbo'nun listesini alır. Tarif: docs/tarifler/dil_tespiti.md
 CRISPER_DIL_KIPLERI = {
     "crisperwhisper_turbo_ct2": ["global_first_window", "continuous_stream"],
-    "crisperwhisper2_medium": ["global_first_window", "per_window", "continuous_stream"],
     "auto": ["global_first_window", "continuous_stream"],
 }
 # Konuşmacı ayrımını (ileri.pyannote_konusmaci_ayrimi) kendi içinde destekleyen motorlar
@@ -111,7 +109,7 @@ SEMA: dict[str, Any] = {
     "transkripsiyon.hesap_tipi": ["auto", "float16", "int8", "int8_float16", "int8_float32", "float32"],
     "transkripsiyon.kaynak_dil": str,
     "transkripsiyon.vad": bool,
-    "transkripsiyon.crisper_dil_tespiti": ["global_first_window", "per_window", "continuous_stream"],
+    "transkripsiyon.crisper_dil_tespiti": ["global_first_window", "continuous_stream"],
     "transkripsiyon.whisperx_profili": WHISPERX_PROFILLERI,
     "ses_temizligi.kip": ["original", "clean", "preserve_background", "auto_background"],
     "ceviri.arka_uc": CEVIRI_ARKA_UCLARI,
@@ -169,12 +167,17 @@ KALDIRILAN_AYARLAR = frozenset({"ileri.tts_isci"})
 # ya da --ayar bir sürüm boyunca uyarıyla yeni değere eşlenir (kullanici.toml'a dokunulmaz), sonraki sürümde
 # bu tablo silinir ve eski değer normal "geçersiz seçenek" hatası olur. Motor kaldıran her değişiklik buraya satır ekler.
 EMEKLI_DEGERLER: dict[str, dict[str, str]] = {
-    "transkripsiyon.motor": {},
+    "transkripsiyon.motor": {"crisperwhisper2_medium": "auto"},
+    "transkripsiyon.crisper_dil_tespiti": {"per_window": "global_first_window"},  # yalnız CrisperWhisper Medium destekliyordu
 }
 _EMEKLI_UYARI = {
     "transkripsiyon.motor": (
         "'{eski}' bu sürümde kaldırıldı; '{yeni}' kullanılıyor (CrisperWhisper Turbo kuruluysa o, değilse faster-whisper).",
         "'{eski}' was removed in this version; using '{yeni}' (CrisperWhisper Turbo if installed, otherwise faster-whisper).",
+    ),
+    "transkripsiyon.crisper_dil_tespiti": (
+        "'{eski}' bu sürümde kaldırıldı (yalnız kaldırılan CrisperWhisper Medium destekliyordu); '{yeni}' kullanılıyor.",
+        "'{eski}' was removed in this version (only the removed CrisperWhisper Medium supported it); using '{yeni}'.",
     ),
 }
 
@@ -379,7 +382,7 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
     if dil_kipi != "global_first_window" and stt not in STT_CRISPER | {"auto"}:
         uyari("crisper_dil_tespiti yalnız CrisperWhisper motorlarında etkilidir", "transkripsiyon.crisper_dil_tespiti",
               "transkripsiyon.motor")
-    if dil_kipi not in CRISPER_DIL_KIPLERI.get(stt, CRISPER_DIL_KIPLERI["crisperwhisper2_medium"]):
+    if dil_kipi not in CRISPER_DIL_KIPLERI.get(stt, CRISPER_DIL_KIPLERI["auto"]):
         hata(f"{stt} '{dil_kipi}' dil tespiti kipini desteklemez; seçenekler: "
              f"{', '.join(CRISPER_DIL_KIPLERI[stt])} (docs/tarifler/dil_tespiti.md)",
              "transkripsiyon.crisper_dil_tespiti", "transkripsiyon.motor")

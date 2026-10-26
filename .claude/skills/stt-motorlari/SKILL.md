@@ -19,7 +19,6 @@ Every engine has its own page: `docs/motorlar/<engine>.md` (name = setting value
 | `faster-whisper` | GPU or CPU | multilingual | MIT | base install |
 | `whisperx` | GPU or CPU | multilingual (+ pyannote speakers, optional) | BSD-2 code; MIT / CC-BY-4.0 models | base install |
 | `crisperwhisper_turbo_ct2` | NVIDIA GPU + WSL2 | Whisper languages | **non-commercial** | `kur.ps1 -Adim crisper -TicariOlmayanKabul` |
-| `crisperwhisper2_medium` | NVIDIA GPU (~3.6 GB) | Whisper languages | **non-commercial** | manual |
 | `moonshine_medium_streaming_en` | CPU | English | MIT | manual (`stt-moonshine` extra + own venv) |
 | `whisper_cpp_cpu_align` | CPU | English | MIT | manual (prebuilt binary + model) |
 | `parakeet_cpu_align` | CPU | English | NVIDIA Open Model License (conditional) | `kur.ps1 -Adim parakeet` (package + model, sha256-pinned) |
@@ -61,7 +60,6 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 |---|---|
 | `CUDA out of memory` in WhisperX | close other GPU programs; the job retries once in int8; [low_vram.md](../../../docs/engineering/low_vram.md) |
 | English-only engine with another language | settings error by design; pick a multilingual engine |
-| `per_window` rejected | only `crisperwhisper2_medium` supports it |
 | CrisperWhisper on a CPU machine | error by design (no CPU path) |
 | `SPEECHMATICS_API_KEY_1 .env dosyasinda bulunamadi` / `ELEVENLABS_API_KEY ...` | copy `.env.example` to `.env`, fill your own key |
 | Manual engine shows `yok` | follow its `docs/motorlar/<engine>.md` install section |
@@ -74,7 +72,6 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 [docs/engineering/word_alignment.md](../../../docs/engineering/word_alignment.md) · engine pages:
 [faster-whisper](../../../docs/motorlar/faster-whisper.md), [whisperx](../../../docs/motorlar/whisperx.md),
 [crisperwhisper_turbo_ct2](../../../docs/motorlar/crisperwhisper_turbo_ct2.md),
-[crisperwhisper2_medium](../../../docs/motorlar/crisperwhisper2_medium.md),
 [moonshine_medium_streaming_en](../../../docs/motorlar/moonshine_medium_streaming_en.md),
 [whisper_cpp_cpu_align](../../../docs/motorlar/whisper_cpp_cpu_align.md),
 [parakeet_cpu_align](../../../docs/motorlar/parakeet_cpu_align.md), [speechmatics](../../../docs/motorlar/speechmatics.md),

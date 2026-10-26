@@ -166,7 +166,6 @@ dolgusu.
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | zamanlı alt kelime parçaları (token) | evet | ortak CTC kutusu | parçalardan yeniden kurulan pencereler: ≥ 1.0 sn boşluk pencere başlatır, 80 ms dolgu |
 | [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) | whisper.cpp segmentleri | evet | ortak CTC kutusu | hizalama pencereleri |
 | [youtube_translate](../motorlar/youtube_translate.md) | başlangıç ipuçlu altyazı kelimeleri, bitiş yok | hayır | ortak CTC kutusu | cümle sonlarında, > 2.5 sn boşlukta, > 18 sn'de ya da 80 kelimede pencereler |
-| [crisperwhisper2_medium](../motorlar/crisperwhisper2_medium.md) | modelin kendi zamanlarıyla kelimeler | hayır | modelin dikkat zamanları, CTC yok | 6. aşamadan sonra hiçbir şey |
 | [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) | akış kelimeleri | hayır | kendi zaman damgaları, CTC yok; geriye giden başlangıç işi durdurur | 6. aşamadan sonra hiçbir şey |
 | [speechmatics](../motorlar/speechmatics.md) | sağlayıcı kelimeleri (isteğe bağlı konuşmacı) | evet | sağlayıcı zamanları, CTC yok | 6. aşamadan sonra hiçbir şey |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | sağlayıcı kelimeleri (isteğe bağlı konuşmacı) | evet | sağlayıcı zamanları, CTC yok | 6. aşamadan sonra hiçbir şey |

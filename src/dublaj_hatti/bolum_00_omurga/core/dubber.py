@@ -105,18 +105,6 @@ from dublaj_hatti.bolum_00_omurga.full_metin_dublaji import (
     fit_audio_to_speech_window,
     synthesize_full_text_supertonic,
 )
-from dublaj_hatti.bolum_00_omurga.runtime.crisperwhisper_runtime import (
-    CRISPERWHISPER_API_SCHEMA_VERSION,
-    CRISPERWHISPER_CONTINUOUS_STREAM_LANGUAGE_MODE,
-    CRISPERWHISPER_ENGINE,
-    CRISPERWHISPER_GLOBAL_FIRST_WINDOW_LANGUAGE_MODE,
-    CRISPERWHISPER_LANGUAGE_DETECTION_MODES,
-    CRISPERWHISPER_MODEL_NAME,
-    CRISPERWHISPER_PER_WINDOW_LANGUAGE_MODE,
-    CRISPERWHISPER_RUNTIME_CONTRACT_VERSION,
-    crisperwhisper_contract_inputs,
-    invoke_crisperwhisper_api,
-)
 from dublaj_hatti.bolum_00_omurga.runtime.moonshine_medium_streaming_runtime import (
     ENGINE_ID as MOONSHINE_ENGINE,
     MODEL_ID as MOONSHINE_MODEL,
@@ -249,8 +237,6 @@ def _transcribe_youtube_json3(
 
 
 def _transcription_engine_contract_inputs(engine_name: str) -> dict[str, Any]:
-    if engine_name == CRISPERWHISPER_ENGINE:
-        return crisperwhisper_contract_inputs()
     if engine_name == CRISPERWHISPER_TURBO_CT2_ENGINE:
         return crisperwhisper_turbo_ct2_contract_inputs()
     if engine_name == "parakeet_cpu_align":
@@ -2092,7 +2078,7 @@ GIZLI_SUREC: Dict[str, Any] = {"creationflags": 0x08000000} if sys.platform == "
 
 # Yalnız platform dilini okuyan motorlar (cfg.whisper_language'ı kendileri okumaz). docs/tarifler/dil_tespiti.md
 SABIT_DIL_PLATFORM_YOLU_MOTORLARI = frozenset({
-    "crisperwhisper2_medium", "crisperwhisper_turbo_ct2", "speechmatics", "elevenlabs_scribe_v2",
+    "crisperwhisper_turbo_ct2", "speechmatics", "elevenlabs_scribe_v2",
 })
 
 
@@ -2142,7 +2128,6 @@ _transcription_engine_display_names = {
     FASTER_WHISPER_CTC_ENGINE: "faster-whisper + CTC",
     "whisperx": "WhisperX",
     "crisperwhisper_turbo_ct2": "CrisperWhisper2.0 Turbo CT2 (istege bagli, ticari olmayan)",
-    "crisperwhisper2_medium": "CrisperWhisper2.0 Medium (istege bagli, ticari olmayan)",
     "moonshine_medium_streaming_en": "Moonshine Medium Streaming EN (CPU)",
     "whisper_cpp_cpu_align": "whisper.cpp CPU + CTC",
     "parakeet_cpu_align": "Parakeet Unified EN INT8 CPU + CTC",
@@ -2759,255 +2744,6 @@ def _transcribe_elevenlabs_scribe_v2(
     return segments, detected_language, aligned
 
 
-def _transcribe_crisperwhisper(
-    wav_path: str,
-    cfg: DubConfig,
-    run_dir: str,
-    platform_lang: Optional[str],
-    asr_time_offset: float,
-    full_text_mode: bool,
-    prepare_final_segments: bool,
-) -> Tuple[List[Segment], str, Dict]:
-    if getattr(cfg, "use_diarization", False):
-        raise RuntimeError("CrisperWhisper2.0 Medium diarization desteklemez; use_diarization=false olmali")
-    if str(cfg.model_name or "").strip() != CRISPERWHISPER_MODEL_NAME:
-        raise RuntimeError(
-            "CrisperWhisper2.0 Medium kanonik model adi gerekli: "
-            f"{CRISPERWHISPER_MODEL_NAME}; alinan={cfg.model_name}"
-        )
-    if str(cfg.compute_type or "").strip().lower() != "float16":
-        raise RuntimeError(f"CrisperWhisper2.0 Medium yalniz compute_type=float16 destekler: {cfg.compute_type}")
-
-    logger.info("CrisperWhisper2.0 Medium deney API cagrisi baslatiliyor")
-    logger.info("CrisperWhisper2.0 Medium: VAD compact timeline, longform=DILE_GORE_OTOMATIK, alignment=KAPALI")
-    try:
-        _capture_gpu_diagnostic_snapshot(run_dir, "before_crisperwhisper_api")
-        language_detection_mode = str(
-            cfg.crisper_language_detection_mode
-            or CRISPERWHISPER_GLOBAL_FIRST_WINDOW_LANGUAGE_MODE
-        ).strip()
-        if language_detection_mode not in CRISPERWHISPER_LANGUAGE_DETECTION_MODES:
-            raise RuntimeError(
-                "CrisperWhisper dil tespit modu gecersiz: "
-                f"{language_detection_mode!r}"
-            )
-        data, result = invoke_crisperwhisper_api(
-            wav_path,
-            run_dir,
-            language_detection_mode=language_detection_mode,
-            platform_language=normalize_platform_language_for_crisper(platform_lang),
-        )
-        _capture_gpu_diagnostic_snapshot(run_dir, "after_crisperwhisper_api")
-        if result.returncode != 0:
-            _capture_gpu_diagnostic_snapshot(run_dir, "crisperwhisper_api_failure")
-        if result.stderr:
-            for line in result.stderr.strip().split("\n"):
-                if line.strip():
-                    logger.info("  %s", line.strip())
-    except subprocess.TimeoutExpired as error:
-        _capture_gpu_diagnostic_snapshot(run_dir, "crisperwhisper_api_timeout")
-        raise RuntimeError("CrisperWhisper2.0 Medium deney API timeout") from error
-
-    if result.returncode != 0 or not data.get("success"):
-        error = str(data.get("error") or f"API returncode={result.returncode}")
-        raise RuntimeError(f"CrisperWhisper2.0 Medium transkripsiyon basarisiz: {error}")
-
-    if (
-        int(data.get("schema_version") or 0) != CRISPERWHISPER_API_SCHEMA_VERSION
-        or int(data.get("runtime_contract_version") or 0) != CRISPERWHISPER_RUNTIME_CONTRACT_VERSION
-    ):
-        raise RuntimeError(
-            "CrisperWhisper2.0 Medium deney API sozlesmesi gecersiz: "
-            f"schema={data.get('schema_version')}, runtime={data.get('runtime_contract_version')}"
-        )
-
-    language_data = dict(data.get("language_detection") or {})
-    worker_language_detection_mode = str(
-        language_data.get("mode") or data.get("language_detection_mode") or ""
-    ).strip()
-    if worker_language_detection_mode != language_detection_mode:
-        raise RuntimeError(
-            "CrisperWhisper dil tespit modu API zincirinde degisti: "
-            f"istenen={language_detection_mode}, alinan={worker_language_detection_mode}"
-        )
-    language_summary = dict(language_data.get("profile_summary") or {})
-    platform_language = normalize_platform_language_for_crisper(platform_lang)
-    expected_language_source = (
-        "platform_metadata"
-        if language_detection_mode == CRISPERWHISPER_GLOBAL_FIRST_WINDOW_LANGUAGE_MODE
-        and platform_language
-        else "crisper_continuous_stream_language_detection"
-        if language_detection_mode == CRISPERWHISPER_CONTINUOUS_STREAM_LANGUAGE_MODE
-        else "crisper_per_window_language_detection"
-        if language_detection_mode == CRISPERWHISPER_PER_WINDOW_LANGUAGE_MODE
-        else "crisper_global_first_window_language_detection"
-    )
-    if language_summary.get("language_source") != expected_language_source:
-        raise RuntimeError(
-            "CrisperWhisper dil kaynagi sozlesmesi gecersiz: "
-            f"beklenen={expected_language_source!r}, alinan={language_summary.get('language_source')!r}"
-        )
-    required_language_flags = {
-        "language_detection_only": True,
-        "transcript_generated": False,
-        "words_generated": False,
-        "segments_generated": False,
-        "alignment_run": False,
-        "cpu_fallback": False,
-    }
-    if any(language_summary.get(key) != value for key, value in required_language_flags.items()):
-        raise RuntimeError(f"CrisperWhisper dil tespit sozlesmesi gecersiz: {language_summary}")
-    detected_language = normalize_language_code(str(language_data.get("detected_language") or ""))
-    accepted_language_codes = {
-        normalize_language_code(str(value))
-        for value in language_data.get("accepted_language_codes") or []
-    }
-    if detected_language not in accepted_language_codes:
-        raise RuntimeError(f"CrisperWhisper kabul edilen dil kodu uretemedi: {detected_language!r}")
-    logger.info("[DIL TESPITI] Crisper kabul edilen dil kodu: %s", detected_language)
-
-    runtime_summary = data.get("profile_summary") or {}
-    language_route = dict(runtime_summary.get("language_route") or {})
-    selected_route = str(language_route.get("selected_route") or "").strip()
-    allowed_routes = {
-        "continuation",
-        "dynamic_overlap_stitch",
-        "per_window_detected_language_runs",
-        "continuous_stream_detected_language_runs",
-    }
-    route_language = normalize_language_code(str(language_route.get("detected_language") or ""))
-    route_language_matches = (
-        selected_route in {
-            "per_window_detected_language_runs",
-            "continuous_stream_detected_language_runs",
-        }
-        or route_language == detected_language
-    )
-    if not route_language_matches or selected_route not in allowed_routes:
-        raise RuntimeError(f"CrisperWhisper dil route sozlesmesi gecersiz: {language_route}")
-    logger.info("[DIL ROUTE] Crisper longform: %s", selected_route)
-    if runtime_summary.get("device_type") != "cuda" or runtime_summary.get("dtype") != "torch.float16":
-        raise RuntimeError(
-            "CrisperWhisper2.0 Medium runtime CUDA/float16 degil: "
-            f"device_type={runtime_summary.get('device_type')}, dtype={runtime_summary.get('dtype')}"
-        )
-    if runtime_summary.get("cpu_fallback") is not False:
-        raise RuntimeError("CrisperWhisper2.0 Medium CPU fallback kaniti gecersiz")
-    dubbing_ready = dict(data.get("dubbing_ready") or {})
-    if (
-        int(dubbing_ready.get("contract_version") or 0) != 1
-        or len(str(dubbing_ready.get("tokenizer_contract_sha256") or "")) != 64
-        or dubbing_ready.get("unknown_bracket_policy") != "preserve_and_report"
-    ):
-        raise RuntimeError(f"CrisperWhisper dublaja hazir cikti sozlesmesi gecersiz: {dubbing_ready}")
-
-    _apply_asr_time_offset_to_transcription_data(data, asr_time_offset)
-    all_words = list(data.get("words") or [])
-    if not all_words:
-        for segment in data.get("segments") or []:
-            all_words.extend(segment.get("words") or [])
-    if not all_words:
-        raise RuntimeError("CrisperWhisper2.0 Medium kelime zamani uretmedi")
-    worker_detected_language = normalize_language_code(str(data.get("detected_language") or ""))
-    if worker_detected_language != detected_language:
-        raise RuntimeError(
-            "CrisperWhisper2.0 Medium dil kodu degisti: "
-            f"dil_asamasi={detected_language}, worker={worker_detected_language}"
-        )
-
-    artifacts = dict(data.get("artifacts") or {})
-    required_artifacts = {
-        "api_request_path": "crisperwhisper2_medium_api_request.json",
-        "transcription_profile_path": "transcription_profile_crisperwhisper2_medium.json",
-        "raw_result_path": "crisperwhisper2_medium_raw.json",
-        "dubbing_ready_result_path": "crisperwhisper2_medium_dubbing_ready.json",
-        "language_detection_artifact_path": "crisperwhisper2_medium_language_detection.json",
-        "language_detection_profile_path": "language_detection_profile_crisperwhisper2_medium.json",
-    }
-    for key, expected_name in required_artifacts.items():
-        relative_path = str(artifacts.get(key) or "").strip()
-        if relative_path != expected_name:
-            raise RuntimeError(f"CrisperWhisper motor artefakt yolu gecersiz: {key}={relative_path!r}")
-        artifact_path = os.path.abspath(os.path.join(run_dir, relative_path))
-        if os.path.commonpath([os.path.abspath(run_dir), artifact_path]) != os.path.abspath(run_dir):
-            raise RuntimeError(f"CrisperWhisper motor artefakti run_dir disinda: {relative_path}")
-        if not os.path.isfile(artifact_path):
-            raise RuntimeError(f"CrisperWhisper motor artefakti bulunamadi: {relative_path}")
-    artifact_metadata = {
-        **required_artifacts,
-        "crisper_language_detection_mode": language_detection_mode,
-        "crisper_detected_languages": list(data.get("detected_languages") or []),
-        "profile_summary": runtime_summary,
-    }
-    source_segments = list(data.get("segments") or [])
-    if not source_segments:
-        source_segments = [{
-            "index": 0,
-            "start": all_words[0]["start"],
-            "end": all_words[-1]["end"],
-            "text": " ".join(str(word.get("word", "")).strip() for word in all_words).strip(),
-            "words": all_words,
-        }]
-    aligned = {
-        "segments": [
-            {
-                "start": float(segment.get("start", 0.0)),
-                "end": float(segment.get("end", 0.0)),
-                "text": str(segment.get("text", "")),
-                "words": list(segment.get("words") or []),
-            }
-            for segment in source_segments
-        ],
-        **artifact_metadata,
-    }
-    ham_segments_path = os.path.join(run_dir, _transcription_ham_file_name(CRISPERWHISPER_ENGINE))
-    with open(ham_segments_path, "w", encoding="utf-8") as file:
-        file.write("CRISPERWHISPER2.0 MEDIUM HAM SEGMENTLER (CUMLE SEGMENTASYONU ONCESI)\n")
-        file.write("=" * 70 + "\n\n")
-        for index, segment in enumerate(source_segments, 1):
-            file.write(
-                f"{index}. [{float(segment.get('start', 0.0)):.3f}s - "
-                f"{float(segment.get('end', 0.0)):.3f}s] {segment.get('text', '')}\n"
-            )
-        file.write(f"\nToplam segment: {len(source_segments)}\n")
-        file.write(f"Toplam kelime: {len(all_words)}\n")
-    logger.info("CrisperWhisper2.0 Medium HAM segmentler kaydedildi: %s", ham_segments_path)
-
-    full_text = " ".join(str(word.get("word", "")).strip() for word in all_words).strip()
-    if full_text_mode:
-        return [Segment(
-            index=1,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=[],
-        )], detected_language, {"segments": [], **artifact_metadata}
-    if not prepare_final_segments:
-        raw_segments = [
-            Segment(
-                index=int(segment.get("index", index)),
-                start=float(segment.get("start", 0.0)),
-                end=float(segment.get("end", 0.0)),
-                text=str(segment.get("text", "")),
-                speaker=str(segment.get("speaker", "")),
-                words=list(segment.get("words") or []),
-            )
-            for index, segment in enumerate(source_segments)
-        ]
-        return raw_segments, detected_language, aligned
-
-    segments, final_aligned = _nihai_kaynak_segmentlerini_olustur(all_words)
-    final_aligned.update(artifact_metadata)
-    logger.info(
-        "CrisperWhisper2.0 Medium tamamlandi. Dil: %s, Segment: %d, Kelime: %d",
-        detected_language,
-        len(segments),
-        len(all_words),
-    )
-    check_word_overlaps(final_aligned)
-    return segments, detected_language, final_aligned
-
-
 def _transcribe_moonshine(
     wav_path: str,
     cfg: DubConfig,
@@ -3150,17 +2886,6 @@ def transcribe_and_align(
         cfg.transcription_runtime_decoder_profile = cfg.transcription_decoder_profile
 
     platform_lang = _sabit_dil_platform_yerine(engine_name, cfg, platform_lang)
-    if engine_name == CRISPERWHISPER_ENGINE:
-        return _transcribe_crisperwhisper(
-            wav_path,
-            cfg,
-            run_dir,
-            platform_lang,
-            asr_time_offset,
-            full_text_mode,
-            prepare_final_segments,
-        )
-
     if engine_name == CRISPERWHISPER_TURBO_CT2_ENGINE:
         return _transcribe_crisperwhisper_turbo_ct2(
             wav_path,

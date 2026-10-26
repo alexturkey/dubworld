@@ -1,3 +1,0 @@
-from .worker import CRISPERWHISPER_ENGINE
-
-__all__ = ["CRISPERWHISPER_ENGINE"]

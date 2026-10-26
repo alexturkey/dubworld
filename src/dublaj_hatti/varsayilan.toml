@@ -41,11 +41,11 @@ gozden_gecir = false
 [transkripsiyon]
 # Motor: "auto" = CrisperWhisper Turbo CT2 kuruluysa o (en iyi Türkçe/İngilizce kelime zamanı, ticari olmayan
 # lisans), değilse faster-whisper. Seçenekler: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2,
-# crisperwhisper2_medium, moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align,
+# moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align,
 # speechmatics (bulut, kendi anahtarınız), elevenlabs_scribe_v2 (bulut, kendi anahtarınız),
 # youtube_translate (yalnız YouTube bağlantısıyla: metin videonun altyazısından + CTC; pip install .[youtube])
 # Yalnız İngilizce: moonshine_medium_streaming_en, whisper_cpp_cpu_align, parakeet_cpu_align.
-# Yalnız NVIDIA GPU: crisperwhisper_turbo_ct2, crisperwhisper2_medium. Donanım tablosu: docs/donanim.md
+# Yalnız NVIDIA GPU: crisperwhisper_turbo_ct2. Donanım tablosu: docs/donanim.md
 motor = "auto"
 # faster-whisper / whisperx modeli: large-v3-turbo | large-v3 | medium | small (çok dilli) |
 # distil-large-v3 | distil-large-v3.5 (yalnız İngilizce). Diğer motorların modeli sabittir, bu ayar yok sayılır.
@@ -58,8 +58,8 @@ hesap_tipi = "auto"
 kaynak_dil = "auto"
 # Sessiz bölümleri atlayan ses etkinliği filtresi (VAD)
 vad = true
-# CrisperWhisper dil tespiti: global_first_window (tek dil, ilk pencereden) | per_window (pencere başına;
-# yalnız crisperwhisper2_medium) | continuous_stream (karışık / kod değişimli konuşma: 1 sn'de bir, değişim noktası)
+# CrisperWhisper dil tespiti: global_first_window (tek dil, ilk pencereden) |
+# continuous_stream (karışık / kod değişimli konuşma: 1 sn'de bir, değişim noktası)
 crisper_dil_tespiti = "global_first_window"
 # WhisperX kod çözücü profili: auto | whisperx_float32_quality_v1 (hesap_tipi=float32) |
 # whisperx_engine_default_v1 (hesap_tipi=int8). Yalnız motor=whisperx.

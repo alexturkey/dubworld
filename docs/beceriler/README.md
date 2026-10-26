@@ -26,7 +26,7 @@ Every engine in the registry (`src/dublaj_hatti/kayit.py`) has a page `docs/moto
 hardware, install, settings, common errors). Skills link to them instead of repeating them.
 
 - Speech-to-text: [faster-whisper](../motorlar/faster-whisper.md) · [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) · [whisperx](../motorlar/whisperx.md) ·
-  [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) · [crisperwhisper2_medium](../motorlar/crisperwhisper2_medium.md) ·
+  [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) ·
   [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) · [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) ·
   [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) · [speechmatics](../motorlar/speechmatics.md) ·
   [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) · [youtube_translate](../motorlar/youtube_translate.md)
@@ -78,7 +78,7 @@ Kayıttaki (`src/dublaj_hatti/kayit.py`) her motorun bir `docs/motorlar/<ayar de
 donanım, kurulum, ayarlar, sık hatalar). Beceriler bunları tekrarlamak yerine bu sayfalara bağlantı verir.
 
 - Konuşmadan metne: [faster-whisper](../motorlar/faster-whisper.md) · [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) · [whisperx](../motorlar/whisperx.md) ·
-  [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) · [crisperwhisper2_medium](../motorlar/crisperwhisper2_medium.md) ·
+  [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) ·
   [moonshine_medium_streaming_en](../motorlar/moonshine_medium_streaming_en.md) · [whisper_cpp_cpu_align](../motorlar/whisper_cpp_cpu_align.md) ·
   [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) · [speechmatics](../motorlar/speechmatics.md) ·
   [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) · [youtube_translate](../motorlar/youtube_translate.md)

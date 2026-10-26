@@ -60,9 +60,6 @@ def test_k2_tek_anahtar_dogrulamasi(ifade, beklenen):
     (["ses.rvc_model=model.pth"], "rıza onayı yok"),
     (["ses.motor=xtts"], "XTTS referans ses ister"),
     (["ses.motor=xtts", "ses.xtts_referans_ses=ben.wav", "genel.hedef_dil=sv"], "XTTS v2 'sv' dilini okuyamaz"),
-    (["transkripsiyon.motor=crisperwhisper_turbo_ct2", "transkripsiyon.crisper_dil_tespiti=per_window"],
-     "per_window' dil tespiti kipini desteklemez"),
-    (["transkripsiyon.crisper_dil_tespiti=per_window"], "auto 'per_window'"),
     (["transkripsiyon.motor=whisperx", "transkripsiyon.model=distil-large-v3", "transkripsiyon.kaynak_dil=de"],
      "çok dilli yedeği yoktur"),
     (["transkripsiyon.motor=youtube_translate", "ileri.pyannote_konusmaci_ayrimi=true"], "konuşmacı ayrımı yapmaz"),
@@ -81,7 +78,7 @@ def test_yeni_hata_kurallari(ifadeler, beklenen):
     (["ses.xtts_referans_ses=ben.wav"], "yalnız ses.motor=xtts"),
     (["video.akilli_kare=true", "genel.is_turu=transkript"], "transkript işinde yok sayılır"),
     (["transkripsiyon.motor=youtube_translate", "transkripsiyon.kaynak_dil=de"], "altyazı izinden gelir"),
-    (["transkripsiyon.motor=crisperwhisper2_medium", "transkripsiyon.crisper_dil_tespiti=continuous_stream",
+    (["transkripsiyon.motor=crisperwhisper_turbo_ct2", "transkripsiyon.crisper_dil_tespiti=continuous_stream",
       "transkripsiyon.kaynak_dil=tr"], "yalnız global_first_window kipinde"),
 ])
 def test_yeni_uyari_kurallari(ifadeler, beklenen):
@@ -208,8 +205,8 @@ def test_motor_etiketleri():
     assert donanim.motor_etiketi(turbo, "cpu", 0) == "CPU'da çalışmaz (NVIDIA GPU gerekir)"
     assert donanim.motor_etiketi(kayit.motor("demucs"), "cpu", 0) == "CPU'da yavaş"
     assert donanim.motor_etiketi(supertonic, "cpu", 0) == ""
-    assert donanim.motor_etiketi(kayit.motor("crisperwhisper2_medium"), "cuda", 2048).startswith("VRAM yetmez")
-    assert donanim.motor_etiketi(kayit.motor("crisperwhisper2_medium"), "cuda", 4096) == ""
+    assert donanim.motor_etiketi(kayit.motor("demucs"), "cuda", 2048).startswith("VRAM yetmez")
+    assert donanim.motor_etiketi(kayit.motor("demucs"), "cuda", 4096) == ""
     assert donanim.motor_etiketi(kayit.motor("codex"), "cuda", 4096).startswith("bulut")
 
 

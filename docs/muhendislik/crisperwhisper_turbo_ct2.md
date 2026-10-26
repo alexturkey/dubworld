@@ -21,7 +21,6 @@ Kanıt etiketleri: bkz. [gpu_bellek_ve_yalitim.md](gpu_bellek_ve_yalitim.md).
 | Çalıştığı yer | kendi Windows ortamı | WSL2 Ubuntu (istek başına tek seferlik alt süreç) |
 | Kelime zamanları | modelin kendi dikkat (attention) zamanları | **ortak CTC zorlamalı hizalama** (kendi zamanları yalnız teşhis için tutulur) |
 | VRAM tepesi | 3.5–3.6 GB (fp32 sığmaz) | ≈ 1.4 GB |
-| Kod | `bolum_20_transkripsiyon/crisperwhisper2_medium_motoru/` | `bolum_20_transkripsiyon/crisperwhisper_turbo_ct2_motoru/` |
 
 İki motor hiçbir ortamı, anlık kopyayı, ürün dosyası adını ya da bağdaştırıcıyı paylaşmaz; Turbo, "dublaja hazır" metin
 mantığını içe aktarmak yerine onun yerel bir kopyasını tutar.

@@ -8,7 +8,7 @@ Kaynak türleri / source kinds:
   ``ctc_speech_bounded_v2``); the engine only supplies text + time windows.
 - ``whisperx_hizalama``: WhisperX's own ``whisperx.align()`` inside the WhisperX worker (same wav2vec2 CTC family).
 - ``whisper_dogal``: Whisper cross-attention word timestamps (faster-whisper ``word_timestamps=True``), no CTC.
-- ``model_dogal``: the model's own word times (CrisperWhisper Medium attention heads, Moonshine native timestamps).
+- ``model_dogal``: the model's own word times (Moonshine native timestamps).
 - ``saglayici``: word times returned by a cloud provider's API (your own key).
 """
 
@@ -47,8 +47,6 @@ ZAMAN_KAYNAKLARI: dict[str, ZamanKaynagi] = {
         ZamanKaynagi("crisperwhisper_turbo_ct2", "ctc_kutusu", "native word times (diagnostic) -> windows",
                      ("bolum_00_omurga/runtime/crisperwhisper_turbo_ct2_runtime.py",),
                      "native times kept only for diagnostics; repair budget shared with json3"),
-        ZamanKaynagi("crisperwhisper2_medium", "model_dogal", "-",
-                     ("bolum_00_omurga/runtime/crisperwhisper_runtime.py",)),
         ZamanKaynagi("moonshine_medium_streaming_en", "model_dogal", "-",
                      ("bolum_00_omurga/runtime/moonshine_medium_streaming_runtime.py",),
                      "experimental: backwards starts stop the run (MoonshineDeneyselHatasi), times never edited"),
