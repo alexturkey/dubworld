@@ -34,7 +34,6 @@ def _ortam(*degiskenler: str) -> Callable[[], bool]:
 
 # Bulut STT motorlarının okuduğu anahtar adları (motorun kendi config.py'si ile aynı; test eşitliği denetler).
 STT_API_ANAHTARLARI: dict[str, tuple[str, ...]] = {
-    "speechmatics": ("SPEECHMATICS_API_KEY_1", "SPEECHMATICS_API_KEY_2"),  # speechmatics_motoru/config.py
     "elevenlabs_scribe_v2": ("ELEVENLABS_API_KEY",),  # elevenlabs_scribe_v2_motoru/config.py
 }
 
@@ -244,9 +243,6 @@ _HAM_MOTORLAR: tuple[Motor, ...] = (
     Motor("stt", "parakeet_cpu_align", "Parakeet (sherpa-onnx, yalnız İngilizce) + CTC hizalama",
           "NVIDIA Open Model License (ağırlık); sherpa-onnx Apache-2.0", "şartlı", "https://github.com/k2-fsa/sherpa-onnx",
           "parakeet (paket + model)", "cpu", _parakeet),
-    Motor("stt", "speechmatics", "Speechmatics (bulut)", "hizmet şartları", "hizmet şartları",
-          "https://www.speechmatics.com", "speechmatics + .env anahtarı", "bulut",
-          _ortam(*STT_API_ANAHTARLARI["speechmatics"]), "Ses dosyası hizmete gönderilir (PRIVACY.md)."),
     Motor("stt", "elevenlabs_scribe_v2", "ElevenLabs Scribe v2 (bulut)", "hizmet şartları", "hizmet şartları",
           "https://elevenlabs.io", ".env anahtarı", "bulut", _ortam(*STT_API_ANAHTARLARI["elevenlabs_scribe_v2"]),
           "Ses dosyası hizmete gönderilir (PRIVACY.md)."),
@@ -352,8 +348,6 @@ _DONANIM_DIL: dict[str, dict] = {
                                      dil_notu="Whisper dilleri; gerçek seste denenen tr, en, ja"),
     "parakeet_cpu_align": dict(vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=YALNIZ_INGILIZCE,
                                bellek="işlemci int8 ~1,9 GB RAM; 96,9 sn ses 11,9 sn, 8 iş parçacığı (ölçüldü)"),
-    "speechmatics": dict(vram_mb=0, cpu="bulut", kanit="belgeye göre", bellek="yerel yük yok (bulut)",
-                         dil_notu="hizmetin dil listesi (ISO 639-1 ya da auto)"),
     "elevenlabs_scribe_v2": dict(vram_mb=0, cpu="bulut", kanit="ölçüldü",
                                  bellek="yerel yük yok (bulut); 41,9 dk ses 112 sn (ölçüldü)",
                                  dil_notu="hizmetin dil listesi (language_code ya da otomatik)"),
@@ -413,8 +407,6 @@ _BILGI: dict[str, tuple[bool, str, str, str, str]] = {
     "parakeet_cpu_align": (True, "CPU (about 1.9 GB RAM)", "English only",
                            "İngilizce için ölçülmüş en hızlı CPU yolu (96,9 sn ses 11,9 sn).",
                            "The fastest measured CPU path for English (96.9 s of audio in 11.9 s)."),
-    "speechmatics": (True, "None (cloud, own API key)", "Service language list",
-                     "Bulut tanıma; ses hizmete gönderilir.", "Cloud recognition; audio is sent to the service."),
     "elevenlabs_scribe_v2": (True, "None (cloud, own API key)", "Service language list",
                              "Bulut tanıma; ses hizmete gönderilir.", "Cloud recognition; audio is sent to the service."),
     "youtube_translate": (True, "CPU or NVIDIA GPU (alignment only)", "Languages of the video's subtitle track",

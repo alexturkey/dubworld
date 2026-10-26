@@ -121,7 +121,7 @@ marker line on success.
 | 2 | `python` | yes | `uv python install 3.11.14 --no-bin` into `runtime_assets/python` | 1 | `PYTHON_OK` |
 | 3 | `paketler` | yes | detects the profile, creates `.venv`, installs `requirements/gpu.txt` or `cpu.txt` with `--require-hashes`, then this package with `--no-deps -e .` (commands `dubla`, `dubla-gui`, `dubla-web`, `dubla-telegram`) | 2 | `PAKETLER_OK` |
 | 4 | `modeller` | yes | `scripts/modelleri_indir.py --adim supertonic,ceviri,stt,hizalama,konusmaci,ffmpeg` (section 6) | 3 | `MODELLER_OK` |
-| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | no | hash-locked add-ons into `.venv` (`requirements/ek_<name>.txt`; on the CPU profile `ek_<name>_cpu.txt` when present); `demucs` also downloads the `htdemucs` weight (≈ 84 MB, sha256), `parakeet` its model | 3 | `<NAME>_OK` |
+| 5 | `demucs`, `youtube`, `parakeet` | no | hash-locked add-ons into `.venv` (`requirements/ek_<name>.txt`; on the CPU profile `ek_<name>_cpu.txt` when present); `demucs` also downloads the `htdemucs` weight (≈ 84 MB, sha256), `parakeet` its model | 3 | `<NAME>_OK` |
 | 5b | `hizalama-diller` | no | CTC word-timing models for Japanese and Chinese sources (`modelleri_indir.py --adim hizalama-diller`, ≈ 2.5 GB, Apache-2.0) | 3 | `HIZALAMA-DILLER_OK` |
 | 6 | `akilli-kare`, `galeri`, `telegram` | no | add-ons into `.venv` from `requirements/ek_<name>.txt` (hash-locked) | 3 | `<NAME>_OK` |
 | 6b | `telegram-sunucu` | no | local Telegram Bot API server for delivery up to 2000 MB (`dubla-telegram sunucu kur`: Docker if installed, otherwise a build of the official source, inside WSL on Windows); needs `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` in `.env` ([recipe](tarifler/telegram_buyuk_dosya.md)); also runs `telegram` | 6, Docker or WSL | `TELEGRAM_SUNUCU_OK` |
@@ -193,7 +193,6 @@ environment can be removed alone without touching `.venv`.
 | `hizalama-diller` | wav2vec2 CTC models for Japanese and Chinese sources (other source languages: `DUBLAJ_CEVRIMICI=1`; WhisperX's fr/de/es/it defaults are CC BY-NC 4.0) | `runtime_assets/model_cache/huggingface/` | Apache-2.0 | – |
 | `youtube` | yt-dlp (URL input) | `.venv` | Unlicense; only content you own or may download (ETHICS.md) | – |
 | `parakeet` | sherpa-onnx + Parakeet Unified EN 0.6B INT8 (English, CPU) | `.venv`, `runtime_assets/model_cache/` | NVIDIA Open Model License (commercial use with conditions) | – |
-| `speechmatics` | Speechmatics batch client | `.venv` | cloud service, your own key in `.env`; audio leaves the machine | – |
 | `akilli-kare` | OpenCV headless (`video.akilli_kare`) | `.venv` | Apache-2.0 | – |
 | `galeri` | gallery-dl (called only as a separate process) | `.venv` | GPL-2.0-only; never imported | – |
 | `telegram` | python-telegram-bot (remote control bot, token only in `.env`) | `.venv` | LGPL-3.0-only, used unmodified as a library | – |

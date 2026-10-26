@@ -59,7 +59,7 @@ Türkçe özet en altta. / Turkish summary at the end.
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim crisper -TicariOlmayanKabul
    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim tts-xtts -TicariOlmayanKabul
    ```
-   Valid optional steps: `demucs`, `youtube`, `parakeet`, `speechmatics`, `crisper`, `voxcpm2`, `akilli-kare`,
+   Valid optional steps: `demucs`, `youtube`, `parakeet`, `crisper`, `voxcpm2`, `akilli-kare`,
    `galeri`, `telegram`, `tts-xtts`. `crisper` and `tts-xtts` carry **non-commercial** weights and refuse to run
    without `-TicariOlmayanKabul`; tell the user before passing it. `voxcpm2` and `crisper` clone a sister repository
    at a fixed commit (URLs built in; for a fork set `DUBLAJ_TTS_REPO_URL` / `DUBLAJ_STT_REPO_URL`).

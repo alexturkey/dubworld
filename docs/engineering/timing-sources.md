@@ -37,7 +37,6 @@ Which combinations are allowed: [../tarifler/kombinasyonlar.md](../tarifler/komb
 | [whisperx](../motorlar/whisperx.md) | WhisperX `align()` (wav2vec2 CTC) inside its worker | ASR segments | explicitly; also the target of the distil / Parakeet language fallback |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | shared CTC box | token times; a gap ≥ 1.0 s starts a new window (80 ms pad) | explicitly (English, CPU) |
 | [youtube_translate](../motorlar/youtube_translate.md) | shared CTC box | json3 start hints grouped into windows | explicitly, YouTube link only (§3) |
-| [speechmatics](../motorlar/speechmatics.md) | provider API word times, **no CTC** | – | explicitly, your own key |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | provider API word times, **no CTC** | – | explicitly, your own key |
 
 Code: the dispatcher is `transcribe_and_align()` in `src/dublaj_hatti/bolum_00_omurga/core/dubber.py`; the CTC box is
@@ -153,7 +152,6 @@ Text accuracy equals the caption track's accuracy.
 | Engine | Why CTC is not run | Measured comparison |
 |---|---|---|
 | faster-whisper (explicit only) | Kept as the fast path without an alignment step, and for languages without a CTC model. `auto` does not use it: its fallback is `faster_whisper_ctc` (§2.1) | On a 10-file English corpus (3.9 h), CTC-timed engines had word-start MAE 28–51 ms and 0 zero-length words; distil native timestamps 106–126 ms and 611–899 zero-length words ([transcription.md](transcription.md) §1). Non-distil faster-whisper native timing against CTC: **no record** |
-| speechmatics | Provider returns word times; no CTC pass in the code. Rationale for skipping CTC: **no record** | documented: against WhisperX + CTC, ≈ 100 ms mean difference, 75 % of words within 100 ms; 60 s video ≈ 6 s vs ≈ 40 s (sample size not recorded) |
 | elevenlabs_scribe_v2 | Provider returns word times; no CTC pass. Rationale: **no record** | **no record** |
 
 All five still pass the shared checks (§5) and the final segment builder.

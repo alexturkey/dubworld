@@ -27,7 +27,7 @@ hardware, install, settings, common errors). Skills link to them instead of repe
 
 - Speech-to-text: [faster-whisper](../motorlar/faster-whisper.md) · [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) · [whisperx](../motorlar/whisperx.md) ·
   [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) ·
-  [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) · [speechmatics](../motorlar/speechmatics.md) ·
+  [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) ·
   [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) · [youtube_translate](../motorlar/youtube_translate.md)
 - Translation: [yerel](../motorlar/yerel.md) · [codex](../motorlar/codex.md) · [claude_code](../motorlar/claude_code.md) ·
   [gemini_2_5_flash](../motorlar/gemini_2_5_flash.md) · [gemini_3_1_flash_lite_tier_1](../motorlar/gemini_3_1_flash_lite_tier_1.md) ·
@@ -78,7 +78,7 @@ donanım, kurulum, ayarlar, sık hatalar). Beceriler bunları tekrarlamak yerine
 
 - Konuşmadan metne: [faster-whisper](../motorlar/faster-whisper.md) · [faster_whisper_ctc](../motorlar/faster_whisper_ctc.md) · [whisperx](../motorlar/whisperx.md) ·
   [crisperwhisper_turbo_ct2](../motorlar/crisperwhisper_turbo_ct2.md) ·
-  [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) · [speechmatics](../motorlar/speechmatics.md) ·
+  [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) ·
   [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) · [youtube_translate](../motorlar/youtube_translate.md)
 - Çeviri: [yerel](../motorlar/yerel.md) · [codex](../motorlar/codex.md) · [claude_code](../motorlar/claude_code.md) ·
   [gemini_2_5_flash](../motorlar/gemini_2_5_flash.md) · [gemini_3_1_flash_lite_tier_1](../motorlar/gemini_3_1_flash_lite_tier_1.md) ·

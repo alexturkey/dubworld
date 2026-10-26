@@ -49,8 +49,6 @@ ZAMAN_KAYNAKLARI: dict[str, ZamanKaynagi] = {
                      "native times kept only for diagnostics; repair budget shared with json3"),
         ZamanKaynagi("parakeet_cpu_align", "ctc_kutusu", "token times; gaps >= 1.0 s split windows (80 ms pad)",
                      ("bolum_20_transkripsiyon/parakeet_cpu_align_motoru/alignment_runner.py",)),
-        ZamanKaynagi("speechmatics", "saglayici", "-",
-                     ("bolum_20_transkripsiyon/speechmatics_motoru/engine.py",)),
         ZamanKaynagi("elevenlabs_scribe_v2", "saglayici", "-",
                      ("bolum_20_transkripsiyon/elevenlabs_scribe_v2_motoru/engine.py",)),
         ZamanKaynagi("youtube_translate", "ctc_kutusu", "json3 start hints (never final times)",

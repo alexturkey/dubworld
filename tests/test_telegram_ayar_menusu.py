@@ -68,7 +68,7 @@ def test_model_secimi_motora_gore(ogeler):
 
     for motor in ("auto", "faster-whisper", "faster_whisper_ctc", "whisperx"):
         assert gorunen({"transkripsiyon.motor": motor}), motor
-    for motor in ("crisperwhisper_turbo_ct2", "parakeet_cpu_align", "speechmatics"):
+    for motor in ("crisperwhisper_turbo_ct2", "parakeet_cpu_align", "elevenlabs_scribe_v2"):
         assert not gorunen({"transkripsiyon.motor": motor}), motor
 
 

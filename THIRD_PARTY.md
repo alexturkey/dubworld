@@ -55,7 +55,6 @@ Nothing is sent anywhere unless you select one of these. When you do, your audio
 | Groq API | transcript text | Provider terms | https://console.groq.com | Your key and Groq's terms |
 | Cerebras API | transcript text | Provider terms | https://cloud.cerebras.ai | Your key and Cerebras' terms |
 | Mistral API | transcript text | Provider terms | https://console.mistral.ai | Your key and Mistral's terms |
-| Speechmatics (batch STT) | the audio file | Provider terms | https://www.speechmatics.com | Your key and their terms; consent of people in the audio |
 | Codex CLI image generation (optional cover image) | transcript text | Provider terms | https://github.com/openai/codex | Your OpenAI account and its terms; check rights before publishing a generated image |
 | ElevenLabs Scribe v2 (STT) | the audio file | Provider terms | https://elevenlabs.io | Your key and their terms; consent of people in the audio |
 
@@ -117,16 +116,15 @@ PyPI, never copied into this repository.
 |---|---|---|---|---|
 | absl-py | 2.5.1 | Apache-2.0 | extra:tts-xtts |  |
 | addict | 2.4.0 | MIT | core |  |
-| aiofiles | 25.1.0 | Apache-2.0 | extra:speechmatics |  |
-| aiohappyeyeballs | 2.7.1 | PSF-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
-| aiohttp | 3.14.5 | Apache-2.0 AND MIT | core/extra:speechmatics/extra:tts-xtts |  |
-| aiosignal | 1.4.0 | Apache-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
+| aiohappyeyeballs | 2.7.1 | PSF-2.0 | core/extra:tts-xtts |  |
+| aiohttp | 3.14.5 | Apache-2.0 AND MIT | core/extra:tts-xtts |  |
+| aiosignal | 1.4.0 | Apache-2.0 | core/extra:tts-xtts |  |
 | alembic | 1.20.1 | MIT | core |  |
 | antlr4-python3-runtime | 4.9.3 | BSD-3-Clause | core/extra:demucs |  |
 | anyascii | 0.3.3 | ISC | extra:tts-xtts |  |
 | anyio | 4.15.1 | MIT | extra:telegram |  |
 | asteroid-filterbanks | 0.4.0 | MIT | core |  |
-| attrs | 26.1.0 | MIT | core/extra:speechmatics/extra:tts-xtts |  |
+| attrs | 26.1.0 | MIT | core/extra:tts-xtts |  |
 | audioread | 3.1.0 | MIT | extra:tts-xtts |  |
 | av | 18.1.0 | BSD-3-Clause | core | pulled in by faster-whisper (audio decoding); not imported by this package. The Windows wheel bundles FFmpeg shared libraries that report **LGPL version 3 or later** (`av._core.library_meta[...]['license']`, read from the installed wheel); its build configuration has `--enable-version3`, no `--enable-gpl` / `--enable-nonfree`, and lists external libraries (libmp3lame, dav1d, SVT-AV1, libvpx, opus, libx264, libx265 among others) whose own licenses apply to those parts; redistributing the wheel follows PyAV's and FFmpeg's terms |
 | certifi | 2026.10.23 | MPL-2.0 | core/extra:galeri/extra:telegram/extra:tts-xtts | file-level copyleft; used unmodified |
@@ -156,7 +154,7 @@ PyPI, never copied into this repository.
 | filelock | 4.2.4 | MIT | core/extra:demucs/extra:tts-xtts |  |
 | flatbuffers | 25.12.19 | Apache-2.0 | core |  |
 | fonttools | 4.67.0 | MIT | core/extra:tts-xtts |  |
-| frozenlist | 1.8.0 | Apache-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
+| frozenlist | 1.8.0 | Apache-2.0 | core/extra:tts-xtts |  |
 | fsspec | 2024.9.0 | BSD-3-Clause | core/extra:demucs/extra:tts-xtts |  |
 | gallery-dl | 1.32.17 | GPL-2.0-only | extra:galeri | run only as a separate CLI process, never imported |
 | googleapis-common-protos | 1.76.0 | Apache-2.0 | core |  |
@@ -167,7 +165,7 @@ PyPI, never copied into this repository.
 | httpcore | 1.0.9 | BSD-3-Clause | extra:telegram |  |
 | httpx | 0.28.1 | BSD-3-Clause | extra:telegram |  |
 | huggingface-hub | 0.36.2 | Apache-2.0 | core/extra:tts-xtts |  |
-| idna | 3.20 | BSD-3-Clause | core/extra:galeri/extra:speechmatics/extra:telegram/extra:tts-xtts |  |
+| idna | 3.20 | BSD-3-Clause | core/extra:galeri/extra:telegram/extra:tts-xtts |  |
 | inflect | 7.6.0 | MIT | extra:tts-xtts |  |
 | jaraco-functools | 4.6.0 | MIT | extra:tts-xtts |  |
 | jinja2 | 3.1.6 | BSD-3-Clause | core/extra:demucs |  |
@@ -193,7 +191,7 @@ PyPI, never copied into this repository.
 | more-itertools | 11.2.1 | MIT | extra:tts-xtts |  |
 | mpmath | 1.3.0 | BSD-3-Clause | core/extra:demucs |  |
 | msgpack | 1.2.3 | Apache-2.0 | extra:tts-xtts |  |
-| multidict | 7.2.0 | Apache-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
+| multidict | 7.2.0 | Apache-2.0 | core/extra:tts-xtts |  |
 | multiprocess | 0.70.16 | BSD-3-Clause | core |  |
 | narwhals | 2.27.1 | MIT | core/extra:tts-xtts |  |
 | networkx | 3.6.1 | BSD-3-Clause | core/extra:demucs |  |
@@ -224,7 +222,7 @@ PyPI, never copied into this repository.
 | platformdirs | 4.13.5 | MIT | extra:tts-xtts |  |
 | pooch | 1.9.0 | BSD-3-Clause | extra:tts-xtts |  |
 | primepy | 1.3 | MIT | core |  |
-| propcache | 0.5.4 | Apache-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
+| propcache | 0.5.4 | Apache-2.0 | core/extra:tts-xtts |  |
 | protobuf | 7.36.2 | BSD-3-Clause | core/extra:tts-xtts |  |
 | psutil | 7.2.2 | BSD-3-Clause | core/extra:tts-xtts |  |
 | pyannote-audio | 4.0.7 | MIT | core |  |
@@ -261,7 +259,6 @@ PyPI, never copied into this repository.
 | sortedcontainers | 2.4.0 | Apache-2.0 | core |  |
 | soundfile | 0.14.0 | BSD-3-Clause | core/extra:tts-xtts |  |
 | soxr | 1.1.0 | LGPL-2.1-or-later | extra:tts-xtts | dynamic library; LGPL (separately replaceable) |
-| speechmatics-batch | 0.4.7 | MIT | extra:speechmatics |  |
 | sqlalchemy | 2.1.6 | MIT | core |  |
 | submitit | 1.5.4 | MIT | extra:demucs |  |
 | sympy | 1.14.0 | BSD-3-Clause | core/extra:demucs |  |
@@ -280,14 +277,14 @@ PyPI, never copied into this repository.
 | transformers | 4.57.6 | Apache-2.0 | core/extra:tts-xtts |  |
 | treetable | 0.2.6 | Unlicense | extra:demucs |  |
 | typeguard | 4.6.0 | MIT | extra:tts-xtts |  |
-| typing-extensions | 4.16.0 | PSF-2.0 | core/extra:demucs/extra:speechmatics/extra:telegram/extra:tts-xtts |  |
+| typing-extensions | 4.16.0 | PSF-2.0 | core/extra:demucs/extra:telegram/extra:tts-xtts |  |
 | tzdata | 2026.5 | Apache-2.0 | core/extra:tts-xtts |  |
 | umap-learn | 0.5.7 | BSD-3-Clause | core |  |
 | urllib3 | 2.8.0 | MIT | core/extra:galeri/extra:tts-xtts |  |
 | werkzeug | 3.1.9 | BSD-3-Clause | extra:tts-xtts |  |
 | whisperx | 3.8.6 | BSD-2-Clause | core |  |
 | xxhash | 4.0.2 | BSD-2-Clause | core |  |
-| yarl | 1.25.1 | Apache-2.0 | core/extra:speechmatics/extra:tts-xtts |  |
+| yarl | 1.25.1 | Apache-2.0 | core/extra:tts-xtts |  |
 | yt-dlp | 2026.8.19 | Unlicense | extra:youtube |  |
 
 Counts: 172 packages (core + locked extras). Non-permissive: 1 GPL (gallery-dl; separate process only), 4 LGPL (lameenc, num2words, python-telegram-bot, soxr), 3 MPL-2.0 (certifi, coqui-tts, tqdm); no proprietary or evaluation-only license; all others MIT / BSD / Apache-2.0 / ISC / PSF / Unlicense family.

@@ -136,7 +136,6 @@ ASR_LEADING_PAD_ENGINES = {
     "faster-whisper",
     FASTER_WHISPER_CTC_ENGINE,
     "whisperx",
-    "speechmatics",
     "elevenlabs_scribe_v2",
     "parakeet_cpu_align",
 }
@@ -2069,7 +2068,7 @@ GIZLI_SUREC: Dict[str, Any] = {"creationflags": 0x08000000} if sys.platform == "
 
 # Yalnız platform dilini okuyan motorlar (cfg.whisper_language'ı kendileri okumaz). docs/tarifler/dil_tespiti.md
 SABIT_DIL_PLATFORM_YOLU_MOTORLARI = frozenset({
-    "crisperwhisper_turbo_ct2", "speechmatics", "elevenlabs_scribe_v2",
+    "crisperwhisper_turbo_ct2", "elevenlabs_scribe_v2",
 })
 
 
@@ -2120,7 +2119,6 @@ _transcription_engine_display_names = {
     "whisperx": "WhisperX",
     "crisperwhisper_turbo_ct2": "CrisperWhisper2.0 Turbo CT2 (istege bagli, ticari olmayan)",
     "parakeet_cpu_align": "Parakeet Unified EN INT8 CPU + CTC",
-    "speechmatics": "Speechmatics (bulut, kendi anahtariniz)",
     "elevenlabs_scribe_v2": "ElevenLabs Scribe v2 (bulut, kendi anahtariniz)",
     "youtube_translate": "YouTube json3 altyazi + CTC (istege bagli, yt-dlp)",
 }
@@ -2554,103 +2552,6 @@ def _normalize_elevenlabs_language_code(language_code: str) -> str:
     return _elevenlabs_language_code_map.get(normalized, normalized)
 
 
-def _transcribe_speechmatics(wav_path, cfg, run_dir, whisper_lang, platform_lang, asr_time_offset: float = 0.0, full_text_mode: bool = False, prepare_final_segments: bool = True):
-    from bolum_20_transkripsiyon.speechmatics_motoru import transcribe_audio
-
-    if platform_lang:
-        lang = normalize_language_code(platform_lang)
-    elif whisper_lang:
-        lang = whisper_lang
-    else:
-        lang = "auto"
-
-    use_diarization = getattr(cfg, "use_diarization", False)
-
-    logger.info("=" * 60)
-    logger.info("[TRANSCRIBE] SPEECHMATICS TRANSKRIPSIYON BASLIYOR")
-    logger.info("  Dil: %s", lang)
-    logger.info("  Konusmaci ayristirma: %s", "ACIK" if use_diarization else "KAPALI")
-    logger.info("=" * 60)
-
-    data = transcribe_audio(wav_path, language=lang, use_diarization=use_diarization)
-
-    if not data.get("success"):
-        error_msg = data.get("error", "Bilinmeyen hata")
-        logger.error("Speechmatics hatasi: %s", error_msg)
-        raise RuntimeError(f"Speechmatics transkripsiyon basarisiz: {error_msg}")
-
-    _apply_asr_time_offset_to_transcription_data(data, asr_time_offset)
-
-    detected_language = data.get("detected_language", lang)
-    all_words = data.get("words", [])
-
-    logger.info("Speechmatics tamamlandi. Dil: %s, Kelime: %d",
-                detected_language, len(all_words))
-
-    ham_segments_path = os.path.join(run_dir, _transcription_ham_file_name("speechmatics"))
-    raw_transcript = data.get("raw_transcript", "")
-    with open(ham_segments_path, "w", encoding="utf-8") as f:
-        f.write("SPEECHMATICS HAM SEGMENTLER (cumle segmentasyonu oncesi)\n")
-        f.write("=" * 70 + "\n\n")
-        if raw_transcript:
-            f.write("--- SPEECHMATICS SEGMENT CIKTISI (degistirilmemis) ---\n\n")
-            for idx, line in enumerate(raw_transcript.strip().split("\n"), 1):
-                f.write(f"{idx}. {line}\n")
-            f.write(f"\nToplam: {len(raw_transcript.strip().split(chr(10)))} segment\n")
-        f.write(f"\n--- KELIME BAZLI HAM VERI ---\n\n")
-        f.write(f"Toplam kelime: {len(all_words)}\n\n")
-        for i, w in enumerate(all_words, 1):
-            speaker_info = f" [{w.get('speaker', '')}]" if w.get("speaker") else ""
-            f.write(f"{i}. [{w.get('start', 0):.3f}s - {w.get('end', 0):.3f}s]{speaker_info} {w.get('word', '')}\n")
-    logger.info("HAM verisi kaydedildi: %s", ham_segments_path)
-
-    full_text = " ".join(w.get("word", "").strip() for w in all_words)
-
-    if full_text_mode:
-        if not all_words or not full_text:
-            raise RuntimeError("Speechmatics Full Metin icin konusma zamani veya metni uretmedi")
-        return [Segment(
-            index=1,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=[],
-        )], detected_language, {"segments": []}
-
-    if not prepare_final_segments:
-        raw_segment = Segment(
-            index=0,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=list(all_words),
-        )
-        return [raw_segment], detected_language, {"segments": [{
-            "start": raw_segment.start,
-            "end": raw_segment.end,
-            "text": raw_segment.text,
-            "words": list(all_words),
-        }]}
-
-    logger.info("=" * 60)
-    logger.info("KELIME ZAMANI TABANLI SEGMENTASYON BASLIYOR")
-    logger.info("=" * 60)
-
-    segments, aligned = _nihai_kaynak_segmentlerini_olustur(all_words)
-
-
-    write_transcripts(segments, run_dir, "", detected_language, cfg.target_lang)
-    write_full_paragraph(segments, run_dir, detected_language)
-
-    logger.info("=" * 60)
-    logger.info("KELIME ZAMANI TABANLI SEGMENTASYON TAMAMLANDI")
-    logger.info("  Segment sayisi: %d", len(segments))
-    logger.info("  Kelime sayisi: %d", len(aligned.get("word_segments", [])))
-    logger.info("=" * 60)
-
-    return segments, detected_language, aligned
-
-
 def _transcribe_elevenlabs_scribe_v2(
     wav_path,
     cfg,
@@ -2777,9 +2678,6 @@ def transcribe_and_align(
             full_text_mode,
             prepare_final_segments,
         )
-
-    if engine_name == "speechmatics":
-        return _transcribe_speechmatics(wav_path, cfg, run_dir, None, platform_lang, asr_time_offset, full_text_mode, prepare_final_segments)
 
     if engine_name == "elevenlabs_scribe_v2":
         return _transcribe_elevenlabs_scribe_v2(

@@ -165,7 +165,6 @@ dolgusu.
 | [whisperx](../motorlar/whisperx.md) | ASR segmentleri | evet | WhisperX `align()`; konuşmacı ayrımı yokken hizalama 7. aşamada çalışır (`dubber.py:1442`) | hizalama pencereleri |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | zamanlı alt kelime parçaları (token) | evet | ortak CTC kutusu | parçalardan yeniden kurulan pencereler: ≥ 1.0 sn boşluk pencere başlatır, 80 ms dolgu |
 | [youtube_translate](../motorlar/youtube_translate.md) | başlangıç ipuçlu altyazı kelimeleri, bitiş yok | hayır | ortak CTC kutusu | cümle sonlarında, > 2.5 sn boşlukta, > 18 sn'de ya da 80 kelimede pencereler |
-| [speechmatics](../motorlar/speechmatics.md) | sağlayıcı kelimeleri (isteğe bağlı konuşmacı) | evet | sağlayıcı zamanları, CTC yok | 6. aşamadan sonra hiçbir şey |
 | [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | sağlayıcı kelimeleri (isteğe bağlı konuşmacı) | evet | sağlayıcı zamanları, CTC yok | 6. aşamadan sonra hiçbir şey |
 
 Tam metin kipinde aynı motorlar segmentlerini yeniden gruplamadan döndürür ve bölüm 6 ilkinden sonuncusuna kadar olan

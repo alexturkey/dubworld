@@ -56,7 +56,6 @@ process isolation, Supertonic lanes): change it only with the measurement recipe
 | stt | `whisperx` | gpu+cpu | 1147 (int8) / 3451 (fp32) | works | measured | batch 1 + VAD on CPU removed an out-of-memory on 4 GB; 4.3–5.3× real time on GPU | transcription.md |
 | stt | `crisperwhisper_turbo_ct2` | gpu | ~1450 | no | measured | int8, WSL2, one-shot subprocess; ~11× real time; 1435 MiB on 74 min audio | crisperwhisper_turbo_ct2.md |
 | stt | `parakeet_cpu_align` | cpu | — | good | measured | int8, ~1.9 GB RAM, 96.9 s audio in 11.9 s (8 threads); input capped below 400 s | transcription.md |
-| stt | `speechmatics` | cloud | — | cloud | per docs | audio is sent to the service (PRIVACY.md) | provider docs |
 | stt | `elevenlabs_scribe_v2` | cloud | — | cloud | measured | 41.9 min audio in 112 s | transcription.md |
 | stt | `youtube_translate` | gpu+cpu | ~2400 (CTC only) | slow | measured | no speech model; CTC alignment: GPU 1.65–2.4 GB, CPU ~10 min for 3.5 min audio | word_alignment.md |
 | — | wav2vec2 CTC word alignment (used by every engine except CrisperWhisper) | gpu+cpu | 1650–2400 | slow | measured | 3.5 min audio: GPU 66–71 s (mostly model load), CPU ~10 min | word_alignment.md |
@@ -144,7 +143,6 @@ isteğiyle değişir.
 | stt | `whisperx` | gpu+cpu | 1147 (int8) / 3451 (fp32) | çalışır | ölçüldü | batch 1 + işlemcide VAD, 4 GB'ta bellek taşmasını giderdi; GPU'da gerçek zamanın 4.3–5.3 katı | transcription.md |
 | stt | `crisperwhisper_turbo_ct2` | gpu | ~1450 | hayır | ölçüldü | int8, WSL2, tek seferlik alt süreç; gerçek zamanın ~11 katı; 74 dk seste 1435 MiB | crisperwhisper_turbo_ct2.md |
 | stt | `parakeet_cpu_align` | cpu | — | iyi | ölçüldü | int8, ~1.9 GB RAM, 96.9 s ses 11.9 s'de (8 iş parçacığı); girdi 400 s altıyla sınırlı | transcription.md |
-| stt | `speechmatics` | bulut | — | bulut | belgeye göre | ses servise gönderilir (PRIVACY.md) | sağlayıcı belgeleri |
 | stt | `elevenlabs_scribe_v2` | bulut | — | bulut | ölçüldü | 41.9 dk ses 112 s'de | transcription.md |
 | stt | `youtube_translate` | gpu+cpu | ~2400 (yalnız CTC) | yavaş | ölçüldü | konuşma modeli yok; CTC hizalama: GPU 1.65–2.4 GB, 3.5 dk ses için işlemcide ~10 dk | word_alignment.md |
 | — | wav2vec2 CTC kelime hizalama (CrisperWhisper dışındaki her motor kullanır) | gpu+cpu | 1650–2400 | yavaş | ölçüldü | 3.5 dk ses: GPU 66–71 s (çoğu model yükleme), işlemci ~10 dk | word_alignment.md |

@@ -20,7 +20,6 @@ Every engine has its own page: `docs/motorlar/<engine>.md` (name = setting value
 | `whisperx` | GPU or CPU | multilingual (+ pyannote speakers, optional) | BSD-2 code; MIT / CC-BY-4.0 models | base install |
 | `crisperwhisper_turbo_ct2` | NVIDIA GPU + WSL2 | Whisper languages | **non-commercial** | `kur.ps1 -Adim crisper -TicariOlmayanKabul` |
 | `parakeet_cpu_align` | CPU | English | NVIDIA Open Model License (conditional) | `kur.ps1 -Adim parakeet` (package + model, sha256-pinned) |
-| `speechmatics` | cloud | provider list | provider terms | `kur.ps1 -Adim speechmatics` + key |
 | `elevenlabs_scribe_v2` | cloud | provider list | provider terms | key in `.env` |
 | `youtube_translate` | GPU or CPU (CTC only) | caption track | YouTube terms | `kur.ps1 -Adim youtube` |
 | `auto` (default) | — | — | — | CrisperWhisper Turbo if installed, else faster-whisper |
@@ -37,7 +36,7 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
    - Commercial use or no WSL2 → `faster-whisper` (default fallback) or `whisperx` (if pyannote speaker labels in the
      transcript are needed: `ileri.pyannote_konusmaci_ayrimi=true`, needs `HF_TOKEN` and accepted model terms).
    - English source, CPU only → `parakeet_cpu_align` (fastest measured) or `whisper_cpp_cpu_align`.
-   - Data may leave the machine and the user has a key → `speechmatics` / `elevenlabs_scribe_v2` (THIRD_PARTY.md §2).
+   - Data may leave the machine and the user has a key → `elevenlabs_scribe_v2` (THIRD_PARTY.md §2).
 3. Set the language mode ([docs/tarifler/dil_tespiti.md](../../../docs/tarifler/dil_tespiti.md)):
    - known single language → `transkripsiyon.kaynak_dil=en` (skips detection, safest);
    - unknown single language → `auto` (default);
@@ -59,7 +58,7 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 | `CUDA out of memory` in WhisperX | close other GPU programs; the job retries once in int8; [low_vram.md](../../../docs/engineering/low_vram.md) |
 | English-only engine with another language | settings error by design; pick a multilingual engine |
 | CrisperWhisper on a CPU machine | error by design (no CPU path) |
-| `SPEECHMATICS_API_KEY_1 .env dosyasinda bulunamadi` / `ELEVENLABS_API_KEY ...` | copy `.env.example` to `.env`, fill your own key |
+| `ELEVENLABS_API_KEY ...` | copy `.env.example` to `.env`, fill your own key |
 | Manual engine shows `yok` | follow its `docs/motorlar/<engine>.md` install section |
 
 ## Related
@@ -70,7 +69,7 @@ for every engine; [ADR 0005](../../../docs/adr/0005-ctc-forced-alignment-only-ti
 [docs/engineering/word_alignment.md](../../../docs/engineering/word_alignment.md) · engine pages:
 [faster-whisper](../../../docs/motorlar/faster-whisper.md), [whisperx](../../../docs/motorlar/whisperx.md),
 [crisperwhisper_turbo_ct2](../../../docs/motorlar/crisperwhisper_turbo_ct2.md),
-[parakeet_cpu_align](../../../docs/motorlar/parakeet_cpu_align.md), [speechmatics](../../../docs/motorlar/speechmatics.md),
+[parakeet_cpu_align](../../../docs/motorlar/parakeet_cpu_align.md),
 [elevenlabs_scribe_v2](../../../docs/motorlar/elevenlabs_scribe_v2.md), [youtube_translate](../../../docs/motorlar/youtube_translate.md)
 
 ## Türkçe özet

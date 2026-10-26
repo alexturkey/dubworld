@@ -20,7 +20,6 @@
     hizalama-diller  ja, zh kaynak dilleri için CTC kelime zamanı modelleri (~2,5 GB, Apache-2.0)
     youtube   yt-dlp (bağlantıdan indirme; yalnız hakkınız olan ya da izinli içerik)
     parakeet  sherpa-onnx + Parakeet Unified EN 0.6B INT8 modeli (~663 MB; İngilizce, işlemci)
-    speechmatics  bulut STT istemcisi (kendi anahtarınız: .env)
     crisper   CrisperWhisper 2.0 Turbo (13. motor; TİCARİ OLMAYAN lisans; WSL2 + NVIDIA; -TicariOlmayanKabul gerekir)
     voxcpm2   VoxCPM2 TTS (NVIDIA GPU; kardeş repo sabit commit, kendi kurulum betiğiyle)
     tts-ema   EMA Lightning TTS (yalnız Türkçe, Apache-2.0): paket (hash'li kilit) + ağırlık (~34 MB, sabit commit +
@@ -191,7 +190,7 @@ if (Adim "modeller") {
   Bilgi "MODELLER_OK"
 }
 
-foreach ($ek in @("demucs", "youtube", "parakeet", "speechmatics")) {
+foreach ($ek in @("demucs", "youtube", "parakeet")) {
   if (Adim $ek) {
     Bilgi "== isteğe bağlı: $ek"
     # torch'a bağlı ekin işlemci profili için ayrı kilidi var (ek_<ad>_cpu.txt; GPU kilidindeki torch +cu128 kurulamaz).

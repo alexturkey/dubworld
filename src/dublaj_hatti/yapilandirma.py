@@ -67,7 +67,6 @@ WHISPERX_PROFILLERI = ["auto", "whisperx_float32_quality_v1", "whisperx_engine_d
 STT_SABIT_PROFIL: dict[str, tuple[str, str]] = {
     "crisperwhisper_turbo_ct2": ("CrisperWhisper2.0_turbo", "int8"),
     "parakeet_cpu_align": ("parakeet-unified-en-0.6b-int8", "int8"),
-    "speechmatics": ("API", "float32"),
     "elevenlabs_scribe_v2": ("scribe_v2", "api"),
     # metin YouTube'un json3 otomatik altyazısından gelir, kelime zamanı CTC hizalamadan; ses tanıma modeli yok
     "youtube_translate": ("json3+ctc", "n/a"),
@@ -84,7 +83,7 @@ CRISPER_DIL_KIPLERI = {
     "auto": ["global_first_window", "continuous_stream"],
 }
 # Konuşmacı ayrımını (ileri.pyannote_konusmaci_ayrimi) kendi içinde destekleyen motorlar
-STT_KONUSMACI_AYRIMI = {"whisperx", "speechmatics", "elevenlabs_scribe_v2"}
+STT_KONUSMACI_AYRIMI = {"whisperx", "elevenlabs_scribe_v2"}
 DISTIL_YALNIZ_INGILIZCE = {"distil-large-v3", "distil-large-v3.5"}
 LLM_CEVIRI = [ad for ad in CEVIRI_ARKA_UCLARI if ad not in ("auto", "yerel")]
 DIL_KODU = re.compile(r"^[a-z]{2,3}$")
@@ -166,7 +165,7 @@ KALDIRILAN_AYARLAR = frozenset({"ileri.tts_isci"})
 # bu tablo silinir ve eski değer normal "geçersiz seçenek" hatası olur. Motor kaldıran her değişiklik buraya satır ekler.
 EMEKLI_DEGERLER: dict[str, dict[str, str]] = {
     "transkripsiyon.motor": {"crisperwhisper2_medium": "auto", "moonshine_medium_streaming_en": "auto",
-                           "whisper_cpp_cpu_align": "auto"},
+                           "whisper_cpp_cpu_align": "auto", "speechmatics": "auto"},
     "transkripsiyon.crisper_dil_tespiti": {"per_window": "global_first_window"},  # yalnız CrisperWhisper Medium destekliyordu
 }
 _EMEKLI_UYARI = {
@@ -374,7 +373,7 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
                  f"{', '.join(sorted(STT_KONUSMACI_AYRIMI))} seçin", "ileri.pyannote_konusmaci_ayrimi",
                  "transkripsiyon.motor")
         elif stt not in STT_KONUSMACI_AYRIMI:
-            uyari("ileri.pyannote_konusmaci_ayrimi yalnız whisperx / speechmatics / elevenlabs_scribe_v2 ile "
+            uyari("ileri.pyannote_konusmaci_ayrimi yalnız whisperx / elevenlabs_scribe_v2 ile "
                   "etkilidir (dublajda konuşmacı ayrımını ses.konusmaci_cinsiyetine_gore_ses yapar)",
                   "ileri.pyannote_konusmaci_ayrimi", "transkripsiyon.motor")
     dil_kipi = ayar["transkripsiyon.crisper_dil_tespiti"]

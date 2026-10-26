@@ -121,7 +121,7 @@ gibidir. Her adım başarıda bir işaret satırı yazar.
 | 2 | `python` | evet | `uv python install 3.11.14 --no-bin` ile `runtime_assets/python` altına kurar | 1 | `PYTHON_OK` |
 | 3 | `paketler` | evet | profili algılar, `.venv`'i kurar, `requirements/gpu.txt` ya da `cpu.txt`'yi `--require-hashes` ile, ardından bu paketi `--no-deps -e .` ile kurar (`dubla`, `dubla-gui`, `dubla-web`, `dubla-telegram` komutları) | 2 | `PAKETLER_OK` |
 | 4 | `modeller` | evet | `scripts/modelleri_indir.py --adim supertonic,ceviri,stt,hizalama,konusmaci,ffmpeg` (bölüm 6) | 3 | `MODELLER_OK` |
-| 5 | `demucs`, `youtube`, `parakeet`, `speechmatics` | hayır | `.venv`'e hash'li ekler (`requirements/ek_<ad>.txt`; işlemci profilinde varsa `ek_<ad>_cpu.txt`); `demucs` `htdemucs` ağırlığını da indirir (≈ 84 MB, sha256), `parakeet` modelini | 3 | `<AD>_OK` |
+| 5 | `demucs`, `youtube`, `parakeet` | hayır | `.venv`'e hash'li ekler (`requirements/ek_<ad>.txt`; işlemci profilinde varsa `ek_<ad>_cpu.txt`); `demucs` `htdemucs` ağırlığını da indirir (≈ 84 MB, sha256), `parakeet` modelini | 3 | `<AD>_OK` |
 | 5b | `hizalama-diller` | hayır | Japonca ve Çince kaynaklar için CTC kelime zamanı modelleri (`modelleri_indir.py --adim hizalama-diller`, ≈ 2,5 GB, Apache-2.0) | 3 | `HIZALAMA-DILLER_OK` |
 | 6 | `akilli-kare`, `galeri`, `telegram` | hayır | `.venv`'e `requirements/ek_<ad>.txt`'den ekler (hash'li) | 3 | `<AD>_OK` |
 | 6b | `telegram-sunucu` | hayır | 2000 MB'a kadar teslim için yerel Telegram Bot API sunucusu (`dubla-telegram sunucu kur`: Docker kuruluysa Docker, yoksa resmî kaynağın derlemesi, Windows'ta WSL içinde); `.env`'de `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` gerekir ([tarif](tarifler/telegram_buyuk_dosya.md)); `telegram` adımını da çalıştırır | 6, Docker ya da WSL | `TELEGRAM_SUNUCU_OK` |
@@ -189,7 +189,6 @@ dokunmadan tek başına kaldırılabilir.
 | `hizalama-diller` | Japonca ve Çince kaynaklar için wav2vec2 CTC modelleri (diğer kaynak diller: `DUBLAJ_CEVRIMICI=1`; WhisperX'in fr/de/es/it varsayılanları CC BY-NC 4.0) | `runtime_assets/model_cache/huggingface/` | Apache-2.0 | – |
 | `youtube` | yt-dlp (bağlantı girişi) | `.venv` | Unlicense; yalnız sahibi olunan ya da indirme izni olan içerik (ETHICS.md) | – |
 | `parakeet` | sherpa-onnx + Parakeet Unified EN 0.6B INT8 (İngilizce, işlemci) | `.venv`, `runtime_assets/model_cache/` | NVIDIA Open Model License (şartlı ticari kullanım) | – |
-| `speechmatics` | Speechmatics toplu istemcisi | `.venv` | bulut hizmeti, `.env`'de kullanıcının kendi anahtarı; ses makineden çıkar | – |
 | `akilli-kare` | OpenCV headless (`video.akilli_kare`) | `.venv` | Apache-2.0 | – |
 | `galeri` | gallery-dl (yalnız ayrı süreç olarak çağrılır) | `.venv` | GPL-2.0-only; içe aktarılmaz | – |
 | `telegram` | python-telegram-bot (uzaktan kumanda botu, belirteç yalnız `.env`'de) | `.venv` | LGPL-3.0-only, değiştirilmeden kütüphane olarak | – |

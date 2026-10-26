@@ -47,7 +47,7 @@ def test_parakeet_motor_dosya_listesi_kayitla_ayni():
 
 
 def test_kur_parakeet_adimi_modeli_indirir():
-    blok = KUR[KUR.index('foreach ($ek in @("demucs", "youtube", "parakeet", "speechmatics"))'):]
+    blok = KUR[KUR.index('foreach ($ek in @("demucs", "youtube", "parakeet"))'):]
     blok = blok[: blok.index("function Ek-Kur")]
     assert '-eq "parakeet"' in blok and "modelleri_indir.py" in blok and "--adim parakeet" in blok
 

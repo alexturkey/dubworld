@@ -17,7 +17,6 @@ from dublaj_hatti.bolum_40_ceviri import arka_uc_secimi
 KOK = Path(__file__).resolve().parents[1]
 KOPRU = KOK / "src/dublaj_hatti/bolum_40_ceviri/llm_kopru/scripts/bridge_worker.py"
 STT_CONFIG = {
-    "speechmatics": KOK / "src/dublaj_hatti/bolum_20_transkripsiyon/speechmatics_motoru/config.py",
     "elevenlabs_scribe_v2": KOK / "src/dublaj_hatti/bolum_20_transkripsiyon/elevenlabs_scribe_v2_motoru/config.py",
 }
 ANAHTAR_DESENI = re.compile(r"\b[A-Z][A-Z0-9_]*_API_KEY(?:_[0-9]+)?\b")
@@ -34,7 +33,7 @@ def _stt_adlari() -> set[str]:
 
 
 def _temizle(monkeypatch: pytest.MonkeyPatch) -> None:
-    for ad in _ceviri_adlari() | _stt_adlari() | {"GEMINI_API_KEY", "GROQ_API_KEY", "SPEECHMATICS_API_KEY"}:
+    for ad in _ceviri_adlari() | _stt_adlari() | {"GEMINI_API_KEY", "GROQ_API_KEY"}:
         monkeypatch.delenv(ad, raising=False)
 
 
@@ -70,9 +69,9 @@ def test_stt_adlari_motorla_ayni(monkeypatch, ad):
 def test_eski_yanlis_adlar_sayilmaz(monkeypatch):
     _temizle(monkeypatch)
     monkeypatch.setenv("GEMINI_API_KEY", "x")
-    monkeypatch.setenv("SPEECHMATICS_API_KEY", "x")
+    monkeypatch.setenv("ELEVENLABS_KEY", "x")
     assert not kayit.motor("gemini_2_5_flash").kurulu()
-    assert not kayit.motor("speechmatics").kurulu()
+    assert not kayit.motor("elevenlabs_scribe_v2").kurulu()
 
 
 def test_env_ornegi_her_motora_bir_ad_verir_ve_bilinmeyen_ad_yok():
