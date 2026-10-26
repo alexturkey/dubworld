@@ -144,6 +144,12 @@ class Motor:
     diller: frozenset[str] | None = None  # stt: kaynak dilleri, tts/çeviri: hedef dilleri; None = çok dilli
     dil_notu: str = ""
     deneysel: str = ""  # boş değilse motor DENEYSEL: bilinen sınırın kısa gerekçesi (arayüz etiketi + ayar uyarısı)
+    # Motor bilgi satırı (arayüz "Motorlar" seçicisi API ile okur; stt ve tts motorları için zorunlu, test denetler)
+    ticari_kullanim: bool = False  # lisans ticari kullanıma izin veriyor mu (şartlı = evet, şartı THIRD_PARTY.md'de)
+    donanim_metni: str = ""  # kısa donanım gereği (İngilizce, arayüz çevirisi ayrı)
+    diller_metni: str = ""  # kısa dil kapsamı (İngilizce)
+    guc_tr: str = ""  # tek satır: motorun güçlü yanı (Türkçe)
+    guc_en: str = ""  # one line: the engine's strength (English)
 
     @property
     def belge(self) -> str:
@@ -405,8 +411,61 @@ _DONANIM_DIL: dict[str, dict] = {
 }
 _BULUT_VARSAYILAN = dict(vram_mb=0, cpu="bulut", kanit="belgeye göre", bellek="yerel yük yok (bulut)")
 
+# --- motor bilgi satırı: lisans (ticari mi), donanım, diller, güçlü yan (TR + EN) ---------------------------------
+# Arayüz bunu `motor_bilgisi()` / `motor_bilgileri()` ile okur. Değerlerin kaynağı yukarıdaki Motor satırları,
+# docs/donanim.md ve docs/diller.md; yeni stt/tts motoru buraya satır eklemeden testi geçemez.
+_BILGI: dict[str, tuple[bool, str, str, str, str]] = {
+    "faster-whisper": (True, "CPU or NVIDIA GPU", "Whisper languages (about 99)",
+                       "Sağlam, her makinede çalışan temel tanıma; kelime zamanı Whisper'dan.",
+                       "Solid baseline recognition that runs on any machine; word times come from Whisper."),
+    "faster_whisper_ctc": (True, "CPU or NVIDIA GPU", "Whisper languages; word times for languages with a CTC model",
+                           "GPU olmadan da çalışan önerilen akış; kelime zamanı ayrı hizalama modelinden.",
+                           "Recommended flow that also runs without a GPU; word times from a separate alignment model."),
+    "whisperx": (True, "CPU or NVIDIA GPU", "Whisper languages; alignment model per language",
+                 "faster-whisper + wav2vec2 hizalama tek pakette.",
+                 "faster-whisper plus wav2vec2 alignment in one package."),
+    "crisperwhisper_turbo_ct2": (False, "NVIDIA GPU + WSL2 (no CPU path)", "Whisper languages; tested tr, en, ja",
+                                 "Sözcükleri olduğu gibi yazar (dolgu sesleri dahil); en hassas kelime zamanı.",
+                                 "Writes words verbatim (fillers included); the most precise word times."),
+    "crisperwhisper2_medium": (False, "NVIDIA GPU, about 3.6 GB VRAM", "Whisper languages",
+                               "CrisperWhisper'ın büyük modeli.", "The larger CrisperWhisper model."),
+    "moonshine_medium_streaming_en": (True, "CPU", "English only",
+                                      "İngilizce için küçük, akışlı CPU modeli.", "Small streaming CPU model for English."),
+    "whisper_cpp_cpu_align": (True, "CPU", "English only",
+                              "whisper.cpp ile CPU'da İngilizce tanıma.", "English recognition on CPU with whisper.cpp."),
+    "parakeet_cpu_align": (True, "CPU (about 1.9 GB RAM)", "English only",
+                           "İngilizce için ölçülmüş en hızlı CPU yolu (96,9 sn ses 11,9 sn).",
+                           "The fastest measured CPU path for English (96.9 s of audio in 11.9 s)."),
+    "speechmatics": (True, "None (cloud, own API key)", "Service language list",
+                     "Bulut tanıma; ses hizmete gönderilir.", "Cloud recognition; audio is sent to the service."),
+    "elevenlabs_scribe_v2": (True, "None (cloud, own API key)", "Service language list",
+                             "Bulut tanıma; ses hizmete gönderilir.", "Cloud recognition; audio is sent to the service."),
+    "youtube_translate": (True, "CPU or NVIDIA GPU (alignment only)", "Languages of the video's subtitle track",
+                          "Videonun altyazı metnini kullanır, ses tanıma yapmaz.",
+                          "Uses the video's subtitle text, no speech recognition."),
+    "supertonic": (True, "CPU (NVIDIA GPU not needed)", "31 languages",
+                   "Her makinede hızlı, 31 dil; varsayılan yedek ses.",
+                   "Fast on any machine, 31 languages; the default fallback voice."),
+    "voxcpm2": (True, "NVIDIA GPU, about 3 GB VRAM", "Tested: tr, en, fr, de, es, ru, zh, ja",
+                "Ses tasarımı ve metinsiz ses klonlama; en doğal ses.",
+                "Voice design and cloning from audio alone; the most natural voice."),
+    "ema_lightning": (True, "CPU or NVIDIA GPU", "Turkish only",
+                      "Türkçe için küçük ve hızlı tek ses.", "Small, fast single voice for Turkish."),
+    "xtts": (False, "NVIDIA GPU (about 4 GB VRAM) or slow CPU", "17 languages",
+             "Referans sesle klonlama (kullanımdan kalkıyor).", "Cloning from a reference voice (being deprecated)."),
+}
+
+
+def _bilgi_ekle(m: Motor) -> Motor:
+    b = _BILGI.get(m.ad)
+    if b is None:
+        return m
+    return replace(m, ticari_kullanim=b[0], donanim_metni=b[1], diller_metni=b[2], guc_tr=b[3], guc_en=b[4])
+
+
 MOTORLAR: tuple[Motor, ...] = tuple(
-    replace(m, **_DONANIM_DIL.get(m.ad, _BULUT_VARSAYILAN if m.cihaz == "bulut" else {})) for m in _HAM_MOTORLAR
+    _bilgi_ekle(replace(m, **_DONANIM_DIL.get(m.ad, _BULUT_VARSAYILAN if m.cihaz == "bulut" else {})))
+    for m in _HAM_MOTORLAR
 )
 
 
@@ -419,6 +478,27 @@ def motor(ad: str) -> Motor:
         if m.ad == ad:
             return m
     raise KeyError(ad)
+
+
+def motor_bilgisi(ad: str) -> dict[str, object]:
+    """Tek motorun arayüz bilgi satırı (JSON'a çevrilebilir): lisans, donanım, diller, güçlü yan (TR + EN)."""
+    m = motor(ad)
+    return {
+        "id": m.ad,
+        "kind": m.tur,
+        "name": m.gorunen_ad,
+        "licence_commercial": m.ticari_kullanim,
+        "licence": m.lisans,
+        "hardware": m.donanim_metni,
+        "languages": m.diller_metni,
+        "strength": {"tr": m.guc_tr, "en": m.guc_en},
+    }
+
+
+def motor_bilgileri(tur: str | None = None) -> list[dict[str, object]]:
+    """Bilgi satırı olan motorların listesi (tur: stt | tts | None = ikisi)."""
+    turler = (tur,) if tur else ("stt", "tts")
+    return [motor_bilgisi(m.ad) for t in turler for m in motorlar(t)]
 
 
 def adlar(tur: str, auto: bool = True) -> list[str]:
