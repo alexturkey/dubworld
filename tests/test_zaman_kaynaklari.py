@@ -303,8 +303,7 @@ def test_tablo_koddaki_hizalayiciyla_eslesir(motor):
 
 def test_ctc_disi_motorlar():
     ctc_disi = {m for m, z in zk.ZAMAN_KAYNAKLARI.items() if not z.ctc}
-    assert ctc_disi == {"faster-whisper",
-                        "elevenlabs_scribe_v2"}
+    assert ctc_disi == {"faster-whisper"}
 
 
 def test_bilinmeyen_motor_acik_hata():

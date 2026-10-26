@@ -56,7 +56,6 @@ Nothing is sent anywhere unless you select one of these. When you do, your audio
 | Cerebras API | transcript text | Provider terms | https://cloud.cerebras.ai | Your key and Cerebras' terms |
 | Mistral API | transcript text | Provider terms | https://console.mistral.ai | Your key and Mistral's terms |
 | Codex CLI image generation (optional cover image) | transcript text | Provider terms | https://github.com/openai/codex | Your OpenAI account and its terms; check rights before publishing a generated image |
-| ElevenLabs Scribe v2 (STT) | the audio file | Provider terms | https://elevenlabs.io | Your key and their terms; consent of people in the audio |
 
 ## 3. Tools and binaries (downloaded or called, never bundled)
 

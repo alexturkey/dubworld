@@ -27,13 +27,8 @@ src/dublaj_hatti/
   bolum_20_transkripsiyon/      ASR motor kutulari ve YouTube JSON3 kaynagi
     whisperx_motoru/
     faster_whisper_motoru/
-    whisper_cpp_cpu_align_motoru/
     parakeet_cpu_align_motoru/
-    speechmatics_motoru/
-    elevenlabs_scribe_v2_motoru/
-    crisperwhisper2_medium_motoru/      kendi venv ve modeliyle Medium motor kutusu
     crisperwhisper_turbo_ct2_motoru/    WSL2 CUDA INT8 motor kutusu
-    moonshine_medium_streaming_motoru/  CPU offline motor kutusu
     youtube_json3_kaynagi/
     zaman_kaynaklari.py
   bolum_30_hizalama_ve_segment/ nihai dublaj segmenti API'si ve CTC kelime hizalama

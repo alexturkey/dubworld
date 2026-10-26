@@ -252,7 +252,7 @@
   "ayar.genel.gunluk_seviyesi": "How much the log shows: \"INFO\" | \"DEBUG\" | \"WARNING\"",
   "ayar.genel.gozden_gecir": "Review before voicing: if on, the job stops right after the translation, before the voice is made (state \"inceleme_bekliyor\", not an error). Fix the lines in the web screen, then continue with the voicing. Only in segment_sync mode.",
 
-  "ayar.transkripsiyon.motor": "Engine. \"auto\" = CrisperWhisper Turbo CT2 if it is installed (best Turkish/English word timing, non-commercial license), otherwise faster-whisper. Choices: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2, parakeet_cpu_align, elevenlabs_scribe_v2 (cloud, your own key), youtube_translate (only with a YouTube link: the text comes from the video's subtitles + CTC; pip install .[youtube]). English only: parakeet_cpu_align. NVIDIA GPU only: crisperwhisper_turbo_ct2. Hardware table: docs/donanim.md",
+  "ayar.transkripsiyon.motor": "Engine. \"auto\" = CrisperWhisper Turbo CT2 if it is installed (best Turkish/English word timing, non-commercial license), otherwise faster-whisper. Choices: auto, faster-whisper, whisperx, crisperwhisper_turbo_ct2, parakeet_cpu_align, youtube_translate (only with a YouTube link: the text comes from the video's subtitles + CTC; pip install .[youtube]). English only: parakeet_cpu_align. NVIDIA GPU only: crisperwhisper_turbo_ct2. Hardware table: docs/donanim.md",
   "ayar.transkripsiyon.model": "Model for faster-whisper / whisperx: large-v3-turbo | large-v3 | medium | small (many languages) | distil-large-v3 | distil-large-v3.5 (English only). Other engines have a fixed model and ignore this.",
   "ayar.transkripsiyon.hesap_tipi": "Number format (faster-whisper / whisperx): \"auto\" (GPU: float16, else int8; CPU: int8) | float16 | int8 | int8_float16 | float32. Other engines use their own fixed format.",
   "ayar.transkripsiyon.kaynak_dil": "Language of the video: \"auto\" (the engine finds it) or an ISO code (\"en\", \"de\", ...) to set it yourself. Which engine finds it how: docs/tarifler/dil_tespiti.md",
@@ -305,7 +305,7 @@
   "ayar.ileri.tts_deneme": "How many times to retry the voice engine",
   "ayar.ileri.tts_deneme_bekleme_sn": "Seconds to wait between retries",
   "ayar.ileri.ornekleme_hizi": "Output sample rate (Supertonic uses its own rate)",
-  "ayar.ileri.pyannote_konusmaci_ayrimi": "Tell speakers apart in the transcript: whisperx (pyannote; accept the terms of two models on Hugging Face and set HF_TOKEN), elevenlabs_scribe_v2 (the cloud does it). CrisperWhisper, moonshine and cpu_align don't support it.",
+  "ayar.ileri.pyannote_konusmaci_ayrimi": "Tell speakers apart in the transcript: whisperx (pyannote; accept the terms of two models on Hugging Face and set HF_TOKEN). CrisperWhisper, moonshine and cpu_align don't support it.",
 
   "oynatici.alan": "Video player",
   "oynatici.tam_ekran_cik": "Leave full screen",

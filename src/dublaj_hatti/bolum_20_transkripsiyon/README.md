@@ -11,13 +11,8 @@ bolum_20_transkripsiyon/
   ayarlar/                            Telegram transkripsiyon preset sahipligi
   whisperx_motoru/                    WhisperX (kendi hizalamasiyla)
   faster_whisper_motoru/
-  whisper_cpp_cpu_align_motoru/
   parakeet_cpu_align_motoru/
-  speechmatics_motoru/
-  elevenlabs_scribe_v2_motoru/
-  crisperwhisper2_medium_motoru/      kendi venv ve modeliyle Medium motor kutusu
   crisperwhisper_turbo_ct2_motoru/    kendi WSL venv'i ve modeliyle Turbo CT2 motor kutusu
-  moonshine_medium_streaming_motoru/  kendi venv'i ve modeliyle CPU offline motor kutusu
   youtube_json3_kaynagi/              YouTube JSON3 metni + WhisperX alignment
 ```
 

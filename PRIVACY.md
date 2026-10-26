@@ -25,7 +25,6 @@ Türkçe bölüm tam çevirisidir.
 | Groq (`groq_llama_4_scout`) | transcript text | Groq | `GROQ_API_KEY_1` (or the other names in `.env.example`) |
 | Cerebras (`cerebras_llama_3_1_8b`) | transcript text | Cerebras | `CEREBRAS_API_KEY` |
 | Mistral (`mistral_nemo`) | transcript text | Mistral AI | `MISTRAL_API_KEY` |
-| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | the extracted audio track; also account and usage queries made with your key (subscription and request analytics, to report cost); for the cost in Turkish lira, one exchange-rate request (USD→TRY, ECB rate) without any key, audio or text | ElevenLabs; the rate request goes to `api.frankfurter.dev` | `ELEVENLABS_API_KEY` (none for the rate request) |
 | Cover image (`python -m ...kapak_gorseli`, never automatic) | the transcript, from which a neutral English image prompt is written | OpenAI, through your Codex CLI | your Codex login |
 | Link input (`indir`, yt-dlp / gallery-dl) | an ordinary download request for the link you gave | the site of that link | none added by this project (a gallery-dl config you point to with `DUBLAJ_GALLERY_DL_AYAR` is used as you wrote it) |
 | Install (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | file download requests | Hugging Face, GitHub, PyPI, PyTorch, ModelScope, `dl.fbaipublicfiles.com` (Meta, Demucs weight, `-Adim demucs`); Docker Hub only for the optional `-Adim telegram-sunucu` image (fixed addresses + SHA-256 in `scripts/modeller.json` and the lock files; the image by digest) | none |
@@ -52,7 +51,6 @@ Everything stays under folders you control; nothing is uploaded by the project i
 | Settings and keys | `ayarlar/kullanici.toml`, `.env` (both git-ignored) | your settings; your API keys and bot token. Never logged; never written anywhere else by the project. |
 | Translation usage logs | `runtime/usage/` inside the translation bridge folder (`src/dublaj_hatti/bolum_40_ceviri/<bridge>/runtime/`, git-ignored) | per request: time, provider, model, status, token counts, estimated cost, the **name** (never the value) of the key used; on errors the first 1000 characters of the provider's error text, which may echo part of the input. The transcript itself is not written there. |
 | Translation bridge working files | `runtime/{inbox,outbox,logs,tmp}/` and `runtime/status.json` in the same folder (git-ignored) | the job sent to the CLI or API (segment texts), the model's answer and the CLI's own output: **this contains the transcript and the translation**. Safe to delete when no job is running. |
-| ElevenLabs cache | inside the job folder | `raw_response.json` + `request_manifest.json` keyed by an audio fingerprint, so a retry is not billed twice; `account_snapshot.json` (plan and quota). |
 | Models | `runtime_assets/` (git-ignored) | downloaded model files only. |
 
 The Telegram bot does not write your user id or message text to disk or to logs; unauthorised users are counted, not
@@ -96,7 +94,6 @@ Privacy questions about this code: open an issue (no personal data in it). Secur
 | Groq (`groq_llama_4_scout`) | transkript metni | Groq | `GROQ_API_KEY_1` (ya da `.env.example`'daki diğer adlar) |
 | Cerebras (`cerebras_llama_3_1_8b`) | transkript metni | Cerebras | `CEREBRAS_API_KEY` |
 | Mistral (`mistral_nemo`) | transkript metni | Mistral AI | `MISTRAL_API_KEY` |
-| ElevenLabs Scribe v2 (`elevenlabs_scribe_v2`) | çıkarılan ses izi; ayrıca anahtarınızla hesap ve kullanım sorguları (abonelik ve istek analizi, maliyeti raporlamak için); maliyeti Türk lirasıyla yazmak için anahtar, ses ve metin içermeyen tek bir kur isteği (USD→TRY, ECB kuru) | ElevenLabs; kur isteği `api.frankfurter.dev`'e gider | `ELEVENLABS_API_KEY` (kur isteği için yok) |
 | Kapak görseli (`python -m ...kapak_gorseli`, hiçbir zaman otomatik değil) | transkript (ondan nötr İngilizce görsel istemi yazılır) | OpenAI, Codex CLI'niz üzerinden | Codex oturumunuz |
 | Bağlantı girdisi (`indir`, yt-dlp / gallery-dl) | verdiğiniz bağlantı için olağan indirme isteği | o bağlantının sitesi | proje eklemez (`DUBLAJ_GALLERY_DL_AYAR` ile gösterdiğiniz gallery-dl ayar dosyası yazdığınız gibi kullanılır) |
 | Kurulum (`scripts/kur.ps1`, `scripts/modelleri_indir.py`) | dosya indirme istekleri | Hugging Face, GitHub, PyPI, PyTorch, ModelScope, `dl.fbaipublicfiles.com` (Meta, Demucs ağırlığı, `-Adim demucs`); Docker Hub yalnız isteğe bağlı `-Adim telegram-sunucu` imajı için (sabit adres + SHA-256: `scripts/modeller.json` ve kilit dosyaları; imaj özetle) | yok |
@@ -123,7 +120,6 @@ Her şey sizin denetlediğiniz klasörlerde kalır; proje kendiliğinden hiçbir
 | Ayarlar ve anahtarlar | `ayarlar/kullanici.toml`, `.env` (ikisi de git dışı) | ayarlarınız; API anahtarlarınız ve bot belirteciniz. Günlüğe yazılmaz; proje başka bir yere yazmaz. |
 | Çeviri kullanım günlükleri | çeviri köprüsü klasöründeki `runtime/usage/` (`src/dublaj_hatti/bolum_40_ceviri/<köprü>/runtime/`, git dışı) | istek başına: zaman, sağlayıcı, model, durum, jeton sayısı, tahmini maliyet, kullanılan anahtarın **adı** (değeri asla); hatada sağlayıcı hata metninin ilk 1000 karakteri (girdinin bir kısmını yansıtabilir). Transkriptin kendisi oraya yazılmaz. |
 | Çeviri köprüsü çalışma dosyaları | aynı klasörde `runtime/{inbox,outbox,logs,tmp}/` ve `runtime/status.json` (git dışı) | CLI'ya ya da API'ye giden iş (segment metinleri), modelin cevabı ve CLI'nın kendi çıktısı: **transkripti ve çeviriyi içerir**. İş çalışmıyorken silinebilir. |
-| ElevenLabs önbelleği | iş klasörünün içinde | ses parmak iziyle anahtarlanmış `raw_response.json` + `request_manifest.json` (yeniden denemede iki kez ödenmez); `account_snapshot.json` (plan ve kota). |
 | Modeller | `runtime_assets/` (git dışı) | yalnız indirilen model dosyaları. |
 
 Telegram botu kullanıcı kimliğinizi ya da mesaj metninizi diske ya da günlüğe yazmaz; izinsiz kullanıcılar kaydedilmez,

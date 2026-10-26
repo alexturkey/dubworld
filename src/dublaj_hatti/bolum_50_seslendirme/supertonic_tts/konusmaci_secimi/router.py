@@ -57,28 +57,6 @@ def collect_progress_timings(path: Path) -> dict[str, float]:
     return timings
 
 
-def build_speaker_timeline_from_segment_words(segments) -> list[dict]:
-    timeline = []
-    previous_start = -1.0
-    for segment in segments:
-        for word in usable_segment_words(getattr(segment, "words", None)):
-            speaker = str(word.get("speaker") or "").strip()
-            if not speaker:
-                continue
-            start = float(word["start"])
-            end = float(word["end"])
-            if start < previous_start or end < start:
-                raise ValueError("ElevenLabs speaker kelime zamanlari kronolojik degil")
-            previous_start = start
-            if timeline and timeline[-1]["speaker"] == speaker:
-                timeline[-1]["end"] = max(float(timeline[-1]["end"]), end)
-            else:
-                timeline.append({"start": start, "end": end, "speaker": speaker})
-    if not timeline:
-        raise ValueError("ElevenLabs diarization acik olmasina ragmen speaker bilgisi uretmedi")
-    return timeline
-
-
 def konusmaci_seslerini_ata(
     segments,
     audio_path: str,

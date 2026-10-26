@@ -28,7 +28,7 @@ YOL_KOKLERI = ("src/", "docs/", "scripts/", "examples/", "tests/", "requirements
 CALISMADA_OLUSUR = ("runtime_assets/", "ayarlar/", "cikti/", ".venv/", "out/")
 AYAR_DESENI = re.compile(r"(?<![\w./])((?:genel|transkripsiyon|ses_temizligi|ceviri|ses|altyazi|video|ileri)"
                          r"\.[a-z_0-9]+(?:\.[a-z_A-Z0-9*]+)?\*?)")
-ORTAM_DESENI = re.compile(r"\b((?:DUBLAJ|CODEX_BRIDGE|TELEGRAM|SPEECHMATICS|ELEVENLABS|GROQ|MISTRAL|CEREBRAS|GEMINI|HF)"
+ORTAM_DESENI = re.compile(r"\b((?:DUBLAJ|CODEX_BRIDGE|TELEGRAM|GROQ|MISTRAL|CEREBRAS|GEMINI|HF)"
                           r"_[A-Z0-9_]+|HF_TOKEN|OPENAI_API_KEY)\b")
 
 

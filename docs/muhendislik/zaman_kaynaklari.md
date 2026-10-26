@@ -39,7 +39,6 @@ birleşimler: [../tarifler/kombinasyonlar.md](../tarifler/kombinasyonlar.md).
 | [whisperx](../motorlar/whisperx.md) | işçinin içinde WhisperX `align()` (wav2vec2 CTC) | ASR segmentleri | elle; ayrıca distil / Parakeet dil yedeğinin hedefi |
 | [parakeet_cpu_align](../motorlar/parakeet_cpu_align.md) | ortak CTC kutusu | belirteç (token) zamanları; ≥ 1,0 sn boşluk yeni pencere açar (80 ms pay) | elle (İngilizce, işlemci) |
 | [youtube_translate](../motorlar/youtube_translate.md) | ortak CTC kutusu | json3 başlangıç ipuçlarından pencereler | elle, yalnız YouTube bağlantısı (§3) |
-| [elevenlabs_scribe_v2](../motorlar/elevenlabs_scribe_v2.md) | sağlayıcı API'sinin kelime zamanları, **CTC yok** | – | elle, kendi anahtarınızla |
 
 Kod: dağıtıcı `src/dublaj_hatti/bolum_00_omurga/core/dubber.py` içindeki `transcribe_and_align()`; CTC kutusu
 `src/dublaj_hatti/bolum_30_hizalama_ve_segment/ctc_kelime_hizalama/` (`run_ctc_word_alignment`).
@@ -154,7 +153,6 @@ doğruluğu altyazı izinin doğruluğu kadardır.
 | Motor | CTC neden çalışmaz | Ölçülmüş karşılaştırma |
 |---|---|---|
 | faster-whisper (yalnız elle) | Hizalama adımı olmadan hızlı yol olarak ve CTC modeli olmayan diller için tutulur. `auto` bunu kullanmaz; yedeği `faster_whisper_ctc`'dir (§2.1) | 10 dosyalık İngilizce derlemde (3,9 sa) CTC zamanlı motorlarda kelime başı ortalama mutlak hata (MAE) 28–51 ms ve 0 sıfır süreli kelime; distil'in kendi zamanlarında 106–126 ms ve 611–899 sıfır süreli kelime ([transkripsiyon.md](transkripsiyon.md) §1). distil olmayan faster-whisper'ın kendi zamanı ↔ CTC: **kayıt yok** |
-| elevenlabs_scribe_v2 | Sağlayıcı kelime zamanı döndürür; CTC geçişi yok. Gerekçe: **kayıt yok** | **kayıt yok** |
 
 Beşi de ortak denetimlerden (§5) ve nihai segment kurucudan geçer.
 

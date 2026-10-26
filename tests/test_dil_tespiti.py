@@ -94,8 +94,8 @@ def test_sabit_dil_platform_yolundan_iletilir():
     from dublaj_hatti.bolum_00_omurga.core.dubber import _sabit_dil_platform_yerine
 
     cfg = SimpleNamespace(whisper_language="tr")
-    for motor in ("crisperwhisper_turbo_ct2", "elevenlabs_scribe_v2"):
+    for motor in ("crisperwhisper_turbo_ct2",):
         assert _sabit_dil_platform_yerine(motor, cfg, None) == "tr"
         assert _sabit_dil_platform_yerine(motor, cfg, "de") == "de"  # platform dili önceliklidir
     assert _sabit_dil_platform_yerine("faster-whisper", cfg, None) is None  # kendi yolu cfg.whisper_language
-    assert _sabit_dil_platform_yerine("elevenlabs_scribe_v2", SimpleNamespace(whisper_language="auto"), None) is None
+    assert _sabit_dil_platform_yerine("crisperwhisper_turbo_ct2", SimpleNamespace(whisper_language="auto"), None) is None

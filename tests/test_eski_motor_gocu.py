@@ -41,7 +41,8 @@ def caplog():
 
 # Bu sürümde kaldırılan transkripsiyon motorları (her kaldırma commit'i listeye bir satır ekler)
 KALDIRILAN_STT: list[str] = ["crisperwhisper2_medium", "moonshine_medium_streaming_en",
-                   "whisper_cpp_cpu_align", "speechmatics"]
+                   "whisper_cpp_cpu_align", "speechmatics",
+                   "elevenlabs_scribe_v2"]
 
 
 def test_emekli_deger_auto_ya_eslenir_ve_iki_dilli_uyari_yazar(monkeypatch, caplog):

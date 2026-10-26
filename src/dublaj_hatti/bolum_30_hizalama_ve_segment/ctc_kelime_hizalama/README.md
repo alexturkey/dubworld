@@ -14,8 +14,7 @@ Bilinen metni sese hizalar ve her kelimenin gerçek başlangıç/bitiş zamanın
 | YouTube JSON3 | `youtube_json3_kaynagi/engine.py::_run_ctc_alignment` |
 
 WhisperX motoru bu kutuyu kullanmaz; kendi kutusundaki hizalamayla çalışır.
-Zamanı kendisi üreten motorlar (CrisperWhisper Medium, Moonshine, Speechmatics,
-ElevenLabs) da bu kutuya girmez.
+Kendi kelime zamanını üreten motorlar da bu kutuya girmez (elle seçilen `faster-whisper` gibi).
 
 ## Giriş
 

@@ -136,7 +136,6 @@ ASR_LEADING_PAD_ENGINES = {
     "faster-whisper",
     FASTER_WHISPER_CTC_ENGINE,
     "whisperx",
-    "elevenlabs_scribe_v2",
     "parakeet_cpu_align",
 }
 PARAKEET_ALIGNMENT_INPUT_CONTRACT_VERSION = 2
@@ -2068,7 +2067,7 @@ GIZLI_SUREC: Dict[str, Any] = {"creationflags": 0x08000000} if sys.platform == "
 
 # Yalnız platform dilini okuyan motorlar (cfg.whisper_language'ı kendileri okumaz). docs/tarifler/dil_tespiti.md
 SABIT_DIL_PLATFORM_YOLU_MOTORLARI = frozenset({
-    "crisperwhisper_turbo_ct2", "elevenlabs_scribe_v2",
+    "crisperwhisper_turbo_ct2",
 })
 
 
@@ -2119,24 +2118,9 @@ _transcription_engine_display_names = {
     "whisperx": "WhisperX",
     "crisperwhisper_turbo_ct2": "CrisperWhisper2.0 Turbo CT2 (istege bagli, ticari olmayan)",
     "parakeet_cpu_align": "Parakeet Unified EN INT8 CPU + CTC",
-    "elevenlabs_scribe_v2": "ElevenLabs Scribe v2 (bulut, kendi anahtariniz)",
     "youtube_translate": "YouTube json3 altyazi + CTC (istege bagli, yt-dlp)",
 }
 
-_elevenlabs_language_code_map = {
-    "ara": "ar",
-    "deu": "de",
-    "eng": "en",
-    "fra": "fr",
-    "ita": "it",
-    "jpn": "ja",
-    "kor": "ko",
-    "por": "pt",
-    "rus": "ru",
-    "spa": "es",
-    "tur": "tr",
-    "zho": "zh",
-}
 
 
 def _transcription_engine_display_name(engine_name: str) -> str:
@@ -2547,93 +2531,6 @@ def _transcribe_crisperwhisper_turbo_ct2(
     return segments, detected_language, final_aligned
 
 
-def _normalize_elevenlabs_language_code(language_code: str) -> str:
-    normalized = normalize_language_code(language_code)
-    return _elevenlabs_language_code_map.get(normalized, normalized)
-
-
-def _transcribe_elevenlabs_scribe_v2(
-    wav_path,
-    cfg,
-    run_dir,
-    whisper_lang,
-    platform_lang,
-    asr_time_offset: float = 0.0,
-    full_text_mode: bool = False,
-    prepare_final_segments: bool = True,
-):
-    from bolum_20_transkripsiyon.elevenlabs_scribe_v2_motoru import transcribe_audio
-
-    if platform_lang:
-        lang = _normalize_elevenlabs_language_code(platform_lang)
-    elif whisper_lang:
-        lang = _normalize_elevenlabs_language_code(whisper_lang)
-    else:
-        lang = "auto"
-    data = transcribe_audio(
-        wav_path,
-        run_dir,
-        language_code=None if lang == "auto" else lang,
-        use_diarization=bool(getattr(cfg, "use_diarization", False)),
-    )
-    _apply_asr_time_offset_to_transcription_data(data, asr_time_offset)
-    detected_language = _normalize_elevenlabs_language_code(data.get("detected_language") or lang)
-    all_words = list(data.get("words") or [])
-    if not all_words:
-        raise RuntimeError("ElevenLabs Scribe v2 kelime zamani uretmedi")
-    usage_report_path = os.path.abspath(str(data["usage_report_path"]))
-    usage_report_relative = _checkpoint_relative_path(run_dir, usage_report_path)
-    cfg.transcription_usage_report = usage_report_path
-    raw_transcript = str(data.get("raw_transcript") or "").strip()
-    ham_segments_path = os.path.join(run_dir, _transcription_ham_file_name("elevenlabs_scribe_v2"))
-    with open(ham_segments_path, "w", encoding="utf-8") as stream:
-        stream.write("ELEVENLABS SCRIBE V2 HAM TRANSKRIPT\n")
-        stream.write("=" * 70 + "\n\n")
-        if raw_transcript:
-            stream.write(raw_transcript + "\n\n")
-        stream.write(f"Toplam kelime: {len(all_words)}\n\n")
-        for index, word in enumerate(all_words, start=1):
-            speaker = f" [{word.get('speaker', '')}]" if word.get("speaker") else ""
-            stream.write(
-                f"{index}. [{float(word.get('start', 0.0)):.3f}s - "
-                f"{float(word.get('end', 0.0)):.3f}s]{speaker} {word.get('word', '')}\n"
-            )
-    full_text = " ".join(str(word.get("word") or "").strip() for word in all_words).strip()
-    usage_alignment = {"transcription_usage_report": usage_report_relative}
-    if full_text_mode:
-        return [Segment(
-            index=1,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=list(all_words),
-        )], detected_language, {"segments": [{
-            "start": float(all_words[0]["start"]),
-            "end": float(all_words[-1]["end"]),
-            "text": full_text,
-            "words": list(all_words),
-        }], **usage_alignment}
-    if not prepare_final_segments:
-        raw_segment = Segment(
-            index=0,
-            start=float(all_words[0]["start"]),
-            end=float(all_words[-1]["end"]),
-            text=full_text,
-            words=list(all_words),
-        )
-        return [raw_segment], detected_language, {"segments": [{
-            "start": raw_segment.start,
-            "end": raw_segment.end,
-            "text": raw_segment.text,
-            "words": list(all_words),
-        }], **usage_alignment}
-    segments, aligned = _nihai_kaynak_segmentlerini_olustur(all_words)
-    aligned["transcription_usage_report"] = usage_report_relative
-    write_transcripts(segments, run_dir, "", detected_language, cfg.target_lang)
-    write_full_paragraph(segments, run_dir, detected_language)
-    return segments, detected_language, aligned
-
-
 def transcribe_and_align(
     wav_path: str,
     cfg: DubConfig,
@@ -2673,18 +2570,6 @@ def transcribe_and_align(
             wav_path,
             cfg,
             run_dir,
-            platform_lang,
-            asr_time_offset,
-            full_text_mode,
-            prepare_final_segments,
-        )
-
-    if engine_name == "elevenlabs_scribe_v2":
-        return _transcribe_elevenlabs_scribe_v2(
-            wav_path,
-            cfg,
-            run_dir,
-            None,
             platform_lang,
             asr_time_offset,
             full_text_mode,

@@ -32,12 +32,6 @@ def _ortam(*degiskenler: str) -> Callable[[], bool]:
     return lambda: any(os.environ.get(d, "").strip() for d in degiskenler)
 
 
-# Bulut STT motorlarının okuduğu anahtar adları (motorun kendi config.py'si ile aynı; test eşitliği denetler).
-STT_API_ANAHTARLARI: dict[str, tuple[str, ...]] = {
-    "elevenlabs_scribe_v2": ("ELEVENLABS_API_KEY",),  # elevenlabs_scribe_v2_motoru/config.py
-}
-
-
 def _ceviri_anahtari(ad: str) -> Callable[[], bool]:
     """Çeviri API anahtarı: tek kaynak köprünün okuduğu adlar (arka_uc_secimi.API_ANAHTARI_DEGISKENLERI)."""
 
@@ -243,9 +237,6 @@ _HAM_MOTORLAR: tuple[Motor, ...] = (
     Motor("stt", "parakeet_cpu_align", "Parakeet (sherpa-onnx, yalnız İngilizce) + CTC hizalama",
           "NVIDIA Open Model License (ağırlık); sherpa-onnx Apache-2.0", "şartlı", "https://github.com/k2-fsa/sherpa-onnx",
           "parakeet (paket + model)", "cpu", _parakeet),
-    Motor("stt", "elevenlabs_scribe_v2", "ElevenLabs Scribe v2 (bulut)", "hizmet şartları", "hizmet şartları",
-          "https://elevenlabs.io", ".env anahtarı", "bulut", _ortam(*STT_API_ANAHTARLARI["elevenlabs_scribe_v2"]),
-          "Ses dosyası hizmete gönderilir (PRIVACY.md)."),
     Motor("stt", "youtube_translate", "YouTube json3 altyazı metni + CTC kelime hizalama",
           "kod: yt-dlp Unlicense; metin: videonun otomatik altyazısı (YouTube şartları); hizalama ağırlığı CTC ile aynı",
           "hizmet şartları", "https://github.com/yt-dlp/yt-dlp", "youtube (pip install .[youtube])", "gpu+cpu",
@@ -348,9 +339,6 @@ _DONANIM_DIL: dict[str, dict] = {
                                      dil_notu="Whisper dilleri; gerçek seste denenen tr, en, ja"),
     "parakeet_cpu_align": dict(vram_mb=0, cpu="iyi", kanit="ölçüldü", diller=YALNIZ_INGILIZCE,
                                bellek="işlemci int8 ~1,9 GB RAM; 96,9 sn ses 11,9 sn, 8 iş parçacığı (ölçüldü)"),
-    "elevenlabs_scribe_v2": dict(vram_mb=0, cpu="bulut", kanit="ölçüldü",
-                                 bellek="yerel yük yok (bulut); 41,9 dk ses 112 sn (ölçüldü)",
-                                 dil_notu="hizmetin dil listesi (language_code ya da otomatik)"),
     "youtube_translate": dict(vram_mb=2400, cpu="yavaş", kanit="ölçüldü",
                               bellek="yalnız CTC hizalama: GPU 1,65-2,4 GB VRAM; işlemcide 3,5 dk ses ~10 dk (ölçüldü)",
                               dil_notu="videonun altyazı izi; CTC hizalama modeli olan diller"),
@@ -407,8 +395,6 @@ _BILGI: dict[str, tuple[bool, str, str, str, str]] = {
     "parakeet_cpu_align": (True, "CPU (about 1.9 GB RAM)", "English only",
                            "İngilizce için ölçülmüş en hızlı CPU yolu (96,9 sn ses 11,9 sn).",
                            "The fastest measured CPU path for English (96.9 s of audio in 11.9 s)."),
-    "elevenlabs_scribe_v2": (True, "None (cloud, own API key)", "Service language list",
-                             "Bulut tanıma; ses hizmete gönderilir.", "Cloud recognition; audio is sent to the service."),
     "youtube_translate": (True, "CPU or NVIDIA GPU (alignment only)", "Languages of the video's subtitle track",
                           "Videonun altyazı metnini kullanır, ses tanıma yapmaz.",
                           "Uses the video's subtitle text, no speech recognition."),

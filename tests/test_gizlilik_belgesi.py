@@ -25,7 +25,7 @@ def test_iki_dil_ayni_basliklar():
 def test_her_bulut_motoru_ve_anahtari_yazili(motor):
     for bolum in (EN, TR):
         assert re.search(rf"(?<![\w-]){re.escape(motor.ad)}(?![\w-])", bolum), motor.ad
-    adlar = arka_uc_secimi.API_ANAHTARI_DEGISKENLERI.get(motor.ad) or kayit.STT_API_ANAHTARLARI.get(motor.ad)
+    adlar = arka_uc_secimi.API_ANAHTARI_DEGISKENLERI.get(motor.ad)
     if adlar:
         assert any(f"`{ad}`" in EN for ad in adlar), motor.ad
 

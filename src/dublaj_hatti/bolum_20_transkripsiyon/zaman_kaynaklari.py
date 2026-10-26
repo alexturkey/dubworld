@@ -8,8 +8,6 @@ Kaynak türleri / source kinds:
   ``ctc_speech_bounded_v2``); the engine only supplies text + time windows.
 - ``whisperx_hizalama``: WhisperX's own ``whisperx.align()`` inside the WhisperX worker (same wav2vec2 CTC family).
 - ``whisper_dogal``: Whisper cross-attention word timestamps (faster-whisper ``word_timestamps=True``), no CTC.
-- ``model_dogal``: the model's own word times (Moonshine native timestamps).
-- ``saglayici``: word times returned by a cloud provider's API (your own key).
 """
 
 from __future__ import annotations
@@ -49,8 +47,6 @@ ZAMAN_KAYNAKLARI: dict[str, ZamanKaynagi] = {
                      "native times kept only for diagnostics; repair budget shared with json3"),
         ZamanKaynagi("parakeet_cpu_align", "ctc_kutusu", "token times; gaps >= 1.0 s split windows (80 ms pad)",
                      ("bolum_20_transkripsiyon/parakeet_cpu_align_motoru/alignment_runner.py",)),
-        ZamanKaynagi("elevenlabs_scribe_v2", "saglayici", "-",
-                     ("bolum_20_transkripsiyon/elevenlabs_scribe_v2_motoru/engine.py",)),
         ZamanKaynagi("youtube_translate", "ctc_kutusu", "json3 start hints (never final times)",
                      ("bolum_20_transkripsiyon/youtube_json3_kaynagi/engine.py",),
                      "text from the YouTube automatic json3 caption track; no speech recognition"),
