@@ -337,7 +337,7 @@ function dosyaYukle(dosya) {
   hataGoster("");
   yuklenen = null; yenidenKaynak = null; izlenenIs = null; baglananAnahtar = "";
   oynaticiYukle({ orijinal: URL.createObjectURL(dosya), yerel: true });
-  $("dublajla").disabled = $("transkript").disabled = true;
+  yukleniyor = true; baslatGuncelle();
   yaz($("dosya-yazi"), "web.yukleniyor", { ad: dosya.name });
   const cubuk = $("yukleme-cubugu");
   cubuk.hidden = false;
@@ -348,23 +348,40 @@ function dosyaYukle(dosya) {
   istek.setRequestHeader("Content-Type", "application/octet-stream");
   istek.upload.onprogress = (e) => { if (e.lengthComputable) cubuk.firstElementChild.style.width = (100 * e.loaded / e.total) + "%"; };
   istek.onload = () => {
+    yukleniyor = false;
     let veri = {};
     try { veri = JSON.parse(istek.responseText); } catch (_) { /* boş */ }
-    if (istek.status !== 200) { hataGoster(veri.hata || t("web.yukleme_basarisiz")); yaz($("dosya-yazi"), "web.tekrar_sec"); return; }
+    if (istek.status !== 200) { hataGoster(veri.hata || t("web.yukleme_basarisiz")); yaz($("dosya-yazi"), "web.tekrar_sec"); baslatGuncelle(); return; }
     yuklenen = veri.kimlik;
     baglanti = ""; $("baglanti").value = "";
     yaz($("dosya-yazi"), "web.yuklendi", { ad: dosya.name, mb: (dosya.size / 1048576).toFixed(1) });
     cubuk.hidden = true;
-    $("dublajla").disabled = $("transkript").disabled = false;
+    baslatGuncelle();
   };
-  istek.onerror = () => hataGoster(t("web.yukleme_koptu"));
+  istek.onerror = () => { yukleniyor = false; hataGoster(t("web.yukleme_koptu")); baslatGuncelle(); };
   istek.send(dosya);
 }
 function baglantiHazir() { return /^https:\/\/\S+$/i.test(baglanti); }
 const baslatilabilir = () => !!(yuklenen || baglantiHazir() || yenidenKaynak);
+// Başlat düğmelerinin tek kapısı: düğmeyi pasif yapan her neden burada ve altındaki satırda düz sözlerle yazılır
+// (yerleşim kaymaz: satırın yeri hep ayrılı). Pasif neden sırası: iş sürüyor, dosya yükleniyor, video yok, VoxCPM2 yok.
+let yukleniyor = false;
+function baslatNedeni(dublaj) {
+  if (sonDurum && sonDurum.durum === "calisiyor") return "calisiyor";
+  if (yukleniyor) return "yukleniyor";
+  if (!baslatilabilir()) return "video";
+  if (dublaj && sesSecimi.startsWith("kitaplik/") && !kit.voxcpm2.kurulu) return "voxcpm2";
+  return "";
+}
+function baslatGuncelle() {
+  const dn = baslatNedeni(true), tn = baslatNedeni(false);
+  $("dublajla").disabled = !!dn; $("transkript").disabled = !!tn;
+  const satir = $("baslat-neden"), anahtar = dn ? "baslat.neden." + dn : "";
+  if (anahtar) yaz(satir, anahtar); else { delete satir.dataset.t; satir.textContent = ""; }
+}
 $("baglanti").addEventListener("input", (e) => {
   baglanti = e.target.value.trim();
-  $("dublajla").disabled = $("transkript").disabled = !baslatilabilir();
+  baslatGuncelle();
 });
 $("dosya").addEventListener("change", (e) => { if (e.target.files[0]) dosyaYukle(e.target.files[0]); });
 $("baska-video").addEventListener("click", () => $("dosya").click());
@@ -465,7 +482,7 @@ function durumCiz(d) {
   if (d.is && d.durum !== "bos") isiDurumdanBagla(d);
   $("ilerleme").hidden = d.durum === "bos";
   $("durdur").disabled = !calisiyor;
-  $("dublajla").disabled = $("transkript").disabled = calisiyor || !baslatilabilir();
+  baslatGuncelle();
   if (d.durum !== "bos") yaz($("ilerleme-baslik"), "ilerleme." + d.durum);
   $("ilerleme-cubugu").style.width = d.yuzde + "%";
   $("ilerleme").classList.toggle("bitti", d.durum === "bitti");
@@ -1246,7 +1263,7 @@ let yenidenKaynak = null;
 $("baska-dil").addEventListener("click", () => {
   if (!izlenenIs) return;
   yenidenKaynak = izlenenIs;
-  $("dublajla").disabled = false;
+  baslatGuncelle();
   $("hedef-dil").scrollIntoView({ block: "center", behavior: hareketAz() ? "auto" : "smooth" });
   $("hedef-dil").focus({ preventScroll: true });
   bildir(t("bitti.dil_sec"));
@@ -1378,6 +1395,7 @@ function sesSeciciCiz() {
   sec.value = sesSecimi;
   if (sec.value !== sesSecimi) sec.value = "";
   const secili = sec.value ? kit.liste.find((s) => s.kimlik === sec.value.split("/")[1]) : null;
+  baslatGuncelle();
   not.classList.remove("uyari-mesaji");
   if (!kit.voxcpm2.kurulu && kit.liste.length) { not.textContent = t("ses.voxcpm2_yok"); not.classList.add("uyari-mesaji"); }
   else not.textContent = secili ? t("ses.secili_not", { ad: secili.ad }) : t("ses.otomatik_not");
@@ -1421,6 +1439,27 @@ function gorunenSesler() {
   return kit.liste.filter((s) => (!kit.kategori || s.kategori === kit.kategori) && (!q || s.ad.toLocaleLowerCase(DIL).includes(q)));
 }
 function sesDurumYaz(metin, hata) { const o = $("ses-durum"); o.textContent = metin || ""; o.classList.toggle("hata", !!hata); o.setAttribute("role", hata ? "alert" : "status"); }
+// Süzgeç/arama kartları eler ya da yeniden dizer; kalanlar yukarı kaymasın diye (yerleşim kayması): liste yüksekliği
+// 400 ms tutulur ve kalan kartlar eski yerinden yeni yerine transform ile süzülür (hareket azaltma açıksa süzülmez).
+function listeKaymasiz(kap, guncelle) {
+  const once = new Map(Array.from(kap.children).map((el) => [el, el.getBoundingClientRect()]));
+  const yukseklik = kap.offsetHeight;
+  guncelle();
+  if (!once.size) return;
+  kap.style.minHeight = yukseklik + "px";
+  clearTimeout(kit.tutma); kit.tutma = setTimeout(() => { kap.style.minHeight = ""; }, 400);
+  const tasinan = [];
+  Array.from(kap.children).forEach((el) => {
+    const e = once.get(el); if (!e) return;
+    const y = el.getBoundingClientRect(), dx = e.left - y.left, dy = e.top - y.top;
+    if (!dx && !dy) return;
+    el.style.transition = "none"; el.style.transform = "translate(" + dx + "px," + dy + "px)"; tasinan.push(el);
+  });
+  if (!tasinan.length) return;
+  kap.getBoundingClientRect();  // eski konumu boyatır
+  tasinan.forEach((el) => { el.style.transition = hareketAz() ? "none" : "transform .18s ease-out"; el.style.transform = ""; });
+  setTimeout(() => tasinan.forEach((el) => { el.style.transition = ""; }), 260);
+}
 function sesListeCiz() {
   const kap = $("ses-liste");
   kap.classList.toggle("xtts-var", kit.xtts.kurulu);
@@ -1436,7 +1475,7 @@ function sesListeCiz() {
     istenen.push(r.kok);
   });
   [...kit.kartlar.keys()].forEach((k) => { if (!kit.liste.some((s) => s.kimlik === k)) kit.kartlar.delete(k); });
-  listeEsitle(kap, istenen);
+  listeKaymasiz(kap, () => listeEsitle(kap, istenen));
   if (kit.hata) sesDurumYaz(kit.hata, true);
   else sesDurumYaz(kit.liste.length && !gorunen.length ? t("sesler.filtre_bos") : "");
 }

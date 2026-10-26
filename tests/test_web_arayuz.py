@@ -199,3 +199,21 @@ def test_panel_ust_bolumu_yapiskan_ve_satir_ust_kismi_kaymaz():
     assert re.search(r"\.inceleme-liste \{[^}]*overflow: auto", CSS)
     assert re.search(r"\.irow-ust \{[^}]*display: grid", CSS)
     assert "function otoBuyutToplu(" in JS and JS.count("otoBuyutToplu(") >= 4
+
+
+def test_ses_suzgeci_kaymaz_ve_pasif_baslat_nedenini_soyler():
+    """Süzgeç/arama: liste yüksekliği tutulur, kalan kartlar transform ile süzülür. Pasif Başlat: neden satırı yeri ayrılı,
+    her pasif neden tek kapıdan (baslatGuncelle) geçer ve tr+en sözlükte karşılığı vardır; Ses seçici kapalı açılır liste kalır."""
+    import json
+
+    assert "function listeKaymasiz(" in JS and "listeKaymasiz(kap, () => listeEsitle(kap, istenen))" in JS
+    assert 'kap.style.minHeight = yukseklik + "px"' in JS and "hareketAz() ? \"none\"" in JS
+    assert 'id="baslat-neden"' in HTML and re.search(r"\.baslat-neden \{[^}]*min-height", CSS)
+    assert JS.count('$("dublajla").disabled') == 1  # başka yerden pasif/aktif yapılmaz: yalnız baslatGuncelle
+    nedenler = set(re.findall(r'return "(calisiyor|yukleniyor|video|voxcpm2)"', JS))
+    assert nedenler == {"calisiyor", "yukleniyor", "video", "voxcpm2"}
+    sozlukler = [json.loads((STATIK.parent / "arayuz_dilleri" / f"{d}.json").read_text(encoding="utf-8")) for d in ("tr", "en")]
+    for sozluk in sozlukler:
+        for neden in nedenler:
+            assert sozluk.get("baslat.neden." + neden, "").strip(), neden
+    assert 'id="ses-secici"' in HTML and re.search(r'<select id="ses-secici"(?![^>]*(size|multiple))', HTML)
