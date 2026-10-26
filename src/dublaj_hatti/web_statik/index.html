@@ -41,6 +41,7 @@
   <symbol id="s-uyari" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.01"/></symbol>
   <symbol id="s-yenile" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.3L4 8.5M4 4v4.5h4.5M4 13a8 8 0 0 0 14.3 4.3L20 15.5M20 20v-4.5h-4.5"/></symbol>
   <symbol id="s-klasor" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="s-ara" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
   <symbol id="s-arsiv" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
 </svg>
 
@@ -52,6 +53,7 @@
   </div>
   <nav class="sekmeler">
     <button class="sekme etkin" data-sekme="onerilen"><svg><use href="#s-dublaj"/></svg><span data-t="sekme.onerilen">Dublaj</span></button>
+    <button class="sekme" data-sekme="sesler"><svg><use href="#s-mikrofon"/></svg><span data-t="sekme.sesler">Sesler</span></button>
     <button class="sekme" data-sekme="gelismis" aria-expanded="false"><svg><use href="#s-ayar"/></svg><span data-t="sekme.gelismis">Ayarlar</span></button>
     <button class="sekme" data-sekme="isler"><svg><use href="#s-isler"/></svg><span data-t="sekme.isler">İşler</span></button>
   </nav>
@@ -127,10 +129,12 @@
           <button class="ana devam-dugmesi" id="inceleme-devam" type="button" data-t="inceleme.devam">Dublaja devam et</button>
           <button id="inceleme-kapat" class="simge-dugme" type="button" data-t-baslik="inceleme.kapat" title="Paneli kapat" aria-label="Paneli kapat"><svg><use href="#s-kapat"/></svg></button>
         </div>
+        <p class="inceleme-is" id="inceleme-is"><svg aria-hidden="true"><use href="#s-isler"/></svg><span id="inceleme-is-yazi"></span></p>
         <div class="inceleme-sekmeler" role="tablist" data-t-baslik="inceleme.sekmeler" aria-label="Panel bölümleri">
           <button role="tab" id="inceleme-sekme" class="secili" aria-selected="true" aria-controls="inceleme-govde" type="button"><svg aria-hidden="true"><use href="#s-altyazi"/></svg><span data-t="inceleme.sekme_metin">Metin</span></button>
         </div>
         <div class="inceleme-govde" id="inceleme-govde" role="tabpanel" aria-labelledby="inceleme-sekme">
+          <div class="inceleme-yapisik">
           <p class="inceleme-not" data-t="inceleme.not">Çeviri hazır. İstersen düzelt; hiçbir şey değiştirmek zorunda değilsin. Hazırsan 'Dublaja devam et'e bas.</p>
           <div class="bul-satiri">
             <div class="bul-alanlar">
@@ -140,6 +144,7 @@
               <button id="bul-degistir" type="button" disabled data-t="inceleme.hepsini">Hepsini değiştir</button>
             </div>
             <p class="bul-sayi" id="bul-sayi" role="status"></p>
+          </div>
           </div>
           <div class="inceleme-liste" id="inceleme-liste"></div>
         </div>
@@ -152,7 +157,12 @@
         <select id="hedef-dil" class="dil-secici"></select>
         <label class="kutu iri-kutu" for="gozden-kutusu"><input type="checkbox" id="gozden-kutusu"> <span data-t="gozden.kutu">Seslendirmeden önce metni gözden geçir (isteğe bağlı)</span></label>
         <p class="not kutu-yardim" data-t="gozden.yardim">Çeviri bitince dublaj durur; metni okuyup düzeltebilirsin. Hazır olunca sen devam edersin. Kapalıysa dublaj hiç durmadan biter.</p>
-        <h2 data-t="adim.baslat">3. Başlat</h2>
+        <h2 data-t="adim.ses">3. Ses</h2>
+        <label for="ses-secici" class="gizli-etiket" data-t="adim.ses">3. Ses</label>
+        <select id="ses-secici" class="dil-secici"></select>
+        <p class="not ses-secici-not" id="ses-secici-not" role="status"></p>
+        <button id="ses-yonet" class="metin-dugme" type="button" data-t="ses.yonet">Sesleri yönet</button>
+        <h2 data-t="adim.baslat">4. Başlat</h2>
         <div class="satir">
           <button id="dublajla" class="ana" disabled>Türkçe dublajla</button>
           <button id="transkript" disabled data-t="dugme.transkript">Yalnız altyazı / metin çıkar</button>
@@ -193,6 +203,30 @@
         </div>
         <ul id="sonuc-dosyalari" class="dosya-listesi"></ul>
       </div>
+    </div>
+  </section>
+
+  <section id="sesler" class="panel">
+    <div class="ses-ust">
+      <div class="ses-ust-yazi">
+        <h2 data-t="sesler.baslik">Seslerim</h2>
+        <p class="not" data-t="sesler.yardim">Kendi sesini ya da sahibinin izin verdiği bir sesi ekle; dublajda o ses konuşur.</p>
+      </div>
+      <button id="ses-ekle-ac" class="ana" type="button"><svg aria-hidden="true"><use href="#s-yukle"/></svg><span data-t="sesler.ekle">Ses ekle</span></button>
+    </div>
+    <p class="uyari ses-uyari" id="ses-voxcpm2-uyari" hidden></p>
+    <div class="ses-arac">
+      <label class="ses-ara"><svg aria-hidden="true"><use href="#s-ara"/></svg>
+        <span class="gizli-etiket" data-t="sesler.ara">Ses ara</span>
+        <input type="search" id="ses-ara" maxlength="60" autocomplete="off" data-t-ipucu="sesler.ara" placeholder="Ses ara"></label>
+      <div class="ses-cipler" id="ses-cipler" role="group" data-t-baslik="sesler.kategori_grubu" aria-label="Kategoriye göre süz"></div>
+    </div>
+    <p class="ses-durum" id="ses-durum" role="status" aria-live="polite"></p>
+    <div class="ses-liste" id="ses-liste"></div>
+    <div class="kart ses-bos" id="ses-bos" hidden>
+      <h2 data-t="sesler.bos_baslik">Henüz sesin yok</h2>
+      <p class="not" data-t="sesler.bos_metin">Bir ses kaydı ekle: 6-15 saniye, tek kişi, temiz bir kayıt yeter. Eklediğin ses bu bilgisayarda kalır; dublajda o sesle konuşulur.</p>
+      <button class="ana ses-bos-ekle" type="button"><svg aria-hidden="true"><use href="#s-yukle"/></svg><span data-t="sesler.ekle">Ses ekle</span></button>
     </div>
   </section>
 
@@ -251,6 +285,59 @@
     <li data-t="kisayol.ekran">F: tam ekran (çift tık da olur), C: altyazı aç / kapa</li>
     <li data-t="kisayol.kapat">Esc: açık pencereyi kapat</li>
   </ul>
+</dialog>
+<dialog id="ses-form" class="sayfa" aria-labelledby="ses-form-baslik">
+  <div class="sayfa-ust">
+    <h2 id="ses-form-baslik" data-t="sesler.form_baslik">Ses ekle</h2>
+    <button id="ses-form-kapat" class="simge-dugme" type="button" data-t-baslik="pencere.kapat" title="Kapat" aria-label="Kapat"><svg><use href="#s-kapat"/></svg></button>
+  </div>
+  <div class="sayfa-govde">
+    <label class="ses-birak" id="ses-birak">
+      <input type="file" id="ses-dosya" accept=".wav,.mp3,.flac,.m4a,.aac,.ogg,.opus,.webm,audio/*">
+      <svg aria-hidden="true"><use href="#s-yukle"/></svg>
+      <strong data-t="sesler.dosya_birak">Ses dosyasını buraya bırak</strong>
+      <span data-t="sesler.dosya_alt">ya da tıklayıp seç · wav, mp3, flac, m4a, ogg, webm</span>
+    </label>
+    <div class="ses-onizleme" id="ses-onizleme">
+      <p class="not" id="ses-onizleme-bos" data-t="sesler.onizleme_bos">Seçtiğin kaydı burada hemen dinleyebilirsin.</p>
+      <div class="ses-onizleme-ic" id="ses-onizleme-ic" hidden>
+        <audio id="ses-onizleme-ses" controls preload="metadata"></audio>
+        <span class="ses-sure" id="ses-sure"></span>
+      </div>
+    </div>
+    <p class="alan-mesaj" id="ses-dosya-mesaj" aria-live="polite"></p>
+
+    <div class="alan-grup">
+      <label for="ses-ad" data-t="sesler.ad_etiket">Ad</label>
+      <input type="text" id="ses-ad" maxlength="60" autocomplete="off" enterkeyhint="next" data-t-ipucu="sesler.ad_ipucu" placeholder="ör. Ayşe — kendi sesim">
+      <div class="alan-alt"><p class="alan-mesaj" id="ses-ad-mesaj" aria-live="polite"></p><span class="sayac" id="ses-ad-sayac">0/60</span></div>
+    </div>
+
+    <fieldset class="alan-grup cip-grup">
+      <legend data-t="sesler.kategori_etiket">Kategori</legend>
+      <div class="ses-cipler" id="ses-kategori-secimi" role="group" data-t-baslik="sesler.kategori_etiket" aria-label="Kategori"></div>
+    </fieldset>
+
+    <div class="alan-grup">
+      <label for="ses-metin" data-t="sesler.metin_etiket">Kaydın metni (isteğe bağlı)</label>
+      <textarea id="ses-metin" rows="3" maxlength="600" data-t-ipucu="sesler.metin_ipucu" placeholder="ör. Merhaba, ben Ayşe. Bugün size yeni bir aracı tanıtacağım."></textarea>
+      <div class="alan-alt"><p class="alan-mesaj not" data-t="sesler.metin_yardim">Kayıtta ne söylendiyse aynen yaz; ses daha çok benzer. Boş bırakabilirsin.</p><span class="sayac" id="ses-metin-sayac">0/600</span></div>
+    </div>
+
+    <fieldset class="alan-grup riza-grup">
+      <legend data-t="sesler.riza_baslik">Bu ses kimin?</legend>
+      <label class="secenek"><input type="radio" name="ses-riza" value="kendi"><span data-t="sesler.riza_kendi">Bu benim sesim</span></label>
+      <label class="secenek"><input type="radio" name="ses-riza" value="izinli"><span data-t="sesler.riza_izinli">Sesin sahibi açıkça izin verdi</span></label>
+      <label class="secenek"><input type="checkbox" id="ses-taklit"><span data-t="sesler.taklit_yok">Gerçek bir kişiyi izni olmadan taklit etmeyeceğim (ETHICS.md)</span></label>
+    </fieldset>
+  </div>
+  <div class="sayfa-alt">
+    <p class="neden" id="ses-neden" role="status" aria-live="polite"></p>
+    <div class="satir sayfa-dugmeler">
+      <button id="ses-form-vazgec" type="button" data-t="onay.vazgec">Vazgeç</button>
+      <button id="ses-kaydet" class="ana" type="button" disabled><span id="ses-kaydet-yazi" data-t="sesler.kaydet">Kaydet</span></button>
+    </div>
+  </div>
 </dialog>
 <dialog id="onay" class="onay" aria-labelledby="onay-baslik" aria-describedby="onay-metin">
   <h2 id="onay-baslik"></h2>

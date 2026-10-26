@@ -47,7 +47,8 @@ def test_renkler_okunur_ve_goz_yormaz(tema):
                         ("ana-yazi", "ana"), ("hata", "kart"), ("tamam", "kart"),
                         ("uyari", "kart"), ("uyari", "zemin"), ("yazi", "ana-acik"), ("ana", "zemin"),
                         ("hata-yazi", "hata"), ("ov-yazi", "video"), ("ov-soluk", "video"), ("ov-isaret", "video"),
-                        ("ov-vurgu", "video"), ("ov-vurgu-yazi", "ov-vurgu")):
+                        ("ov-vurgu", "video"), ("ov-vurgu-yazi", "ov-vurgu"),
+                        ("soluk", "ana-acik"), ("hata", "zemin"), ("tamam", "zemin")):  # Sesler: çip sayısı, durum satırı
         oran = kontrast(r[yazi], r[zemin])
         assert oran >= 4.5, f"{tema}: {yazi}/{zemin} = {oran:.2f} (en az 4.5)"
     assert kontrast(r["yazi"], r["zemin"]) < 17, "saf siyah/beyaz yok: aşırı kontrast göz yorar"
@@ -171,3 +172,30 @@ def test_inceleme_paneli_parcalari():
     assert ".iskelet" in CSS and "grid-template-columns" in CSS
     assert not re.search(r"(window\.)?confirm\(", JS)
 
+
+
+def test_sesler_sekmesi_parcalari():
+    """Sesler sekmesi: ses kitaplığı listesi, ses ekle sayfası (görünür kapatma, sayaç, neden satırı), Dublaj kartında ses seçici."""
+    for parca in ('data-sekme="sesler"', 'id="sesler"', 'id="ses-ekle-ac"', 'id="ses-ara"', 'id="ses-cipler"', 'id="ses-liste"',
+                  'id="ses-bos"', '<dialog id="ses-form"', 'id="ses-form-kapat"', 'id="ses-dosya"', 'id="ses-onizleme-ses"',
+                  'id="ses-ad"', 'id="ses-kategori-secimi"', 'id="ses-metin"', 'name="ses-riza"', 'id="ses-taklit"', 'id="ses-kaydet"',
+                  'id="ses-neden"', 'id="ses-secici"', 'id="ses-yonet"', 's-mikrofon', 'id="s-ara"', 'maxlength="60"', 'maxlength="600"'):
+        assert parca in HTML, parca
+    for parca in ('"/api/sesler"', '"/api/ses_ekle"', '"/api/ses_guncelle"', '"/api/ses_sil"', '"/api/xtts_lisans"', "X-Ses-Metin",
+                  "X-Ses-Riza", "X-Ses-Taklit-Yok", "function sesSec(", "function listeEsitle(", "kitaplik/", "ses.voxcpm2_ses", "ses.motor",
+                  "sesOnceki", "dubworld.ses_secimi", "onayIste({ baslik: t(\"sesler.sil_baslik\"", "xtts.kurulu", "voxcpm2.kurulu",
+                  "Number.isFinite(a.duration)", "upload.onprogress"):
+        assert parca in JS, parca
+    assert not re.search(r"(window\.)?(confirm|alert|prompt)\(", JS)
+    assert "min-height" in re.search(r"\.neden \{[^}]*\}", CSS).group(0) and "button.ilerliyor::before" in CSS
+    # etiketsiz simge yok: JS ile kurulan simge düğmeleri etiketle(...) ile ad alır
+    assert JS.count("etiketle(") >= 6
+
+
+def test_panel_ust_bolumu_yapiskan_ve_satir_ust_kismi_kaymaz():
+    """Not + bul-değiştir satırı kayan listenin dışında (yapışkan); satır üst bölümü grid: durum yazısı uzasa da satır büyümez."""
+    assert 'class="inceleme-yapisik"' in HTML and 'id="inceleme-is"' in HTML
+    assert re.search(r"\.inceleme-govde \{[^}]*overflow: hidden", CSS)
+    assert re.search(r"\.inceleme-liste \{[^}]*overflow: auto", CSS)
+    assert re.search(r"\.irow-ust \{[^}]*display: grid", CSS)
+    assert "function otoBuyutToplu(" in JS and JS.count("otoBuyutToplu(") >= 4

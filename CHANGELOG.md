@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Voice library: a new **Voices** tab lets you add your own voice from a short recording (3 to 30 seconds), name it, give it a
+  category, and say whose voice it is (your own, or with the owner's permission). Dubbing can then speak in that voice:
+  pick it on the Dub card ("3. Voice") or press "Use in dubbing" on its card. The voice is cloned with VoxCPM2 from the
+  recording alone, or more closely if you also type what the recording says. Search, filter by category, rename,
+  play and delete (with one confirmation) are on the page; recordings stay on your computer. Setting:
+  `ses.voxcpm2_ses = "kitaplik/<id>"`.
+- Review panel: the notice and the find-and-replace row now stay in view while the lines scroll, a one-line job status
+  stays visible on wider screens, and "Replace all" no longer makes the page jump on narrow screens.
 - Review before voicing (optional): tick "Review the text before voicing" on the dubbing card (also the setting
   `genel.gozden_gecir`, `dubla <video> --ayar genel.gozden_gecir=true`). Dubbing pauses right after the translation
   ("Waiting for review", not an error) and a side panel opens next to the video (a sheet from the bottom on narrow

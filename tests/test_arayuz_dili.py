@@ -176,3 +176,18 @@ def test_donanim_etiketi_arayuz_dilinde():
     turbo = kayit.motor("crisperwhisper_turbo_ct2")
     assert donanim.motor_etiketi(turbo, "cpu", 0) == "CPU'da çalışmaz (NVIDIA GPU gerekir)"
     assert donanim.motor_etiketi(turbo, "cpu", 0, "en") == "doesn't run on CPU (needs an NVIDIA GPU)"
+
+
+def test_sesler_dinamik_anahtarlari_iki_dilde_tam():
+    """app.js bu anahtarları cevir() ile birleştirerek okur (statik tarama görmez): kategori, rıza, sunucu hata anahtarları, kaydet nedenleri."""
+    from dublaj_hatti import ses_kitapligi
+
+    sunucu_anahtarlari = ("riza_yok", "taklit_yok", "ad_gecersiz", "kategori_gecersiz", "uzanti_gecersiz", "metin_uzun", "sure_disi",
+                          "dosya_boyutu", "yukleme_yarim", "okunamadi", "ffmpeg_yok", "ses_yok", "kimlik_gecersiz", "ses_dosyasi_yok")
+    gerekli = {f"sesler.kategori.{k}" for k in ses_kitapligi.KATEGORILER} | {f"sesler.riza.{r}" for r in ses_kitapligi.RIZA_TURLERI}
+    gerekli |= {f"sesler.neden_{n}" for n in ("dosya", "dosya_hata", "ad", "kategori", "riza", "taklit", "hazir")}
+    gerekli |= {f"sesler.hata.{a}" for a in (*sunucu_anahtarlari, "genel")}
+    gerekli |= {"ses.otomatige_donuldu", "sesler.xtts_secildi", "sesler.kullanilacak", "sesler.dinle", "sesler.duraklat"}
+    for kod in DILLER:
+        s = arayuz_dili.tam_sozluk(kod)
+        assert sorted(gerekli - set(s)) == [], kod
