@@ -125,3 +125,4 @@ Kod: Apache-2.0 (LICENSE). Üçüncü taraf bileşenler ve lisansları: THIRD_PA
 Gizlilik (ne yerelde kalır, bulut arka ucu ne alır): PRIVACY.md. Güvenlik bildirimi: SECURITY.md. Değişiklikler: CHANGELOG.md.
 
 <!-- i18n-source: README.md sha256:cdd2c731c59f -->
+Artık python scripts/kurulum_sihirbazi.py komutuyla akıllı kurulum sihirbazını çalıştırabilirsiniz. İşletim sistemi, donanım ve venv konumunu otomatik algılar.

@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Dict
 
 PIPELINE_ID = "dublaj_hatti.pipeline"
 PIPELINE_VERSION = "1"
 
-PIPELINE_STAGES: Dict[str, tuple[tuple[str, int, int], ...]] = {
+PIPELINE_STAGES: dict[str, tuple[tuple[str, int, int], ...]] = {
     "segment_sync": (
         ("video_indirme_veya_kopyalama", 2, 1),
         ("kaynak_ses_cikarma", 3, 1),
@@ -51,7 +50,7 @@ def _contract_hash() -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def get_graph_identity(graph_version: str = "", graph_hash: str = "") -> Dict[str, str]:
+def get_graph_identity(graph_version: str = "", graph_hash: str = "") -> dict[str, str]:
     current_hash = _contract_hash()
     if graph_version and graph_version != PIPELINE_VERSION:
         raise SelectionGraphError(f"Bilinmeyen hat surumu: {graph_version}")
@@ -60,7 +59,7 @@ def get_graph_identity(graph_version: str = "", graph_hash: str = "") -> Dict[st
     return {"graph_id": PIPELINE_ID, "graph_version": PIPELINE_VERSION, "graph_hash": current_hash}
 
 
-def validate_runtime_graph_compatibility(graph_version: str, graph_hash: str = "", require_active_presentation: bool = False) -> Dict[str, str]:
+def validate_runtime_graph_compatibility(graph_version: str, graph_hash: str = "", require_active_presentation: bool = False) -> dict[str, str]:
     return get_graph_identity(graph_version, graph_hash)
 
 
