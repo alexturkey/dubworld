@@ -123,7 +123,7 @@ class KurulumSihirbazi:
         
         if venv_secim == "2":
             while True:
-                ozel_yol = input("Venv için tam yol girin (örn. D:\\venvs\\dubworld): ").strip().strip('"').strip("'")
+                ozel_yol = input("Venv icin tam yol girin: ").strip().strip('"').strip("'")
                 if not ozel_yol:
                     print("Geçersiz yol. Tekrar deneyin.")
                     continue
