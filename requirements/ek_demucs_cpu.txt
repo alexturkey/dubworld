@@ -14,8 +14,9 @@ colorama==0.4.6 \
     # via
     #   -c cpu.txt (sürümler)
     #   tqdm
-demucs==4.0.1 \
-    --hash=sha256:e45a5a788bae79767c37bbf6e69aae03862ddcca05550fb79b926346a177d713
+demucs==4.1.0 \
+    --hash=sha256:4916a804702033ce934a6cdfa7e38dde03f7a7a6e85f41d0120eefe9e2966758 \
+    --hash=sha256:d94c4f7dac886595b66af405c0fd1756fa00c297183f1cf021fd2eeedeeb67b2
     # via -r ek_demucs.in
 dora-search==0.1.13 \
     --hash=sha256:2b440ab095d3dd715367bf680e64c94d9abe1a3950006224badecad9ff8240a5 \
