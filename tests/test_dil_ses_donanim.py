@@ -101,7 +101,7 @@ def test_konusmaci_sesleri_komut_satirindan():
     ayar = ayarlari_yukle(ustune=["ses.konusmaci_sesleri.SPEAKER_02=M4"])
     assert ayar["ses.konusmaci_sesleri"] == {"SPEAKER_02": "M4"}
     with pytest.raises(AyarHatasi, match="F1..F5 / M1..M5"):
-        ayarlari_yukle(ustune=["ses.konusmaci_sesleri=SPEAKER_00:X9"])
+        ayarlari_yukle(ustune=["ses.motor=supertonic", "ses.konusmaci_sesleri=SPEAKER_00:X9"])
     with pytest.raises(AyarHatasi, match="KONUSMACI:SES"):
         ayarlari_yukle(ustune=["ses.konusmaci_sesleri=SPEAKER_00"])
     assert yapilandirma.esleme_metni({"B": "M1", "A": "F2"}) == "A:F2, B:M1"
@@ -156,8 +156,10 @@ def test_dil_listeleri_motor_kodlariyla_ayni():
 
 def test_hedef_dil_suzgeci_her_tts_icin_tutarli():
     suzgec = kayit.tts_dil_suzgeci()
-    assert set(suzgec) == set(kayit.adlar("tts", auto=False))
+    assert set(suzgec) == set(kayit.adlar("tts"))
     for tts, v in suzgec.items():
+        if tts == "auto":  # çözülen motora göre denetlenir (test_motor_auto.py)
+            continue
         for dil in v["izinli"]:
             hatalar = _bulgular(f"ses.motor={tts}", "ses.xtts_referans_ses=ben.wav", f"genel.hedef_dil={dil}",
                                 "ceviri.arka_uc=codex", seviye="hata")

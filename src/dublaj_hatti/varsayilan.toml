@@ -94,10 +94,13 @@ caba = "medium"
 cli_yolu = ""
 
 [ses]
-# TTS motoru: "supertonic" (varsayılan; işlemcide çalışır) | "voxcpm2" (NVIDIA GPU, ayrı kurulum) |
+# TTS motoru: "auto" (varsayılan: VoxCPM2 kuruluysa ve NVIDIA GPU çalışıyorsa o, değilse Supertonic; seçimin nedeni
+# günlüğe yazılır) | "supertonic" (işlemcide çalışır) | "voxcpm2" (NVIDIA GPU, ayrı kurulum) |
 # "ema_lightning" (yalnız Türkçe; GPU ya da işlemci ONNX; kurulum: scripts/kur.ps1 -Adim tts-ema) |
-# "xtts" (XTTS v2, isteğe bağlı: pip install .[tts-xtts]; ağırlık ticari olmayan CPML; referans ses zorunlu)
-motor = "supertonic"
+# "xtts" (KULLANIMDAN KALKIYOR: ticari olmayan CPML lisansı; VoxCPM2 metinsiz ses klonlamayı destekliyor;
+#  XTTS v2, isteğe bağlı: pip install .[tts-xtts]; referans ses zorunlu)
+# Açık bir değer (ör. "supertonic") "auto"yu geçer.
+motor = "auto"
 # Supertonic sesi: F1..F5 (kadın), M1..M5 (erkek)
 supertonic_ses = "F1"
 # Çeviri + seslendirme akışı (Supertonic): natural_blocks_1 (önerilen) | single_pass_1 | single_pass_2 |

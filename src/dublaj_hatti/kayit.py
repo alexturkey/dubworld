@@ -517,6 +517,8 @@ def tts_dil_suzgeci() -> dict[str, dict[str, list[str]]]:
     """
     tum = tts_hedef_dilleri()
     return {
+        # auto: VoxCPM2 ya da Supertonic'e çözülür; ikisinden birinin okuyabildiği diller listelenir
+        "auto": {"izinli": sorted(SUPERTONIC_DILLERI | VOXCPM2_DENENEN_DILLER), "denenmemis": []},
         "supertonic": {"izinli": sorted(SUPERTONIC_DILLERI), "denenmemis": []},
         "voxcpm2": {"izinli": tum, "denenmemis": sorted(set(tum) - VOXCPM2_DENENEN_DILLER)},
         "ema_lightning": {"izinli": sorted(EMA_DILLERI), "denenmemis": []},

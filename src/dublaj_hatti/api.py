@@ -368,10 +368,14 @@ def seslendir(girdi: str | Path, hedef_klasor: str | Path, motor: str = "superto
     * ``girdi`` is a transcript/translation JSON -> segments are spoken at their times: ``speech.wav`` (timed track)
       + ``speech.json`` (schema speech@1, one WAV per segment). Returns speech.json.
 
-    ``motor``: supertonic (CPU or GPU, default), voxcpm2 (NVIDIA GPU, separate install) or ema_lightning
+    ``motor``: supertonic (CPU or GPU, default), auto (voxcpm2 if installed and an NVIDIA GPU works, else supertonic), voxcpm2 (NVIDIA GPU, separate install) or ema_lightning
     (Turkish only; GPU or CPU ONNX, ``ses.ema_cihaz`` = auto | cuda | cpu; speed ``ses.ema_hiz``).
     ``ses``: Supertonic F1-F5 / M1-M5, VoxCPM2 voice folder such as hazir/haber_spikeri, EMA ``ema``.
     """
+    if motor == "auto":  # VoxCPM2 kuruluysa ve NVIDIA GPU varsa o, değilse Supertonic (günlüğe nedeni yazılır)
+        from dublaj_hatti.yapilandirma import tts_motoru_coz
+
+        motor = tts_motoru_coz(_ayar(ayarlar, genel__hedef_dil=dil, ses__motor="auto"), gunluk=True)
     hedef = Path(hedef_klasor)
     hedef.mkdir(parents=True, exist_ok=True)
     yol = Path(str(girdi)) if len(str(girdi)) < 1024 and "\n" not in str(girdi) else None

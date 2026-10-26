@@ -380,7 +380,7 @@ def test_telegram_menu_sema_ile_ayni():
     ogeler = menuler.menu_ogeleri(ayar_formu())
     i = next(n for n, o in enumerate(ogeler) if o["anahtar"] == "ses.motor")
     tur, (anahtar, deger) = menuler.geri_cagirma_coz(f"d:{i}:0", ogeler)
-    assert tur == "deger" and anahtar == "ses.motor" and deger in kayit.adlar("tts", auto=False)
+    assert tur == "deger" and anahtar == "ses.motor" and deger in kayit.adlar("tts")
     assert all(len(v.encode()) <= 64 for o in ogeler for _, v in menuler.deger_dugmeleri(ogeler, o))
     assert menuler.geri_cagirma_coz("d:999:0", ogeler)[0] == "kapat"
 

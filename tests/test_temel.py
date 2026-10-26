@@ -12,7 +12,7 @@ def test_varsayilan_ayarlar_semaya_uyar():
     ayar = ayarlari_yukle()
     assert set(ayar) <= set(SEMA)
     assert ayar["genel.cihaz"] == "auto"
-    assert ayar["ses.motor"] in kayit.adlar("tts", auto=False)
+    assert ayar["ses.motor"] in kayit.adlar("tts")
 
 
 def test_ust_katman_ezer_ve_tur_cevirir():

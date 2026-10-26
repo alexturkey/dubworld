@@ -69,7 +69,7 @@ def test_gelismis_formu_yeni_anahtarlari_gosterir():
         (["genel.dublaj_kipi=full_text", "ses.motor=voxcpm2"], "full_text kipi yalnız Supertonic"),
         (["genel.dublaj_kipi=full_text", "ceviri.arka_uc=yerel"], "full_text kipi yalnız Codex"),
         (["genel.dublaj_kipi=full_text", "ceviri.arka_uc=groq_llama_4_scout"], "full_text kipi yalnız Codex"),
-        (["genel.hedef_dil=zh"], "Supertonic 'zh' dilini okuyamaz"),
+        (["ses.motor=supertonic", "genel.hedef_dil=zh"], "Supertonic 'zh' dilini okuyamaz"),
         (["ses.motor=voxcpm2", "genel.cihaz=cpu"], "VoxCPM2 NVIDIA GPU"),
         (["ceviri.arka_uc=yerel", "genel.hedef_dil=de"], "yalnız İngilizce → Türkçe"),
         (["ceviri.arka_uc=yerel", "transkripsiyon.kaynak_dil=ja"], "yalnız İngilizce kaynak"),
@@ -93,17 +93,18 @@ def test_uyumsuz_kombinasyon_acik_hata_verir(ifadeler, beklenen):
 
 def test_arayuz_degisiklikleri_de_denetlenir():
     with pytest.raises(AyarHatasi, match="Supertonic"):
-        ayar_degisiklikleri({"genel.hedef_dil": "zh"})
+        ayar_degisiklikleri({"genel.hedef_dil": "zh", "ses.motor": "supertonic"})
     assert ayar_degisiklikleri({"genel.hedef_dil": "zh", "ses.motor": "voxcpm2"}) == [
         "genel.hedef_dil=zh", "ses.motor=voxcpm2"]
 
 
 def test_supertonic_konusmaci_sesi_dogrulanir(tmp_path):
     dosya = tmp_path / "a.toml"
-    dosya.write_text('[ses.konusmaci_sesleri]\nSPEAKER_00 = "hazir/haber_spikeri"\n', encoding="utf-8")
+    dosya.write_text('[ses]\nmotor = "supertonic"\n[ses.konusmaci_sesleri]\nSPEAKER_00 = "hazir/haber_spikeri"\n',
+                     encoding="utf-8")
     with pytest.raises(AyarHatasi, match="F1..F5"):
         ayarlari_yukle(dosya)
-    dosya.write_text('[ses.konusmaci_sesleri]\nSPEAKER_00 = "M2"\n', encoding="utf-8")
+    dosya.write_text('[ses]\nmotor = "supertonic"\n[ses.konusmaci_sesleri]\nSPEAKER_00 = "M2"\n', encoding="utf-8")
     assert ayarlari_yukle(dosya)["ses.konusmaci_sesleri"] == {"SPEAKER_00": "M2"}
 
 

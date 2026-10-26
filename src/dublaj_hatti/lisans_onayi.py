@@ -127,7 +127,12 @@ def secili_motorlar(ayar: dict[str, Any], stt_motoru: str | None = None) -> list
         adlar.append(stt)
     dublaj = ayar.get("genel.is_turu", "dublaj") == "dublaj"
     if dublaj and ayar.get("ses.motor"):
-        adlar.append(str(ayar["ses.motor"]))
+        tts = str(ayar["ses.motor"])
+        if tts == "auto":
+            from dublaj_hatti.yapilandirma import tts_motoru_coz
+
+            tts = tts_motoru_coz(ayar)
+        adlar.append(tts)
     # Ticari olmayan CTC modeli: kaynak dil sabitse ve STT CTC kullanıyorsa; dublajda hedef dilin altyazı hizalaması.
     if (stt_motoru or stt) in CTC_KULLANAN_STT:
         ad = ctc_lisans_adi(str(ayar.get("transkripsiyon.kaynak_dil") or ""))

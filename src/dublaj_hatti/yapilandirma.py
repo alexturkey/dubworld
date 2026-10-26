@@ -42,7 +42,7 @@ SUPERTONIC_ERKEK_SESLERI = [f"M{i}" for i in range(1, 6)]
 SUPERTONIC_SESLERI = SUPERTONIC_KADIN_SESLERI + SUPERTONIC_ERKEK_SESLERI
 STT_MOTORLARI = kayit.adlar("stt")
 CEVIRI_ARKA_UCLARI = kayit.adlar("ceviri")
-TTS_MOTORLARI = kayit.adlar("tts", auto=False)
+TTS_MOTORLARI = kayit.adlar("tts")  # "auto" ilk (varsayılan): VoxCPM2 kuruluysa ve NVIDIA GPU varsa o, değilse Supertonic
 SUPERTONIC_AKISLARI = [
     "natural_blocks_1", "single_pass_1", "single_pass_2", "single_pass_10", "repair_3_light",
     "repair_2_initial_1_repair_2", "repair_1", "repair_2", "repair_3", "repair_4", "repair_5", "repair_6", "repair_7",
@@ -272,7 +272,7 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
             hata("genel.gozden_gecir satır satır çalışır ve yalnız segment_sync kipinde vardır; full_text çevirisi tek "
                  "metindir", "genel.gozden_gecir", "genel.dublaj_kipi")
     if kip == "full_text" and dublaj:
-        if tts not in TAM_METIN_TTS:
+        if tts not in TAM_METIN_TTS | {"auto"}:  # auto, full_text'te Supertonic'e çözülür
             hata("full_text kipi yalnız Supertonic ya da EMA Lightning ile seslendirir; ses.motor=supertonic ya da "
                  "ses.motor=ema_lightning seçin", "genel.dublaj_kipi", "ses.motor")
         if ceviri not in ("auto", "codex", "claude_code"):
@@ -310,7 +310,7 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
         uyari("XTTS tek referans sesle okur; ses.konusmaci_sesleri yok sayılır", "ses.konusmaci_sesleri", "ses.motor")
     # --- cinsiyete göre ses kipi ---------------------------------------------------------------------------
     if ayar.get("ses.cinsiyet_kipi") == "segment":
-        if tts not in ("supertonic", "voxcpm2") or not ayar["ses.konusmaci_cinsiyetine_gore_ses"]:
+        if tts not in ("auto", "supertonic", "voxcpm2") or not ayar["ses.konusmaci_cinsiyetine_gore_ses"]:
             uyari("ses.cinsiyet_kipi=segment yalnız ses.motor=supertonic / voxcpm2 ve "
                   "ses.konusmaci_cinsiyetine_gore_ses=true iken etkilidir", "ses.cinsiyet_kipi", "ses.motor",
                   "ses.konusmaci_cinsiyetine_gore_ses")
@@ -319,7 +319,7 @@ def uyumluluk_denetle(ayar: dict[str, Any]) -> list[Bulgu]:
                     else "ses.kadin_ses / ses.erkek_ses ile")
             uyari(f"segment kipinde konuşmacı ayrımı yapılmaz; ses.konusmaci_sesleri yok sayılır, her cümle {cift} "
                   "okunur", "ses.cinsiyet_kipi", "ses.konusmaci_sesleri")
-    if tts != "voxcpm2" and (ayar.get("ses.voxcpm2_kadin_sesleri") or ayar.get("ses.voxcpm2_erkek_sesleri")):
+    if tts not in ("voxcpm2", "auto") and (ayar.get("ses.voxcpm2_kadin_sesleri") or ayar.get("ses.voxcpm2_erkek_sesleri")):
         uyari("ses.voxcpm2_kadin_sesleri / ses.voxcpm2_erkek_sesleri yalnız ses.motor=voxcpm2 iken kullanılır",
               "ses.voxcpm2_kadin_sesleri", "ses.voxcpm2_erkek_sesleri", "ses.motor")
     # --- XTTS v2 (isteğe bağlı, CPML ticari olmayan) ------------------------------------------------------
@@ -419,6 +419,41 @@ def _uyumluluk_uygula(ayar: dict[str, Any]) -> None:
     hatalar = [str(x) for x in uyumluluk_denetle(ayar) if x.seviye == "hata"]
     if hatalar:
         raise AyarHatasi("uyumsuz seçim: " + " | ".join(hatalar))
+
+
+def tts_auto_coz(ayar: dict[str, Any]) -> tuple[str, str]:
+    """ses.motor="auto" -> (motor, gerekçe). VoxCPM2 kuruluysa ve çalışan NVIDIA GPU varsa o, değilse Supertonic.
+
+    Kurulu denetimi `kayit` kaydındaki VoxCPM2 denetimiyle, GPU denetimi `genel.cihaz` çözümüyle aynıdır.
+    full_text kipi yalnız Supertonic/EMA ile seslendirdiği için Supertonic'e çözülür. Açık seçim ("voxcpm2" vb.) buraya girmez.
+    """
+    if ayar["genel.dublaj_kipi"] == "full_text":
+        return "supertonic", "ses.motor=auto → supertonic: full_text kipi yalnız Supertonic ya da EMA ile seslendirir"
+    from dublaj_hatti.bolum_00_omurga.runtime.donanim import DonanimHatasi, cihaz_coz
+
+    try:
+        gpu = cihaz_coz(ayar["genel.cihaz"]) == "cuda"
+    except DonanimHatasi:
+        gpu = False
+    if not gpu:
+        return "supertonic", "ses.motor=auto → supertonic: çalışan NVIDIA GPU yok (VoxCPM2 GPU ister)"
+    if not kayit.motor("voxcpm2").kurulu():
+        return "supertonic", ("ses.motor=auto → supertonic: VoxCPM2 kurulu değil (kurulum: scripts/kur.ps1 -Adim "
+                              "voxcpm2); kurulunca otomatik VoxCPM2 kullanılır")
+    return "voxcpm2", "ses.motor=auto → voxcpm2: kurulu ve NVIDIA GPU çalışıyor"
+
+
+def tts_motoru_coz(ayar: dict[str, Any], gunluk: bool = False) -> str:
+    """Ayardaki ses motorunun somut adı ("auto" çözülür); transkript işinde ses kullanılmaz (Supertonic döner)."""
+    tts = ayar["ses.motor"]
+    if tts != "auto":
+        return tts
+    if ayar["genel.is_turu"] != "dublaj":
+        return "supertonic"
+    motor, neden = tts_auto_coz(ayar)
+    if gunluk:
+        logger.info("Seçim gerekçesi: %s", neden)
+    return motor
 
 
 def stt_secimi_coz(ayar: dict[str, Any], cihaz: str, hesap_tipi: str) -> tuple[str, str, str, str]:
@@ -807,6 +842,14 @@ def dubconfig_olustur(ayar: dict[str, Any], kaynak: str | None = None) -> tuple[
         logger.info("Seçim gerekçesi: %s", metin)
 
     _ortami_ayarla(ayar)
+    if ayar["ses.motor"] == "auto":
+        if ayar["genel.is_turu"] == "dublaj":
+            secilen, neden = tts_auto_coz(ayar)
+            gerekce(neden)
+        else:
+            secilen = "supertonic"
+        ayar = {**ayar, "ses.motor": secilen}
+        _uyumluluk_uygula(ayar)  # çözülen motorun saf denetimi (ör. Supertonic'in okuyamadığı hedef dil)
     for bulgu in uyumluluk_denetle(ayar):
         if bulgu.seviye == "uyari":
             logger.warning("Ayar uyarısı: %s", bulgu)
