@@ -386,9 +386,9 @@ numpy==2.4.6 \
     # via
     #   -c cpu.txt (sürümler)
     #   openunmix
-omegaconf==2.3.1 \
-    --hash=sha256:3d701d14e9a8828f1edd28bb70b725908b34277cdd72cf7d6a83f94dadc6b6a0 \
-    --hash=sha256:e5e7de64aeebeddaf8e6d3f7a783b32ac2a01c0fbd9c878012caecb891a1f42a
+omegaconf==2.4.0 \
+    --hash=sha256:7e219a70bea371da250285b9c01c7db027bc421722799c2cc4ff14bc4a2a753b \
+    --hash=sha256:f141a664c777582405e3cc6e0545ecc79429e79f844995b1a6e71c35946a025c
     # via
     #   -c cpu.txt (sürümler)
     #   dora-search
