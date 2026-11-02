@@ -1100,9 +1100,9 @@ kiwisolver==1.5.1 \
     # via
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   matplotlib
-ko-speech-tools==0.1.0 \
-    --hash=sha256:0fa57d6eb1d5a126a2f10df93dd21355298839c1048865ead1b4bb07695e3f33 \
-    --hash=sha256:dcc5af8bd9f2a9d2260dcc36617d6de65106be625958302525068e81f94b2b1d
+ko-speech-tools==0.1.1 \
+    --hash=sha256:7e3d420949afcac20c036389d2572e4c6c0200ba6a8ef0e178627bd98b35600e \
+    --hash=sha256:849adafc236928d24bd9116158d285661b3ce82f6de0d9acfd9ef8f6facc175f
     # via
     #   -c gpu.txt + ek_tts_xtts.txt (sürümler)
     #   coqui-tts
