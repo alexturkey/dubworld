@@ -80,6 +80,7 @@ def test_kopru_acicisi_yonlendirmeyi_islemeden_reddeder():
     "https://cdn-lfs.huggingface.co/x",
     "https://release-assets.githubusercontent.com/github-production-release-asset/1/2",
     "https://huggingface.co/api/resolve-cache/models/x",
+    "https://cdn-lfs-cn-1.modelscope.cn/prod/lfs-objects/92/f2/x",
 ])
 def test_indirici_resmi_cdn_yonlendirmesini_kabul_eder(hedef):
     isleyici = modelleri_indir._YalnizHttpsYonlendirme()
@@ -91,6 +92,8 @@ def test_indirici_resmi_cdn_yonlendirmesini_kabul_eder(hedef):
     "https://evil.example/x",
     "https://hf.co.evil.example/x",
     "https://evilhuggingface.co/x",
+    "https://evilmodelscope.cn/x",
+    "https://modelscope.cn.evil.example/x",
     "https://user" + "@" + "cdn-lfs.huggingface.co/x",
 ])
 def test_indirici_izinsiz_yonlendirmeyi_reddeder(hedef):

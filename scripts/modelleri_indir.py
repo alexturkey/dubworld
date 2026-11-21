@@ -63,8 +63,9 @@ def https_dogrula(url: str) -> str:
 
 
 # Yönlendirme hedefleri: izinli alan adları + bu alan adlarının resmî CDN alt alanları (2026-10 ölçümü:
-# huggingface.co -> us.aws.cdn.hf.co / cas-bridge.xethub.hf.co, github.com -> release-assets.githubusercontent.com).
-IZINLI_YONLENDIRME_SONEKLERI = (".huggingface.co", ".hf.co", ".githubusercontent.com")
+# huggingface.co -> us.aws.cdn.hf.co / cas-bridge.xethub.hf.co, github.com -> release-assets.githubusercontent.com;
+# 2026-11 kullanıcı bildirimi, dubworld #10: www.modelscope.cn -> cdn-lfs-cn-1.modelscope.cn). Her dosya yine sha256 ve boyutla doğrulanır.
+IZINLI_YONLENDIRME_SONEKLERI = (".huggingface.co", ".hf.co", ".githubusercontent.com", ".modelscope.cn")
 
 
 def yonlendirme_dogrula(url: str) -> str:
