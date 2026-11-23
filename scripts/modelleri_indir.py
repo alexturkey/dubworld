@@ -4,7 +4,7 @@
     python scripts/modelleri_indir.py --liste
 
 Kurallar: yalnız https; dosya önce `.part` olarak iner, sha256 ve boyut tutarsa yerine konur; doğru dosya
-varsa atlanır (yeniden çalıştırılabilir). Hiçbir ağırlık repoda değildir; hepsi asıl kaynağından iner.
+varsa atlanır; yarım `.part` Range ile kaldığı yerden sürer (yeniden çalıştırılabilir). Hiçbir ağırlık repoda değildir; hepsi asıl kaynağından iner.
 Yalnız standart kütüphane kullanır.
 """
 
@@ -95,6 +95,50 @@ class _YalnizHttpsYonlendirme(urllib.request.HTTPRedirectHandler):
 _ACICI = urllib.request.build_opener(_YalnizHttpsYonlendirme)
 
 
+def akit(url: str, gecici: Path, boyut: int, acici=None, *, yeniden_denenen: bool = False) -> None:
+    """`url`'yi `gecici` (.part) dosyasına indirir; yarım .part varsa Range ile KALDIĞI YERDEN sürer.
+
+    Sunucu Range'i yok sayarsa (200 döner) baştan yazılır; 416 gelirse .part silinip baştan (Range'siz) denenir; .part boyutu
+    manifest boyutundan büyükse bozuk sayılıp silinir; .part tam boyuttaysa ağa hiç gidilmez (sha256 çağıranda doğrulanır).
+    Ağ hatasında (OSError) .part KORUNUR: yeniden çalıştırınca kaldığı yerden sürer. Boyut aşımı BoyutAsildi'dır (.part silinir)."""
+    acici = acici or _ACICI
+    mevcut = gecici.stat().st_size if gecici.is_file() else 0
+    if mevcut > boyut:
+        gecici.unlink()
+        mevcut = 0
+    if mevcut == boyut:
+        return
+    basliklar = {"User-Agent": "dubworld-kurulum"}
+    if mevcut:
+        basliklar["Range"] = f"bytes={mevcut}-"
+    # S310: şema çağıranda https_dogrula ile yalnız https'e sınırlı; yönlendirme de yalnız https (_ACICI).
+    istek = urllib.request.Request(url, headers=basliklar)  # noqa: S310
+    try:
+        yanit = acici.open(istek, timeout=60)
+    except urllib.error.HTTPError as hata:
+        if hata.code == 416 and mevcut and not yeniden_denenen:
+            gecici.unlink(missing_ok=True)  # aralık geçersiz: güvenli yol baştan
+            return akit(url, gecici, boyut, acici, yeniden_denenen=True)
+        raise OSError(f"HTTP {hata.code}: {url}") from hata
+    with yanit:
+        devam = bool(mevcut) and getattr(yanit, "status", 200) == 206
+        if mevcut and not devam:
+            mevcut = 0  # sunucu Range'i yok saydı: baştan
+        inen, son = mevcut, time.time()
+        with open(gecici, "ab" if devam else "wb") as cikti:
+            for parca in iter(lambda: yanit.read(1 << 20), b""):
+                inen += len(parca)
+                if inen > boyut:
+                    # Manifestteki boyut üst sınırdır: sunucu fazlasını gönderirse diski doldurmadan dur.
+                    raise BoyutAsildi(f"manifest boyutu aşıldı ({inen} > {boyut} bayt): {url}")
+                cikti.write(parca)
+                if time.time() - son > 5:
+                    print(f"    {inen / 1e6:.0f}/{boyut / 1e6:.0f} MB", flush=True)
+                    son = time.time()
+    if gecici.stat().st_size < boyut:
+        raise OSError(f"bağlantı erken kesildi ({gecici.stat().st_size}/{boyut} bayt): {url}")  # .part korunur, yeniden denenir
+
+
 def indir(kayit: dict, kok: Path) -> str:
     url = https_dogrula(kayit["url"])
     hedef = _guvenli_hedef(kok, kayit["hedef"])
@@ -102,28 +146,16 @@ def indir(kayit: dict, kok: Path) -> str:
         return "var"
     hedef.parent.mkdir(parents=True, exist_ok=True)
     gecici = hedef.with_name(hedef.name + ".part")
-    # S310: şema yukarıda https_dogrula ile yalnız https'e sınırlı; yönlendirme de yalnız https (_ACICI).
-    istek = urllib.request.Request(url, headers={"User-Agent": "dubworld-kurulum"})  # noqa: S310
     for deneme in range(1, 4):
         try:
-            with _ACICI.open(istek, timeout=60) as yanit, open(gecici, "wb") as cikti:
-                inen, son = 0, time.time()
-                for parca in iter(lambda: yanit.read(1 << 20), b""):
-                    inen += len(parca)
-                    if inen > kayit["boyut"]:
-                        # Manifestteki boyut üst sınırdır: sunucu fazlasını gönderirse diski doldurmadan dur.
-                        raise BoyutAsildi(f"manifest boyutu aşıldı ({inen} > {kayit['boyut']} bayt): {url}")
-                    cikti.write(parca)
-                    if time.time() - son > 5:
-                        print(f"    {inen / 1e6:.0f}/{kayit['boyut'] / 1e6:.0f} MB", flush=True)
-                        son = time.time()
+            akit(url, gecici, kayit["boyut"])
             break
         except BoyutAsildi as hata:
             gecici.unlink(missing_ok=True)
             raise SystemExit(str(hata)) from None
         except OSError as hata:
             if deneme == 3:
-                raise SystemExit(f"indirilemedi ({hata}): {url}") from hata
+                raise SystemExit(f"indirilemedi ({hata}); yarım dosya korundu, yeniden çalıştırınca kaldığı yerden sürer: {url}") from hata
             time.sleep(5 * deneme)
     gelen = sha256_dosya(gecici)
     if gelen != kayit["sha256"] or gecici.stat().st_size != kayit["boyut"]:
