@@ -32,6 +32,23 @@ profiliyle 22 GB, yalnız işlemciyle 14 GB; kurulum sonrası ölçülen kullan�
 Gereksinimler, adım sırası, Python ortamları haritası, isteğe bağlı motorlar, çevrimdışı kullanım, güncelleme,
 kaldırma ve sık hatalar: **[docs/kurulum.md](docs/kurulum.md)**. Linux ve macOS henüz denenmedi. Örnek: [Apple M4 Mac'te, yalnız işlemciyle İngilizce, Türkçe ve Arapça seslendirilmiş ürün tanıtımı](https://x.com/MihenkAIdotcom/status/2114345171571925363).
 
+## Disk düzeni ve kaldırma
+
+DubWorld'ün kurduğu her şey tek kök klasörde, klonladığınız depo klasöründe durur (başka yere koymak için başka yere klonlayın; `-VenvYolu` yalnız sanal ortamı taşır). Sistem PATH'ine, kullanıcı profiline ve kayıt defterine hiçbir şey yazılmaz.
+
+| Kök altındaki klasör | İçinde ne var | Boyut (temiz kurulum, [docs/kurulum.md](docs/kurulum.md) bölüm 1) |
+|---|---|---|
+| `.venv/` | ana Python ortamı | toplam ≈ 14,6 GB'ın parçası (GPU profili) |
+| `runtime_assets/` | Python, uv, FFmpeg, modeller, isteğe bağlı motorlar, önbellekler (`onbellek/`, `model_cache/`) | model ve araçlar ≈ 5,5 GB; uv önbelleği GPU ≈ 7,9 GB / CPU 3,9 GB, çoğu `.venv` ile sabit bağlı |
+| `cikti/` | çıktılarınız ve iş veritabanı | işinizle büyür |
+| `ayarlar/`, `.env` | ayarlarınız ve kayıtlı lisans cevaplarınız (git dışı) | çok küçük |
+
+Önbellekler: yalnız kurulum betiğinin kendi süreci için `UV_CACHE_DIR`, `PIP_CACHE_DIR` (siz zaten vermediyseniz) ve `TMP`/`TEMP` `runtime_assets/onbellek/` içine yönlenir; betiğin indirmeleri kullanıcı profilinizin ve sistem sürücüsünün dışında kalacak biçimde kurulu (bu düzenle tam kurulum henüz ölçülmedi). Kökün dışına yalnız isteğe bağlı adımlar uzanır: `telegram-sunucu` (Docker ya da WSL) ve `crisper` (WSL2); bkz. [AGENTS.tr.md](AGENTS.tr.md) bölüm 5b.
+
+**Modeliniz zaten var mı?** İndirici sha256'sı doğru tam dosyayı atlar; aynı dosyayı iki kez indirmez; yarım kalan model indirmesi `.part` dosyasından sürer. Kuru çalışma, bir komutun neyi yapacağını hiçbir şey yazmadan ve indirmeden gösterir: `scripts\kur.ps1 -Kuru`.
+
+**Kaldırma:** programı kapatın, depo klasörünü silin. Kaldırma bu kadar. Ayrı silebileceğiniz parçalar [docs/kurulum.md](docs/kurulum.md) içinde ("Kaldırma") listelidir.
+
 ## Kullanım
 
 Masaüstü uygulaması: `arayuz.cmd`'ye çift tıklayın (yerel web uygulaması: `web.cmd`, yalnız 127.0.0.1). Uygulamanın ekranları Türkçe ve İngilizce: sağ üstten seçin (bilgisayar başka bir dildeyse İngilizce açılır). Komut satırından:

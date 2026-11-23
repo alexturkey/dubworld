@@ -1,0 +1,60 @@
+name: Donanım testi / Hardware test
+description: başka bir bilgisayarda denediniz mi? Sonucu yazın (çalışsa da çalışmasa da değerli) / tried it on another machine? Report the result (useful whether it worked or not)
+title: "[donanım] "
+labels: ["donanim"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Kurulum düşüyorsa "Kurulum sorunu", yanlış sonuç için "Hata raporu" formunu kullanın. Güvenlik açığını burada değil `SECURITY.md` yoluyla bildirin.
+        Videonun kendisini, kişisel yolları, API anahtarlarını ve hesap adlarını yapıştırmayın.
+        / Install failing? Use "Install problem". Wrong result? Use "Bug report". Security issues: `SECURITY.md`, not here.
+        Do not paste the video itself, personal paths, API keys or account names.
+  - type: input
+    id: donanim
+    attributes:
+      label: Kart, VRAM, sürücü, RAM, işlemci / GPU, VRAM, driver, RAM, CPU
+      placeholder: "NVIDIA GTX 1050 Ti 4 GB, sürücü / driver 581, 16 GB RAM (ya da / or: NVIDIA GPU yok / CPU only)"
+    validations:
+      required: true
+  - type: input
+    id: surum
+    attributes:
+      label: Sürüm / Version
+      description: "`dubla --version` ya da commit / or commit hash"
+    validations:
+      required: true
+  - type: input
+    id: profil
+    attributes:
+      label: Kurulum profili ve motorlar / Install profile and engines
+      description: "`.venv\\dublaj_profil.txt` içeriği (gpu.txt / cpu.txt) ve seçtiğiniz motorlar / its content and the engines you chose"
+    validations:
+      required: true
+  - type: input
+    id: calisma
+    attributes:
+      label: Komut, video süresi, toplam süre, en yüksek bellek / Command, video length, total time, peak memory
+    validations:
+      required: true
+  - type: dropdown
+    id: sonuc
+    attributes:
+      label: Sonuç / Result
+      options:
+        - "tamamlandı, çıktı doğru / finished, output correct"
+        - "tamamlandı, çıktıda sorun var / finished, output has problems"
+        - "yarıda kaldı / stopped midway"
+        - "başlamadı / did not start"
+    validations:
+      required: true
+  - type: textarea
+    id: kontrol
+    attributes:
+      label: "`dubla kontrol` çıktısı (son satırlar) / last lines of `dubla kontrol`"
+      render: text
+  - type: textarea
+    id: not
+    attributes:
+      label: Notlar / Notes
+      description: "Her iddianızı etiketleyin: [ölçtüm], [okudum], [tahmin]. / Label each claim: [measured], [read], [guess]."

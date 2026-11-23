@@ -76,6 +76,27 @@ oradan okur.
 değişikliğinde çıktı şeması bozulmamalı; PR'a aynı girdinin önceki ve sonraki çevirisinden kısa bir örnek ekle
 (telifli metin değil, kendi cümlen).
 
+### İlk PR'ınız 5 adımda
+
+Küçük bir düzeltme de, yeni bir motor da aynı yoldan geçer. Tek dil yeter: Türkçe, İngilizce ya da kendi dilinizle yazın, çeviriyi biz
+hallederiz; yarım kalmış işi taslak (draft) PR olarak açabilirsiniz, birlikte tamamlarız.
+
+1. Depoyu çatallayın (fork), tek konulu bir dal açın.
+2. Yukarıdaki "Başlarken" komutlarıyla ortamı kurun.
+3. PR'dan önce tek komut: `python scripts/denetim.py --hizli` (Windows'ta Python bilmeden: `scripts/on_kontrol.ps1`). CI'nin çalıştırdığı kapıların aynısını yerelde koşar; hiçbir şey indirmez, GPU istemez. Test dahil tam hali: `--tam`.
+4. PR'ı açın, şablonu doldurun. Ne ölçtüğünüzü etiketleyin: `[ölçtüm]` kendi çalıştırdığınız komut ve çıktı, `[okudum]` belgede ya da kodda gördüğünüz, `[tahmin]` denemediğiniz.
+5. Yorumları yanıtlayın; kapılar yeşil ve bir bakımcı onayladığında birleştirilir. Birleşen her katkıdan sonra adınız sürüm notlarında anılır.
+
+Commit e-postası: GitHub'ın size verdiği `...@users.noreply.github.com` adresini kullanın (GitHub → Settings → Emails → "Keep my email address private"); gerçek e-postanız geçmişe girmesin.
+
+**Kabul / ret tablosu**
+
+| Genelde kabul edilir | Genelde kabul edilmez |
+|---|---|
+| Gerçek donanımda ölçülmüş sonuç, hata düzeltmesi, belge/çeviri düzeltmesi | Ağırlık, model, video, ses kaydı ya da ikili dosya eklemek |
+| Resmî kaynaktan, sabit sürüm + sha256 ile yeni motor | Ses klonlama ya da gerçek kişiyi taklit eden motor (`ETHICS.md`), resmî olmayan dönüşümler |
+| Küçük, tek konulu, testi olan değişiklik | Kilit dosyasını elle değiştirmek, kapıyı kapatmak ya da gevşetmek |
+
 ### Kurallar
 
 - Ağırlık, model, video, ses kaydı ya da ikili dosya PR'a girmez; her indirme resmî kaynaktan, sabit sürüm + sha256.
@@ -140,6 +161,27 @@ entry point: the `build_dubbed_audio` branch in `tts_orkestratoru/service.py`. N
 Prompts sit next to their backend (`llm_kopru/backends/<name>/prompt.md`, `prompts/`; Claude:
 `bolum_40_ceviri/claude_code_cli/backends/claude_code_cli/`), shared layer `llm_kopru/prompt_katmani/`. Keep the output
 schema valid and add a short before/after translation of your own sentence to the PR.
+
+### Your first pull request in 5 steps
+
+A small fix and a new engine take the same road. One language is enough: write in Turkish, English or your own language and we
+will handle the translation; you can open unfinished work as a draft PR and we will finish it together.
+
+1. Fork the repository and open a single-topic branch.
+2. Set up the environment with the "Getting started" commands above.
+3. Before the PR, one command: `python scripts/denetim.py --hizli` (on Windows without knowing Python: `scripts/on_kontrol.ps1`). It runs the same gates CI runs, locally; it downloads nothing and needs no GPU. The full run including tests: `--tam`.
+4. Open the PR and fill in the template. Label what you measured: `[measured]` a command you ran yourself and its output, `[read]` something you saw in the docs or code, `[guess]` something you did not try.
+5. Answer the review comments; when the gates are green and a maintainer approves, it is merged. After a merge your name is credited in the release notes.
+
+Commit e-mail: use the `...@users.noreply.github.com` address GitHub gives you (GitHub → Settings → Emails → "Keep my email address private") so your real e-mail does not enter the history.
+
+**Accepted / declined**
+
+| Usually accepted | Usually declined |
+|---|---|
+| A result measured on real hardware, a bug fix, a docs or translation fix | Adding weights, models, video, audio recordings or binaries |
+| A new engine from an official source, pinned by version + sha256 | Voice cloning or an engine imitating real people (`ETHICS.md`), unofficial conversions |
+| A small, single-topic change with a test | Hand-editing a lock file, or switching off or loosening a gate |
 
 ### Rules
 

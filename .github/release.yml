@@ -1,0 +1,26 @@
+# Release notes categories (GitHub generated notes). Labels that exist by default: bug, documentation, enhancement, ...
+# New contributors are listed automatically by GitHub; the notes also name every pull request author.
+changelog:
+  exclude:
+    labels:
+      - duplicate
+      - invalid
+      - wontfix
+  categories:
+    - title: "Fixes / Düzeltmeler"
+      labels:
+        - bug
+        - hata
+    - title: "Improvements / İyileştirmeler"
+      labels:
+        - enhancement
+        - oneri
+    - title: "Docs and translations / Belge ve çeviri"
+      labels:
+        - documentation
+    - title: "Dependencies / Bağımlılıklar"
+      labels:
+        - dependencies
+    - title: "Other changes / Diğer değişiklikler"
+      labels:
+        - "*"

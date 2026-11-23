@@ -32,6 +32,23 @@ sha256-verified. Free disk to start: 22 GB with the GPU profile, 14 GB CPU only;
 Requirements, step order, the map of Python environments, optional engines, offline use, update, uninstall and
 common errors: **[docs/installation.md](docs/installation.md)**. Linux and macOS are not tested yet. Example: [product tour voiced in English, Turkish and Arabic on an Apple M4 Mac, CPU only](https://x.com/MihenkAIdotcom/status/2114345171571925363).
 
+## Disk layout and removal
+
+Everything DubWorld installs lives in one root folder, the repository folder you cloned (to put it elsewhere, clone it elsewhere; `-VenvYolu` moves only the virtual environment). Nothing is written to the system PATH, the user profile or the registry.
+
+| Folder under the root | What is in it | Size (clean install, [docs/installation.md](docs/installation.md) section 1) |
+|---|---|---|
+| `.venv/` | main Python environment | part of the ≈ 14.6 GB total (GPU profile) |
+| `runtime_assets/` | Python, uv, FFmpeg, models, optional engines, caches (`onbellek/`, `model_cache/`) | models and tools ≈ 5.5 GB; uv cache ≈ 7.9 GB GPU / 3.9 GB CPU, most of it hard-linked with `.venv` |
+| `cikti/` | your outputs and the job database | grows with your work |
+| `ayarlar/`, `.env` | your settings and recorded license answers (not in git) | tiny |
+
+Caches: for the install script's own process only, `UV_CACHE_DIR`, `PIP_CACHE_DIR` (unless you already set one) and `TMP`/`TEMP` point into `runtime_assets/onbellek/`, so the script's downloads are meant to stay off your user profile and the system drive (a full install with this layout has not been measured yet). Only optional steps reach outside the root: `telegram-sunucu` (Docker or WSL) and `crisper` (WSL2); see [AGENTS.md](AGENTS.md) section 5b.
+
+**Already have a model?** The downloader skips a complete file whose sha256 is right; it does not download the same file twice, and an interrupted model download continues from its `.part` file. A dry run shows what a command would do without writing or downloading anything: `scripts\kur.ps1 -Kuru`.
+
+**Removal:** close the program, then delete the repository folder. That is the whole uninstall. Parts you can delete separately are listed in [docs/installation.md](docs/installation.md) ("Uninstall").
+
 ## Usage
 
 Desktop app: double-click `arayuz.cmd` (local web app: `web.cmd`, 127.0.0.1 only). The app's screens are in English and Turkish: pick one at the top right (on a computer in another language it opens in English). From the command line:

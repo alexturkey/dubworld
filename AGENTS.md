@@ -18,7 +18,7 @@ Hard rules for agents in this repo:
 - Never `pip install` single packages into `.venv`, never edit `requirements/*.txt` or `scripts/modeller.json`,
   never run as administrator, never change the system `PATH`. Re-running `scripts\kur.ps1` is always safe.
 - Do not commit local settings, outputs, virtualenvs, models or caches (`.gitignore`).
-- At most 3 attempts per step. After the third failure stop, show the user the last 30 lines of output and the
+- Same error twice on a step: stop. After the second identical failure do not try a third time: show the user the last 30 lines of output and the
   matching row of `docs/installation.md` section 12.
 
 ## 0. Prerequisites (check them yourself)
@@ -273,6 +273,18 @@ ayarlar\                        personal settings (kullanici.toml) and license r
 src\dublaj_hatti\               the package (commands dubla, dubla-gui = web UI in its own window, dubla-web)
 docs\                           getting-started / baslarken (users), installation / kurulum (full reference)
 ```
+
+## 5b. Install layout and agent discipline
+
+These rules apply to you (an AI agent) and to any sub-agent you start. They exist so that installing DubWorld leaves nothing behind outside its folder and downloads nothing twice. Each sentence below matches `scripts/kur.ps1`; if the script and this section ever differ, the script wins and this section is wrong: tell the user.
+
+1. **One root.** Everything lives under one root folder: the repository folder you cloned. The environment goes to `.venv`, models, Python, uv, FFmpeg, engines and caches to `runtime_assets/`, outputs and the job database to `cikti/`, personal settings to `ayarlar/` (map: section 5a and `README.md` "Disk layout and removal"). `-VenvYolu` moves only the virtual environment; to move everything, clone the repository into another folder.
+2. **No trace outside the root.** The install script points these variables at the root for its own process only: `UV_CACHE_DIR` (always), `PIP_CACHE_DIR` (only when the user has not set one), `TMP` and `TEMP`. At run time the program keeps the Hugging Face and PyTorch caches in `runtime_assets/model_cache` (unless `DUBLAJ_HF_HOME` / `DUBLAJ_TORCH_HOME` is set). The script does not change the system `PATH`, the user profile or the registry, and you must not either. Do not create folders next to the root, in the user profile or in a system temp folder. Written openly, the only parts that live outside the root are the optional ones: the `telegram-sunucu` step uses Docker (image and container are in Docker's own storage, named `dubworld-telegram-bot-api`) or a folder inside WSL, and the `crisper` step uses a WSL2 distribution that is yours.
+3. **No double download.** A complete file with the right sha256 is skipped; an interrupted model download keeps its `.part` file and continues from where it stopped (HTTP Range; if the server refuses, the `.part` is dropped and the download starts again; the final sha256 and size are always checked). The small uv zip is the one download that restarts. If the user already has a model, do not download it again into a second place; never start a second installer while one is running.
+4. **Measure first.** Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Kuru` (dry run: writes nothing, downloads nothing) and read every `HATA:` / `UYARI:` line before any download. Each carries a code such as `[DW-E-DISK]` (list: `docs/troubleshooting.md`). Tell the user the size and the sources, and wait for a yes.
+5. **Show before you delete.** Removing anything (a half install, a cache, an old environment) is shown to the user first: path, size, why. Deleting the whole root folder is the supported way to uninstall; never delete outside it, never delete the user's own models or caches. The scripts delete nothing of the user's: only their own leftovers (an unfinished `.part` file and a download that failed its sha256).
+6. **Same error twice: stop.** Do not try a third time; take the code and the first 20 lines of output to the user.
+7. **Sub-agents follow the same rules.** When you start another agent, put these rules in its brief; one install at a time; no agent edits the install scripts to get past a check.
 
 ## 6. Maintainer notes
 

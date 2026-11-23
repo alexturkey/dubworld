@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Maintenance round (repo standard kit): one command before a pull request, `python scripts/denetim.py --hizli` (Windows without
+  Python knowledge: `scripts/on_kontrol.ps1`), runs the same local gates CI runs plus a hidden-character gate (bidi, zero-width,
+  control characters) and the malicious-PR self-test; it never reports a gate that did not run as green. `scripts/pr_kapi.py` and
+  `scripts/pr_kombinasyon.py` scan a pull request diff for crude malicious patterns (a reviewer aid, not a safety guarantee).
+- Installer dry run: `scripts\kur.ps1 -Kuru` writes nothing and downloads nothing, lists every problem with a stable code
+  (`DW-E-...`, `docs/hata_imzalari.json`, `docs/troubleshooting.md`, Turkish `docs/sorun_giderme.md`) and exits 0 / 2 / 3. The
+  install script now points `PIP_CACHE_DIR` (unless you set one) and `TMP`/`TEMP` into `runtime_assets/onbellek/` for its own process.
+  `scripts/tani.ps1` prints a local, offline, personal-data-filtered diagnosis report and names the error code found in a log.
+- Agent files: `AGENTS_HIZLI.md` (12-step decision tree and an exit code table checked by tests), `llms.txt`, an "Install layout and
+  agent discipline" section in `AGENTS.md`, `CLAUDE.md` / `GEMINI.md` / `.github/copilot-instructions.md` / `.aider.conf.yml` that
+  only point to `AGENTS.md`. Agents now stop after the same error twice (was: three attempts).
+- Model downloader (`scripts/modelleri_indir.py`): an interrupted download continues from its `.part` file with an HTTP Range request (server refusal or 416 restarts safely; sha256 and size are always checked; a network error keeps the `.part`).
+- Community files: `SUPPORT.md`, `.github/release.yml`, a Hardware test issue form, blank issues closed with a private security
+  reporting link, "first pull request in 5 steps" and evidence labels in `CONTRIBUTING.md` and the PR template, supported versions and an
+  agent paragraph in `SECURITY.md`, a "Disk layout and removal" section in `README.md` / `README.tr.md` (the other translations follow).
 - Voice library: a new **Voices** tab lets you add your own voice from a short recording (3 to 30 seconds), name it, give it a
   category, and say whose voice it is (your own, or with the owner's permission). Dubbing can then speak in that voice:
   pick it on the Dub card ("3. Voice") or press "Use in dubbing" on its card. The voice is cloned with VoxCPM2 from the

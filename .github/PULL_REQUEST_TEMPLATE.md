@@ -4,8 +4,9 @@
 
 ## Nasıl test edildi / How it was tested
 
-<!-- Komut ve sonuç; donanım (CPU / GPU, bellek), işletim sistemi. / Command and result; hardware, OS. -->
+<!-- Komut ve sonuç; donanım (CPU / GPU, bellek), işletim sistemi. Her iddiayı etiketleyin: [ölçtüm] kendi çalıştırdığınız, [okudum] belgede/kodda gördüğünüz, [tahmin] denemediğiniz. Tek dil yeter; yarım iş için taslak (draft) PR açabilirsiniz. / Command and result; hardware, OS. Label each claim: [measured] you ran it, [read] you saw it in docs/code, [guess] you did not try. One language is enough; open a draft PR for unfinished work. -->
 
+- [ ] `python scripts/denetim.py --hizli` (tüm yerel kapılar / all local gates)
 - [ ] `ruff check --select E9,F63,F7,F82 src tests`
 - [ ] `python -m pytest -m "not gpu and not slow"`
 - [ ] GPU ya da gerçek video ile denendi (varsa yazın) / Tried on GPU or a real video (describe if so)

@@ -1,0 +1,20 @@
+# DubWorld
+
+> DubWorld dubs a video into another language on your own computer: speech to text with word timestamps, translation, synthetic voice kept in step with the original video, subtitles and a new video. Turkish by default; other languages per voice engine. Windows 10/11, local, no telemetry; no model weights in the repository.
+
+Rules that never change: licence and consent steps belong to the human (never accept for the user); every download is pinned by version/commit and sha256; no personal paths, e-mail addresses or tokens in anything you write (use `<ROOT>`).
+
+## Start here
+- [AGENTS_HIZLI.md](https://github.com/alexturkey/DubWorld/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
+- [AGENTS.md](https://github.com/alexturkey/DubWorld/blob/main/AGENTS.md): full install, hard rules, options and verification
+- [README.md](https://github.com/alexturkey/DubWorld/blob/main/README.md): overview and quick start (English is authoritative)
+
+## When something fails
+- [docs/hata_imzalari.json](https://github.com/alexturkey/DubWorld/blob/main/docs/hata_imzalari.json): stable error codes with the first step in English and Turkish
+- [docs/troubleshooting.md](https://github.com/alexturkey/DubWorld/blob/main/docs/troubleshooting.md): the same list for people
+
+## Safety, licence, privacy
+- [SECURITY.md](https://github.com/alexturkey/DubWorld/blob/main/SECURITY.md): private reporting, what counts as a vulnerability
+- [PRIVACY.md](https://github.com/alexturkey/DubWorld/blob/main/PRIVACY.md): no telemetry; the only network addresses
+- [CONTRIBUTING.md](https://github.com/alexturkey/DubWorld/blob/main/CONTRIBUTING.md): how to contribute
+- [THIRD_PARTY.md](https://github.com/alexturkey/DubWorld/blob/main/THIRD_PARTY.md): licences of every model and tool

@@ -19,7 +19,7 @@ Bu repodaki ajanlar için kesin kurallar:
 - `.venv` içine tek tek paket `pip install` etmeyin; `requirements/*.txt` ya da `scripts/modeller.json` dosyalarını
   düzenlemeyin; yönetici olarak çalıştırmayın; sistem `PATH`'ini değiştirmeyin. `scripts\kur.ps1`'i yeniden çalıştırmak her zaman güvenlidir.
 - Yerel ayarları, çıktıları, sanal ortamları, modelleri ya da önbellekleri commit etmeyin (`.gitignore`).
-- Adım başına en çok 3 deneme. Üçüncü başarısızlıktan sonra durun, kullanıcıya çıktının son 30 satırını ve
+- Bir adımda aynı hata iki kez: durun. İkinci aynı başarısızlıktan sonra üçüncü kez denemeyin; kullanıcıya çıktının son 30 satırını ve
   `docs/kurulum.md` 12. bölümdeki ilgili satırı gösterin.
 
 ## 0. Ön koşullar (kendiniz denetleyin)
@@ -279,6 +279,18 @@ docs\                           getting-started / baslarken (users), installatio
 Kısaca: üç çift tıklama başlatıcısı (kurulum, masaüstü, yerel web), kurulum betiği ve sabit model listesi, kurulumun
 oluşturduğu `.venv\` ve `runtime_assets\`, çıktılar ve iş veritabanı `cikti\`, kişisel ayar ve lisans kayıtları
 `ayarlar\` (git dışı), paket `src\dublaj_hatti\`, belgeler `docs\`.
+
+## 5b. Kurulum düzeni ve ajan disiplini
+
+Bu kurallar sana (yapay zekâ ajanı) ve başlattığın her alt ajana uygulanır. Amaç: DubWorld kurulumu klasörünün dışında iz bırakmaz ve hiçbir şeyi iki kez indirmez. Aşağıdaki her cümle `scripts/kur.ps1` ile uyuşur; betik ile bu bölüm çelişirse betik haklıdır, bölüm yanlıştır: kullanıcıya söyle.
+
+1. **Tek kök.** Her şey tek kök klasörde durur: klonladığın depo klasörü. Ortam `.venv`'e; modeller, Python, uv, FFmpeg, motorlar ve önbellekler `runtime_assets/`'e; çıktılar ve iş veritabanı `cikti/`'ye; kişisel ayarlar `ayarlar/`'a gider (harita: bölüm 5a ve `README.tr.md` "Disk düzeni ve kaldırma"). `-VenvYolu` yalnız sanal ortamı taşır; hepsini taşımak için depoyu başka bir klasöre klonla.
+2. **Kökün dışında iz yok.** Kurulum betiği şu değişkenleri yalnız kendi süreci için köke yönlendirir: `UV_CACHE_DIR` (hep), `PIP_CACHE_DIR` (yalnız kullanıcı kendisi vermediyse), `TMP` ve `TEMP`. Çalışırken program Hugging Face ve PyTorch önbelleklerini `runtime_assets/model_cache` altında tutar (`DUBLAJ_HF_HOME` / `DUBLAJ_TORCH_HOME` verilmedikçe). Betik sistem `PATH`'ini, kullanıcı profilini ve kayıt defterini değiştirmez; sen de değiştirmezsin. Kökün yanında, kullanıcı profilinde ya da sistem geçici klasöründe klasör açma. Açıkça yazılan istisnalar yalnız isteğe bağlı adımlardır: `telegram-sunucu` adımı Docker (imaj ve kapsayıcı Docker'ın kendi alanında, adı `dubworld-telegram-bot-api`) ya da WSL içi bir klasör kullanır; `crisper` adımı sana ait bir WSL2 dağıtımı kullanır.
+3. **Çift indirme yok.** sha256'sı doğru tam dosya atlanır; yarım kalan model indirmesi `.part` dosyasını korur ve kaldığı yerden sürer (HTTP Range; sunucu reddederse `.part` atılır, baştan iner; sha256 ve boyut hep doğrulanır). Küçük uv zip'i baştan inen tek indirmedir. Kullanıcının modeli zaten varsa ikinci bir yere yeniden indirme; bir kurulum sürerken ikincisini başlatma.
+4. **Önce ölç.** `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Kuru` çalıştır (kuru çalışma: hiçbir şey yazmaz, indirmez) ve indirmeden önce her `HATA:` / `UYARI:` satırını oku. Her biri `[DW-E-DISK]` gibi bir kod taşır (liste: `docs/sorun_giderme.md`). Kullanıcıya boyutu ve kaynakları söyle, evet'ini bekle.
+5. **Silmeden önce göster.** Bir şeyi silmek (yarım kurulum, önbellek, eski ortam) önce kullanıcıya gösterilir: yol, boyut, neden. Kaldırmanın desteklenen yolu kök klasörün tamamını silmektir; kökün dışını ve kullanıcının kendi model ya da önbelleğini asla silme. Betikler kullanıcıya ait hiçbir şeyi silmez: yalnız kendi artıklarını (bitmemiş `.part` dosyası ve sha256'sı tutmayan indirme).
+6. **Aynı hata iki kez: dur.** Üçüncü kez deneme; kodu ve çıktının ilk 20 satırını kullanıcıya götür.
+7. **Alt ajan aynı kurallara tabidir.** Başka bir ajan başlatırsan bu kuralları brifine yaz; aynı anda tek kurulum; hiçbir ajan bir kontrolü geçmek için kurulum betiğini değiştirmez.
 
 ## 6. Bakımcı notları
 
