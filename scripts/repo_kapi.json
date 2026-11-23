@@ -1,0 +1,174 @@
+{
+  "_not": "Kit ayar dosyasi (repo-ekibi kiti, kit surumu 2). Bu repoda kapi betikleri (denetim.py, pr_kapi.py, pr_kombinasyon.py) sabitleri KENDI icinden okur; bu dosya kayittir ve bir test (tests/test_bakim_kapilari.py) izinli alan adlari ile cikis kodlarinin betikle ayni kaldigini sinar. CHECKOUT/SETUP-PYTHON SHA'lari .github/workflows/ci.yml icindedir.",
+  "kit_surumu": 2,
+  "kurulu_parcalar": {
+    "K-00": 1,
+    "K-02": 1,
+    "K-03": 1,
+    "KL-01": 1,
+    "KL-03": 1,
+    "KL-06": 1,
+    "KL-08": 1,
+    "KL-10": 1,
+    "KL-13": 1,
+    "KL-14": 1,
+    "KL-15": 1,
+    "KL-17": 1,
+    "KL-18": 1,
+    "KL-19": 1,
+    "KL-21": 1,
+    "KL-22": 1
+  },
+  "repo": {
+    "ad": "DubWorld",
+    "sahip": "alexturkey",
+    "kisa_ad": "dub",
+    "tur": "uygulama",
+    "gpu": true,
+    "platform": [
+      "windows-10",
+      "windows-11"
+    ],
+    "ana_dal": "main",
+    "lisans": "Apache-2.0"
+  },
+  "betik_dizini": "scripts",
+  "korumali_yollar": [
+    "scripts/*",
+    ".github/*",
+    ".claude/*",
+    "tests/*",
+    "requirements/*",
+    "pyproject.toml",
+    "AGENTS.md",
+    "AGENTS.tr.md",
+    "AGENTS_HIZLI.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "llms.txt",
+    "SECURITY.md",
+    "LICENSE",
+    "NOTICE",
+    ".gitattributes",
+    ".gitignore",
+    ".pre-commit-config.yaml",
+    "kur.cmd",
+    "web.cmd"
+  ],
+  "izinli_alan_adlari": [
+    "127.0.0.1",
+    "3dspeaker.github.io",
+    "ai.google.dev",
+    "api.cerebras.ai",
+    "api.groq.com",
+    "api.mistral.ai",
+    "api.telegram.org",
+    "arxiv.org",
+    "cdn-lfs-cn-1.modelscope.cn",
+    "cloud.cerebras.ai",
+    "console.groq.com",
+    "console.mistral.ai",
+    "coqui.ai",
+    "dl.fbaipublicfiles.com",
+    "docs.anthropic.com",
+    "download.pytorch.org",
+    "dublaj-hatti.invalid",
+    "files.pythonhosted.org",
+    "generativelanguage.googleapis.com",
+    "github.com",
+    "hf.co",
+    "huggingface.co",
+    "img.shields.io",
+    "json-schema.org",
+    "localhost",
+    "modelscope.cn",
+    "onnxruntime.ai",
+    "pre-commit.com",
+    "pypi.org",
+    "pytorch.org",
+    "raw.githubusercontent.com",
+    "readthedocs.org",
+    "www.apache.org",
+    "www.gyan.dev",
+    "www.modelscope.cn",
+    "www.w3.org"
+  ],
+  "dil": {
+    "kaynak": "README.md",
+    "ceviri_deseni": "README.{dil}.md",
+    "rtl": [
+      "ar",
+      "fa",
+      "he",
+      "ur"
+    ],
+    "zwj_izinli": [
+      "bn",
+      "fa",
+      "hi",
+      "th"
+    ],
+    "lrm_izinli": [
+      "ar",
+      "fa",
+      "he",
+      "ur"
+    ],
+    "hukuki_belgeler_ingilizce": true
+  },
+  "kalite_sabitleri": [],
+  "hata": {
+    "imza_dosyasi": "docs/hata_imzalari.json",
+    "sik_hatalar": "docs/troubleshooting.md",
+    "kod_oneki": "DW"
+  },
+  "betikler": {
+    "kur": "scripts/kur.ps1",
+    "tani": "scripts/tani.ps1",
+    "on_kontrol": "scripts/on_kontrol.ps1",
+    "denetim": "scripts/denetim.py"
+  },
+  "cikis_kodlari": {
+    "kur.ps1 -Kuru": {
+      "0": "HAZIR",
+      "2": "insanin lisans kabulu gerek",
+      "3": "ortam yetmiyor (disk, adim, WSL, git, taban)"
+    },
+    "kur.ps1": {
+      "0": "KURULUM_OK",
+      "1": "KURULUM DURDU"
+    },
+    "denetim.py": {
+      "0": "hepsi GECTI",
+      "1": "en az bir kapi KIRMIZI",
+      "3": "girdi/ortam hatasi",
+      "6": "bir kapi CALISMADI"
+    },
+    "pr_kapi.py": {
+      "0": "GECTI ya da yalniz SARI-YOL",
+      "1": "KIRMIZI",
+      "3": "girdi hatali",
+      "4": "SARI-ICERIK (insan bakmali)",
+      "6": "CALISMADI"
+    }
+  },
+  "yer_tutucular": {
+    "REPO_AD": "DubWorld",
+    "SAHIP_REPO": "alexturkey/DubWorld",
+    "REPO_URL": "https://github.com/alexturkey/DubWorld",
+    "HATA_ONEKI": "DW",
+    "HATA_IMZA_DOSYASI": "docs/hata_imzalari.json",
+    "SIK_HATALAR_YOLU": "docs/troubleshooting.md",
+    "ONKONTROL_KOMUTU": "python -I -X utf8 scripts/denetim.py --hizli",
+    "DENETIM_BETIGI": "scripts/denetim.py",
+    "LISANS_ADI": "Apache-2.0",
+    "KURU_KOMUT": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/kur.ps1 -Kuru",
+    "KURULUM_KOMUT": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/kur.ps1",
+    "ILK_KOMUT": ".venv/Scripts/dubla.exe kontrol"
+  },
+  "atla": {
+    "KL-05": "repoda patches/ (yama paketi) yok",
+    "KL-07": "esdeger var: scripts/dil_eslik_denetimi.py kendi listelerini (CIFTLER, TEK_DOSYA_KALIPLARI, README_DILLERI) ve README sha damgasini tasir; 30 dil tek kural, kademe (A/B/C) yok; dil_profili.json'u okuyan kod olmadigindan olu ayar dosyasi olurdu",
+    "KL-16": "repoda mcp/ sunucusu yok"
+  }
+}
