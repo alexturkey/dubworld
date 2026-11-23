@@ -40,6 +40,7 @@
 .EXAMPLE
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Cpu
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Kuru   # dry run: writes nothing, downloads nothing, lists every problem with its code
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim demucs,youtube
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim akilli-kare,telegram
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\kur.ps1 -Adim telegram-sunucu
@@ -50,6 +51,7 @@ param(
   [string]$Adim = "uv,python,paketler,modeller,kontrol",
   [switch]$Cpu,
   [switch]$TicariOlmayanKabul,
+  [switch]$Kuru,
   [string]$VenvYolu = ""
 )
 $ErrorActionPreference = "Stop"
@@ -109,6 +111,16 @@ $env:UV_PYTHON_INSTALL_DIR = Join-Path $Varlik "python"
 $env:UV_NO_MODIFY_PATH = "1"
 $env:PYTHONIOENCODING = "utf-8"
 
+# Kurulum düzeni (STANDART 11): bu betiğin KENDİ süreci için önbellekler ve geçici klasör kök içine gider; PATH, kullanıcı profili,
+# kayıt defteri ve genel ayar değişmez. UV_CACHE_DIR yukarıda hep kök içine yönlendirilir; PIP_CACHE_DIR yalnız kullanıcı
+# kendisi bir değer vermediyse; TMP/TEMP hep kök içine. Klasörler yalnız gerçek kurulumda yaratılır (-Kuru hiçbir şey yazmaz).
+$Onbellek = Join-Path $Varlik "onbellek"
+$Gecici = Join-Path $Onbellek "gecici"
+if (-not $env:PIP_CACHE_DIR) { $env:PIP_CACHE_DIR = Join-Path $Onbellek "pip" }
+if (-not $Kuru) { New-Item -ItemType Directory -Force -Path $Gecici | Out-Null }
+$env:TMP = $Gecici
+$env:TEMP = $Gecici
+
 function Adim([string]$ad) { return $Adimlar -contains $ad }
 function Bilgi([string]$m) { Write-Host $m }
 
@@ -138,6 +150,63 @@ function Paketle([string]$Kilit) {
   # Kilit iki indeks yazar (PyPI + PyTorch); her paket hash ile sabit olduğundan en iyi eşleşme güvenlidir.
   & $Uv pip install --python $Py --require-hashes --index-strategy unsafe-best-match -r (Join-Path $Repo "requirements\$Kilit")
   if ($LASTEXITCODE -ne 0) { throw "paket kurulumu başarısız: $Kilit (çoğunlukla internet kesintisi; yeniden çalıştırın)" }
+}
+
+# -Kuru (dry run): yan etkisiz tam ön rapor. Hiçbir şey yazmaz, indirmez, kurmaz; yalnız bu makineyi ölçer ve her sorunu
+# tek listede, kararlı koduyla basar (kodlar: docs/hata_imzalari.json, docs/troubleshooting.md). Çıkış kodu:
+# 0 HAZIR (kurulum başlatılabilir) | 2 insanın kabulü gerek (lisans) | 3 ortam yetmiyor (disk, WSL, git, bilinmeyen adım, önce taban).
+if ($Kuru) {
+  $hatalar = New-Object System.Collections.Generic.List[string]
+  $uyarilar = New-Object System.Collections.Generic.List[string]
+  $kabulGerek = $false
+  $bilinen = @("uv", "python", "paketler", "modeller", "kontrol", "demucs", "hizalama-diller", "youtube", "parakeet", "crisper", "voxcpm2", "tts-ema", "akilli-kare", "galeri", "telegram", "telegram-sunucu", "tts-xtts")
+  Bilgi "KURU ÇALIŞMA / DRY RUN (hiçbir şey yazılmaz, indirilmez / nothing is written or downloaded)"
+  Bilgi "  kök / root: <ROOT> (bu klasör / this folder)"
+  Bilgi "  adımlar / steps: $($Adimlar -join ', ')"
+  foreach ($a in $Adimlar) {
+    if ($bilinen -notcontains $a) { $hatalar.Add("[DW-E-ADIM] bilinmeyen adım / unknown step: $a (geçerli / valid: $($bilinen -join ', '))") }
+  }
+  $nvidia = [bool](Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue)
+  $profilAdi = "cpu"
+  if ($nvidia -and -not $Cpu) { $profilAdi = "gpu" }
+  Bilgi "  profil / profile: $profilAdi (NVIDIA: $nvidia, -Cpu: $([bool]$Cpu))"
+  $tabanVar = Test-Path $Py
+  $tabanAdim = (Adim "paketler")
+  if (((Adim "paketler") -or (Adim "modeller")) -and -not $tabanVar) {
+    $bosGb = -1
+    try { $bosGb = [math]::Floor((Get-Item $Repo).PSDrive.Free / 1GB) } catch { $bosGb = -1 }
+    $gerekGb = 22
+    if ($profilAdi -eq "cpu") { $gerekGb = 14 }
+    Bilgi "  disk: $bosGb GB boş / free, ilk kurulum için ≈ $gerekGb GB gerekir / needed"
+    if ($bosGb -ge 0 -and $bosGb -lt $gerekGb) {
+      $hatalar.Add("[DW-E-DISK] bu sürücüde $bosGb GB boş yer var; ≈ $gerekGb GB gerekir. Yer açın ya da klasörü büyük bir sürücüye taşıyın. / only $bosGb GB free, ≈ $gerekGb GB needed.")
+    }
+  }
+  foreach ($a in @("modeller", "kontrol", "demucs", "hizalama-diller", "youtube", "parakeet", "crisper", "tts-ema", "akilli-kare", "galeri", "telegram", "tts-xtts")) {
+    if ((Adim $a) -and -not $tabanVar -and -not $tabanAdim) {
+      $hatalar.Add("[DW-E-ONCE-TABAN] '$a' adımı için ana ortam yok; önce varsayılan kurulum (adım: paketler). / '$a' needs the main environment first.")
+    }
+  }
+  if ((Adim "crisper") -or (Adim "tts-xtts")) {
+    if (-not $TicariOlmayanKabul) {
+      $kabulGerek = $true
+      $uyarilar.Add("[DW-E-LISANS] ticari olmayan lisanslı adım: insan lisansı okuyup -TicariOlmayanKabul vermeli; ajan kendisi kabul yazmaz. / non-commercial licence step: the human must read it and pass -TicariOlmayanKabul; an agent never accepts for the user.")
+    }
+  }
+  if ((Adim "crisper") -and -not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) {
+    $hatalar.Add("[DW-E-WSL] crisper adımı WSL2 ister (wsl.exe yok). / the crisper step needs WSL2 (wsl.exe not found).")
+  }
+  if ((Adim "voxcpm2") -and -not (Get-Command git -ErrorAction SilentlyContinue)) {
+    $hatalar.Add("[DW-E-GIT] VoxCPM2 adımı git ister. / the voxcpm2 step needs git.")
+  }
+  Bilgi "  yazılacak yerler / would write only inside the root: .venv, runtime_assets (araclar, python, onbellek, modeller)"
+  Bilgi ("  önbellek / cache (süreç içi / this process only): UV_CACHE_DIR=$env:UV_CACHE_DIR ; PIP_CACHE_DIR=$env:PIP_CACHE_DIR ; TMP=TEMP=$env:TEMP").Replace($Repo, "<ROOT>")
+  foreach ($u in $uyarilar) { Bilgi "UYARI: $u" }
+  foreach ($h in $hatalar) { Bilgi "HATA: $h" }
+  if ($hatalar.Count -gt 0) { Bilgi "KURU_SONUC: ORTAM YETMIYOR / ENVIRONMENT NOT READY ($($hatalar.Count) HATA)"; exit 3 }
+  if ($kabulGerek) { Bilgi "KURU_SONUC: KABUL GEREK / HUMAN ACCEPTANCE NEEDED"; exit 2 }
+  Bilgi "KURU_SONUC: HAZIR / READY"
+  exit 0
 }
 
 Bilgi "DubWorld kurulumu · repo: $Repo · adımlar: $($Adimlar -join ', ')"
