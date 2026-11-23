@@ -126,7 +126,7 @@ def test_416_gelirse_part_silinip_rangesiz_bastan(kayit_ve_kok):
 def test_bozuk_onekli_part_sha_ile_yakalanir(kayit_ve_kok):
     kayit, kok = kayit_ve_kok
     _part(kok).parent.mkdir(parents=True)
-    _part(kok).write_bytes(b"" * 10)  # sunucu 206 verir ama onek bozuk: sha256 tutmaz, hedefe konmaz
+    _part(kok).write_bytes(b"\x01" * 10)  # sunucu 206 verir ama onek bozuk: sha256 tutmaz, hedefe konmaz
     with pytest.raises(SystemExit, match="sha256 tutmad"):
         m.indir(kayit, kok)
     assert not (kok / kayit["hedef"]).exists()
