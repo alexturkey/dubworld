@@ -4,6 +4,8 @@ English · [Türkçe](README.tr.md) · [简体中文](README.zh-CN.md) · [日�
 
 > DubWorld dubs a video into another language on your own computer: speech to text with word timestamps, translation, synthetic voice kept in step with the original video (speech sped up at most 1.25×, the picture retimed for the rest), subtitles and a new video. Turkish by default; other languages per voice engine ([docs/diller.md](docs/diller.md)).
 
+> **Using an AI coding agent (Codex, Claude Code, Gemini, Cursor)?** Give it this one sentence: "Read `AGENTS_HIZLI.md` to the end, run `scripts\tani.ps1` first, keep your progress in `DURUM.md`, and ask me before you delete or move anything, change system Python or PATH, or lower a quality setting." The agent will diagnose this PC, write a checklist and ask you at every decision.
+
 ## Let your AI assistant install it
 
 No programming needed. Open an AI assistant that can run commands on your computer (Claude Code, Codex,

@@ -4,6 +4,8 @@
 
 > DubWorld bir videoyu kendi bilgisayarınızda başka bir dile dublajlar: kelime zamanlı yazıya dökme, çeviri, özgün videoyla adım adım giden yapay ses (konuşma en çok 1,25 kat hızlanır, kalanı için görüntü yeniden zamanlanır), altyazı ve yeni video. Varsayılan dil Türkçe; diğer diller ses motoruna göre ([docs/diller.md](docs/diller.md)).
 
+> **Yapay zeka ajanı (Codex, Claude Code, Gemini, Cursor) mı kullanıyorsunuz?** Ona şu cümleyi verin: "`AGENTS_HIZLI.md` dosyasını sonuna kadar oku, önce `scripts\tani.ps1` çalıştır, ilerlemeni `DURUM.md` dosyasında tut; bir şeyi silmeden ya da taşımadan, sistem Python'unu ya da PATH'i değiştirmeden veya kalite ayarını düşürmeden önce bana sor." Ajan bu bilgisayarı teşhis eder, kontrol listesi yazar ve her kararda size sorar.
+
 ## Yapay zekâ asistanınıza kurdurun
 
 Programlama bilgisi gerekmez. Bilgisayarınızda komut çalıştırabilen bir yapay zekâ asistanını (Claude Code, Codex,
@@ -141,5 +143,5 @@ Soru, fikir ve sonuçlar: [Discussions](https://github.com/alexturkey/dubworld/d
 Kod: Apache-2.0 (LICENSE). Üçüncü taraf bileşenler ve lisansları: THIRD_PARTY.md. Sorumlu kullanım: ETHICS.md.
 Gizlilik (ne yerelde kalır, bulut arka ucu ne alır): PRIVACY.md. Güvenlik bildirimi: SECURITY.md. Değişiklikler: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->
 Artık python scripts/kurulum_sihirbazi.py komutuyla akıllı kurulum sihirbazını çalıştırabilirsiniz. İşletim sistemi, donanım ve venv konumunu otomatik algılar.

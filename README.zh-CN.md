@@ -4,6 +4,8 @@
 
 > DubWorld 在你自己的电脑上把视频配音成另一种语言：带词级时间戳的语音转文字、翻译、与原视频同步的合成语音（语音最多加速 1.25 倍，其余由画面重新调整时长）、字幕和新视频。默认目标语言为土耳其语；其他语言取决于语音引擎（[docs/diller.md](docs/diller.md)）。
 
+> **正在使用 AI 编程代理（Codex、Claude Code、Gemini、Cursor）吗？** 把下面这一句话交给它：“读完 `AGENTS_HIZLI.md`，先运行 `scripts\tani.ps1`，把进度记在 `DURUM.md` 里；在删除或移动任何东西、更改系统 Python 或 PATH、或降低任何质量设置之前，必须先问我。”代理会诊断这台电脑、写出检查清单，并在每个决定处询问你。
+
 ## 让 AI 助手替你安装
 
 无需编程。打开一个能在你电脑上执行命令的 AI 助手（Claude Code、Codex、Gemini CLI 或类似工具），粘贴下面这一句话：
@@ -121,4 +123,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. 本译文可能滞后，以英文版为准。来源：README.md（同步标记见下）；
 > 机器翻译（Claude），欢迎提交更正 PR。
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

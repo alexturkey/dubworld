@@ -4,6 +4,8 @@
 
 > A DubWorld a saját gépeden szinkronizálja más nyelvre a videóidat, anélkül hogy bármilyen online szolgáltatásba feltöltené őket: a beszédet szöveggé alakítja minden szó időpontjával, lefordítja, majd egy mesterséges (MI-) hanggal felolvastatja úgy, hogy lépést tartson az eredeti videóval (a beszéd legfeljebb 1,25-szörösre gyorsul, a maradék eltérést a videó tempójának enyhe módosítása veszi fel), feliratot tesz rá, és új videót készít. Az alapértelmezett nyelv a török; a magyar és a többi nyelv a választott hangmotortól függ ([docs/diller.md](docs/diller.md)).
 
+> **MI-programozó ügynököt (Codex, Claude Code, Gemini, Cursor) használ?** Adja neki ezt az egy mondatot: „Olvasd el az `AGENTS_HIZLI.md` fájlt a végéig, először futtasd a `scripts\tani.ps1` parancsot, az előrehaladásodat vezesd a `DURUM.md` fájlban, és kérdezz meg, mielőtt bármit törölsz vagy áthelyezel, módosítod a rendszer Pythonját vagy a PATH-ot, vagy csökkentesz egy minőségi beállítást.” Az ügynök kiértékeli ezt a gépet, ellenőrzőlistát ír, és minden döntésnél megkérdezi Önt.
+
 ## Telepíttesd az MI-asszisztenseddel
 
 Programozni nem kell tudnod. Nyiss meg egy MI-asszisztenst, amely parancsokat tud futtatni a gépeden (Claude Code, Codex,
@@ -124,4 +126,4 @@ Kérdések, ötletek és az eredményeid: [beszélgetőfórum](https://github.co
 Kód: Apache-2.0 (LICENSE). Külső összetevők és licenceik: THIRD_PARTY.md. Felelős használat: ETHICS.md.
 Adatvédelem (mi marad a gépeden, mit kap egy felhős háttérrendszer): PRIVACY.md. Biztonsági bejelentések: SECURITY.md. Változások: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

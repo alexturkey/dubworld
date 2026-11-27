@@ -25,7 +25,8 @@ VARSAYILAN_KOK = Path(__file__).resolve().parents[1]
 YOL_KOKLERI = ("src/", "docs/", "scripts/", "examples/", "tests/", "requirements/", ".claude/", ".github/",
                "runtime_assets/", "ayarlar/")
 # Kurulum ya da çalışma sırasında oluşan yerler: belgede geçer ama temiz klonda yoktur.
-CALISMADA_OLUSUR = ("runtime_assets/", "ayarlar/", "cikti/", ".venv/", "out/")
+# DURUM.md: the agent progress notebook (git-ignored, created by the agent, kit KL-23)
+CALISMADA_OLUSUR = ("runtime_assets/", "ayarlar/", "cikti/", ".venv/", "out/", "DURUM.md")
 AYAR_DESENI = re.compile(r"(?<![\w./])((?:genel|transkripsiyon|ses_temizligi|ceviri|ses|altyazi|video|ileri)"
                          r"\.[a-z_0-9]+(?:\.[a-z_A-Z0-9*]+)?\*?)")
 ORTAM_DESENI = re.compile(r"\b((?:DUBLAJ|CODEX_BRIDGE|TELEGRAM|GROQ|MISTRAL|CEREBRAS|GEMINI|HF)"

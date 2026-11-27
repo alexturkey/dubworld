@@ -4,6 +4,8 @@
 
 > DubWorld double une vidéo dans une autre langue sur votre propre ordinateur : transcription avec horodatage des mots, traduction, voix de synthèse au rythme de la vidéo d'origine (parole accélérée au plus de 1,25×, l'image absorbe le reste), sous-titres et nouvelle vidéo. Turc par défaut ; autres langues selon le moteur de voix ([docs/diller.md](docs/diller.md)).
 
+> **Vous utilisez un agent de programmation IA (Codex, Claude Code, Gemini, Cursor) ?** Donnez-lui cette seule phrase : « Lis `AGENTS_HIZLI.md` jusqu'au bout, exécute d'abord `scripts\tani.ps1`, note ta progression dans `DURUM.md` et demande-moi avant de supprimer ou déplacer quoi que ce soit, de modifier le Python du système ou le PATH, ou de baisser un réglage de qualité. » L'agent diagnostiquera ce PC, écrira une liste de contrôle et vous demandera à chaque décision.
+
 ## Laissez votre assistant IA l'installer
 
 Aucune connaissance en programmation n'est nécessaire. Ouvrez un assistant IA capable d'exécuter des commandes sur
@@ -133,4 +135,4 @@ Confidentialité (ce qui reste en local, ce qu'un service cloud reçoit) : PRIVA
 > This translation may lag; English is authoritative. Cette traduction peut être en retard ; la version anglaise fait
 > foi. Source : README.md (marque de synchronisation ci-dessous). Traduction automatique (Claude) ; les PR de correction sont bienvenues.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

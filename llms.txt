@@ -5,6 +5,7 @@
 Rules that never change: licence and consent steps belong to the human (never accept for the user); every download is pinned by version/commit and sha256; no personal paths, e-mail addresses or tokens in anything you write (use `<ROOT>`).
 
 ## Start here
+- [scripts/tani.ps1](https://github.com/alexturkey/DubWorld/blob/main/scripts/tani.ps1): run this first; read-only report (system, GPU, disk, install profile, deviations from the defaults); keep your progress in `DURUM.md` (git-ignored notebook in the repo root)
 - [AGENTS_HIZLI.md](https://github.com/alexturkey/DubWorld/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
 - [AGENTS.md](https://github.com/alexturkey/DubWorld/blob/main/AGENTS.md): full install, hard rules, options and verification
 - [README.md](https://github.com/alexturkey/DubWorld/blob/main/README.md): overview and quick start (English is authoritative)

@@ -4,6 +4,8 @@
 
 > DubWorld videolarınızı öz kompüterinizdə, heç bir onlayn xidmətə yükləmədən başqa dilə dublyaj edir: danışığı hər sözün vaxtı ilə birlikdə mətnə çevirir, tərcümə edir, sonra orijinal görüntü ilə ayaqlaşan süni (AI) səslə oxudur (danışıq ən çox 1,25 dəfə sürətlənir, qalan fərqi videonun tempindəki yüngül dəyişiklik qarşılayır), altyazı əlavə edir və yeni video hazırlayır. Standart dil türkcədir. Açığını deyək: Azərbaycan dilinə **dublyaj** hələ mümkün deyil, çünki bu repodakı səs mühərriklərinin heç biri hələlik azərbaycanca danışmır; amma azərbaycanca videoları başqa dillərə dublyaj etmək olar ([docs/diller.md](docs/diller.md)).
 
+> **Süni intellekt kodlaşdırma agentindən (Codex, Claude Code, Gemini, Cursor) istifadə edirsiniz?** Ona bu bir cümləni verin: “`AGENTS_HIZLI.md` faylını sonuna qədər oxu, əvvəlcə `scripts\tani.ps1` işlət, irəliləyişini `DURUM.md` faylında saxla və bir şeyi silməzdən və ya köçürməzdən, sistem Python-unu və ya PATH-ı dəyişməzdən və ya keyfiyyət ayarını endirməzdən əvvəl məndən soruş.” Agent bu kompüteri diaqnoz edəcək, yoxlama siyahısı yazacaq və hər qərarda sizdən soruşacaq.
+
 ## Qoy quraşdırmanı AI köməkçiniz etsin
 
 Proqramlaşdırma bilmək lazım deyil. Kompüterinizdə əmr icra edə bilən bir AI köməkçisi açın (Claude Code, Codex,
@@ -124,4 +126,4 @@ Suallar, fikirlər və nəticələriniz: [müzakirə forumu](https://github.com/
 Kod: Apache-2.0 (LICENSE). Xarici hissələr və onların lisenziyaları: THIRD_PARTY.md. Məsuliyyətli istifadə: ETHICS.md.
 Məxfilik (kompüterinizdə nə qalır, bulud arxa ucu nə alır): PRIVACY.md. Təhlükəsizlik bildirişləri: SECURITY.md. Dəyişikliklər: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

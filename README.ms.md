@@ -4,6 +4,8 @@
 
 > DubWorld mengalih suara video anda ke bahasa lain terus di komputer anda sendiri, tanpa memuat naiknya ke mana-mana perkhidmatan dalam talian: pertuturan ditukar kepada teks berserta masa setiap perkataan, diterjemah, kemudian dibaca oleh suara tiruan (AI) yang kekal seiring dengan video asal (pertuturan dipercepat paling banyak 1.25 kali, baki perbezaan diserap dengan sedikit mengubah tempo video), sari kata ditambah, dan video baharu dihasilkan. Bahasa lalai ialah bahasa Turki. Terus terang: alih suara **ke** bahasa Melayu belum boleh lagi, kerana tiada satu pun enjin suara dalam repositori ini yang bertutur bahasa Melayu buat masa ini; tetapi video berbahasa Melayu boleh dialih suara ke bahasa lain ([docs/diller.md](docs/diller.md)).
 
+> **Menggunakan ejen pengekodan AI (Codex, Claude Code, Gemini, Cursor)?** Berikan satu ayat ini kepadanya: “Baca `AGENTS_HIZLI.md` hingga habis, jalankan `scripts\tani.ps1` dahulu, simpan kemajuan anda dalam `DURUM.md`, dan tanya saya sebelum memadam atau memindahkan apa-apa, menukar Python sistem atau PATH, atau menurunkan sebarang tetapan kualiti.” Ejen akan mendiagnosis PC ini, menulis senarai semak dan bertanya kepada anda pada setiap keputusan.
+
 ## Biar pembantu AI anda yang memasangnya
 
 Anda tidak perlu tahu pengaturcaraan. Buka pembantu AI yang boleh menjalankan arahan di komputer anda (Claude Code, Codex,
@@ -124,4 +126,4 @@ Soalan, idea dan hasil anda: [forum perbincangan](https://github.com/alexturkey/
 Kod: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lesennya: THIRD_PARTY.md. Penggunaan bertanggungjawab: ETHICS.md.
 Privasi (apa yang kekal di komputer anda, apa yang diterima bahagian belakang awan): PRIVACY.md. Laporan keselamatan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

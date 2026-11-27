@@ -4,6 +4,8 @@
 
 > DubWorld는 영상을 어떤 서비스에도 올리지 않고 내 컴퓨터에서 다른 언어로 더빙합니다. 말소리를 단어별 타이밍과 함께 글로 옮기고, 번역하고, 원본 영상과 박자를 맞춘 합성 음성으로 읽힙니다(말소리는 최대 1.25배까지만 빨라지고, 남는 차이는 화면 속도를 살짝 조정해 메웁니다). 마지막으로 자막을 붙여 새 영상을 만들어 줍니다. 기본 언어는 튀르키예어이며, 한국어와 다른 언어는 선택한 음성 엔진에 따라 지원됩니다([docs/diller.md](docs/diller.md)).
 
+> **AI 코딩 에이전트(Codex, Claude Code, Gemini, Cursor)를 사용하시나요?** 에이전트에게 이 한 문장을 주세요: “`AGENTS_HIZLI.md`를 끝까지 읽고, 먼저 `scripts\tani.ps1`를 실행하고, 진행 상황을 `DURUM.md`에 기록하고, 무엇이든 삭제하거나 옮기기 전, 시스템 Python이나 PATH를 바꾸기 전, 품질 설정을 낮추기 전에는 반드시 나에게 물어봐.” 에이전트는 이 PC를 진단하고 체크리스트를 작성하며 결정할 때마다 여러분께 물어봅니다.
+
 ## AI 어시스턴트에게 설치를 맡기세요
 
 프로그래밍을 몰라도 됩니다. 내 컴퓨터에서 명령을 실행할 수 있는 AI 어시스턴트(Claude Code, Codex, Gemini CLI
@@ -124,4 +126,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 코드: Apache-2.0(LICENSE). 외부 구성 요소와 라이선스: THIRD_PARTY.md. 책임 있는 사용: ETHICS.md.
 개인정보(내 컴퓨터에 남는 것, 클라우드 백엔드로 가는 것): PRIVACY.md. 보안 신고: SECURITY.md. 변경 이력: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

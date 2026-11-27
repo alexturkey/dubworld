@@ -4,6 +4,8 @@
 
 > DubWorld doppia un video in un'altra lingua direttamente sul tuo computer, senza caricarlo su nessun servizio: trascrive il parlato con i tempi di ogni parola, lo traduce, lo fa leggere a una voce sintetica che resta a tempo con il video originale (il parlato accelera al massimo di 1,25×, il resto lo recupera l'immagine con un leggero rallentamento o accelerazione), aggiunge i sottotitoli e consegna un video nuovo. La lingua predefinita è il turco; l'italiano e le altre lingue dipendono dal motore vocale scelto ([docs/diller.md](docs/diller.md)).
 
+> **Usa un agente di programmazione IA (Codex, Claude Code, Gemini, Cursor)?** Gli dia questa sola frase: «Leggi `AGENTS_HIZLI.md` fino in fondo, esegui prima `scripts\tani.ps1`, tieni traccia dei progressi in `DURUM.md` e chiedimi prima di eliminare o spostare qualcosa, cambiare il Python di sistema o il PATH, o abbassare un'impostazione di qualità.» L'agente diagnosticherà questo PC, scriverà una lista di controllo e le chiederà conferma a ogni decisione.
+
 ## Fallo installare al tuo assistente IA
 
 Non serve saper programmare. Apri un assistente IA che possa eseguire comandi sul tuo computer (Claude Code, Codex,
@@ -124,4 +126,4 @@ Domande, idee e risultati: [Discussioni](https://github.com/alexturkey/dubworld/
 Codice: Apache-2.0 (LICENSE). Componenti di terze parti e relative licenze: THIRD_PARTY.md. Uso responsabile: ETHICS.md.
 Privacy (cosa resta sul tuo computer e cosa riceve un backend cloud): PRIVACY.md. Segnalazioni di sicurezza: SECURITY.md. Modifiche: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

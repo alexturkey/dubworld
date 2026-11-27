@@ -2,6 +2,20 @@
 
 English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md) (it wins if the two ever differ). Error codes: `docs/hata_imzalari.json`, `docs/troubleshooting.md`.
 
+## Do this first (English)
+- **Run first:** `scripts\tani.ps1` (read-only: no network, writes no file). It prints the system, the GPU, free disk, the install profile and a DEVIATIONS section (first Python on PATH, locally changed files, `DUBLAJ_*` variable names). Read it to the user in plain words.
+- **Keep a notebook:** `DURUM.md` in the repo root (git-ignored, `<ROOT>` instead of paths). Top three lines: `Now:` / `Next:` / `Question for you:`. Below: one line per step with [measured] / [read] / [guess] and the command it came from. Update it after every step so a cut-off session can continue.
+- **NEVER:** accept a model license for the user (the setup interview asks the human), lower a quality setting or change a pinned hash, use a force flag to get past an error, change system Python or PATH.
+- **ASK first:** delete, move or re-download anything (show path, size, reason); install packages or models; start a GPU run.
+- **Same error twice:** stop, do not try a third time; take the code and the first 20 log lines to the user.
+
+## Önce bunu yap (Türkçe)
+- **Önce çalıştır:** `scripts\tani.ps1` (salt okur: ağ yok, dosya yazmaz). Sistemi, ekran kartını, boş diski, kurulum profilini ve SAPMA bölümünü (PATH'te ilk Python, yerelde değişmiş dosyalar, `DUBLAJ_*` değişken adları) yazar. Kullanıcıya sade sözle oku.
+- **Defter tut:** repo kökünde `DURUM.md` (git dışı, yol yerine `<ROOT>`). En üstte üç satır: `Şu an:` / `Sırada:` / `Sana soru:`. Altında adım başına bir satır: [ölçtüm] / [okudum] / [tahmin] ve geldiği komut. Her adımdan sonra güncelle ki kesilen oturum kaldığı yerden sürsün.
+- **ASLA:** model lisansını kullanıcı yerine kabul etme (kurulum görüşmesinde insana sorulur), kalite ayarını düşürme ya da sabitlenmiş özeti değiştirme, hatayı geçmek için zorlama bayrağı kullanma, sistem Python'unu ya da PATH'i değiştirme.
+- **Önce SOR:** bir şeyi silmeden, taşımadan ya da yeniden indirmeden (yolu, boyutu, nedeni göster); paket ya da model kurmadan; GPU işi başlatmadan.
+- **Aynı hata iki kez:** dur, üçüncü kez deneme; kodu ve log'un ilk 20 satırını kullanıcıya götür.
+
 ## EN
 
 ### Decision tree (12 steps)

@@ -4,6 +4,8 @@
 
 > DubWorld dubbinguje Twoje filmy na inny język bezpośrednio na Twoim komputerze, bez wysyłania ich do jakiejkolwiek usługi w sieci: zamienia mowę na tekst razem z czasem każdego słowa, tłumaczy go, a potem czyta go sztucznym głosem (AI), który trzyma się oryginalnego obrazu (mowa jest przyspieszana najwyżej 1,25 raza, resztę różnicy wyrównuje delikatna zmiana tempa wideo), dodaje napisy i tworzy nowy film. Domyślnym językiem jest turecki; polski i inne języki zależą od wybranego silnika głosu ([docs/diller.md](docs/diller.md)).
 
+> **Używasz agenta programistycznego AI (Codex, Claude Code, Gemini, Cursor)?** Daj mu to jedno zdanie: „Przeczytaj `AGENTS_HIZLI.md` do końca, najpierw uruchom `scripts\tani.ps1`, postępy zapisuj w `DURUM.md` i zapytaj mnie, zanim cokolwiek usuniesz lub przeniesiesz, zmienisz systemowy Python albo PATH lub obniżysz ustawienie jakości.” Agent zdiagnozuje ten komputer, napisze listę kontrolną i przy każdej decyzji zapyta Ciebie.
+
 ## Niech asystent AI zainstaluje to za Ciebie
 
 Nie musisz umieć programować. Otwórz asystenta AI, który potrafi uruchamiać polecenia na Twoim komputerze (Claude Code, Codex,
@@ -124,4 +126,4 @@ Pytania, pomysły i Twoje wyniki: [forum dyskusji](https://github.com/alexturkey
 Kod: Apache-2.0 (LICENSE). Składniki zewnętrzne i ich licencje: THIRD_PARTY.md. Odpowiedzialne używanie: ETHICS.md.
 Prywatność (co zostaje na Twoim komputerze, co dostaje backend w chmurze): PRIVACY.md. Zgłaszanie luk: SECURITY.md. Zmiany: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

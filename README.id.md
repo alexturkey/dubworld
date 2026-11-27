@@ -4,6 +4,8 @@
 
 > DubWorld men-dubbing video Anda ke bahasa lain langsung di komputer Anda sendiri, tanpa mengunggahnya ke layanan online mana pun: ucapan diubah menjadi teks lengkap dengan waktu setiap kata, diterjemahkan, lalu dibacakan oleh suara buatan (AI) yang tetap selaras dengan video aslinya (ucapan dipercepat paling banyak 1,25 kali, sisa selisihnya diserap dengan sedikit mengubah tempo video), diberi subtitle, dan jadilah video baru. Bahasa bawaannya Turki; bahasa Indonesia dan bahasa lain bergantung pada mesin suara yang dipilih ([docs/diller.md](docs/diller.md)).
 
+> **Memakai agen pemrograman AI (Codex, Claude Code, Gemini, Cursor)?** Berikan satu kalimat ini kepadanya: “Baca `AGENTS_HIZLI.md` sampai habis, jalankan `scripts\tani.ps1` lebih dulu, catat kemajuanmu di `DURUM.md`, dan tanyakan kepada saya sebelum menghapus atau memindahkan apa pun, mengubah Python sistem atau PATH, atau menurunkan pengaturan kualitas.” Agen akan mendiagnosis PC ini, menulis daftar periksa, dan bertanya kepada Anda pada setiap keputusan.
+
 ## Biarkan asisten AI Anda yang memasangnya
 
 Tidak perlu bisa pemrograman. Buka asisten AI yang bisa menjalankan perintah di komputer Anda (Claude Code, Codex,
@@ -124,4 +126,4 @@ Pertanyaan, ide, dan hasil Anda: [forum diskusi](https://github.com/alexturkey/d
 Kode: Apache-2.0 (LICENSE). Komponen pihak ketiga dan lisensinya: THIRD_PARTY.md. Penggunaan yang bertanggung jawab: ETHICS.md.
 Privasi (apa yang tetap di komputer Anda, apa yang diterima backend cloud): PRIVACY.md. Laporan keamanan: SECURITY.md. Perubahan: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

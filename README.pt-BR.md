@@ -4,6 +4,8 @@
 
 > O DubWorld dubla um vídeo para outro idioma no seu próprio computador, sem mandar nada para a nuvem: transcreve a fala com o tempo de cada palavra, traduz, gera uma voz sintética que acompanha o vídeo original (a fala acelera no máximo 1,25× e a imagem é reajustada para cobrir o resto), cria as legendas e entrega um vídeo novo. O padrão é turco; português e outros idiomas dependem do motor de voz escolhido ([docs/diller.md](docs/diller.md)).
 
+> **Você usa um agente de programação com IA (Codex, Claude Code, Gemini, Cursor)?** Dê a ele esta única frase: “Leia `AGENTS_HIZLI.md` até o fim, execute primeiro `scripts\tani.ps1`, registre seu progresso em `DURUM.md` e pergunte a mim antes de apagar ou mover qualquer coisa, mudar o Python do sistema ou o PATH ou reduzir uma configuração de qualidade.” O agente vai diagnosticar este PC, escrever uma lista de verificação e perguntar a você a cada decisão.
+
 ## Deixe seu assistente de IA instalar para você
 
 Você não precisa saber programar. Abra um assistente de IA que consiga rodar comandos no seu computador (Claude Code,
@@ -124,4 +126,4 @@ Dúvidas, ideias e resultados: [Discussões](https://github.com/alexturkey/dubwo
 Código: Apache-2.0 (LICENSE). Componentes de terceiros e suas licenças: THIRD_PARTY.md. Uso responsável: ETHICS.md.
 Privacidade (o que fica no seu computador e o que um backend na nuvem recebe): PRIVACY.md. Relatos de segurança: SECURITY.md. Mudanças: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

@@ -4,6 +4,8 @@
 
 > DubWorld vă dublează videoclipurile în altă limbă direct pe calculatorul dumneavoastră, fără să le încarce pe vreun serviciu online: transformă vorbirea în text împreună cu momentul fiecărui cuvânt, o traduce și o citește cu o voce artificială (AI) care ține pasul cu imaginea originală (vorbirea e accelerată cel mult de 1,25 ori, restul diferenței e preluat de o ușoară schimbare a ritmului video), adaugă subtitrări și creează un videoclip nou. Limba implicită este turca; româna și celelalte limbi depind de motorul de voce ales ([docs/diller.md](docs/diller.md)).
 
+> **Folosiți un agent de programare cu IA (Codex, Claude Code, Gemini, Cursor)?** Dați-i această singură propoziție: „Citește `AGENTS_HIZLI.md` până la capăt, rulează mai întâi `scripts\tani.ps1`, ține-ți progresul în `DURUM.md` și întreabă-mă înainte să ștergi sau să muți ceva, să schimbi Python-ul sistemului sau PATH ori să reduci o setare de calitate.” Agentul va diagnostica acest PC, va scrie o listă de verificare și vă va întreba la fiecare decizie.
+
 ## Lăsați asistentul AI să-l instaleze
 
 Nu trebuie să știți programare. Deschideți un asistent AI care poate rula comenzi pe calculatorul dumneavoastră (Claude Code, Codex,
@@ -124,4 +126,4 @@ Fiecare depozit-soră are licența, instalarea și issue-urile lui; datorită co
 Cod: Apache-2.0 (LICENSE). Componente externe și licențele lor: THIRD_PARTY.md. Folosire responsabilă: ETHICS.md.
 Confidențialitate (ce rămâne pe calculatorul dumneavoastră, ce primește un backend din cloud): PRIVACY.md. Raportări de securitate: SECURITY.md. Schimbări: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

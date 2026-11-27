@@ -4,6 +4,8 @@
 
 > DubWorld dubbar dina videor till ett annat språk direkt på din egen dator, utan att ladda upp dem till någon onlinetjänst: tal blir text med tiden för varje ord, texten översätts och läses upp av en konstgjord (AI-)röst som håller takten med originalet (talet snabbas upp högst 1,25 gånger, resten av skillnaden tas upp av en lätt ändring av videons tempo), undertexter läggs till och en ny video skapas. Standardspråket är turkiska; svenska och andra språk beror på vilken röstmotor du väljer ([docs/diller.md](docs/diller.md)).
 
+> **Använder du en AI-kodagent (Codex, Claude Code, Gemini, Cursor)?** Ge den den här enda meningen: ”Läs `AGENTS_HIZLI.md` till slutet, kör `scripts\tani.ps1` först, för din framfart i `DURUM.md` och fråga mig innan du raderar eller flyttar något, ändrar systemets Python eller PATH eller sänker en kvalitetsinställning.” Agenten diagnostiserar den här datorn, skriver en checklista och frågar dig vid varje beslut.
+
 ## Låt din AI-assistent installera det
 
 Du behöver inte kunna programmera. Öppna en AI-assistent som kan köra kommandon på din dator (Claude Code, Codex,
@@ -124,4 +126,4 @@ Frågor, idéer och dina resultat: [diskussionsforum](https://github.com/alextur
 Kod: Apache-2.0 (LICENSE). Externa delar och deras licenser: THIRD_PARTY.md. Ansvarsfull användning: ETHICS.md.
 Integritet (vad som stannar på din dator, vad en molnbackend får): PRIVACY.md. Säkerhetsrapporter: SECURITY.md. Ändringar: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

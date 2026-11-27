@@ -4,6 +4,8 @@
 
 > DubWorld は自分のコンピューター上で動画を別の言語に吹き替えます。単語タイムスタンプ付きの文字起こし、翻訳、元の動画と歩調を合わせた合成音声（発話は最大 1.25 倍まで速め、残りは映像の時間を調整）、字幕、新しい動画を作ります。既定はトルコ語で、他の言語は音声エンジンによります（[docs/diller.md](docs/diller.md)）。
 
+> **AIコーディングエージェント（Codex、Claude Code、Gemini、Cursor）を使っていますか？** エージェントに次の一文を渡してください：「`AGENTS_HIZLI.md` を最後まで読み、最初に `scripts\tani.ps1` を実行し、進捗を `DURUM.md` に記録すること。ファイルの削除や移動、システムのPythonやPATHの変更、品質設定の引き下げは、必ず事前に私に確認すること。」エージェントはこのPCを診断し、チェックリストを書き、判断のたびにあなたに尋ねます。
+
 ## AI アシスタントにインストールしてもらう
 
 プログラミングの知識は不要です。お使いのコンピューターでコマンドを実行できる AI アシスタント（Claude Code、Codex、
@@ -125,4 +127,4 @@ dubla birlestir talk.mp4 -o out.mp4 --ses tts/speech.wav --altyazi talk.tr.srt
 > This translation may lag; English is authoritative. この翻訳は遅れている場合があります。英語版が正本です。出典：README.md（同期マーカーは下記）。
 > 機械翻訳（Claude）です。修正の PR を歓迎します。
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

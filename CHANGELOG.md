@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Agent onboarding (kit KL-23): a do-this-first block at the top of `AGENTS_HIZLI.md`, `AGENTS.md` and `AGENTS.tr.md` (run `scripts\tani.ps1` first, git-ignored `DURUM.md` notebook, NEVER / ASK lists, same error twice stop), a one-sentence "give this to your agent" block in every README, and a read-only DEVIATIONS section in `scripts\tani.ps1` (variable values are never printed). Install and quality behaviour unchanged.
 - Maintenance round (repo standard kit): one command before a pull request, `python scripts/denetim.py --hizli` (Windows without
   Python knowledge: `scripts/on_kontrol.ps1`), runs the same local gates CI runs plus a hidden-character gate (bidi, zero-width,
   control characters) and the malicious-PR self-test; it never reports a gate that did not run as green. `scripts/pr_kapi.py` and

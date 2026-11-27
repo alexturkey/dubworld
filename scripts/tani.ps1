@@ -88,5 +88,20 @@ if ($Log -and (Test-Path $Log)) {
   Yaz "No log given. To read a log: scripts\tani.ps1 -Log kur.log"
 }
 Yaz ""
+Yaz "== DEVIATIONS / SAPMA (read-only / salt okur)"
+$pc = @(Get-Command python -All -ErrorAction SilentlyContinue | Select-Object -First 3)
+if ($pc.Count -gt 0) {
+  if ($pc[0].Source -match 'WindowsApps') { Yaz "  first python on PATH: Microsoft Store shortcut (not a real Python) / PATH'te ilk python: Store kisayolu" }
+  else { Yaz ("  first python on PATH: " + ((& $pc[0].Source --version 2>&1) -join " ")) }
+} else { Yaz "  no python on PATH (the installer uses its own) / PATH'te python yok" }
+$gitK = Get-Command git -ErrorAction SilentlyContinue
+if ($gitK -and (Test-Path -LiteralPath (Join-Path $Repo ".git"))) {
+  $gs = @(& $gitK.Source --no-optional-locks -C $Repo status --short -uno 2>$null | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -First 40)
+  if ($gs.Count -eq 0) { Yaz "  git: tracked files unchanged / izlenen dosyalar degismemis" }
+  else { Yaz "  git: $($gs.Count) tracked file(s) changed (names only) / izlenen dosya degismis (yalniz adlar):"; foreach ($g in $gs) { Yaz "    $g" } }
+} else { Yaz "  git: not a git copy or git missing / kopya degil ya da git yok" }
+$dEnv = @(Get-ChildItem Env: | Where-Object { $_.Name -like 'DUBLAJ_*' } | Sort-Object Name | ForEach-Object { "$($_.Name)" })
+if ($dEnv.Count) { Yaz ("  DUBLAJ_* variables set (names only) / DUBLAJ_* degiskenleri (yalniz adlar): " + ($dEnv -join " ")) } else { Yaz "  DUBLAJ_* variables: none / yok" }
+Yaz ""
 Yaz "Paste this report into an issue (Bug report / Install problem). Check it once: remove anything private that is left."
 exit 0

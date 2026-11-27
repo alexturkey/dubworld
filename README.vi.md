@@ -4,6 +4,8 @@
 
 > DubWorld lồng tiếng video của bạn sang ngôn ngữ khác ngay trên máy tính của bạn, không cần tải lên bất kỳ dịch vụ trực tuyến nào: chuyển lời nói thành văn bản kèm thời điểm của từng từ, dịch, rồi cho một giọng đọc nhân tạo (AI) đọc lại sao cho khớp với video gốc (lời nói được đọc nhanh hơn tối đa 1,25 lần, phần chênh lệch còn lại được bù bằng cách điều chỉnh nhẹ tốc độ video), thêm phụ đề và xuất ra một video mới. Ngôn ngữ mặc định là tiếng Thổ Nhĩ Kỳ; tiếng Việt và các ngôn ngữ khác phụ thuộc vào công cụ giọng nói được chọn ([docs/diller.md](docs/diller.md)).
 
+> **Bạn đang dùng tác tử lập trình AI (Codex, Claude Code, Gemini, Cursor)?** Hãy đưa cho nó đúng một câu này: “Đọc `AGENTS_HIZLI.md` đến hết, chạy `scripts\tani.ps1` trước, ghi tiến độ của bạn vào `DURUM.md`, và hỏi tôi trước khi xóa hoặc di chuyển bất cứ thứ gì, đổi Python hệ thống hay PATH, hoặc hạ bất kỳ cài đặt chất lượng nào.” Tác tử sẽ chẩn đoán máy tính này, viết một danh sách kiểm tra và hỏi bạn ở mỗi quyết định.
+
 ## Nhờ trợ lý AI cài đặt giúp bạn
 
 Bạn không cần biết lập trình. Hãy mở một trợ lý AI có thể chạy lệnh trên máy bạn (Claude Code, Codex,
@@ -124,4 +126,4 @@ Câu hỏi, ý tưởng và kết quả của bạn: [diễn đàn thảo luận
 Mã nguồn: Apache-2.0 (LICENSE). Thành phần bên thứ ba và giấy phép: THIRD_PARTY.md. Sử dụng có trách nhiệm: ETHICS.md.
 Quyền riêng tư (thứ gì ở lại trên máy bạn, backend đám mây nhận được gì): PRIVACY.md. Báo cáo bảo mật: SECURITY.md. Thay đổi: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

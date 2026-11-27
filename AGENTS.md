@@ -21,6 +21,13 @@ Hard rules for agents in this repo:
 - Same error twice on a step: stop. After the second identical failure do not try a third time: show the user the last 30 lines of output and the
   matching row of `docs/installation.md` section 12.
 
+## First, do this (agents)
+- **Run first:** `scripts\tani.ps1` (read-only). It prints the system, the GPU, free disk, the install profile and a DEVIATIONS section (first Python on PATH, locally changed files, `DUBLAJ_*` variable names). Read it to the user in plain words.
+- **Keep a notebook:** `DURUM.md` in the repo root (git-ignored; `<ROOT>` instead of paths). Top three lines: `Now:` / `Next:` / `Question for you:`; below, one line per step with [measured] / [read] / [guess] and the command it came from.
+- **NEVER:** accept a model license for the user; lower a quality setting; use a force flag; change system Python or PATH.
+- **ASK first:** delete, move or re-download anything; install packages or models; start a GPU run.
+- **Same error twice:** stop; take the code and the first 20 log lines to the user.
+
 ## 0. Prerequisites (check them yourself)
 
 Run in PowerShell. Nothing here is a question for the user.

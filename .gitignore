@@ -31,3 +31,4 @@ ayarlar/lisans_onaylari.tmp
 ayarlar/ses_kitapligi/
 # translation bridge working state (job text, translations, usage logs)
 src/dublaj_hatti/bolum_40_ceviri/*/runtime/
+/DURUM.md

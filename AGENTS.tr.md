@@ -22,6 +22,13 @@ Bu repodaki ajanlar için kesin kurallar:
 - Bir adımda aynı hata iki kez: durun. İkinci aynı başarısızlıktan sonra üçüncü kez denemeyin; kullanıcıya çıktının son 30 satırını ve
   `docs/kurulum.md` 12. bölümdeki ilgili satırı gösterin.
 
+## Önce şunu yapın (ajanlar)
+- **Önce çalıştırın:** `scripts\tani.ps1` (salt okur). Sistemi, ekran kartını, boş diski, kurulum profilini ve SAPMA bölümünü (PATH'te ilk Python, yerelde değişmiş dosyalar, `DUBLAJ_*` değişken adları) yazar. Kullanıcıya sade sözle okuyun.
+- **Defter tutun:** repo kökünde `DURUM.md` (git dışı; yol yerine `<ROOT>`). En üstte üç satır: `Şu an:` / `Sırada:` / `Sana soru:`; altında adım başına bir satır: [ölçtüm] / [okudum] / [tahmin] ve geldiği komut.
+- **ASLA:** model lisansını kullanıcı yerine kabul etmeyin; kalite ayarını düşürmeyin; zorlama bayrağı kullanmayın; sistem Python'unu ya da PATH'i değiştirmeyin.
+- **Önce SORUN:** bir şeyi silmeden, taşımadan ya da yeniden indirmeden; paket ya da model kurmadan; GPU işi başlatmadan.
+- **Aynı hata iki kez:** durun; kodu ve log'un ilk 20 satırını kullanıcıya götürün.
+
 ## 0. Ön koşullar (kendiniz denetleyin)
 
 PowerShell'de çalıştırın. Buradakilerin hiçbiri kullanıcıya sorulmaz.

@@ -4,6 +4,8 @@
 
 > DubWorld synchronisiert ein Video auf dem eigenen Computer in eine andere Sprache: Spracherkennung mit Wort-Zeitstempeln, Übersetzung, synthetische Stimme im Takt des Originalvideos (Sprache höchstens 1,25× beschleunigt, den Rest gleicht das Bild aus), Untertitel und ein neues Video. Standard ist Türkisch; weitere Sprachen je nach Sprachausgabe-Engine ([docs/diller.md](docs/diller.md)).
 
+> **Nutzen Sie einen KI-Coding-Agenten (Codex, Claude Code, Gemini, Cursor)?** Geben Sie ihm diesen einen Satz: „Lies `AGENTS_HIZLI.md` bis zum Ende, führe zuerst `scripts\tani.ps1` aus, halte deinen Fortschritt in `DURUM.md` fest und frag mich, bevor du etwas löschst oder verschiebst, das System-Python oder PATH änderst oder eine Qualitätseinstellung senkst.“ Der Agent diagnostiziert diesen PC, schreibt eine Checkliste und fragt Sie bei jeder Entscheidung.
+
 ## Lass deinen KI-Assistenten die Installation übernehmen
 
 Programmierkenntnisse sind nicht nötig. Öffne einen KI-Assistenten, der auf deinem Computer Befehle ausführen kann
@@ -133,4 +135,4 @@ Datenschutz (was lokal bleibt, was ein Cloud-Dienst erhält): PRIVACY.md. Sicher
 > This translation may lag; English is authoritative. Diese Übersetzung kann hinterherhinken; maßgeblich ist die
 > englische Fassung. Quelle: README.md (Synchronisationsmarke unten). Maschinell übersetzt (Claude); Korrektur-PRs willkommen.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->

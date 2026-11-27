@@ -4,6 +4,8 @@
 
 > DubWorld dubt je video's naar een andere taal, gewoon op je eigen computer, zonder ze naar een online dienst te uploaden: het zet spraak om in tekst met de tijd van elk woord, vertaalt die en laat een kunstmatige (AI-)stem hem uitspreken die gelijk blijft lopen met het origineel (spraak wordt hooguit 1,25 keer versneld, de rest van het verschil vangt een lichte tempowijziging van de video op), voegt ondertitels toe en maakt er een nieuwe video van. De standaardtaal is Turks; Nederlands en andere talen hangen af van de gekozen stemengine ([docs/diller.md](docs/diller.md)).
 
+> **Gebruikt u een AI-codeeragent (Codex, Claude Code, Gemini, Cursor)?** Geef hem deze ene zin: “Lees `AGENTS_HIZLI.md` helemaal uit, voer eerst `scripts\tani.ps1` uit, houd je voortgang bij in `DURUM.md` en vraag het me voordat je iets verwijdert of verplaatst, het systeem-Python of PATH wijzigt of een kwaliteitsinstelling verlaagt.” De agent diagnosticeert deze pc, schrijft een checklist en vraagt u bij elke beslissing om akkoord.
+
 ## Laat je AI-assistent het installeren
 
 Je hoeft niet te kunnen programmeren. Open een AI-assistent die opdrachten op je computer kan uitvoeren (Claude Code, Codex,
@@ -124,4 +126,4 @@ Vragen, ideeën en je resultaten: [discussieforum](https://github.com/alexturkey
 Code: Apache-2.0 (LICENSE). Externe onderdelen en hun licenties: THIRD_PARTY.md. Verantwoord gebruik: ETHICS.md.
 Privacy (wat op je computer blijft, wat een cloudbackend ontvangt): PRIVACY.md. Beveiligingsmeldingen: SECURITY.md. Wijzigingen: CHANGELOG.md.
 
-<!-- i18n-source: README.md sha256:cdd2c731c59f -->
+<!-- i18n-source: README.md sha256:9ea414e3fa38 -->
